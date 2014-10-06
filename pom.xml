@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>scanalyzer</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/k-hotta/SCAnalyzer</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,4 +22,9 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <description>This tool tracks and analyzes source code fragments that used to be clones.</description>
+  <organization>
+  	<name>Software Design Lab., Osaka Univ.</name>
+  	<url>http://sdl.ist.osaka-u.ac.jp/</url>
+  </organization>
 </project>
