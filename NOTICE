@@ -21,3 +21,9 @@
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
 	Jar File:	lib/scanner-1.0-SNAPSHOT.jar
 	Note:   	SCAnalyzer directly refers to scanner as a local jar file because scanner has not been provided in maven repositories
+	
+** ORM Lite **
+	Purpose:	Storing persistent objects into database
+	Creator(s):	Gray Watson (256.com)
+	Web-site:	http://ormlite.com/
+	License:	ISC Open Source License (licenses/isc.txt)
