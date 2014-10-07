@@ -16,8 +16,8 @@
 	
 ** Scanner (included in the CQSE Project) **
 	Purpose:	Lexing source files
-	Creator(s):	Technishe Universitaet Muenchen (Germany), CQSE Gmbh (Germany)
+	Creator(s):	Technishe Universitaet Muenchen (Germany), CQSE GmbH (Germany)
 	Web-site:	https://www.cqse.eu/en/products/conqat/overview/
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
 	Jar File:	lib/scanner-1.0-SNAPSHOT.jar
-	Note:   	SCAnalyzer directly refers to scanner as a jar file because scanner has not provided in maven repositories
+	Note:   	SCAnalyzer directly refers to scanner as a local jar file because scanner has not been provided in maven repositories
