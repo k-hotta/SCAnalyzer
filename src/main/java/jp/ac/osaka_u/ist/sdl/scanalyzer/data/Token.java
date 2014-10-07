@@ -30,10 +30,15 @@ public class Token implements IDBElement {
 	private int offset;
 
 	/**
-	 * The default constructor, which is required for this class to be a POJO.
+	 * The value of this token
+	 */
+	private String value;
+
+	/**
+	 * The default constructor, which is required to use hibernate.
 	 */
 	public Token() {
-		this(null, null, -1);
+		this(null, null, -1, null);
 	}
 
 	/**
@@ -45,11 +50,15 @@ public class Token implements IDBElement {
 	 *            the string representation of the type of this token
 	 * @param offset
 	 *            the offset of this token within the source file
+	 * @param value
+	 *            the value of this token
 	 */
-	public Token(final Long id, final String tokenTypeStr, final int offset) {
+	public Token(final Long id, final String tokenTypeStr, final int offset,
+			final String value) {
 		this.id = id;
 		this.tokenTypeStr = tokenTypeStr;
 		this.offset = offset;
+		this.value = value;
 	}
 
 	/**
@@ -102,6 +111,25 @@ public class Token implements IDBElement {
 	 */
 	public void setOffset(final int offset) {
 		this.offset = offset;
+	}
+
+	/**
+	 * Get the value of this token
+	 * 
+	 * @return the value of this token
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	/**
+	 * Set the value of this token
+	 * 
+	 * @param value
+	 *            the value of token to be set
+	 */
+	public void setValue(final String value) {
+		this.value = value;
 	}
 
 }
