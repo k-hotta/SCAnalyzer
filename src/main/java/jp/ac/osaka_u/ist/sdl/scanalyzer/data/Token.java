@@ -13,7 +13,7 @@ public class Token implements IDBElement {
 	/**
 	 * The id of the token. This is the primary key of the token.
 	 */
-	private Long id;
+	private long id;
 
 	/**
 	 * The string representation of the type of this token. <br>
@@ -53,7 +53,7 @@ public class Token implements IDBElement {
 	 * @param value
 	 *            the value of this token
 	 */
-	public Token(final Long id, final String tokenTypeStr, final int offset,
+	public Token(final long id, final String tokenTypeStr, final int offset,
 			final String value) {
 		this.id = id;
 		this.tokenTypeStr = tokenTypeStr;
@@ -64,14 +64,14 @@ public class Token implements IDBElement {
 	/**
 	 * Get the id of the token
 	 */
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * Set the id of the token with the specified value
 	 */
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

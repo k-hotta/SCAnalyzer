@@ -1,23 +1,29 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * A class represents revision
  * 
  * @author k-hotta
  * 
  */
+@DatabaseTable(tableName = "revisions")
 public class Revision implements IDBElement {
 
 	/**
 	 * The id of the revision
 	 */
-	private Long id;
+	@DatabaseField(id = true, index = true)
+	private long id;
 
 	/**
 	 * The string of the revision that is used as identifiers in its version
 	 * control system. <br>
 	 * e.g. numerical sequential value in SVN, hash value in git.
 	 */
+	@DatabaseField(unique = true, index = true)
 	private String identifier;
 
 	/**
@@ -35,7 +41,7 @@ public class Revision implements IDBElement {
 	 * @param identifier
 	 *            the identifier of this revision in its version control system
 	 */
-	public Revision(final Long id, final String identifier) {
+	public Revision(final long id, final String identifier) {
 		this.id = id;
 		this.identifier = identifier;
 	}
@@ -43,14 +49,14 @@ public class Revision implements IDBElement {
 	/**
 	 * Get the id of this revision
 	 */
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * Set the id of this revision with the specified value
 	 */
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
