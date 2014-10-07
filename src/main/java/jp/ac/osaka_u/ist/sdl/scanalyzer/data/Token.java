@@ -38,7 +38,7 @@ public class Token implements IDBElement {
 	 * The default constructor, which is required to use hibernate.
 	 */
 	public Token() {
-		this(null, null, -1, null);
+		this(-1, null, -1, null);
 	}
 
 	/**
