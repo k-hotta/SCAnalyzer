@@ -4,5 +4,14 @@
 
 ** Apache Log4j 2 **
 	Purpose:	Logging
+	Creator(s):	Apache Logging
 	Web-site:	http://logging.apache.org/log4j/2.x/
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
+	
+** Scanner (included in the CQSE Project) **
+	Purpose:	Lexing source files
+	Creator(s):	Technishe Universitaet Muenchen (Germany), CQSE Gmbh (Germany)
+	Web-site:	https://www.cqse.eu/en/products/conqat/overview/
+	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
+	Jar File:	lib/scanner-1.0-SNAPSHOT.jar
+	Note:   	SCAnalyzer directly refers to scanner as a jar file because scanner has not provided in maven repositories
