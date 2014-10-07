@@ -13,7 +13,7 @@ public interface IDBElement {
 	/**
 	 * Get the id of the element
 	 * 
-	 * @return
+	 * @return the value of id
 	 */
 	public Long getId();
 
@@ -21,6 +21,7 @@ public interface IDBElement {
 	 * Set the id of the element with the given value
 	 * 
 	 * @param id
+	 *            the value of id to be set
 	 */
 	public void setId(final Long id);
 

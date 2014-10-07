@@ -39,6 +39,25 @@
     	<version>1.2</version>
     </dependency>
   </dependencies>
+  
+  <build>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-javadoc-plugin</artifactId>
+  			<configuration>
+  				<author>true</author>
+  				<source>1.7</source>
+  				<show>protected</show>
+  				<encoding>UTF-8</encoding>
+  				<charset>UTF-8</charset>
+  				<docencoding>UTF-8</docencoding>
+  				<locale>en</locale>
+  			</configuration>
+  		</plugin>
+  	</plugins>
+  </build>
+  
   <description>This tool tracks and analyzes source code fragments that used to be clones.</description>
   <organization>
   	<name>Software Design Lab., Osaka Univ.</name>

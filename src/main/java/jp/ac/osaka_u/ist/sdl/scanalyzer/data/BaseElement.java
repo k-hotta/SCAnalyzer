@@ -26,6 +26,7 @@ public abstract class BaseElement implements IDBElement {
 	 * Constructor with ID specified
 	 * 
 	 * @param id
+	 *            the value of id to be set
 	 */
 	public BaseElement(final Long id) {
 		this.id = id;
