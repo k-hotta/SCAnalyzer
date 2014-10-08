@@ -1,6 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Collection;
+
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -22,7 +25,14 @@ public class Version implements IDBElement {
 	/**
 	 * The corresponding revision
 	 */
+	@DatabaseField(canBeNull = false, foreign = true)
 	private Revision revision;
+
+	/**
+	 * The collection of source files in this version
+	 */
+	@ForeignCollectionField(eager = false)
+	private Collection<SourceFile> sourceFiles;
 
 	/**
 	 * The default constructor
@@ -38,10 +48,15 @@ public class Version implements IDBElement {
 	 *            the id
 	 * @param revision
 	 *            the corresponding revision
+	 * @param sourceFiles
+	 *            the collection that contains all the source files in this
+	 *            revision
 	 */
-	public Version(final long id, final Revision revision) {
+	public Version(final long id, final Revision revision,
+			final Collection<SourceFile> sourceFiles) {
 		this.id = id;
 		this.revision = revision;
+		this.sourceFiles = sourceFiles;
 	}
 
 	/**
@@ -82,6 +97,25 @@ public class Version implements IDBElement {
 	 */
 	public void setRevision(Revision revision) {
 		this.revision = revision;
+	}
+
+	/**
+	 * Get all the source files in this version as a collection
+	 * 
+	 * @return a collection that contains all the source files in this version
+	 */
+	public Collection<SourceFile> getSourceFiles() {
+		return sourceFiles;
+	}
+
+	/**
+	 * Set the collection of all the source files
+	 * 
+	 * @param sourceFiles
+	 *            the collection to be set
+	 */
+	public void setSourceFiles(Collection<SourceFile> sourceFiles) {
+		this.sourceFiles = sourceFiles;
 	}
 
 }
