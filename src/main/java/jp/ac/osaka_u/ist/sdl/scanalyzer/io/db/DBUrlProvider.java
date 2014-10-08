@@ -21,6 +21,16 @@ public class DBUrlProvider {
 	 */
 	private static final Logger eLogger = LogManager.getLogger("error");
 
+	/**
+	 * Get the URL of the database, which is created with the DBMS and path. <br>
+	 * 
+	 * @param dbms
+	 *            the DBMS
+	 * @param pathStr
+	 *            the path of the database
+	 * @return the string representation of the URL of the database
+	 * @throws URISyntaxException
+	 */
 	public static final String getUrl(final DBMS dbms, final String pathStr)
 			throws URISyntaxException {
 		final String driverStr = dbms.getDriverStr();
@@ -33,7 +43,7 @@ public class DBUrlProvider {
 					+ driverStr + path);
 			throw e;
 		}
-		
+
 		return uri.toString();
 	}
 
