@@ -1,5 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * This class represents token, which is the base unit of any code fragments. <br>
  * This class implements {@link IDBElement IDBElement} so the objects should be
@@ -8,11 +11,13 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
  * @author k-hotta
  * 
  */
+@DatabaseTable(tableName = "tokens")
 public class Token implements IDBElement {
 
 	/**
 	 * The id of the token. This is the primary key of the token.
 	 */
+	@DatabaseField(id = true, index = true)
 	private long id;
 
 	/**
@@ -22,20 +27,23 @@ public class Token implements IDBElement {
 	 * This class uses string representations instead of ETokenType itself for
 	 * the ease of storing into DB. <br>
 	 */
+	@DatabaseField(canBeNull = false)
 	private String tokenTypeStr;
 
 	/**
 	 * The offset of this token within the owner source file.
 	 */
+	@DatabaseField(canBeNull = false)
 	private int offset;
 
 	/**
 	 * The value of this token
 	 */
+	@DatabaseField(canBeNull = false)
 	private String value;
 
 	/**
-	 * The default constructor, which is required to use hibernate.
+	 * The default constructor, which is required to use ORMLite.
 	 */
 	public Token() {
 		this(-1, null, -1, null);
