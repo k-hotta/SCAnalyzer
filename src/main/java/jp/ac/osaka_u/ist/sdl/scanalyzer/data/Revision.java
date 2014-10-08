@@ -10,7 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  */
 @DatabaseTable(tableName = "revisions")
-public class Revision implements IDBElement {
+public class Revision implements IDBElement, Comparable<Revision> {
 
 	/**
 	 * The id of the revision
@@ -78,6 +78,41 @@ public class Revision implements IDBElement {
 	 */
 	public void setIdentifier(final String identifier) {
 		this.identifier = identifier;
+	}
+
+	/**
+	 * Judge whether the given object equals to this object. <br>
+	 * 
+	 * @return <code>true</code> if the given object is an instance of
+	 *         {@link Revision Revision} and the id values of the two objects
+	 *         are the same to each other; <code>false</code> otherwise.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof Revision)) {
+			return false;
+		}
+		final Revision another = (Revision) obj;
+
+		return this.id == another.getId();
+	}
+
+	/**
+	 * Return a hash code value of this object. <br>
+	 * The hash value of this object is just the value of the id. <br>
+	 * 
+	 * @return the hash value, which equals to the value of id of this object
+	 */
+	@Override
+	public int hashCode() {
+		return (int) this.id;
+	}
+
+	/**
+	 * Compare this element to the given one based on their IDs.
+	 */
+	public int compareTo(final Revision another) {
+		return ((Long) this.id).compareTo(another.getId());
 	}
 
 }
