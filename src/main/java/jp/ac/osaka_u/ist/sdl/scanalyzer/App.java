@@ -21,7 +21,8 @@ public class App {
 		Logger logger = LogManager.getLogger(App.class);
 		Logger eLogger = LogManager.getLogger("error");
 
-		String dbUrl = "jdbc:sqlite:C:/Users/k-hotta/git/SCAnalyzer/src/test/resources/test.db";
+		String dbUrl = "jdbc:sqlite:src/test/resources/test.db";
+//		String dbUrl = "jdbc:sqlite:C:/Users/k-hotta/git/SCAnalyzer/src/test/resources/test.db";
 //		ConnectionSource connectionSource = new JdbcConnectionSource(dbUrl);
 //
 //		Dao<Revision, Long> revisionDao = DaoManager.createDao(
