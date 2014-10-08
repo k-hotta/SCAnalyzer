@@ -2,6 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,12 +21,13 @@ public class DBUrlProvider {
 	 */
 	private static final Logger eLogger = LogManager.getLogger("error");
 
-	public static final String getUrl(final DBMS dbms, final String path)
+	public static final String getUrl(final DBMS dbms, final String pathStr)
 			throws URISyntaxException {
 		final String driverStr = dbms.getDriverStr();
+		final Path path = Paths.get(pathStr);
 		final URI uri;
 		try {
-			uri = new URI(driverStr + path);
+			uri = new URI(driverStr + path.toUri().getPath().toString());
 		} catch (URISyntaxException e) {
 			eLogger.fatal("cannot parse the given path of database: "
 					+ driverStr + path);
