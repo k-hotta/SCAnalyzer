@@ -22,6 +22,14 @@ public class DBUrlProvider {
 	private static final Logger eLogger = LogManager.getLogger("error");
 
 	/**
+	 * The private constructor to make it impossible to make any instance of
+	 * this class.
+	 */
+	private DBUrlProvider() {
+
+	}
+
+	/**
 	 * Get the URL of the database, which is created with the DBMS and path. <br>
 	 * 
 	 * @param dbms
