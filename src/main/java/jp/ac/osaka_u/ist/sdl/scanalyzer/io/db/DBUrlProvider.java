@@ -30,6 +30,7 @@ public class DBUrlProvider {
 	 *            the path of the database
 	 * @return the string representation of the URL of the database
 	 * @throws URISyntaxException
+	 *             If the given path is illegal
 	 */
 	public static final String getUrl(final DBMS dbms, final String pathStr)
 			throws URISyntaxException {
