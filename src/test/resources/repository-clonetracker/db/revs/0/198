@@ -1,0 +1,231 @@
+id: 2b-6.2-28.r198/0
+type: file
+pred: 2b-6.2-28.r197/104
+count: 16
+text: 121 1392 373 5583 ed662765229683221831b345d6a43686 6827737d805cb11528c638243425061099da0599 197-5h/_a
+props: 6 12670142 39 0 f2ea0bdf4310dae3aef66de358bcb0e1
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/db/DBMaker.java
+copyroot: 28 /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/db/DBMaker.java
+
+PLAIN
+K 17
+DBConnection.java
+V 23
+file m-13.0-28.r55/4148
+K 14
+DBDeleter.java
+V 24
+file d-15.1-28.r146/3916
+K 12
+DBMaker.java
+V 21
+file 2b-6.2-28.r198/0
+END
+ENDREP
+id: 8-28.0.r198/532
+type: dir
+pred: 8-28.0.r197/638
+count: 11
+text: 198 368 151 151 a491aa5d884686318f570f619f5f1ae5
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/db
+copyroot: 0 /
+
+PLAIN
+K 9
+C20R.java
+V 20
+file n-2.0.r196/1718
+K 11
+Config.java
+V 20
+file q-2.0.r154/1890
+K 15
+Extractor1.java
+V 22
+file 8-126.0.r126/1986
+K 15
+Extractor2.java
+V 22
+file b-126.0.r126/2319
+K 15
+Extractor3.java
+V 22
+file d-126.0.r126/2654
+K 9
+MODE.java
+V 21
+file b-30.0.r113/9727
+K 12
+clone_tracer
+V 20
+dir 8-31.0.r159/1782
+K 7
+counter
+V 21
+dir 8-128.0.r128/1442
+K 12
+csv_analyzer
+V 21
+dir c-113.0.r127/1091
+K 2
+db
+V 19
+dir 8-28.0.r198/532
+K 12
+rev_analyzer
+V 19
+dir 9-6.0.r159/2707
+K 2
+ui
+V 21
+dir f-107.0.r133/1936
+END
+ENDREP
+id: l-2.0.r198/1241
+type: dir
+pred: l-2.0.r197/1348
+count: 68
+text: 198 716 512 512 9c516b130d346e824af7eeca8e874912
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r
+copyroot: 0 /
+
+PLAIN
+K 4
+c20r
+V 19
+dir l-2.0.r198/1241
+END
+ENDREP
+id: j-2.0.r198/1473
+type: dir
+pred: j-2.0.r197/1580
+count: 68
+text: 198 1422 38 38 7b364f5e266881791e56175e932cc1a1
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl
+copyroot: 0 /
+
+PLAIN
+K 3
+sdl
+V 19
+dir j-2.0.r198/1473
+END
+ENDREP
+id: h-2.0.r198/1698
+type: dir
+pred: h-2.0.r197/1805
+count: 68
+text: 198 1648 37 37 6fb60edc660b6b12876983685eec250d
+cpath: /c20r_main/src/jp/ac/osaka_u/ist
+copyroot: 0 /
+
+PLAIN
+K 3
+ist
+V 19
+dir h-2.0.r198/1698
+END
+ENDREP
+id: f-2.0.r198/1919
+type: dir
+pred: f-2.0.r197/2026
+count: 68
+text: 198 1869 37 37 21f0680208ea8c2e276a4fffbb415694
+cpath: /c20r_main/src/jp/ac/osaka_u
+copyroot: 0 /
+
+PLAIN
+K 7
+osaka_u
+V 19
+dir f-2.0.r198/1919
+END
+ENDREP
+id: d-2.0.r198/2140
+type: dir
+pred: d-2.0.r197/2247
+count: 68
+text: 198 2086 41 41 e82e9ffa93e52b82b2b74401e1ab91f6
+cpath: /c20r_main/src/jp/ac
+copyroot: 0 /
+
+PLAIN
+K 2
+ac
+V 19
+dir d-2.0.r198/2140
+END
+ENDREP
+id: b-2.0.r198/2348
+type: dir
+pred: b-2.0.r197/2455
+count: 68
+text: 198 2299 36 36 0ff2b06578e2817d9c2af53dfd7a4983
+cpath: /c20r_main/src/jp
+copyroot: 0 /
+
+PLAIN
+K 2
+jp
+V 19
+dir b-2.0.r198/2348
+K 3
+lib
+V 21
+dir s-2.0.r14/3177790
+END
+ENDREP
+id: a-2.0.r198/2588
+type: dir
+pred: a-2.0.r197/2695
+count: 69
+text: 198 2504 71 71 75a53c085f9df80072f13cb5c2968949
+cpath: /c20r_main/src
+copyroot: 0 /
+
+PLAIN
+K 10
+.classpath
+V 19
+file 1-2.0.r195/474
+K 8
+.project
+V 19
+file 4-2.0.r18/3070
+K 9
+.settings
+V 20
+dir 6-2.0.r2/8687911
+K 3
+src
+V 19
+dir a-2.0.r198/2588
+END
+ENDREP
+id: 0-1.0.r198/2910
+type: dir
+pred: 0-1.0.r197/3017
+count: 74
+text: 198 2741 156 156 aaedcf6efb497e5afc123be8c52c2ab4
+cpath: /c20r_main
+copyroot: 0 /
+
+PLAIN
+K 9
+c20r_main
+V 19
+dir 0-1.0.r198/2910
+END
+ENDREP
+id: 0.0.r198/3117
+type: dir
+pred: 0.0.r197/3224
+count: 198
+text: 198 3061 43 43 59c7866e298641c9d06b69caef786021
+cpath: /
+copyroot: 0 /
+
+2b-6.2-28.t197-5h modify-file true false /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/db/DBMaker.java
+
+
+3117 3254

@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-26T09:36:39.211088Z
+K 7
+svn:log
+V 59
+extract a function to read contents of files as a new class
+END

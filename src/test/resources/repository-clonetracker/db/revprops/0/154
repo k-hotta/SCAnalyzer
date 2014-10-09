@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-08-13T18:17:14.132973Z
+K 7
+svn:log
+V 49
+A way to specify particular URLs was implemented.
+END

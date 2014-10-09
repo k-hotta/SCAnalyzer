@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-06-27T19:27:41.768948Z
+K 7
+svn:log
+V 145
+Implement a function to detect clone sets from the BLOCK table, and implement a function to register detected clone sets into the CLONESET table.
+END

@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-07-24T07:47:38.330046Z
+K 7
+svn:log
+V 61
+A function to retrieve clone set information was implemented.
+END

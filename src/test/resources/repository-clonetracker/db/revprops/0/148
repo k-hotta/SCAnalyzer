@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-08-13T13:39:45.107189Z
+K 7
+svn:log
+V 59
+The format of output CSV files of clone_tracer was changed.
+END

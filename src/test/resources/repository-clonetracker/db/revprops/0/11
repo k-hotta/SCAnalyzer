@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-06-26T11:42:36.247704Z
+K 7
+svn:log
+V 151
+Introduce a new interface IElement to abstract element classes, and introduce a new abstract class AbstractElementManager to abstract element managers.
+END

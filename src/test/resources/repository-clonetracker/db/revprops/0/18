@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+higo
+K 8
+svn:date
+V 27
+2012-06-27T10:22:55.675287Z
+K 7
+svn:log
+V 63
+The functionality of checking out and updating was implemented.
+END

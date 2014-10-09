@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-27T08:04:27.079334Z
+K 7
+svn:log
+V 86
+[bug fix] a bug that throws null-pointer exception when adddedFiles is empty was fixed
+END

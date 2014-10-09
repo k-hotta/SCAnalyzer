@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-06-25T10:09:37.377130Z
+K 7
+svn:log
+V 86
+Imported the single revision analyzer (current implementation) and required libraries.
+END

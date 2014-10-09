@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-03-01T11:22:06.174937Z
+K 7
+svn:log
+V 42
+a bean to represent a hunk was implemented
+END

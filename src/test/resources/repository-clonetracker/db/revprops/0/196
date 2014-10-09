@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-25T05:15:17.903294Z
+K 7
+svn:log
+V 55
+a function to run C mode with multi-threads was created
+END

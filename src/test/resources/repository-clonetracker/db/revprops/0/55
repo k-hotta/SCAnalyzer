@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-07-19T17:33:45.080433Z
+K 7
+svn:log
+V 75
+Speed up clone detection by creating indexes on REVISION_ID and BLOCK_HASH.
+END

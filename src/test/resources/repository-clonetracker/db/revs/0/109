@@ -1,0 +1,220 @@
+id: 9-109.0.r109/0
+type: dir
+count: 0
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/ui/component
+copyroot: 0 /
+
+PLAIN
+K 11
+UIMain.java
+V 22
+file g-107.0.r107/8865
+K 9
+component
+V 18
+dir 9-109.0.r109/0
+K 3
+csv
+V 22
+dir j-107.0.r107/11387
+K 4
+data
+V 22
+dir p-107.0.r107/10381
+K 10
+repository
+V 21
+dir x-107.0.r107/8052
+K 8
+settings
+V 22
+dir 11-107.0.r107/8641
+END
+ENDREP
+id: f-107.0.r109/372
+type: dir
+pred: f-107.0.r107/11776
+count: 1
+text: 109 115 244 244 96e3f91e0384004cfde4f6167a4dff5d
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/ui
+copyroot: 0 /
+
+PLAIN
+K 9
+C20R.java
+V 20
+file n-2.0.r107/7317
+K 11
+Config.java
+V 20
+file q-2.0.r107/7017
+K 9
+MODE.java
+V 21
+file b-30.0.r107/6723
+K 12
+clone_tracer
+V 20
+dir 8-31.0.r107/6526
+K 2
+db
+V 19
+dir 8-28.0.r90/6287
+K 12
+rev_analyzer
+V 19
+dir 9-6.0.r106/1490
+K 2
+ui
+V 20
+dir f-107.0.r109/372
+END
+ENDREP
+id: l-2.0.r109/852
+type: dir
+pred: l-2.0.r107/12237
+count: 48
+text: 109 559 280 280 b13d11cd909e9dd65ad8ac6a0211eb85
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r
+copyroot: 0 /
+
+PLAIN
+K 4
+c20r
+V 18
+dir l-2.0.r109/852
+END
+ENDREP
+id: j-2.0.r109/1083
+type: dir
+pred: j-2.0.r107/12473
+count: 48
+text: 109 1033 37 37 ea50d7031a4fbbd93297fa641700e5cc
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl
+copyroot: 0 /
+
+PLAIN
+K 3
+sdl
+V 19
+dir j-2.0.r109/1083
+END
+ENDREP
+id: h-2.0.r109/1309
+type: dir
+pred: h-2.0.r107/12701
+count: 48
+text: 109 1259 37 37 8f231017c4561787c41ec527f15da8b3
+cpath: /c20r_main/src/jp/ac/osaka_u/ist
+copyroot: 0 /
+
+PLAIN
+K 3
+ist
+V 19
+dir h-2.0.r109/1309
+END
+ENDREP
+id: f-2.0.r109/1531
+type: dir
+pred: f-2.0.r107/12925
+count: 48
+text: 109 1481 37 37 3f8e4c2c718f81594b22e1b2a1fabd1b
+cpath: /c20r_main/src/jp/ac/osaka_u
+copyroot: 0 /
+
+PLAIN
+K 7
+osaka_u
+V 19
+dir f-2.0.r109/1531
+END
+ENDREP
+id: d-2.0.r109/1753
+type: dir
+pred: d-2.0.r107/13149
+count: 48
+text: 109 1699 41 41 03d47ed72daa4b11dd9f0da5ec0435fb
+cpath: /c20r_main/src/jp/ac
+copyroot: 0 /
+
+PLAIN
+K 2
+ac
+V 19
+dir d-2.0.r109/1753
+END
+ENDREP
+id: b-2.0.r109/1962
+type: dir
+pred: b-2.0.r107/13360
+count: 48
+text: 109 1913 36 36 12400f89424cfd8380fe81f17a70bbb9
+cpath: /c20r_main/src/jp
+copyroot: 0 /
+
+PLAIN
+K 2
+jp
+V 19
+dir b-2.0.r109/1962
+K 3
+lib
+V 21
+dir s-2.0.r14/3177790
+END
+ENDREP
+id: a-2.0.r109/2203
+type: dir
+pred: a-2.0.r107/13603
+count: 49
+text: 109 2119 71 71 ea062faeb1a2aac86c5a3ba94860b8f2
+cpath: /c20r_main/src
+copyroot: 0 /
+
+PLAIN
+K 10
+.classpath
+V 19
+file 1-2.0.r99/9311
+K 8
+.project
+V 19
+file 4-2.0.r18/3070
+K 9
+.settings
+V 20
+dir 6-2.0.r2/8687911
+K 3
+src
+V 19
+dir a-2.0.r109/2203
+END
+ENDREP
+id: 0-1.0.r109/2526
+type: dir
+pred: 0-1.0.r107/13928
+count: 53
+text: 109 2357 156 156 7582da4ac35bde075cffc68cf8bd92ed
+cpath: /c20r_main
+copyroot: 0 /
+
+PLAIN
+K 9
+c20r_main
+V 19
+dir 0-1.0.r109/2526
+END
+ENDREP
+id: 0.0.r109/2734
+type: dir
+pred: 0.0.r108/0
+count: 109
+text: 109 2678 43 43 cad1ec43240051a8de06ce5dcca5c3d6
+cpath: /
+copyroot: 0 /
+
+_9.0.t108-30 add-dir false false /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/ui/component
+
+
+2734 2868

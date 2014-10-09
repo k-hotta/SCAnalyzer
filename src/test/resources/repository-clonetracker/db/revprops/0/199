@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-26T07:21:13.059012Z
+K 7
+svn:log
+V 74
+a function to load contents of files in previous revisions was implemented
+END

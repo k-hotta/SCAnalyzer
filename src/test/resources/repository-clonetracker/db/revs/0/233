@@ -1,0 +1,174 @@
+PLAIN
+K 26
+UnifiedDiffRegrexTest.java
+V 21
+file g-224.0.r224/708
+END
+ENDREP
+id: e-224.0.r233/76
+type: dir
+pred: e-224.0.r229/4240
+count: 2
+text: 233 0 63 63 191f5be6863a7ea2bc703bb727740639
+cpath: /c20r_main/test/jp/ac/osaka_u/ist/sdl/c20r/diff
+copyroot: 0 /
+
+PLAIN
+K 4
+diff
+V 19
+dir e-224.0.r233/76
+END
+ENDREP
+id: c-224.0.r233/311
+type: dir
+pred: c-224.0.r229/4484
+count: 2
+text: 233 260 38 38 fbf90edd5f6156dee9edba9aeec658cf
+cpath: /c20r_main/test/jp/ac/osaka_u/ist/sdl/c20r
+copyroot: 0 /
+
+PLAIN
+K 4
+c20r
+V 20
+dir c-224.0.r233/311
+END
+ENDREP
+id: a-224.0.r233/545
+type: dir
+pred: a-224.0.r229/4721
+count: 2
+text: 233 493 39 39 078ac58141dc83f985fad50017f9112a
+cpath: /c20r_main/test/jp/ac/osaka_u/ist/sdl
+copyroot: 0 /
+
+PLAIN
+K 3
+sdl
+V 20
+dir a-224.0.r233/545
+END
+ENDREP
+id: 8-224.0.r233/773
+type: dir
+pred: 8-224.0.r229/4952
+count: 2
+text: 233 722 38 38 d6ab7971d903d2ca6b87c37763c45e33
+cpath: /c20r_main/test/jp/ac/osaka_u/ist
+copyroot: 0 /
+
+PLAIN
+K 3
+ist
+V 20
+dir 8-224.0.r233/773
+END
+ENDREP
+id: 6-224.0.r233/997
+type: dir
+pred: 6-224.0.r229/5179
+count: 2
+text: 233 946 38 38 b5bb6fb1e7b7e89f64be9460f47796c8
+cpath: /c20r_main/test/jp/ac/osaka_u
+copyroot: 0 /
+
+PLAIN
+K 7
+osaka_u
+V 20
+dir 6-224.0.r233/997
+END
+ENDREP
+id: 4-224.0.r233/1221
+type: dir
+pred: 4-224.0.r229/5406
+count: 2
+text: 233 1166 42 42 d1dec77d0167239ed0ecc0f51e75a8ff
+cpath: /c20r_main/test/jp/ac
+copyroot: 0 /
+
+PLAIN
+K 2
+ac
+V 21
+dir 4-224.0.r233/1221
+END
+ENDREP
+id: 2-224.0.r233/1435
+type: dir
+pred: 2-224.0.r229/5620
+count: 2
+text: 233 1384 38 38 517c5c658c0dde99aac81b204d538c30
+cpath: /c20r_main/test/jp
+copyroot: 0 /
+
+PLAIN
+K 2
+jp
+V 21
+dir 2-224.0.r233/1435
+END
+ENDREP
+id: 1-221.0.r233/1646
+type: dir
+pred: 1-221.0.r229/5831
+count: 3
+text: 233 1595 38 38 5ccf437cec977c02b768d049e60a32b0
+cpath: /c20r_main/test
+copyroot: 0 /
+
+PLAIN
+K 10
+.classpath
+V 19
+file 1-2.0.r222/114
+K 8
+.project
+V 19
+file 4-2.0.r18/3070
+K 9
+.settings
+V 20
+dir 6-2.0.r2/8687911
+K 3
+src
+V 19
+dir a-2.0.r232/4433
+K 4
+test
+V 21
+dir 1-221.0.r233/1646
+K 14
+test-resources
+V 21
+dir 1-228.0.r229/9734
+END
+ENDREP
+id: 0-1.0.r233/2055
+type: dir
+pred: 0-1.0.r232/4838
+count: 109
+text: 233 1803 239 239 b9f847566919c468ef5a0874a7439c65
+cpath: /c20r_main
+copyroot: 0 /
+
+PLAIN
+K 9
+c20r_main
+V 19
+dir 0-1.0.r233/2055
+END
+ENDREP
+id: 0.0.r233/2263
+type: dir
+pred: 0.0.r232/5046
+count: 233
+text: 233 2207 43 43 3f9f33d5e838c41e186b02e3c2534332
+cpath: /
+copyroot: 0 /
+
+k-229.0.r229/3813 delete-file false false /c20r_main/test/jp/ac/osaka_u/ist/sdl/c20r/diff/HunkDetectorTest.java
+
+
+2263 2400

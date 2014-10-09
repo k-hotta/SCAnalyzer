@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-26T09:32:28.489500Z
+K 7
+svn:log
+V 63
+create an interface to calculate the similarity between strings
+END

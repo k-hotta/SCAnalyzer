@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-08-06T08:47:43.771458Z
+K 7
+svn:log
+V 51
+A bug in which small blocks were removed was fixed.
+END

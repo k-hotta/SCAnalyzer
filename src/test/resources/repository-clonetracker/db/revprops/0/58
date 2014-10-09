@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-07-20T05:35:05.568138Z
+K 7
+svn:log
+V 70
+Reduce the number of db commits to speed up registrations of elements.
+END

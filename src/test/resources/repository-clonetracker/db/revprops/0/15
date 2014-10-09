@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2012-06-26T19:09:28.476658Z
+K 7
+svn:log
+V 120
+Implement a function to create and drop a database, and implement a function to register RevisionInfo into the database.
+END

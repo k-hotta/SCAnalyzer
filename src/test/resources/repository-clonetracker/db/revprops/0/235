@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-03-03T06:53:58.285036Z
+K 7
+svn:log
+V 79
+two columns were added to the BLOCK table to have which block was added/deleted
+END

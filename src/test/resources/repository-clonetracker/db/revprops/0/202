@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-27T04:49:46.989448Z
+K 7
+svn:log
+V 53
+implement methods to get paths of added/deleted files
+END

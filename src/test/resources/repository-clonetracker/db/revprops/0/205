@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+k-hotta
+K 8
+svn:date
+V 27
+2013-02-27T04:52:11.113594Z
+K 7
+svn:log
+V 80
+a class to calculate text similarities with Levenshtein Distance was implemented
+END
