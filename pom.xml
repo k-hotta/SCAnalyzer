@@ -132,6 +132,7 @@
   			<configuration>
   				<encoding>${encoding}</encoding>
   				<docencoding>${encoding}</docencoding>
+  				<locale>en</locale>
   			</configuration>
   			<reportSets>
   				<reportSet>
