@@ -3,6 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
@@ -46,12 +48,18 @@ public class App {
 		dbManager.initializeTable(Revision.class);
 		dbManager.initializeTable(SourceFile.class);
 		dbManager.initializeTable(Version.class);
+		dbManager.initializeTable(RawCloneClass.class);
+		dbManager.initializeTable(RawClonedFragment.class);
 
 		final Dao<Revision, Long> revisionDao = dbManager
 				.getDao(Revision.class);
 		final Dao<Version, Long> versionDao = dbManager.getDao(Version.class);
 		final Dao<SourceFile, Long> sourceFileDao = dbManager
 				.getDao(SourceFile.class);
+		final Dao<RawCloneClass, Long> rawCloneClassDao = dbManager
+				.getDao(RawCloneClass.class);
+		final Dao<RawClonedFragment, Long> rawClonedFragmentDao = dbManager
+				.getDao(RawClonedFragment.class);
 
 		Revision newRevision = new Revision(1, "init");
 		revisionDao.create(newRevision);
@@ -70,14 +78,31 @@ public class App {
 
 		sourceFiles.add(file1);
 		sourceFiles.add(file2);
-		
-		versionDao.create(version);	
-		
+
+		versionDao.create(version);
+
 		Version retrievedVersion = versionDao.queryForId((long) 1);
-		System.out.println(retrievedVersion.getSourceFiles().size());
 		revisionDao.refresh(retrievedVersion.getRevision());
+
+		RawCloneClass cloneClass = new RawCloneClass();
+		cloneClass.setId(1);
+		cloneClass.setRevision(newRevision);
+
+		RawClonedFragment frag1 = new RawClonedFragment(1, newRevision, file1,
+				2, 5, cloneClass);
+		RawClonedFragment frag2 = new RawClonedFragment(2, newRevision, file2,
+				10, 5, cloneClass);
+		Collection<RawClonedFragment> elements = new ArrayList<RawClonedFragment>();
+		elements.add(frag1);
+		elements.add(frag2);
+
+		cloneClass.setElements(elements);
 
 		dbManager.closeConnection();
 
+		rawCloneClassDao.create(cloneClass);
+		rawClonedFragmentDao.create(frag1);
+		rawClonedFragmentDao.create(frag2);
+		
 	}
 }
