@@ -27,3 +27,9 @@
 	Creator(s):	Gray Watson (256.com)
 	Web-site:	http://ormlite.com/
 	License:	ISC Open Source License (licenses/isc.txt)
+	
+** SVNKit **
+	Purpose:	Accessing SVN repositories
+	Creator(s):	TMate Software
+	Web-site:	http://www.svnkit.com/
+	License:	TMate Open Source License (licenses/tmate.txt)
