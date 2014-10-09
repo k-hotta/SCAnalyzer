@@ -79,14 +79,18 @@ public class RawClonedFragment implements IDBElement {
 	 *            the line number where this fragment starts
 	 * @param length
 	 *            the length in terms of line numbers
+	 * @param cloneClass
+	 *            the owner clone class of this fragment
 	 */
 	public RawClonedFragment(final long id, final Revision revision,
-			final SourceFile sourceFile, final int startLine, final int length) {
+			final SourceFile sourceFile, final int startLine, final int length,
+			final RawCloneClass cloneClass) {
 		this.id = id;
 		this.revision = revision;
 		this.sourceFile = sourceFile;
 		this.startLine = startLine;
 		this.length = length;
+		this.cloneClass = cloneClass;
 	}
 
 	/**
@@ -184,6 +188,25 @@ public class RawClonedFragment implements IDBElement {
 	 */
 	public void setLength(int length) {
 		this.length = length;
+	}
+
+	/**
+	 * Get the owner clone class of this fragment
+	 * 
+	 * @return the owner clone class of this fragment
+	 */
+	public RawCloneClass getCloneClass() {
+		return cloneClass;
+	}
+
+	/**
+	 * Set the owner clone class of this fragment with the specified one
+	 * 
+	 * @param cloneClass
+	 *            the owner clone class to be set
+	 */
+	public void setCloneClass(RawCloneClass cloneClass) {
+		this.cloneClass = cloneClass;
 	}
 
 }
