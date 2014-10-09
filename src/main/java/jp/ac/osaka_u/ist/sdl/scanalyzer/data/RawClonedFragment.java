@@ -17,6 +17,8 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  * @author k-hotta
  * 
+ * @see RawCloneClass
+ * 
  */
 @DatabaseTable(tableName = "raw_cloned_fragments")
 public class RawClonedFragment implements IDBElement {
@@ -50,6 +52,12 @@ public class RawClonedFragment implements IDBElement {
 	 */
 	@DatabaseField(canBeNull = false, index = true)
 	private int length;
+
+	/**
+	 * The owner clone class of this fragment
+	 */
+	@DatabaseField(canBeNull = false, foreign = true)
+	private RawCloneClass cloneClass;
 
 	/**
 	 * The default constructor
