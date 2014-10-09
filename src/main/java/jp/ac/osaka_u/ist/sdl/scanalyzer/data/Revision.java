@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Date;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -23,8 +25,14 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 * control system. <br>
 	 * e.g. numerical sequential value in SVN, hash value in git.
 	 */
-	@DatabaseField(unique = true, index = true)
+	@DatabaseField(canBeNull = false, unique = true, index = true)
 	private String identifier;
+
+	/**
+	 * The date when this revision was committed.
+	 */
+	@DatabaseField(canBeNull = false, index = true)
+	private Date date;
 
 	/**
 	 * The default constructor
@@ -40,10 +48,13 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 *            the id of the revision
 	 * @param identifier
 	 *            the identifier of this revision in its version control system
+	 * @param date
+	 *            the date when this revision was committed
 	 */
-	public Revision(final long id, final String identifier) {
+	public Revision(final long id, final String identifier, final Date date) {
 		this.id = id;
 		this.identifier = identifier;
+		this.date = date;
 	}
 
 	/**
@@ -78,6 +89,25 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 */
 	public void setIdentifier(final String identifier) {
 		this.identifier = identifier;
+	}
+
+	/**
+	 * Get the date when this revision was committed
+	 * 
+	 * @return the date when this revision was committed
+	 */
+	public Date getDate() {
+		return date;
+	}
+
+	/**
+	 * Set the date when this revision was committed
+	 * 
+	 * @param date
+	 *            the date to be set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	/**

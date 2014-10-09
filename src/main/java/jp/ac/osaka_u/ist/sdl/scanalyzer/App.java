@@ -2,6 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
@@ -61,7 +62,7 @@ public class App {
 		final Dao<RawClonedFragment, Long> rawClonedFragmentDao = dbManager
 				.getDao(RawClonedFragment.class);
 
-		Revision newRevision = new Revision(1, "init");
+		Revision newRevision = new Revision(1, "init", new Date());
 		revisionDao.create(newRevision);
 
 		Revision retrieved = revisionDao.queryForId((long) 1);
@@ -103,6 +104,6 @@ public class App {
 		rawCloneClassDao.create(cloneClass);
 		rawClonedFragmentDao.create(frag1);
 		rawClonedFragmentDao.create(frag2);
-		
+
 	}
 }
