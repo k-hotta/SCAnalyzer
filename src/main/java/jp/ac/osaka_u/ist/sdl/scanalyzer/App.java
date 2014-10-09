@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -51,6 +52,7 @@ public class App {
 		dbManager.initializeTable(Version.class);
 		dbManager.initializeTable(RawCloneClass.class);
 		dbManager.initializeTable(RawClonedFragment.class);
+		dbManager.initializeTable(FileChange.class);
 
 		final Dao<Revision, Long> revisionDao = dbManager
 				.getDao(Revision.class);
@@ -61,6 +63,8 @@ public class App {
 				.getDao(RawCloneClass.class);
 		final Dao<RawClonedFragment, Long> rawClonedFragmentDao = dbManager
 				.getDao(RawClonedFragment.class);
+		final Dao<FileChange, Long> fileChangeDao = dbManager
+				.getDao(FileChange.class);
 
 		Revision newRevision = new Revision(1, "init", new Date());
 		revisionDao.create(newRevision);
@@ -99,11 +103,15 @@ public class App {
 
 		cloneClass.setElements(elements);
 
-		dbManager.closeConnection();
-
 		rawCloneClassDao.create(cloneClass);
 		rawClonedFragmentDao.create(frag1);
 		rawClonedFragmentDao.create(frag2);
 
+		FileChange change = new FileChange(1, file1, file2,
+				FileChange.Type.MODIFY);
+
+		fileChangeDao.create(change);
+
+		dbManager.closeConnection();
 	}
 }
