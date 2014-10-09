@@ -35,6 +35,13 @@ public class Version implements IDBElement {
 	private Collection<SourceFile> sourceFiles;
 
 	/**
+	 * The collection of changes on source files between the last version and
+	 * this version
+	 */
+	@ForeignCollectionField(eager = false)
+	private Collection<FileChange> fileChanges;
+
+	/**
 	 * The default constructor
 	 */
 	public Version() {
@@ -51,12 +58,17 @@ public class Version implements IDBElement {
 	 * @param sourceFiles
 	 *            the collection that contains all the source files in this
 	 *            revision
+	 * @param fileChanges
+	 *            the collection that contains all the changes on source files
+	 *            between the last version and this version
 	 */
 	public Version(final long id, final Revision revision,
-			final Collection<SourceFile> sourceFiles) {
+			final Collection<SourceFile> sourceFiles,
+			final Collection<FileChange> fileChanges) {
 		this.id = id;
 		this.revision = revision;
 		this.sourceFiles = sourceFiles;
+		this.fileChanges = fileChanges;
 	}
 
 	/**
@@ -116,6 +128,28 @@ public class Version implements IDBElement {
 	 */
 	public void setSourceFiles(Collection<SourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
+	}
+
+	/**
+	 * Get the collection of all the file changes between the last version and
+	 * this version.
+	 * 
+	 * @return the collection of all the file changes between the last version
+	 *         and this version
+	 */
+	public Collection<FileChange> getFileChanges() {
+		return fileChanges;
+	}
+
+	/**
+	 * Set a collection that has all the file changes between the last version
+	 * and this version
+	 * 
+	 * @param fileChanges
+	 *            the collection to be set
+	 */
+	public void setFileChanges(Collection<FileChange> fileChanges) {
+		this.fileChanges = fileChanges;
 	}
 
 }

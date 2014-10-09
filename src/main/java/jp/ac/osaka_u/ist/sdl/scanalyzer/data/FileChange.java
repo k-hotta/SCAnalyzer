@@ -52,6 +52,13 @@ public class FileChange implements IDBElement {
 	private Type type;
 
 	/**
+	 * The owner version of this file change. This file change occurred between
+	 * the owner version and its last (previous) version.
+	 */
+	@DatabaseField(canBeNull = false, foreign = true)
+	private Version version;
+
+	/**
 	 * The default constructor
 	 */
 	public FileChange() {
@@ -73,9 +80,14 @@ public class FileChange implements IDBElement {
 	 *            <code>null</code>
 	 * @param type
 	 *            the type of this file change
+	 * @param version
+	 *            the owner version of this file change, that is, this file
+	 *            change occurred between the owner version and its last
+	 *            (previous) one
 	 */
 	public FileChange(final long id, final SourceFile oldSourceFile,
-			final SourceFile newSourceFile, final Type type) {
+			final SourceFile newSourceFile, final Type type,
+			final Version version) {
 		assert ((type == Type.ADD && oldSourceFile == null && newSourceFile != null)
 				|| (type == Type.DELETE && oldSourceFile != null && newSourceFile == null) || (oldSourceFile != null && newSourceFile != null));
 
@@ -83,6 +95,7 @@ public class FileChange implements IDBElement {
 		this.oldSourceFile = oldSourceFile;
 		this.newSourceFile = newSourceFile;
 		this.type = type;
+		this.version = version;
 	}
 
 	/**
@@ -165,6 +178,25 @@ public class FileChange implements IDBElement {
 	 */
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	/**
+	 * Get the owner version of this file change
+	 * 
+	 * @return the owner version of this file change
+	 */
+	public Version getVersion() {
+		return version;
+	}
+
+	/**
+	 * Set the owner version of this file change with the specified one
+	 * 
+	 * @param version
+	 *            the owner version of this file change
+	 */
+	public void setVersion(Version version) {
+		this.version = version;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -47,12 +48,12 @@ public class App {
 		DBManager.setup(dbUrl);
 		final DBManager dbManager = DBManager.getInstance();
 
+		dbManager.initializeTable(Version.class);
 		dbManager.initializeTable(Revision.class);
 		dbManager.initializeTable(SourceFile.class);
-		dbManager.initializeTable(Version.class);
+		dbManager.initializeTable(FileChange.class);
 		dbManager.initializeTable(RawCloneClass.class);
 		dbManager.initializeTable(RawClonedFragment.class);
-		dbManager.initializeTable(FileChange.class);
 
 		final Dao<Revision, Long> revisionDao = dbManager
 				.getDao(Revision.class);
@@ -66,36 +67,57 @@ public class App {
 		final Dao<FileChange, Long> fileChangeDao = dbManager
 				.getDao(FileChange.class);
 
-		Revision newRevision = new Revision(1, "init", new Date());
-		revisionDao.create(newRevision);
-
-		Revision retrieved = revisionDao.queryForId((long) 1);
-		logger.info(retrieved.getId() + "," + retrieved.getIdentifier());
+		Revision rev1 = new Revision(1, "init", new Date());
+		revisionDao.create(rev1);
+		
+		Revision rev2 = new Revision(2, "second", new Date());
+		revisionDao.create(rev2);
 
 		Collection<SourceFile> sourceFiles = new ArrayList<SourceFile>();
+		Collection<FileChange> fileChanges = new ArrayList<FileChange>();
 
-		Version version = new Version(1, retrieved, sourceFiles);
+		Version ver1 = new Version(1, rev1, sourceFiles, fileChanges);
 
-		SourceFile file1 = new SourceFile(1, "A.java", version);
+		SourceFile file1 = new SourceFile(1, "A.java", ver1);
 		sourceFileDao.create(file1);
-		SourceFile file2 = new SourceFile(2, "B.java", version);
+		SourceFile file2 = new SourceFile(2, "B.java", ver1);
 		sourceFileDao.create(file2);
 
 		sourceFiles.add(file1);
 		sourceFiles.add(file2);
 
-		versionDao.create(version);
+		versionDao.create(ver1);
 
-		Version retrievedVersion = versionDao.queryForId((long) 1);
-		revisionDao.refresh(retrievedVersion.getRevision());
+		Collection<SourceFile> sourceFiles2 = new ArrayList<SourceFile>();
+		Collection<FileChange> fileChanges2 = new ArrayList<FileChange>();
+		
+		Version ver2 = new Version(2, rev2, sourceFiles2, fileChanges2);
 
+		SourceFile file3 = new SourceFile(3, "A.java", ver2);
+		sourceFileDao.create(file3);
+		SourceFile file4 = new SourceFile(4, "B.java", ver2);
+		sourceFileDao.create(file4);
+		
+		sourceFiles2.add(file3);
+		sourceFiles2.add(file4);
+		
+		FileChange change1 = new FileChange(1, file1, file3, Type.MODIFY, ver2);
+		fileChangeDao.create(change1);
+		FileChange change2 = new FileChange(2, file2, file4, Type.MODIFY, ver2);
+		fileChangeDao.create(change2);
+		
+		fileChanges2.add(change1);
+		fileChanges2.add(change2);
+	
+		versionDao.create(ver2);
+		
 		RawCloneClass cloneClass = new RawCloneClass();
 		cloneClass.setId(1);
-		cloneClass.setRevision(newRevision);
+		cloneClass.setRevision(rev1);
 
-		RawClonedFragment frag1 = new RawClonedFragment(1, newRevision, file1,
+		RawClonedFragment frag1 = new RawClonedFragment(1, rev1, file1,
 				2, 5, cloneClass);
-		RawClonedFragment frag2 = new RawClonedFragment(2, newRevision, file2,
+		RawClonedFragment frag2 = new RawClonedFragment(2, rev1, file2,
 				10, 5, cloneClass);
 		Collection<RawClonedFragment> elements = new ArrayList<RawClonedFragment>();
 		elements.add(frag1);
@@ -106,11 +128,6 @@ public class App {
 		rawCloneClassDao.create(cloneClass);
 		rawClonedFragmentDao.create(frag1);
 		rawClonedFragmentDao.create(frag2);
-
-		FileChange change = new FileChange(1, file1, file2,
-				FileChange.Type.MODIFY);
-
-		fileChangeDao.create(change);
 
 		dbManager.closeConnection();
 	}
