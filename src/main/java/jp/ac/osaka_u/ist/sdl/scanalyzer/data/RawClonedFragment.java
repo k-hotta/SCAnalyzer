@@ -30,16 +30,22 @@ public class RawClonedFragment implements IDBElement {
 	private long id;
 
 	/**
-	 * The owner revision of this fragment
+	 * The owner version of this fragment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, index = true)
-	private Revision revision;
+	private Version version;
 
 	/**
 	 * The the owner source file of this fragment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, index = true)
 	private SourceFile sourceFile;
+	
+	/**
+	 * The owner clone class of this fragment
+	 */
+	@DatabaseField(canBeNull = false, foreign = true)
+	private RawCloneClass cloneClass;
 
 	/**
 	 * The line number within the file where this fragment starts
@@ -54,12 +60,6 @@ public class RawClonedFragment implements IDBElement {
 	private int length;
 
 	/**
-	 * The owner clone class of this fragment
-	 */
-	@DatabaseField(canBeNull = false, foreign = true)
-	private RawCloneClass cloneClass;
-
-	/**
 	 * The default constructor
 	 */
 	public RawClonedFragment() {
@@ -71,8 +71,8 @@ public class RawClonedFragment implements IDBElement {
 	 * 
 	 * @param id
 	 *            the id
-	 * @param revision
-	 *            the owner revision
+	 * @param version
+	 *            the owner version
 	 * @param sourceFile
 	 *            the owner source file
 	 * @param startLine
@@ -82,11 +82,11 @@ public class RawClonedFragment implements IDBElement {
 	 * @param cloneClass
 	 *            the owner clone class of this fragment
 	 */
-	public RawClonedFragment(final long id, final Revision revision,
+	public RawClonedFragment(final long id, final Version version,
 			final SourceFile sourceFile, final int startLine, final int length,
 			final RawCloneClass cloneClass) {
 		this.id = id;
-		this.revision = revision;
+		this.version = version;
 		this.sourceFile = sourceFile;
 		this.startLine = startLine;
 		this.length = length;
@@ -115,22 +115,22 @@ public class RawClonedFragment implements IDBElement {
 	}
 
 	/**
-	 * Get the owner revision of this fragment.
+	 * Get the owner version of this fragment.
 	 * 
-	 * @return the owner revision of this fragment
+	 * @return the owner version of this fragment
 	 */
-	public Revision getRevision() {
-		return revision;
+	public Version getVersion() {
+		return version;
 	}
 
 	/**
-	 * Set the owner revision of this fragment with the specified one.
+	 * Set the owner version of this fragment with the specified one.
 	 * 
-	 * @param revision
-	 *            the owner revision to be set
+	 * @param version
+	 *            the owner version to be set
 	 */
-	public void setRevision(Revision revision) {
-		this.revision = revision;
+	public void setVersion(Version version) {
+		this.version = version;
 	}
 
 	/**

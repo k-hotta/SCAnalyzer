@@ -69,14 +69,16 @@ public class App {
 
 		Revision rev1 = new Revision(1, "init", new Date());
 		revisionDao.create(rev1);
-		
+
 		Revision rev2 = new Revision(2, "second", new Date());
 		revisionDao.create(rev2);
 
 		Collection<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 		Collection<FileChange> fileChanges = new ArrayList<FileChange>();
+		Collection<RawCloneClass> rawCloneClasses = new ArrayList<RawCloneClass>();
 
-		Version ver1 = new Version(1, rev1, sourceFiles, fileChanges);
+		Version ver1 = new Version(1, rev1, sourceFiles, fileChanges,
+				rawCloneClasses);
 
 		SourceFile file1 = new SourceFile(1, "A.java", ver1);
 		sourceFileDao.create(file1);
@@ -90,35 +92,35 @@ public class App {
 
 		Collection<SourceFile> sourceFiles2 = new ArrayList<SourceFile>();
 		Collection<FileChange> fileChanges2 = new ArrayList<FileChange>();
-		
-		Version ver2 = new Version(2, rev2, sourceFiles2, fileChanges2);
+		Collection<RawCloneClass> rawCloneClasses2 = new ArrayList<RawCloneClass>();
+
+		Version ver2 = new Version(2, rev2, sourceFiles2, fileChanges2,
+				rawCloneClasses2);
 
 		SourceFile file3 = new SourceFile(3, "A.java", ver2);
 		sourceFileDao.create(file3);
 		SourceFile file4 = new SourceFile(4, "B.java", ver2);
 		sourceFileDao.create(file4);
-		
+
 		sourceFiles2.add(file3);
 		sourceFiles2.add(file4);
-		
+
 		FileChange change1 = new FileChange(1, file1, file3, Type.MODIFY, ver2);
 		fileChangeDao.create(change1);
 		FileChange change2 = new FileChange(2, file2, file4, Type.MODIFY, ver2);
 		fileChangeDao.create(change2);
-		
+
 		fileChanges2.add(change1);
 		fileChanges2.add(change2);
-	
-		versionDao.create(ver2);
-		
+
 		RawCloneClass cloneClass = new RawCloneClass();
 		cloneClass.setId(1);
-		cloneClass.setRevision(rev1);
+		cloneClass.setVersion(ver2);
 
-		RawClonedFragment frag1 = new RawClonedFragment(1, rev1, file1,
-				2, 5, cloneClass);
-		RawClonedFragment frag2 = new RawClonedFragment(2, rev1, file2,
-				10, 5, cloneClass);
+		RawClonedFragment frag1 = new RawClonedFragment(1, ver2, file3, 2, 5,
+				cloneClass);
+		RawClonedFragment frag2 = new RawClonedFragment(2, ver2, file3, 10, 5,
+				cloneClass);
 		Collection<RawClonedFragment> elements = new ArrayList<RawClonedFragment>();
 		elements.add(frag1);
 		elements.add(frag2);
@@ -128,6 +130,10 @@ public class App {
 		rawCloneClassDao.create(cloneClass);
 		rawClonedFragmentDao.create(frag1);
 		rawClonedFragmentDao.create(frag2);
+		
+		rawCloneClasses2.add(cloneClass);
+
+		versionDao.create(ver2);
 
 		dbManager.closeConnection();
 	}

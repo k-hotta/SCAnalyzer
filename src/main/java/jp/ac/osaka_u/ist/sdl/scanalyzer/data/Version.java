@@ -42,6 +42,12 @@ public class Version implements IDBElement {
 	private Collection<FileChange> fileChanges;
 
 	/**
+	 * The collection of raw clone classes in this version
+	 */
+	@ForeignCollectionField(eager = false)
+	private Collection<RawCloneClass> rawCloneClasses;
+
+	/**
 	 * The default constructor
 	 */
 	public Version() {
@@ -61,14 +67,19 @@ public class Version implements IDBElement {
 	 * @param fileChanges
 	 *            the collection that contains all the changes on source files
 	 *            between the last version and this version
+	 * @param rawCloneClasses
+	 *            the collection that contains all the raw clone classes in this
+	 *            version
 	 */
 	public Version(final long id, final Revision revision,
 			final Collection<SourceFile> sourceFiles,
-			final Collection<FileChange> fileChanges) {
+			final Collection<FileChange> fileChanges,
+			final Collection<RawCloneClass> rawCloneClasses) {
 		this.id = id;
 		this.revision = revision;
 		this.sourceFiles = sourceFiles;
 		this.fileChanges = fileChanges;
+		this.rawCloneClasses = rawCloneClasses;
 	}
 
 	/**
@@ -150,6 +161,25 @@ public class Version implements IDBElement {
 	 */
 	public void setFileChanges(Collection<FileChange> fileChanges) {
 		this.fileChanges = fileChanges;
+	}
+
+	/**
+	 * Get the collection of all the raw clone classes in this version.
+	 * 
+	 * @return the collection of all the raw clone classes in this version
+	 */
+	public Collection<RawCloneClass> getRawCloneClasses() {
+		return rawCloneClasses;
+	}
+
+	/**
+	 * Set a collection that has all the raw clone classes in this version
+	 * 
+	 * @param rawCloneClasses
+	 *            the collection to be set
+	 */
+	public void setRawCloneClasses(Collection<RawCloneClass> rawCloneClasses) {
+		this.rawCloneClasses = rawCloneClasses;
 	}
 
 }

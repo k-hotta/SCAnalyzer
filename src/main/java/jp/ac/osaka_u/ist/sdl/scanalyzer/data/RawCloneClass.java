@@ -30,16 +30,40 @@ public class RawCloneClass implements IDBElement {
 	private long id;
 
 	/**
-	 * The owner revision of this clone class
+	 * The owner version of this raw clone class
 	 */
 	@DatabaseField(canBeNull = false, foreign = true)
-	private Revision revision;
+	private Version version;
 
 	/**
 	 * A collection having all the members of this clone class
 	 */
 	@ForeignCollectionField(eager = false)
 	private Collection<RawClonedFragment> elements;
+
+	/**
+	 * The default constructor
+	 */
+	public RawCloneClass() {
+
+	}
+
+	/**
+	 * The constructor with all the values specified
+	 * 
+	 * @param id
+	 *            the id of this clone class
+	 * @param version
+	 *            the owner version of this clone class
+	 * @param elements
+	 *            the collection that has all the elements of this clone class
+	 */
+	public RawCloneClass(final long id, final Version version,
+			final Collection<RawClonedFragment> elements) {
+		this.id = id;
+		this.version = version;
+		this.elements = elements;
+	}
 
 	/**
 	 * Get the id of this clone class
@@ -63,22 +87,22 @@ public class RawCloneClass implements IDBElement {
 	}
 
 	/**
-	 * Get the owner revision of this clone class
+	 * Get the owner version of this raw clone class.
 	 * 
-	 * @return the owner revision of this clone class
+	 * @return the owner version of this raw clone class
 	 */
-	public Revision getRevision() {
-		return revision;
+	public Version getVersion() {
+		return version;
 	}
 
 	/**
-	 * Set the owner revision of this clone class with the specified one
+	 * Set the owner version of this raw clone class with the specified one
 	 * 
-	 * @param revision
-	 *            the owner revision to be set
+	 * @param version
+	 *            the owner version of this raw clone class
 	 */
-	public void setRevision(Revision revision) {
-		this.revision = revision;
+	public void setVersion(Version version) {
+		this.version = version;
 	}
 
 	/**

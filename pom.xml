@@ -104,10 +104,10 @@
   		<plugin>
   			<groupId>org.codehaus.mojo</groupId>
   			<artifactId>cobertura-maven-plugin</artifactId>
-  			<version>2.4</version>
   			<configuration>
   				<instrumentation>
   					<excludes>
+  						<ignoreTrivial>true</ignoreTrivial>
   						<exclude>**/*Test.class</exclude>
   					</excludes>
   				</instrumentation>
@@ -183,7 +183,6 @@
   		<plugin>
   			<groupId>org.codehaus.mojo</groupId>
   			<artifactId>cobertura-maven-plugin</artifactId>
-  			<version>2.4</version>
   			<configuration>
   				<formats>
   					<format>html</format>

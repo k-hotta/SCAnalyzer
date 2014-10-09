@@ -17,18 +17,18 @@ public class SourceFile implements IDBElement {
 	 */
 	@DatabaseField(id = true, index = true)
 	private long id;
+	
+	/**
+	 * The version that has this source file
+	 */
+	@DatabaseField(canBeNull = false, foreign = true)
+	private Version version;
 
 	/**
 	 * The path of this source file
 	 */
 	@DatabaseField(canBeNull = false)
 	private String path;
-
-	/**
-	 * The version that has this source file
-	 */
-	@DatabaseField(canBeNull = false, foreign = true)
-	private Version version;
 
 	/**
 	 * The default constructor
