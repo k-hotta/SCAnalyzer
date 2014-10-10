@@ -48,4 +48,22 @@ public enum Language {
 		return this.suffixes;
 	}
 
+	/**
+	 * Judge whether the given file is a relative file of this language.
+	 * 
+	 * @param filePath
+	 *            the file to be judged
+	 * @return <code>true</code> if the given file is relative to this language,
+	 *         <code>false</code> otherwise
+	 */
+	public final boolean isRelativeFile(final String filePath) {
+		for (final String suffix : suffixes) {
+			if (filePath.endsWith(suffix)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }
