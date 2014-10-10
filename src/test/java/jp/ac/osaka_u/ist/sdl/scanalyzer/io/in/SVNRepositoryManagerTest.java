@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-public class SVNVersionProviderTest {
+public class SVNRepositoryManagerTest {
 
 	@Test
 	public void test1() {
