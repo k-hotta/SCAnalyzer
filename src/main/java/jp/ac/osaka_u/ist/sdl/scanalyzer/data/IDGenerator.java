@@ -29,7 +29,7 @@ public class IDGenerator {
 	 *            the class for which the next id will be generated
 	 * @return generated id
 	 */
-	public static long generate(final Class<?> clazz) {
+	public static synchronized long generate(final Class<?> clazz) {
 		if (!generators.containsKey(clazz)) {
 			generators.put(clazz, new AtomicLong(0));
 		}
@@ -46,7 +46,7 @@ public class IDGenerator {
 	 * @param initial
 	 *            the initial value of id
 	 */
-	public static void initialize(final Class<?> clazz, final long initial) {
+	public static synchronized void initialize(final Class<?> clazz, final long initial) {
 		if (generators.containsKey(clazz)) {
 			generators.remove(clazz);
 		}
