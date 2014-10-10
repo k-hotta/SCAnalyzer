@@ -2,11 +2,18 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tmatesoft.svn.core.ISVNDirEntryHandler;
+import org.tmatesoft.svn.core.SVNDepth;
+import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
@@ -15,6 +22,9 @@ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNLogClient;
+import org.tmatesoft.svn.core.wc.SVNRevision;
 
 /**
  * This class manages the subversion repository under investigation. <br>
@@ -39,26 +49,58 @@ public class SVNRepositoryManager {
 	 * The path to a SVN repository <br>
 	 * e.g. C:/repository, http://sdl.ist.osaka-u.ac.jp/svn/ScorpioTM
 	 */
-	private String path;
+	private final String path;
 
 	/**
 	 * The relative path to the SVN project <br>
 	 * e.g. /trunk
 	 */
-	private String relativePath;
+	private final String relativePath;
 
 	/**
 	 * The url of the repository under managed
 	 */
-	private SVNURL url;
+	private final SVNURL url;
 
 	/**
 	 * The instance of repository under managed
 	 */
-	private SVNRepository repository;
+	private final SVNRepository repository;
 
-	public SVNRepositoryManager(final String path, final String relativePath)
-			throws URISyntaxException, SVNException {
+	/**
+	 * The language to be analyzed
+	 */
+	private final Language language;
+
+	/**
+	 * The constructor. <br>
+	 * The given path and relative path are checked whether they are valid or
+	 * not. Then this constructor initializes SVNURL and SVNRepository with the
+	 * specified values. <br>
+	 * The supported schemes of URL are file, http, https, and svn. If the
+	 * specified path corresponds to the above schemes, this constructor regards
+	 * the path as a URL of the scheme. This constructor otherwise regards the
+	 * given path as a path to local file and tries to connect to the local file
+	 * with the file: protocol.
+	 * 
+	 * @param path
+	 *            the URL to the target repository (e.g. file:///***), or the
+	 *            path of the target local repository (e.g.
+	 *            C:\work\local-repository); in the former case the URL
+	 *            shouldn't end with "/" (if so, the last "/" will be removed)
+	 * @param relativePath
+	 *            the relative path of the position under considered to the SVN
+	 *            root (e.g. /trunk), which should start with "/" otherwise the
+	 *            additional "/" will be inserted in the head of the specified
+	 *            string
+	 * @param language
+	 *            the programming language to be analyzed
+	 * @throws SVNException
+	 *             If any error occurred when connecting and initializing the
+	 *             given repository
+	 */
+	public SVNRepositoryManager(final String path, final String relativePath,
+			final Language language) throws SVNException {
 		logger.trace("start initializing the manager of svn repository");
 
 		if (path == null) {
@@ -87,6 +129,9 @@ public class SVNRepositoryManager {
 			logger.trace("relative path: /" + relativePath);
 			this.relativePath = "/" + relativePath;
 		}
+
+		this.language = language;
+		logger.trace("language: " + language.toString());
 
 		URI pathUri = null;
 		try {
@@ -129,20 +174,83 @@ public class SVNRepositoryManager {
 		logger.trace("the repository has been successfully initialized");
 	}
 
+	/**
+	 * Get the path of the repository under managed
+	 * 
+	 * @return the path of the repository
+	 */
 	public String getPath() {
 		return path;
 	}
 
+	/**
+	 * Get the relative path under considered
+	 * 
+	 * @return the relative path
+	 */
 	public String getRelativePath() {
 		return relativePath;
 	}
 
+	/**
+	 * Get the URL of the repository under managed
+	 * 
+	 * @return the URL of the repository
+	 */
 	public SVNURL getUrl() {
 		return url;
 	}
 
+	/**
+	 * Get the instance of the repository under managed
+	 * 
+	 * @return the instance of the repository
+	 */
 	public SVNRepository getRepository() {
 		return repository;
 	}
 
+	/**
+	 * Get the list of relative files in the specified revision
+	 * 
+	 * @param revisionNum
+	 *            the revision number to be targeted
+	 * @return a list having all the relative files in the specified revision
+	 * @throws SVNException
+	 *             If any error occurred when connecting the repository
+	 */
+	public synchronized List<String> getListOfRelativeFiles(
+			final long revisionNum) throws SVNException {
+		logger.trace("start getting the list of source files in revision"
+				+ revisionNum);
+		final SVNClientManager clientManager = SVNClientManager.newInstance();
+		final SVNLogClient logClient = clientManager.getLogClient();
+
+		final List<String> result = new ArrayList<String>();
+
+		logClient.doList(url, SVNRevision.create(revisionNum),
+				SVNRevision.create(revisionNum), true, SVNDepth.INFINITY,
+				SVNDirEntry.DIRENT_ALL, new ISVNDirEntryHandler() {
+
+					@Override
+					public void handleDirEntry(SVNDirEntry dirEntry)
+							throws SVNException {
+						final String path = dirEntry.getRelativePath();
+
+						if (language.isRelativeFile(path)) {
+							logger.trace(path
+									+ " has been identified as a relative file");
+							result.add(path);
+						}
+					}
+
+				});
+		
+		clientManager.dispose();
+		
+		logger.trace(result.size()
+				+ " files have been detected as relative files");
+
+		return Collections.unmodifiableList(result);
+	}
 }
