@@ -58,7 +58,7 @@ public enum Language {
 	 */
 	public final boolean isRelativeFile(final String filePath) {
 		for (final String suffix : suffixes) {
-			if (filePath.endsWith(suffix)) {
+			if (filePath.endsWith("." + suffix)) {
 				return true;
 			}
 		}
