@@ -31,7 +31,7 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	/**
 	 * The date when this revision was committed.
 	 */
-	@DatabaseField(canBeNull = false, index = true)
+	@DatabaseField(canBeNull = true, index = true)
 	private Date date;
 
 	/**
