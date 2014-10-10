@@ -77,9 +77,12 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 				final int endLine2 = Integer.parseInt(splitLine[5]);
 
 			}
-		} catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+		} catch (ArrayIndexOutOfBoundsException be) {
 			eLogger.fatal("the given file seems to have illegal format");
-			throw new IllegalCloneResultFileFormatException(e);
+			throw new IllegalCloneResultFileFormatException(be);
+		} catch (NumberFormatException ne) {
+			eLogger.fatal("the given file seems to have illegal format");
+			throw new IllegalCloneResultFileFormatException(ne);
 		} catch (IOException ioe) {
 			throw ioe;
 		}
