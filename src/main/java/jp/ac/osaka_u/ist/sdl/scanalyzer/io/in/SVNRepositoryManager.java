@@ -187,7 +187,7 @@ public class SVNRepositoryManager {
 		repository.setLocation(location, false);
 
 		this.url = location;
-		this.relativePath = pathUriWithRelative.toString().substring(
+		this.relativePath = "/" + pathUriWithRelative.toString().substring(
 				pathUriWithoutRelative.toString().length());
 
 		logger.trace("the repository has been successfully initialized");
