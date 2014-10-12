@@ -15,8 +15,11 @@ public interface IVersionProvider {
 	 * 
 	 * @param currentVersion
 	 *            the current version
-	 * @return the next version of the given current veresion
+	 * @return the next version of the given current version
+	 * @exception IllegalStateException
+	 *                If something is wrong in processing
 	 */
-	public Version getNextVersion(final Version currentVersion);
+	public Version getNextVersion(final Version currentVersion)
+			throws IllegalStateException;
 
 }
