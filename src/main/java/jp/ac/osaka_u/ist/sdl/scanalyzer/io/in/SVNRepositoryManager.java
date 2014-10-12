@@ -187,8 +187,9 @@ public class SVNRepositoryManager {
 		repository.setLocation(location, false);
 
 		this.url = location;
-		this.relativePath = "/" + pathUriWithRelative.toString().substring(
-				pathUriWithoutRelative.toString().length());
+		this.relativePath = "/"
+				+ pathUriWithRelative.toString().substring(
+						pathUriWithoutRelative.toString().length());
 
 		logger.trace("the repository has been successfully initialized");
 		logger.trace("path: " + this.path);
@@ -231,6 +232,15 @@ public class SVNRepositoryManager {
 	 */
 	public SVNRepository getRepository() {
 		return repository;
+	}
+
+	/**
+	 * Get the language under consideration.
+	 * 
+	 * @return the language under consideration
+	 */
+	public Language getLanguage() {
+		return language;
 	}
 
 	/**
