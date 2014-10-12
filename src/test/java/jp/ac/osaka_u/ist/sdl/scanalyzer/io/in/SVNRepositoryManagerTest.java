@@ -7,11 +7,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.junit.Test;
+import org.tmatesoft.svn.core.SVNLogEntry;
+import org.tmatesoft.svn.core.SVNLogEntryPath;
 
 public class SVNRepositoryManagerTest {
 
@@ -176,6 +181,109 @@ public class SVNRepositoryManagerTest {
 			if (Language.JAVA.isRelativeFile(line)) {
 				result.add(line);
 			}
+		}
+
+		br.close();
+		return result;
+	}
+
+	@Test
+	public void testGetLog1() {
+		try {
+			final SVNRepositoryManager manager = new SVNRepositoryManager(
+					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
+			final Collection<SVNLogEntry> logEntries = manager.getLog(282);
+			final Map<String, String> reference = readDiffFile("src/test/resources/clonetracker-diff-summarize-rev281-rev282.txt");
+
+			for (final SVNLogEntry logEntry : logEntries) {
+				for (final SVNLogEntryPath p : logEntry.getChangedPaths()
+						.values()) {
+					if (!reference.containsKey(p.getPath())) {
+						fail();
+					}
+					if (!reference.get(p.getPath()).equals(
+							String.valueOf(p.getType()))) {
+						fail();
+					}
+
+					reference.remove(p.getPath());
+				}
+			}
+
+			assertTrue(reference.isEmpty());
+		} catch (Exception e) {
+			fail();
+		}
+	}
+
+	@Test
+	public void testGetLog2() {
+		try {
+			final SVNRepositoryManager manager = new SVNRepositoryManager(
+					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
+			final Collection<SVNLogEntry> logEntries = manager.getLog(335);
+			final Map<String, String> reference = readDiffFile("src/test/resources/clonetracker-diff-summarize-rev334-rev335.txt");
+
+			for (final SVNLogEntry logEntry : logEntries) {
+				for (final SVNLogEntryPath p : logEntry.getChangedPaths()
+						.values()) {
+					if (!reference.containsKey(p.getPath())) {
+						fail();
+					}
+					if (!reference.get(p.getPath()).equals(
+							String.valueOf(p.getType()))) {
+						fail();
+					}
+
+					reference.remove(p.getPath());
+				}
+			}
+
+			assertTrue(reference.isEmpty());
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void testGetLog3() {
+		try {
+			final SVNRepositoryManager manager = new SVNRepositoryManager(
+					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
+			final Collection<SVNLogEntry> logEntries = manager.getLog(406);
+			final Map<String, String> reference = readDiffFile("src/test/resources/clonetracker-diff-summarize-rev405-rev406.txt");
+
+			for (final SVNLogEntry logEntry : logEntries) {
+				for (final SVNLogEntryPath p : logEntry.getChangedPaths()
+						.values()) {
+					if (!reference.containsKey(p.getPath())) {
+						fail();
+					}
+					if (!reference.get(p.getPath()).equals(
+							String.valueOf(p.getType()))) {
+						fail();
+					}
+
+					reference.remove(p.getPath());
+				}
+			}
+
+			assertTrue(reference.isEmpty());
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	private Map<String, String> readDiffFile(final String path)
+			throws Exception {
+		final Map<String, String> result = new HashMap<String, String>();
+		final BufferedReader br = new BufferedReader(new FileReader(new File(
+				path)));
+
+		String line;
+		while ((line = br.readLine()) != null) {
+			final String[] splitLine = line.split(" ");
+			result.put(splitLine[1], splitLine[0]);
 		}
 
 		br.close();

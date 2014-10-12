@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.tmatesoft.svn.core.ISVNDirEntryHandler;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
@@ -296,4 +298,21 @@ public class SVNRepositoryManager {
 
 		return Collections.unmodifiableList(result);
 	}
+
+	/**
+	 * Get all logs of the commit to the specified revision
+	 * 
+	 * @param revisionNum
+	 *            the revision to be targeted
+	 * @return a collection of entries of log between the specified revision and
+	 *         the last revision
+	 * @throws SVNException
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized Collection<SVNLogEntry> getLog(final long revisionNum)
+			throws SVNException {
+		return this.repository.log(new String[] { this.relativePath }, null,
+				revisionNum, revisionNum, true, true);
+	}
+
 }
