@@ -250,7 +250,8 @@ public class SVNRepositoryManager {
 
 	/**
 	 * Get the list of relative files in the specified revision whose path start
-	 * with the given path
+	 * with the given path. The returned paths will be the path to the file from
+	 * the root of the repository.
 	 * 
 	 * @param revisionNum
 	 *            the revision number to be targeted
@@ -264,7 +265,7 @@ public class SVNRepositoryManager {
 			final long revisionNum, final String targetPath)
 			throws SVNException {
 		assert targetPath != null;
-		logger.trace("start getting the list of source files in revision"
+		logger.trace("start getting the list of source files in revision "
 				+ revisionNum);
 		final SVNClientManager clientManager = SVNClientManager.newInstance();
 		final SVNLogClient logClient = clientManager.getLogClient();
@@ -272,6 +273,15 @@ public class SVNRepositoryManager {
 		final List<String> result = new ArrayList<String>();
 
 		final SVNURL targetUrl = this.url.appendPath(targetPath, false);
+		String fixedTargetPath = targetPath;
+		if (!fixedTargetPath.startsWith("/")) {
+			fixedTargetPath = "/" + fixedTargetPath;
+		}
+		if (fixedTargetPath.endsWith("/")) {
+			fixedTargetPath = fixedTargetPath.substring(0,
+					fixedTargetPath.lastIndexOf("/"));
+		}
+		final String finalFixedTargetPath = fixedTargetPath;
 
 		logClient.doList(targetUrl, SVNRevision.create(revisionNum),
 				SVNRevision.create(revisionNum), true, SVNDepth.INFINITY,
@@ -283,9 +293,9 @@ public class SVNRepositoryManager {
 						final String path = dirEntry.getRelativePath();
 
 						if (language.isRelativeFile(path)) {
-							logger.trace(path
+							logger.trace(finalFixedTargetPath + "/" + path
 									+ " has been identified as a relative file");
-							result.add(path);
+							result.add(finalFixedTargetPath + "/" + path);
 						}
 					}
 
