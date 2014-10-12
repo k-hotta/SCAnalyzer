@@ -1,0 +1,14 @@
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/CloneGenealogyInfoRetriever.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/CloneSetInfoRetriever.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/DataRetriever.java
+D /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/graphcreator/CloneGenealogyInfoRetriever.java
+D /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/graphcreator/AllRevisionInfoRetriever.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/graphcreator/GenealogyGraphCreator.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/graphcreator/GraphCreateThread.java
+D /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/genealogydetector/CloneSetPairInfoRetriever.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/genealogydetector/CloneGenealogyDetector.java
+D /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonepairdetector/CloneSetInfoRetriever.java
+D /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonepairdetector/DataRetriever.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonepairdetector/ClonePairDetectThread.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/AllRevisionInfoRetriever.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/CloneSetPairInfoRetriever.java

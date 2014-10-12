@@ -1,0 +1,7 @@
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/retrieve/CloneSetPairDetector.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/data/clone/AbstractCloneSetPairInfo.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/data/clone/MatchedCloneSetPairInfo.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/manager/AbstractRetrievedElementManager.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/ast/ExtendedNaiveASTFlattener.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/ast/BlockDetector.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/ast/MyNaiveAstFlattener.java

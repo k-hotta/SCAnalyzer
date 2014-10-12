@@ -1,0 +1,11 @@
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/retrieve/CloneSetInfoRetriever.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/data/clone/RetrievedCloneSetInfo.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/MODE.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/Config.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/db/DBMaker.java
+M /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/C20R.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonedetector/CloneDetectThread.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonedetector/CloneDetector.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonedetector/CloneRegisterer.java
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonedetector
+A /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy
