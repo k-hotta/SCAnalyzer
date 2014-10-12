@@ -234,22 +234,22 @@ public class SVNRepositoryManager {
 	}
 
 	/**
-	 * Get the list of all the relative files in the specified revision under
+	 * Get the list of all the relevant files in the specified revision under
 	 * the relative path
 	 * 
 	 * @param revisionNum
 	 *            the revision number to be targeted
-	 * @return a list having all the relative files in the specified revision
+	 * @return a list having all the relevant files in the specified revision
 	 * @throws SVNException
 	 *             If any error occurred when connecting the repository
 	 */
-	public synchronized List<String> getListOfRelativeFiles(
+	public synchronized List<String> getListOfRelevantFiles(
 			final long revisionNum) throws SVNException {
-		return getListOfRelativeFiles(revisionNum, this.relativePath);
+		return getListOfRelevantFiles(revisionNum, this.relativePath);
 	}
 
 	/**
-	 * Get the list of relative files in the specified revision whose path start
+	 * Get the list of relevant files in the specified revision whose path start
 	 * with the given path. The returned paths will be the path to the file from
 	 * the root of the repository.
 	 * 
@@ -257,11 +257,11 @@ public class SVNRepositoryManager {
 	 *            the revision number to be targeted
 	 * @param targetPath
 	 *            the path from which the relative files will be detected
-	 * @return a list having all the relative files in the specified revision
+	 * @return a list having all the relevant files in the specified revision
 	 * @throws SVNException
 	 *             If any error occurred when connecting the repository
 	 */
-	public synchronized List<String> getListOfRelativeFiles(
+	public synchronized List<String> getListOfRelevantFiles(
 			final long revisionNum, final String targetPath)
 			throws SVNException {
 		assert targetPath != null;
@@ -292,9 +292,9 @@ public class SVNRepositoryManager {
 							throws SVNException {
 						final String path = dirEntry.getRelativePath();
 
-						if (language.isRelativeFile(path)) {
+						if (language.isRelevantFile(path)) {
 							logger.trace(finalFixedTargetPath + "/" + path
-									+ " has been identified as a relative file");
+									+ " has been identified as a relevant file");
 							result.add(finalFixedTargetPath + "/" + path);
 						}
 					}
@@ -304,7 +304,7 @@ public class SVNRepositoryManager {
 		clientManager.dispose();
 
 		logger.trace(result.size()
-				+ " files have been detected as relative files");
+				+ " files have been detected as relevant files");
 
 		return Collections.unmodifiableList(result);
 	}

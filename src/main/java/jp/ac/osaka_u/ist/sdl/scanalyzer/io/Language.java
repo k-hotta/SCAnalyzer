@@ -49,14 +49,14 @@ public enum Language {
 	}
 
 	/**
-	 * Judge whether the given file is a relative file of this language.
+	 * Judge whether the given file is a relevant file of this language.
 	 * 
 	 * @param filePath
 	 *            the file to be judged
-	 * @return <code>true</code> if the given file is relative to this language,
+	 * @return <code>true</code> if the given file is relevant to this language,
 	 *         <code>false</code> otherwise
 	 */
-	public final boolean isRelativeFile(final String filePath) {
+	public final boolean isRelevantFile(final String filePath) {
 		for (final String suffix : suffixes) {
 			if (filePath.endsWith("." + suffix)) {
 				return true;

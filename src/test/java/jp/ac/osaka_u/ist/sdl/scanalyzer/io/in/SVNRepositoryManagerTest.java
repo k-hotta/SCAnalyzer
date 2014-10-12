@@ -103,13 +103,13 @@ public class SVNRepositoryManagerTest {
 	}
 
 	@Test
-	public void testGetListOfRelativeFiles1() {
+	public void testGetListOfRelevantFiles1() {
 		try {
 			final SVNRepositoryManager manager = new SVNRepositoryManager(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
 			final List<String> reference = readResultFile("src/test/resources/clonetracker-list-rev200.txt");
 			final List<String> result = manager
-					.getListOfRelativeFiles((long) 200);
+					.getListOfRelevantFiles((long) 200);
 			assertTrue(reference.size() == result.size());
 		} catch (Exception e) {
 			fail();
@@ -117,13 +117,13 @@ public class SVNRepositoryManagerTest {
 	}
 
 	@Test
-	public void testGetListOfRelativeFiles2() {
+	public void testGetListOfRelevantFiles2() {
 		try {
 			final SVNRepositoryManager manager = new SVNRepositoryManager(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
 			final List<String> reference = readResultFile("src/test/resources/clonetracker-list-rev300.txt");
 			final List<String> result = manager
-					.getListOfRelativeFiles((long) 300);
+					.getListOfRelevantFiles((long) 300);
 			assertTrue(reference.size() == result.size());
 		} catch (Exception e) {
 			fail();
@@ -131,12 +131,12 @@ public class SVNRepositoryManagerTest {
 	}
 
 	@Test
-	public void testGetListOfRelativeFiles3() {
+	public void testGetListOfRelevantFiles3() {
 		try {
 			final SVNRepositoryManager manager = new SVNRepositoryManager(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
 			final List<String> result = manager
-					.getListOfRelativeFiles((long) 1000);
+					.getListOfRelevantFiles((long) 1000);
 			fail(); // here shouldn't be reached
 		} catch (Exception e) {
 			assertTrue(true);
@@ -144,13 +144,13 @@ public class SVNRepositoryManagerTest {
 	}
 
 	@Test
-	public void testGetListOfRelativeFiles4() {
+	public void testGetListOfRelevantFiles4() {
 		try {
 			final SVNRepositoryManager manager = new SVNRepositoryManager(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
 			final List<String> reference = readResultFile("src/test/resources/clonetracker-list-rev300.txt");
 			final List<String> result = manager
-					.getListOfRelativeFiles((long) 300);
+					.getListOfRelevantFiles((long) 300);
 			// there exists a java file out of the relative path
 			assertTrue(reference.size() - 1 == result.size());
 		} catch (Exception e) {
@@ -159,12 +159,12 @@ public class SVNRepositoryManagerTest {
 	}
 
 	@Test
-	public void testGetListOfRelativeFiles5() {
+	public void testGetListOfRelevantFiles5() {
 		try {
 			final SVNRepositoryManager manager = new SVNRepositoryManager(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST2, Language.JAVA);
 			final List<String> result = manager
-					.getListOfRelativeFiles((long) 300);
+					.getListOfRelevantFiles((long) 300);
 			assertTrue(result.size() == 9);
 		} catch (Exception e) {
 			fail();
@@ -178,7 +178,7 @@ public class SVNRepositoryManagerTest {
 
 		String line;
 		while ((line = br.readLine()) != null) {
-			if (Language.JAVA.isRelativeFile(line)) {
+			if (Language.JAVA.isRelevantFile(line)) {
 				result.add(line);
 			}
 		}
