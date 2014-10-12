@@ -1,0 +1,225 @@
+id: 8-31.0-421.r421/0
+type: dir
+pred: 8-31.0.r418/13406
+count: 41
+text: 418 12887 506 506 b9b047e5706da9b89be23186cbf24479
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer_renamed
+copyfrom: 420 /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer
+
+PLAIN
+K 9
+C20R.java
+V 19
+file n-2.0.r419/668
+K 11
+Config.java
+V 21
+file q-2.0.r418/13605
+K 15
+Extractor1.java
+V 22
+file 8-126.0.r126/1986
+K 15
+Extractor2.java
+V 22
+file b-126.0.r126/2319
+K 15
+Extractor3.java
+V 22
+file d-126.0.r126/2654
+K 9
+MODE.java
+V 21
+file b-30.0.r358/5993
+K 20
+clone_tracer_renamed
+V 21
+dir 8-31.0-421.r421/0
+K 7
+counter
+V 21
+dir 8-128.0.r128/1442
+K 2
+db
+V 20
+dir 8-28.0.r351/3105
+K 4
+diff
+V 21
+dir 8-223.0.r240/7962
+K 9
+genealogy
+V 21
+dir k-335.0.r419/2620
+K 12
+rev_analyzer
+V 20
+dir 9-6.0.r327/16013
+K 2
+ui
+V 22
+dir f-107.0.r263/14929
+K 4
+util
+V 21
+dir b-232.0.r259/7525
+END
+ENDREP
+id: l-2.0.r421/868
+type: dir
+pred: l-2.0.r420/597
+count: 151
+text: 421 263 592 592 fce191497a21c617839706dc61c80a26
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r
+copyroot: 0 /
+
+PLAIN
+K 4
+c20r
+V 18
+dir l-2.0.r421/868
+END
+ENDREP
+id: j-2.0.r421/1098
+type: dir
+pred: j-2.0.r420/826
+count: 151
+text: 421 1048 37 37 6395ae8ab1f23db03a807194c705a23b
+cpath: /c20r_main/src/jp/ac/osaka_u/ist/sdl
+copyroot: 0 /
+
+PLAIN
+K 3
+sdl
+V 19
+dir j-2.0.r421/1098
+END
+ENDREP
+id: h-2.0.r421/1323
+type: dir
+pred: h-2.0.r420/1049
+count: 151
+text: 421 1273 37 37 57d7a7dcb279262b705ee727152470d1
+cpath: /c20r_main/src/jp/ac/osaka_u/ist
+copyroot: 0 /
+
+PLAIN
+K 3
+ist
+V 19
+dir h-2.0.r421/1323
+END
+ENDREP
+id: f-2.0.r421/1545
+type: dir
+pred: f-2.0.r420/1271
+count: 151
+text: 421 1495 37 37 7fc8ce3e0c2e1059fdabef2cda306047
+cpath: /c20r_main/src/jp/ac/osaka_u
+copyroot: 0 /
+
+PLAIN
+K 7
+osaka_u
+V 19
+dir f-2.0.r421/1545
+END
+ENDREP
+id: d-2.0.r421/1767
+type: dir
+pred: d-2.0.r420/1493
+count: 151
+text: 421 1713 41 41 9b6fa2efa9d1df283e206faaa803d60b
+cpath: /c20r_main/src/jp/ac
+copyroot: 0 /
+
+PLAIN
+K 2
+ac
+V 19
+dir d-2.0.r421/1767
+END
+ENDREP
+id: b-2.0.r421/1976
+type: dir
+pred: b-2.0.r420/1702
+count: 151
+text: 421 1927 36 36 d10db7b2194cc5ae7bf2b75ffbbacc5e
+cpath: /c20r_main/src/jp
+copyroot: 0 /
+
+PLAIN
+K 2
+jp
+V 19
+dir b-2.0.r421/1976
+K 3
+lib
+V 21
+dir s-2.0.r14/3177790
+END
+ENDREP
+id: a-2.0.r421/2217
+type: dir
+pred: a-2.0.r420/1943
+count: 152
+text: 421 2133 71 71 c573ef3f59f351b14d9186de7f046c16
+cpath: /c20r_main/src
+copyroot: 0 /
+
+PLAIN
+K 10
+.classpath
+V 19
+file 1-2.0.r222/114
+K 8
+.project
+V 19
+file 4-2.0.r18/3070
+K 9
+.settings
+V 20
+dir 6-2.0.r2/8687911
+K 3
+src
+V 19
+dir a-2.0.r421/2217
+K 4
+test
+V 21
+dir 1-221.0.r233/1646
+K 14
+test-resources
+V 21
+dir 1-228.0.r229/9734
+END
+ENDREP
+id: 0-1.0.r421/2623
+type: dir
+pred: 0-1.0.r420/2349
+count: 162
+text: 421 2371 239 239 4b2f3045ab021081f07cb23932dff927
+cpath: /c20r_main
+copyroot: 0 /
+
+PLAIN
+K 9
+c20r_main
+V 19
+dir 0-1.0.r421/2623
+END
+ENDREP
+id: 0.0.r421/2831
+type: dir
+pred: 0.0.r420/2557
+count: 421
+text: 421 2775 43 43 35187da15184bc0989f4565bfecc9b80
+cpath: /
+copyroot: 0 /
+
+8-31.0.r418/13406 delete-dir false false /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer
+
+8-31._0.t420-bo add-dir false false /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer_renamed
+420 /c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer
+
+2831 2968
