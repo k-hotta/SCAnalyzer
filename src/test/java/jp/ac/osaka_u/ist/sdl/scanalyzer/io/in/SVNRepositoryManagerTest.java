@@ -53,7 +53,7 @@ public class SVNRepositoryManagerTest {
 							.getUrl()
 							.toString()
 							.endsWith(
-									"/src/test/resources/repository-clonetracker/trunk"));
+									"/src/test/resources/repository-clonetracker"));
 		} catch (Exception e) {
 			fail();
 		}
@@ -72,7 +72,7 @@ public class SVNRepositoryManagerTest {
 							.getUrl()
 							.toString()
 							.endsWith(
-									"/src/test/resources/repository-clonetracker/trunk"));
+									"/src/test/resources/repository-clonetracker"));
 		} catch (Exception e) {
 			fail();
 		}
@@ -91,7 +91,7 @@ public class SVNRepositoryManagerTest {
 							.getUrl()
 							.toString()
 							.endsWith(
-									"/src/test/resources/repository-clonetracker/trunk"));
+									"/src/test/resources/repository-clonetracker"));
 		} catch (Exception e) {
 			fail();
 		}
