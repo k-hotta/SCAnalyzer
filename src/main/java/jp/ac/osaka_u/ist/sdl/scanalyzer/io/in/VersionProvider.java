@@ -147,8 +147,14 @@ public class VersionProvider {
 		}
 
 		final Revision currentRevision = currentVersion.getRevision();
-		final Revision nextRevision = revisionProvider
-				.getNextRevision(currentRevision);
+
+		Revision nextRevision = null;
+		if (currentRevision.getDate() == null) {
+			// the current revision is pseudo initial revision
+			nextRevision = revisionProvider.getFirstRevision();
+		} else {
+			nextRevision = revisionProvider.getNextRevision(currentRevision);
+		}
 
 		if (nextRevision == null) {
 			logger.trace("no next revision has been detected");

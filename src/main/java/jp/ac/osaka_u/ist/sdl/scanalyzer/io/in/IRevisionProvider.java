@@ -12,7 +12,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 public interface IRevisionProvider {
 
 	/**
-	 * Provide the next revision of the given current revision
+	 * Provide the next revision of the given current revision.
 	 * 
 	 * @param currentRevision
 	 *            the current revision
@@ -20,5 +20,13 @@ public interface IRevisionProvider {
 	 *         detect
 	 */
 	public Revision getNextRevision(Revision currentRevision);
+
+	/**
+	 * Provide the first revision to be analyzed.
+	 * 
+	 * @return the first revision to be analyzed if detected, <code>null</code>
+	 *         if failed to detect
+	 */
+	public Revision getFirstRevision();
 
 }
