@@ -4,19 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +26,7 @@ import org.tmatesoft.svn.core.io.SVNRepository;
  * @author k-hotta
  * 
  */
-public class SVNVersionProvider implements IVersionProvider {
+public class SVNFileChangeEntryDetector implements IFileChangeEntryDetector {
 
 	/**
 	 * The logger for errors
@@ -50,59 +44,18 @@ public class SVNVersionProvider implements IVersionProvider {
 	 * @param repositoryManager
 	 *            the repository manager
 	 */
-	public SVNVersionProvider(final SVNRepositoryManager repositoryManager) {
+	public SVNFileChangeEntryDetector(
+			final SVNRepositoryManager repositoryManager) {
 		this.repositoryManager = repositoryManager;
 	}
 
-	/**
-	 * Process the first version, which returns a pseudo initial version
-	 * 
-	 * @return a pseudo initial version with a pseudo initial revision and empty
-	 *         source files, empty file changes, and empty clone classes
-	 */
-	private Version processFirstVersion() {
-		return new Version(IDGenerator.generate(Version.class), new Revision(
-				IDGenerator.generate(Revision.class), "init(pseudo)", null),
-				new HashSet<SourceFile>(), new HashSet<FileChange>(),
-				new HashSet<RawCloneClass>());
-	}
-
 	@Override
-	public Version getNextVersion(Version currentVersion)
-			throws IllegalStateException {
-		if (currentVersion == null) {
-			// the first call
-			return processFirstVersion();
-		}
+	public Collection<FileChangeEntry> detectFileChangeEntriesToRevision(
+			Revision revision) throws Exception {
+		final Collection<SVNLogEntry> logEntriesToRevision = this.repositoryManager
+				.getLog(Long.parseLong(revision.getIdentifier()));
 
-		try {
-			final Revision currentRevision = currentVersion.getRevision();
-			final Date currentDate = currentRevision.getDate();
-			final long currentRevisionNum = (currentDate == null) ? 1 : Long
-					.parseLong(currentRevision.getIdentifier());
-			final long nextRevisionNum = currentRevisionNum + 1;
-
-			if (nextRevisionNum > this.repositoryManager.getRepository()
-					.getLatestRevision()) {
-				eLogger.warn("the next revision exceeds the latest revision");
-				return null;
-			}
-
-			final Collection<SVNLogEntry> logEntriesToNextRevision = this.repositoryManager
-					.getLog(nextRevisionNum);
-
-			final Collection<FileChangeEntry> fileChangeEntries = detectFileChangeEntries(logEntriesToNextRevision);
-
-			return null;
-		} catch (SVNException svne) {
-			eLogger.fatal("an error occurred when processing "
-					+ currentVersion.getRevision().getIdentifier());
-			throw new IllegalStateException(svne);
-		} catch (NumberFormatException ne) {
-			eLogger.fatal(currentVersion.getRevision().getIdentifier()
-					+ " is not valid revision number");
-			throw new IllegalStateException(ne);
-		}
+		return detectFileChangeEntries(logEntriesToRevision);
 	}
 
 	private Collection<FileChangeEntry> detectFileChangeEntries(
@@ -169,9 +122,6 @@ public class SVNVersionProvider implements IVersionProvider {
 
 		// type of changed node (unknown, file, directory
 		SVNNodeKind kind = path.getKind();
-
-		// type of change (A, D, M, R)
-		final char type = path.getType();
 
 		// unknown
 		if (kind == SVNNodeKind.UNKNOWN) {

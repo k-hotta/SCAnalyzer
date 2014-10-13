@@ -55,11 +55,11 @@ public class SVNVersionProviderTest {
 
 	private SVNRepositoryManager manager;
 
-	private SVNVersionProvider provider;
+	private SVNFileChangeEntryDetector provider;
 
 	private SVNRepositoryManager managerMock;
 
-	private SVNVersionProvider providerWithMock;
+	private SVNFileChangeEntryDetector providerWithMock;
 
 	private Method mProcessFileChange;
 
@@ -71,7 +71,7 @@ public class SVNVersionProviderTest {
 	public void setUp() throws Exception {
 		manager = new SVNRepositoryManager(PATH_OF_TEST_REPO,
 				RELATIVE_PATH_FOR_TEST, Language.JAVA);
-		provider = new SVNVersionProvider(manager);
+		provider = new SVNFileChangeEntryDetector(manager);
 
 		managerMock = EasyMock.createMock(SVNRepositoryManager.class);
 		EasyMock.expect(managerMock.getLanguage()).andReturn(Language.JAVA);
@@ -92,19 +92,19 @@ public class SVNVersionProviderTest {
 
 		EasyMock.replay(managerMock);
 
-		providerWithMock = new SVNVersionProvider(managerMock);
+		providerWithMock = new SVNFileChangeEntryDetector(managerMock);
 
-		mProcessFileChange = SVNVersionProvider.class.getDeclaredMethod(
+		mProcessFileChange = SVNFileChangeEntryDetector.class.getDeclaredMethod(
 				"processFileChange", Map.class, SVNLogEntryPath.class,
 				SVNLogEntry.class);
 		mProcessFileChange.setAccessible(true);
 
-		mProcessDirectoryChange = SVNVersionProvider.class.getDeclaredMethod(
+		mProcessDirectoryChange = SVNFileChangeEntryDetector.class.getDeclaredMethod(
 				"processDirectoryChange", Map.class, SVNLogEntryPath.class,
 				SVNLogEntry.class, Set.class);
 		mProcessDirectoryChange.setAccessible(true);
 
-		mDetectFileChangeEntries = SVNVersionProvider.class.getDeclaredMethod(
+		mDetectFileChangeEntries = SVNFileChangeEntryDetector.class.getDeclaredMethod(
 				"detectFileChangeEntries", Collection.class);
 		mDetectFileChangeEntries.setAccessible(true);
 	}
