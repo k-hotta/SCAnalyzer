@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
 
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNLogEntry;

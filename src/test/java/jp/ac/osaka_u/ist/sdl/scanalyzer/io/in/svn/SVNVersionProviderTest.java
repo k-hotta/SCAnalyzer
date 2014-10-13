@@ -1,7 +1,6 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,23 +9,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.FileChangeEntry;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileChangeEntryDetector;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
@@ -36,22 +31,6 @@ public class SVNVersionProviderTest {
 	private static final String PATH_OF_TEST_REPO = "src/test/resources/repository-clonetracker";
 
 	private static final String RELATIVE_PATH_FOR_TEST = "/c20r_main/src";
-
-	private static final Version INITIAL = new Version(0, new Revision(0,
-			"init(pseudo)", null), new HashSet<SourceFile>(),
-			new HashSet<FileChange>(), new HashSet<RawCloneClass>());
-
-	private static final Version VERSION_REV1 = new Version(1, new Revision(1,
-			"1", new Date()), new HashSet<SourceFile>(),
-			new HashSet<FileChange>(), new HashSet<RawCloneClass>());
-
-	private static final Version VERSION_REV281 = new Version(281,
-			new Revision(281, "281", new Date()), new HashSet<SourceFile>(),
-			new HashSet<FileChange>(), new HashSet<RawCloneClass>());
-
-	private static final Version VERSION_REV420 = new Version(420,
-			new Revision(420, "420", new Date()), new HashSet<SourceFile>(),
-			new HashSet<FileChange>(), new HashSet<RawCloneClass>());
 
 	private SVNRepositoryManager manager;
 
@@ -94,47 +73,19 @@ public class SVNVersionProviderTest {
 
 		providerWithMock = new SVNFileChangeEntryDetector(managerMock);
 
-		mProcessFileChange = SVNFileChangeEntryDetector.class.getDeclaredMethod(
-				"processFileChange", Map.class, SVNLogEntryPath.class,
-				SVNLogEntry.class);
+		mProcessFileChange = SVNFileChangeEntryDetector.class
+				.getDeclaredMethod("processFileChange", Map.class,
+						SVNLogEntryPath.class, SVNLogEntry.class);
 		mProcessFileChange.setAccessible(true);
 
-		mProcessDirectoryChange = SVNFileChangeEntryDetector.class.getDeclaredMethod(
-				"processDirectoryChange", Map.class, SVNLogEntryPath.class,
-				SVNLogEntry.class, Set.class);
+		mProcessDirectoryChange = SVNFileChangeEntryDetector.class
+				.getDeclaredMethod("processDirectoryChange", Map.class,
+						SVNLogEntryPath.class, SVNLogEntry.class, Set.class);
 		mProcessDirectoryChange.setAccessible(true);
 
-		mDetectFileChangeEntries = SVNFileChangeEntryDetector.class.getDeclaredMethod(
-				"detectFileChangeEntries", Collection.class);
+		mDetectFileChangeEntries = SVNFileChangeEntryDetector.class
+				.getDeclaredMethod("detectFileChangeEntries", Collection.class);
 		mDetectFileChangeEntries.setAccessible(true);
-	}
-
-	@Test
-	public void testGetVersion1() {
-		try {
-			final Version version = provider.getNextVersion(null);
-			final boolean compare = (version.getId() == INITIAL.getId()
-					&& version.getRevision().getIdentifier()
-							.equals(INITIAL.getRevision().getIdentifier())
-					&& version.getFileChanges().isEmpty()
-					&& version.getSourceFiles().isEmpty() && version
-					.getRawCloneClasses().isEmpty());
-
-			assertTrue(compare);
-		} catch (Exception e) {
-			fail();
-		}
-	}
-
-	@Ignore
-	public void testGetVersion2() {
-		try {
-			final Version version = provider.getNextVersion(VERSION_REV281);
-
-			assertTrue(true);
-		} catch (Exception e) {
-			fail();
-		}
 	}
 
 	@Test

@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn;
 
 import java.net.URI;
 import java.net.URISyntaxException;
