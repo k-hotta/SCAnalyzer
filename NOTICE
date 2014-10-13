@@ -4,19 +4,16 @@
 
 ** Apache Log4j 2 **
 	Purpose:	Logging
-	Creator(s):	Apache Logging Project
 	Web-site:	http://logging.apache.org/log4j/2.x/
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
 	
 ** Apache Commons CLI **
 	Purpose:	Parsing command line arguments
-	Creator(s):	Apache Commons Project
 	Web-site:	http://commons.apache.org/proper/commons-cli/
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
 	
 ** Scanner (included in the CQSE Project) **
 	Purpose:	Lexing source files
-	Creator(s):	Technishe Universitaet Muenchen (Germany), CQSE GmbH (Germany)
 	Web-site:	https://www.cqse.eu/en/products/conqat/overview/
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
 	Jar File:	lib/scanner-1.0-SNAPSHOT.jar
@@ -24,12 +21,15 @@
 	
 ** ORM Lite **
 	Purpose:	Storing persistent objects into database
-	Creator(s):	Gray Watson (256.com)
 	Web-site:	http://ormlite.com/
 	License:	ISC Open Source License (licenses/isc.txt)
 	
 ** SVNKit **
 	Purpose:	Accessing SVN repositories
-	Creator(s):	TMate Software
 	Web-site:	http://www.svnkit.com/
 	License:	TMate Open Source License (licenses/tmate.txt)
+
+** EasyMock **
+	Purpose:	Testing
+	Web-site:	http://easymock.org/
+	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
