@@ -1,6 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
@@ -127,14 +130,17 @@ public class VersionProvider {
 	}
 
 	/**
-	 * Get the next version of the given current version
+	 * Get the next version of the given current version.
 	 * 
 	 * @param currentVersion
 	 *            the current version
 	 * @return the detected next version if it has been detected,
 	 *         <code>null</code> if no next revision has been detected
+	 * @throws Exception
+	 *             If any error occurred
 	 */
-	public Version getNextVersion(final Version currentVersion) {
+	public Version getNextVersion(final Version currentVersion)
+			throws Exception {
 		if (!ready()) {
 			// ready?
 			throw new IllegalStateException(
@@ -148,6 +154,7 @@ public class VersionProvider {
 
 		final Revision currentRevision = currentVersion.getRevision();
 
+		// the next revision
 		Revision nextRevision = null;
 		if (currentRevision.getDate() == null) {
 			// the current revision is pseudo initial revision
@@ -156,9 +163,22 @@ public class VersionProvider {
 			nextRevision = revisionProvider.getNextRevision(currentRevision);
 		}
 
+		// check if nextRevision is null
 		if (nextRevision == null) {
 			logger.trace("no next revision has been detected");
 			return null;
+		}
+
+		// detecting file changes
+		Collection<FileChangeEntry> fileChangeEntries = fileChangeDetector
+				.detectFileChangeEntriesToRevision(nextRevision);
+		if (relocationFinder != null) {
+			fileChangeEntries = relocationFinder
+					.fildRelocations(fileChangeEntries);
+		}
+
+		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
+
 		}
 
 		return null; // TODO implement
@@ -195,7 +215,16 @@ public class VersionProvider {
 	private final Version providePseudoInitialVersion() {
 		return new Version(IDGenerator.generate(Version.class), new Revision(
 				IDGenerator.generate(Revision.class),
-				"pseudo-initial-revision", null), new HashSet<SourceFile>(),
-				new HashSet<FileChange>(), new HashSet<RawCloneClass>());
+				"pseudo-initial-revision", null), new HashSet<FileChange>(),
+				new HashSet<RawCloneClass>());
 	}
+
+	private final Map<String, SourceFile> getSourceFilesAsMap(
+			final Collection<SourceFile> sourceFiles) {
+		final Map<String, SourceFile> result = new HashMap<String, SourceFile>();
+
+		// TODO implement
+		return result;
+	}
+
 }
