@@ -177,6 +177,9 @@ public class VersionProvider {
 					.fildRelocations(fileChangeEntries);
 		}
 
+		// the source files in the current revision
+		//final Map<String, SourceFile> sourceFilesInCurrentVersion = getSourceFilesAsMap(sourceFiles);
+
 		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
 
 		}
