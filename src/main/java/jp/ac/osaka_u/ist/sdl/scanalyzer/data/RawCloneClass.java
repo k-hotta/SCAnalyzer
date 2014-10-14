@@ -20,25 +20,40 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see RawClonedFragment
  * 
  */
-@DatabaseTable(tableName = "raw_clone_classes")
+@DatabaseTable(tableName = "RAW_CLONE_CLASSES")
 public class RawCloneClass implements IDBElement {
+	
+	/**
+	 * The column name for id
+	 */
+	public static final String ID_COLUMN_NAME = "ID";
 
+	/**
+	 * The column name for version
+	 */
+	public static final String VERSION_COLUMN_NAME = "VERSION";
+	
+	/**
+	 * The column name for elements
+	 */
+	public static final String ELEMENTS_COLUMN_NAME = "ELEMENTS";
+	
 	/**
 	 * The id of this clone class
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
 	 * The owner version of this raw clone class
 	 */
-	@DatabaseField(canBeNull = false, foreign = true)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
 	private Version version;
 
 	/**
 	 * A collection having all the members of this clone class
 	 */
-	@ForeignCollectionField(eager = false)
+	@ForeignCollectionField(eager = false, columnName = ELEMENTS_COLUMN_NAME)
 	private Collection<RawClonedFragment> elements;
 
 	/**

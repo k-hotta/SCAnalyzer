@@ -13,32 +13,52 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "versions")
+@DatabaseTable(tableName = "VERSIONS")
 public class Version implements IDBElement {
+
+	/**
+	 * The column name for id
+	 */
+	public static final String ID_COLUMN_NAME = "ID";
+
+	/**
+	 * The column name for revision
+	 */
+	public static final String REVISION_COLUMN_NAME = "REVISION";
+
+	/**
+	 * The column name for fileChanges
+	 */
+	public static final String FILE_CHANGES_COLUMN_NAME = "FILE_CHANGES";
+
+	/**
+	 * The column name for rawCloneClasses
+	 */
+	public static final String RAW_CLONE_CLASSES_COLUMN_NAME = "RAW_CLONE_CLASSES";
 
 	/**
 	 * The id of the version
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
 	 * The corresponding revision
 	 */
-	@DatabaseField(canBeNull = false, foreign = true)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = REVISION_COLUMN_NAME)
 	private Revision revision;
 
 	/**
 	 * The collection of changes on source files between the last version and
 	 * this version
 	 */
-	@ForeignCollectionField(eager = false)
+	@ForeignCollectionField(eager = false, columnName = FILE_CHANGES_COLUMN_NAME)
 	private Collection<FileChange> fileChanges;
 
 	/**
 	 * The collection of raw clone classes in this version
 	 */
-	@ForeignCollectionField(eager = false)
+	@ForeignCollectionField(eager = false, columnName = RAW_CLONE_CLASSES_COLUMN_NAME)
 	private Collection<RawCloneClass> rawCloneClasses;
 
 	/**

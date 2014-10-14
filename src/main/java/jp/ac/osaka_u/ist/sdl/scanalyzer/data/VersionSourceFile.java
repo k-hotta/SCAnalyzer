@@ -13,25 +13,40 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see Version
  * @see SourceFile
  */
-@DatabaseTable(tableName = "version_source_file")
+@DatabaseTable(tableName = "VERSION_SOURCE_FILES")
 public class VersionSourceFile {
+
+	/**
+	 * The column name for id
+	 */
+	public static final String ID_COLUMN_NAME = "ID";
+
+	/**
+	 * The column name for version
+	 */
+	public static final String VERSION_COLUMN_NAME = "VERSION";
+
+	/**
+	 * The column name for sourceFile
+	 */
+	public static final String SOURCE_FILE_COLUMN_NAME = "SOURCE_FILE";
 
 	/**
 	 * The id of this relationship
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
 	 * The corresponding version
 	 */
-	@DatabaseField(canBeNull = false, foreign = true)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
 	private Version version;
 
 	/**
 	 * The corresponding source file
 	 */
-	@DatabaseField(canBeNull = false, foreign = true)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = SOURCE_FILE_COLUMN_NAME)
 	private SourceFile sourceFile;
 
 	/**

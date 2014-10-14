@@ -12,7 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "file_changes")
+@DatabaseTable(tableName = "FILE_CHANGES")
 public class FileChange implements IDBElement {
 
 	/**
@@ -26,36 +26,61 @@ public class FileChange implements IDBElement {
 	}
 
 	/**
+	 * The column name for id
+	 */
+	public final static String ID_COLUMN_NAME = "ID";
+
+	/**
+	 * The column name for oldSourceFile
+	 */
+	public final static String OLD_SOURCE_FILE_COLUMN_NAME = "OLD_SOURCE_FILE";
+
+	/**
+	 * The column name for newSourceFile
+	 */
+	public final static String NEW_SOURCE_FILE_COLUMN_NAME = "NEW_SOURCE_FILE";
+
+	/**
+	 * The column name for type
+	 */
+	public final static String TYPE_COLUMN_NAME = "TYPE";
+
+	/**
+	 * The column name for version
+	 */
+	public final static String VERSION_COLUMN_NAME = "VERSION";
+
+	/**
 	 * The id of this file change
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
 	 * The source file before changed, <code>null</code> if the type of this
 	 * file change is {@link Type#ADD}
 	 */
-	@DatabaseField(canBeNull = true, foreign = true)
+	@DatabaseField(canBeNull = true, foreign = true, columnName = OLD_SOURCE_FILE_COLUMN_NAME)
 	private SourceFile oldSourceFile;
 
 	/**
 	 * The source file after changed, <code>null</code> if the type of this file
 	 * change is {@link Type#DELETE}
 	 */
-	@DatabaseField(canBeNull = true, foreign = true)
+	@DatabaseField(canBeNull = true, foreign = true, columnName = NEW_SOURCE_FILE_COLUMN_NAME)
 	private SourceFile newSourceFile;
 
 	/**
 	 * The type of this file change
 	 */
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = TYPE_COLUMN_NAME)
 	private Type type;
 
 	/**
 	 * The owner version of this file change. This file change occurred between
 	 * the owner version and its last (previous) version.
 	 */
-	@DatabaseField(canBeNull = false, foreign = true)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
 	private Version version;
 
 	/**

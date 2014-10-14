@@ -20,43 +20,73 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see RawCloneClass
  * 
  */
-@DatabaseTable(tableName = "raw_cloned_fragments")
+@DatabaseTable(tableName = "RAW_CLONED_FRAGMENTS")
 public class RawClonedFragment implements IDBElement {
+
+	/**
+	 * The column name for id
+	 */
+	public static final String ID_COLUMN_NAME = "ID";
+
+	/**
+	 * The column name for version
+	 */
+	public static final String VERSION_COLUMN_NAME = "VERSION";
+
+	/**
+	 * The column name for sourceFile
+	 */
+	public static final String SOURCE_FILE_COLUMN_NAME = "SOURCE_FILE";
+
+	/**
+	 * The column name for cloneClass
+	 */
+	public static final String CLONE_CLASS_COLUMN_NAME = "CLONE_CLASS";
+
+	/**
+	 * The column name for startLine
+	 */
+	public static final String START_LINE_COLUMN_NAME = "START_LINE";
+
+	/**
+	 * The column name for length
+	 */
+	public static final String LENGTH_COLUMN_NAME = "LENGTH";
 
 	/**
 	 * The id of this fragment
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
 	 * The owner version of this fragment
 	 */
-	@DatabaseField(canBeNull = false, foreign = true, index = true)
+	@DatabaseField(canBeNull = false, foreign = true, index = true, columnName = VERSION_COLUMN_NAME)
 	private Version version;
 
 	/**
 	 * The the owner source file of this fragment
 	 */
-	@DatabaseField(canBeNull = false, foreign = true, index = true)
+	@DatabaseField(canBeNull = false, foreign = true, index = true, columnName = SOURCE_FILE_COLUMN_NAME)
 	private SourceFile sourceFile;
-	
+
 	/**
 	 * The owner clone class of this fragment
 	 */
-	@DatabaseField(canBeNull = false, foreign = true)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_COLUMN_NAME)
 	private RawCloneClass cloneClass;
 
 	/**
 	 * The line number within the file where this fragment starts
 	 */
-	@DatabaseField(canBeNull = false, index = true)
+	@DatabaseField(canBeNull = false, index = true, columnName = START_LINE_COLUMN_NAME)
 	private int startLine;
 
 	/**
 	 * The length of this fragment in the number of lines
 	 */
-	@DatabaseField(canBeNull = false, index = true)
+	@DatabaseField(canBeNull = false, index = true, columnName = LENGTH_COLUMN_NAME)
 	private int length;
 
 	/**

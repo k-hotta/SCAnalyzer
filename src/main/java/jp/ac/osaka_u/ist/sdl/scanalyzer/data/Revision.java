@@ -11,13 +11,28 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "revisions")
+@DatabaseTable(tableName = "REVISIONS")
 public class Revision implements IDBElement, Comparable<Revision> {
+
+	/**
+	 * The column name for id
+	 */
+	public static final String ID_COLUMN_NAME = "ID";
+
+	/**
+	 * The column name for identifier
+	 */
+	public static final String IDENTIFIER_COLUMN_NAME = "IDENTIFIER";
+
+	/**
+	 * The column name for date
+	 */
+	public static final String DATE_COLUMN_NAME = "DATE";
 
 	/**
 	 * The id of the revision
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
@@ -25,13 +40,13 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 * control system. <br>
 	 * e.g. numerical sequential value in SVN, hash value in git.
 	 */
-	@DatabaseField(canBeNull = false, unique = true, index = true)
+	@DatabaseField(canBeNull = false, unique = true, index = true, columnName = IDENTIFIER_COLUMN_NAME)
 	private String identifier;
 
 	/**
 	 * The date when this revision was committed.
 	 */
-	@DatabaseField(canBeNull = true, index = true)
+	@DatabaseField(canBeNull = true, index = true, columnName = DATE_COLUMN_NAME)
 	private Date date;
 
 	/**

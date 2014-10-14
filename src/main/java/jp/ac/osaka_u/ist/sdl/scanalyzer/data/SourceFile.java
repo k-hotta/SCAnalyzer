@@ -9,19 +9,29 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "source_files")
+@DatabaseTable(tableName = "SOURCE_FILES")
 public class SourceFile implements IDBElement {
+
+	/**
+	 * The column name for id
+	 */
+	public static final String ID_COLUMN_NAME = "ID";
+
+	/**
+	 * The column name for path
+	 */
+	public static final String PATH_COLUMN_NAME = "PATH";
 
 	/**
 	 * The id of this source file
 	 */
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
 
 	/**
 	 * The path of this source file
 	 */
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = PATH_COLUMN_NAME)
 	private String path;
 
 	/**
