@@ -2,9 +2,13 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDBElement;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
 
@@ -21,14 +25,19 @@ import com.j256.ormlite.dao.Dao;
 public abstract class AbstractDataDao<D extends IDBElement> {
 
 	/**
+	 * The logger for errors
+	 */
+	private static final Logger eLogger = LogManager.getLogger("error");
+
+	/**
 	 * The DB manager
 	 */
-	private final DBManager manager;
+	protected final DBManager manager;
 
 	/**
 	 * The DAO instance of the data class provided by ORMLite
 	 */
-	private final Dao<D, Long> originalDao;
+	protected final Dao<D, Long> originalDao;
 
 	/**
 	 * * The constructor.
@@ -53,15 +62,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param msg
 	 *            the message to be output
 	 */
-	public abstract void trace(final String msg);
-
-	/**
-	 * Output given warn message
-	 * 
-	 * @param msg
-	 *            the message to be output
-	 */
-	public abstract void warn(final String msg);
+	protected abstract void trace(final String msg);
 
 	/**
 	 * Get all the elements in the table as a list
@@ -90,10 +91,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		final D result = originalDao.queryForId(id);
 
 		if (result == null) {
-			warn("cannot find the corresponding element for id " + id);
+			eLogger.warn("cannot find the corresponding element for id " + id);
 		}
 
-		return result;
+		return refresh(result);
 	}
 
 	/**
@@ -118,5 +119,83 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 
 		return result;
 	}
-	
+
+	/**
+	 * Get a list of the elements in the table whose id is specified as the
+	 * argument.
+	 * 
+	 * @param ids
+	 *            a collection of the values of id to be retrieved
+	 * @return a list of the elements
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	public List<D> get(final Collection<Long> ids) throws SQLException {
+		final List<D> result = new ArrayList<D>();
+
+		for (final long id : ids) {
+			final D element = get(id);
+			if (element != null) {
+				result.add(element);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Register the given element into the database.
+	 * 
+	 * @param element
+	 *            the element to be stored
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	public void register(final D element) throws SQLException {
+		trace("register the element whose id is " + element.getId());
+		originalDao.create(element);
+	}
+
+	/**
+	 * Register all the given elements into the database.
+	 * 
+	 * @param elements
+	 *            the elements to be stored
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	public void register(final Collection<D> elements) throws SQLException {
+		for (final D element : elements) {
+			register(element);
+		}
+	}
+
+	/**
+	 * Perform refreshing on the given element. This operation is necessary for
+	 * elements having foreign objects.
+	 * 
+	 * @param element
+	 *            the element to be refreshed
+	 * @return the element after refreshed
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	public abstract D refresh(final D element) throws SQLException;
+
+	/**
+	 * Perform refreshing on all the given elements.
+	 * 
+	 * @param elements
+	 *            the elements to be refreshed
+	 * @return elements after refreshed
+	 * @throws SQLException
+	 */
+	public List<D> refreshAll(final List<D> elements) throws SQLException {
+		for (final D element : elements) {
+			refresh(element);
+		}
+
+		return elements;
+	}
+
 }
