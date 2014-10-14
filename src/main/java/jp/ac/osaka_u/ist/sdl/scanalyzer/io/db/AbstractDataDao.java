@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
 
 /**
  * This abstract class represents DAOs for each data class and provides some
@@ -196,6 +197,21 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		}
 
 		return elements;
+	}
+
+	/**
+	 * Query the given prepared query.
+	 * 
+	 * @param preparedQuery
+	 *            the prepared query
+	 * @return the result of the given query
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	public List<D> query(final PreparedQuery<D> preparedQuery)
+			throws SQLException {
+		trace("query " + preparedQuery.getStatement());
+		return refreshAll(originalDao.query(preparedQuery));
 	}
 
 }
