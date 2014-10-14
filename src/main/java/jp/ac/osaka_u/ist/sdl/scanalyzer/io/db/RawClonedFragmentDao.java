@@ -26,7 +26,7 @@ public class RawClonedFragmentDao extends AbstractDataDao<RawClonedFragment> {
 	 * The logger
 	 */
 	private static final Logger logger = LogManager
-			.getLogger(RawClonedFragment.class);
+			.getLogger(RawClonedFragmentDao.class);
 
 	/**
 	 * The DAO for versions. <br>
