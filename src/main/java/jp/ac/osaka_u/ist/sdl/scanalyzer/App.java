@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
@@ -13,6 +14,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.FileChangeDao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -144,6 +146,12 @@ public class App {
 		versionSourceFileDao.create(vf4);
 		versionSourceFileDao.create(vf5);
 
+		final FileChangeDao daotest = new FileChangeDao();
+		final List<FileChange> retrievedWithOldSourceFile = daotest
+				.getWithOldSourceFile(file1);
+		final List<FileChange> retrievedWithVersion = daotest.getWithVersion(ver2);
+		final List<FileChange> retrievedWithType = daotest.getWithType(Type.MODIFY);
+		
 		dbManager.closeConnection();
 	}
 }
