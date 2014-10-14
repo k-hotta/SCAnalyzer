@@ -17,12 +17,6 @@ public class SourceFile implements IDBElement {
 	 */
 	@DatabaseField(id = true, index = true)
 	private long id;
-	
-	/**
-	 * The version that has this source file
-	 */
-	@DatabaseField(canBeNull = false, foreign = true)
-	private Version version;
 
 	/**
 	 * The path of this source file
@@ -44,13 +38,10 @@ public class SourceFile implements IDBElement {
 	 *            the id of this source file
 	 * @param path
 	 *            the path of this source file
-	 * @param version
-	 *            the version that has this source file
 	 */
-	public SourceFile(final long id, final String path, final Version version) {
+	public SourceFile(final long id, final String path) {
 		this.id = id;
 		this.path = path;
-		this.version = version;
 	}
 
 	/**
@@ -91,25 +82,6 @@ public class SourceFile implements IDBElement {
 	 */
 	public void setPath(String path) {
 		this.path = path;
-	}
-
-	/**
-	 * Get the version that has this source file
-	 * 
-	 * @return the owner version of this source file
-	 */
-	public Version getVersion() {
-		return version;
-	}
-
-	/**
-	 * Set the owner version of this source file
-	 * 
-	 * @param version
-	 *            the owner version to be set
-	 */
-	public void setVersion(Version version) {
-		this.version = version;
 	}
 
 }
