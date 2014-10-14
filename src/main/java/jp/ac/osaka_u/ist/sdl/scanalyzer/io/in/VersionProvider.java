@@ -219,11 +219,22 @@ public class VersionProvider {
 				new HashSet<RawCloneClass>());
 	}
 
+	/**
+	 * Transform the given collection of source files to a map whose key is the
+	 * path of the source file and whose value is the source file itself.
+	 * 
+	 * @param sourceFiles
+	 *            a collection of source files
+	 * @return a map generated from the given collection
+	 */
 	private final Map<String, SourceFile> getSourceFilesAsMap(
 			final Collection<SourceFile> sourceFiles) {
 		final Map<String, SourceFile> result = new HashMap<String, SourceFile>();
 
-		// TODO implement
+		for (final SourceFile sourceFile : sourceFiles) {
+			result.put(sourceFile.getPath(), sourceFile);
+		}
+
 		return result;
 	}
 

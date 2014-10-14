@@ -19,7 +19,7 @@ public class Version implements IDBElement {
 	/**
 	 * The id of the version
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

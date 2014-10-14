@@ -17,7 +17,7 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	/**
 	 * The id of the revision
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

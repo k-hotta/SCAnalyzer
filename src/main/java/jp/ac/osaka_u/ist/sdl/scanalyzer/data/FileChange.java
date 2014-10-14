@@ -28,7 +28,7 @@ public class FileChange implements IDBElement {
 	/**
 	 * The id of this file change
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

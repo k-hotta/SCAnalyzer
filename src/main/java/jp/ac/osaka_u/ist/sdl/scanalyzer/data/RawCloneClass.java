@@ -26,7 +26,7 @@ public class RawCloneClass implements IDBElement {
 	/**
 	 * The id of this clone class
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

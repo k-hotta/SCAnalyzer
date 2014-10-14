@@ -26,7 +26,7 @@ public class RawClonedFragment implements IDBElement {
 	/**
 	 * The id of this fragment
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

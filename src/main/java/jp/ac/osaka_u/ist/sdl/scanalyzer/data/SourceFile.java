@@ -15,7 +15,7 @@ public class SourceFile implements IDBElement {
 	/**
 	 * The id of this source file
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

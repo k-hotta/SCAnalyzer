@@ -17,7 +17,7 @@ public class Token implements IDBElement {
 	/**
 	 * The id of the token. This is the primary key of the token.
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**

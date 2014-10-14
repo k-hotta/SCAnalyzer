@@ -19,7 +19,7 @@ public class VersionSourceFile {
 	/**
 	 * The id of this relationship
 	 */
-	@DatabaseField(id = true, index = true)
+	@DatabaseField(id = true)
 	private long id;
 
 	/**
