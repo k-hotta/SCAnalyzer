@@ -52,6 +52,36 @@ public class DBManager {
 	private final String url;
 
 	/**
+	 * The DAO for FileChange
+	 */
+	private FileChangeDao fileChangeDao;
+
+	/**
+	 * The DAO for RawCloneClass
+	 */
+	private RawCloneClassDao rawCloneClassDao;
+
+	/**
+	 * The DAO for RawClonedFragment
+	 */
+	private RawClonedFragmentDao rawClonedFragmentDao;
+
+	/**
+	 * The DAO for Revision
+	 */
+	private RevisionDao revisionDao;
+
+	/**
+	 * The DAO for SourceFile
+	 */
+	private SourceFileDao sourceFileDao;
+
+	/**
+	 * The DAO for Version
+	 */
+	private VersionDao versionDao;
+
+	/**
 	 * The private default constructor to use singleton pattern
 	 * 
 	 * @param url
@@ -87,6 +117,7 @@ public class DBManager {
 		try {
 			if (SINGLETON == null) {
 				SINGLETON = new DBManager(url);
+				setupDaos(SINGLETON);
 				logger.trace("set up the database connection");
 			} else {
 				assert false; // here shouldn't be reached
@@ -116,6 +147,119 @@ public class DBManager {
 		}
 
 		return SINGLETON;
+	}
+
+	/**
+	 * Set up all the DAOs.
+	 * 
+	 * @param instance
+	 *            the instance for which DAOs required to be set up
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	private static void setupDaos(final DBManager instance) throws SQLException {
+		final FileChangeDao fileChangeDao = new FileChangeDao();
+		final RawCloneClassDao rawCloneClassDao = new RawCloneClassDao();
+		final RawClonedFragmentDao rawClonedFragmentDao = new RawClonedFragmentDao();
+		final RevisionDao revisionDao = new RevisionDao();
+		final SourceFileDao sourceFileDao = new SourceFileDao();
+		final VersionDao versionDao = new VersionDao();
+
+		sourceFileDao.setVersionDao(versionDao);
+		versionDao.setSourceFileDataDao(sourceFileDao);
+
+		instance.setFileChangeDao(fileChangeDao);
+		instance.setRawCloneClassDao(rawCloneClassDao);
+		instance.setRawClonedFragmentDao(rawClonedFragmentDao);
+		instance.setRevisionDao(revisionDao);
+		instance.setSourceFileDao(sourceFileDao);
+		instance.setVersionDao(versionDao);
+	}
+
+	private void setFileChangeDao(final FileChangeDao fileChangeDao) {
+		this.fileChangeDao = fileChangeDao;
+	}
+
+	private void setRawCloneClassDao(final RawCloneClassDao rawCloneClassDao) {
+		this.rawCloneClassDao = rawCloneClassDao;
+	}
+
+	private void setRawClonedFragmentDao(
+			final RawClonedFragmentDao rawClonedFragmentDao) {
+		this.rawClonedFragmentDao = rawClonedFragmentDao;
+	}
+
+	private void setRevisionDao(final RevisionDao revisionDao) {
+		this.revisionDao = revisionDao;
+	}
+
+	private void setSourceFileDao(final SourceFileDao sourceFileDao) {
+		this.sourceFileDao = sourceFileDao;
+	}
+
+	private void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
+	}
+
+	/**
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange}
+	 */
+	public final FileChangeDao getFileChangeDao() {
+		return fileChangeDao;
+	}
+
+	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClassDao}
+	 */
+	public final RawCloneClassDao getRawCloneClassDao() {
+		return rawCloneClassDao;
+	}
+
+	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment}
+	 */
+	public final RawClonedFragmentDao getRawClonedFragmentDao() {
+		return rawClonedFragmentDao;
+	}
+
+	/**
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision}
+	 */
+	public final RevisionDao getRevisionDao() {
+		return revisionDao;
+	}
+
+	/**
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile}
+	 */
+	public final SourceFileDao getSourceFileDao() {
+		return sourceFileDao;
+	}
+
+	/**
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version}.
+	 * 
+	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version}
+	 */
+	public final VersionDao getVersionDao() {
+		return versionDao;
 	}
 
 	/**
