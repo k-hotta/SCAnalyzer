@@ -60,18 +60,18 @@ public class App {
 		dbManager.initializeTable(VersionSourceFile.class);
 
 		final Dao<Revision, Long> revisionDao = dbManager
-				.getDao(Revision.class);
-		final Dao<Version, Long> versionDao = dbManager.getDao(Version.class);
+				.getNativeDao(Revision.class);
+		final Dao<Version, Long> versionDao = dbManager.getNativeDao(Version.class);
 		final Dao<SourceFile, Long> sourceFileDao = dbManager
-				.getDao(SourceFile.class);
+				.getNativeDao(SourceFile.class);
 		final Dao<RawCloneClass, Long> rawCloneClassDao = dbManager
-				.getDao(RawCloneClass.class);
+				.getNativeDao(RawCloneClass.class);
 		final Dao<RawClonedFragment, Long> rawClonedFragmentDao = dbManager
-				.getDao(RawClonedFragment.class);
+				.getNativeDao(RawClonedFragment.class);
 		final Dao<FileChange, Long> fileChangeDao = dbManager
-				.getDao(FileChange.class);
+				.getNativeDao(FileChange.class);
 		final Dao<VersionSourceFile, Long> versionSourceFileDao = dbManager
-				.getDao(VersionSourceFile.class);
+				.getNativeDao(VersionSourceFile.class);
 
 		Revision rev1 = new Revision(1, "init", new Date());
 		revisionDao.create(rev1);

@@ -42,10 +42,10 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 
 	@SuppressWarnings("unchecked")
 	public FileChangeDao() throws SQLException {
-		super((Dao<FileChange, Long>) DBManager.getInstance().getDao(
+		super((Dao<FileChange, Long>) DBManager.getInstance().getNativeDao(
 				FileChange.class));
-		this.sourceFileDao = this.manager.getDao(SourceFile.class);
-		this.versionDao = this.manager.getDao(Version.class);
+		this.sourceFileDao = this.manager.getNativeDao(SourceFile.class);
+		this.versionDao = this.manager.getNativeDao(Version.class);
 	}
 
 	@Override

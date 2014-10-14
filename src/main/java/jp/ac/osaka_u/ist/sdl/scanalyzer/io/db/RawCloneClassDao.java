@@ -41,11 +41,11 @@ public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
 
 	@SuppressWarnings("unchecked")
 	public RawCloneClassDao() throws SQLException {
-		super((Dao<RawCloneClass, Long>) DBManager.getInstance().getDao(
+		super((Dao<RawCloneClass, Long>) DBManager.getInstance().getNativeDao(
 				RawCloneClass.class));
-		this.versionDao = this.manager.getDao(Version.class);
+		this.versionDao = this.manager.getNativeDao(Version.class);
 		this.rawClonedFragmentDao = this.manager
-				.getDao(RawClonedFragment.class);
+				.getNativeDao(RawClonedFragment.class);
 	}
 
 	@Override

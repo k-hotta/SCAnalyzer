@@ -130,15 +130,16 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the corresponding DAO for the given data class.
+	 * Get the corresponding native DAO for the given data class. <br>
+	 * Here, a native DAO refers to the one provided by ORMLite.
 	 * 
 	 * @param clazz
 	 *            The data class that are of interest
-	 * @return The DAO corresponding to the given data class
+	 * @return The native DAO corresponding to the given data class
 	 * @throws SQLException
 	 *             If connecting to database failed
 	 */
-	public <D extends Dao<T, ?>, T> D getDao(final Class<T> clazz)
+	public <D extends Dao<T, ?>, T> D getNativeDao(final Class<T> clazz)
 			throws SQLException {
 		try {
 			final D dao = DaoManager.createDao(connectionSource, clazz);
