@@ -182,14 +182,15 @@ public class DBXmlNodeParser {
 
 	public void processVersionNode(final Node node) throws Exception {
 		final DBXmlNodeParser another = new DBXmlNodeParser(this.versions,
-				this.revisions, new TreeMap<Long, SourceFile>(),
+				new TreeMap<Long, Revision>(), new TreeMap<Long, SourceFile>(),
 				new TreeMap<Long, FileChange>(),
 				new TreeMap<Long, RawCloneClass>(),
 				new TreeMap<Long, RawClonedFragment>(),
 				new TreeMap<Long, VersionSourceFile>());
 		another.visitVersionNode(node);
 		// this.versions.putAll(another.getVersions());
-		// this.revisions.putAll(another.getRevisions());
+		this.revisions.putAll(another.getRevisions());
+
 		final Version justProcessedVersion = versions.get(versions.lastKey());
 		for (final SourceFile anotherSourceFile : another.getSourceFiles()
 				.values()) {
@@ -204,6 +205,7 @@ public class DBXmlNodeParser {
 						anotherSourceFile);
 			}
 		}
+
 		this.sourceFiles.putAll(another.getSourceFiles());
 		this.fileChanges.putAll(another.getFileChanges());
 		this.rawCloneClasses.putAll(another.getRawCloneClasses());
