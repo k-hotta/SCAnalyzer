@@ -139,4 +139,18 @@ public class RawCloneClass implements IDBElement {
 		this.elements = elements;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		
+		builder.append("{");
+		for (final RawClonedFragment element : elements) {
+			builder.append(" " + element.toString() + ",");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.append(" }");
+		
+		return builder.toString();
+	}
+	
 }

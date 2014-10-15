@@ -239,4 +239,10 @@ public class RawClonedFragment implements IDBElement {
 		this.cloneClass = cloneClass;
 	}
 
+	@Override
+	public String toString() {
+		return sourceFile.getPath() + "(" + sourceFile.getId() + ") "
+				+ startLine + "-" + (startLine + length - 1);
+	}
+
 }

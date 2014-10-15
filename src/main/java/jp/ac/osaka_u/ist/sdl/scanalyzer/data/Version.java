@@ -172,4 +172,26 @@ public class Version implements IDBElement {
 		this.rawCloneClasses = rawCloneClasses;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		
+		builder.append("Version " + id + "\n\n");
+		builder.append("revision\n\t" + revision.toString() + "\n\n");
+		
+		builder.append("file changes = \n");
+		for (final FileChange fileChange : fileChanges) {
+			builder.append("\t" + fileChange.toString() + "\n");
+		}
+		builder.append("\n");
+		
+		builder.append("raw clone classes = \n");
+		for (final RawCloneClass rawCloneClass : rawCloneClasses) {
+			builder.append("\t" + rawCloneClass.toString() + "\n");
+		}
+		builder.append("\n");
+		
+		return builder.toString();
+	}
+	
 }

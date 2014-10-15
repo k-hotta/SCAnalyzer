@@ -160,4 +160,9 @@ public class Revision implements IDBElement, Comparable<Revision> {
 		return ((Long) this.id).compareTo(another.getId());
 	}
 
+	@Override
+	public String toString() {
+		return id + " [identifier:" + identifier + "] at " + date;
+	}
+	
 }

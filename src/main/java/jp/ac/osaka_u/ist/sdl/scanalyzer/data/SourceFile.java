@@ -94,4 +94,9 @@ public class SourceFile implements IDBElement {
 		this.path = path;
 	}
 
+	@Override
+	public String toString() {
+		return this.id + " " + this.path;
+	}
+
 }

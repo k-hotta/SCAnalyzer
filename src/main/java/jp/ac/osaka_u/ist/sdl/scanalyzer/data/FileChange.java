@@ -224,4 +224,35 @@ public class FileChange implements IDBElement {
 		this.version = version;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+
+		switch (type) {
+		case ADD:
+			builder.append("ADD " + newSourceFile.getPath() + "("
+					+ newSourceFile.getId() + ")");
+			break;
+		case DELETE:
+			builder.append("DELETE " + oldSourceFile.getPath() + "("
+					+ oldSourceFile.getId() + ")");
+			break;
+		case MODIFY:
+			builder.append("MODIFY " + oldSourceFile.getPath() + "("
+					+ oldSourceFile.getId() + ") => " + newSourceFile.getPath()
+					+ "(" + newSourceFile.getId() + ")");
+			break;
+		case RELOCATE:
+			builder.append("RELOCATE " + oldSourceFile.getPath() + "("
+					+ oldSourceFile.getId() + ") => " + newSourceFile.getPath()
+					+ "(" + newSourceFile.getId() + ")");
+			break;
+		default:
+			builder.append("UNKNOWN\n");
+			break;
+		}
+
+		return builder.toString();
+	}
+
 }
