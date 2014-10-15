@@ -33,3 +33,8 @@
 	Purpose:	Testing
 	Web-site:	http://easymock.org/
 	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
+	
+** Xerces2 Java Parser **
+	Purpose:	Parsing XML files
+	Web-site:	http://xerces.apache.org/xerces2-j/
+	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
