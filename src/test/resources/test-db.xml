@@ -33,6 +33,7 @@
 					<rawcloneclass></rawcloneclass>
 				</rawcloneclasses>
 			</version>
+			
 			<version>
 				<id>2</id>
 				<revision>
@@ -70,6 +71,108 @@
 							</rawclonedfragment>
 							<rawclonedfragment>
 								<id>2</id>
+								<ownerfile>2</ownerfile>
+								<startline>25</startline>
+								<length>5</length>
+							</rawclonedfragment>
+						</rawclonedfragments>
+					</rawcloneclass>
+				</rawcloneclasses>
+			</version>
+			
+			<version>
+				<id>3</id>
+				<revision>
+					<id>3</id>
+					<identifier>3</identifier>
+					<date>2014-10-15 18:20</date>
+				</revision>
+				<sourcefiles>
+					<sourcefile>
+						<id>3</id>
+						<path>A.java</path>
+					</sourcefile>
+					<sourcefile>
+						<id>2</id>
+						<path>B.java</path>
+					</sourcefile>
+					<sourcefile>
+						<id>4</id>
+						<path>C.java</path>
+					</sourcefile>
+				</sourcefiles>
+				<filechanges>
+					<filechange>
+						<id>3</id>
+						<old>1</old>
+						<new>3</new>
+						<type>MODIFY</type>
+					</filechange>
+					<filechange>
+						<id>4</id>
+						<old></old>
+						<new>4</new>
+						<type>ADD</type>
+					</filechange>
+				</filechanges>
+				<rawcloneclasses>
+					<rawcloneclass>
+						<id>2</id>
+						<rawclonedfragments>
+							<rawclonedfragment>
+								<id>3</id>
+								<ownerfile>3</ownerfile>
+								<startline>10</startline>
+								<length>5</length>
+							</rawclonedfragment>
+							<rawclonedfragment>
+								<id>4</id>
+								<ownerfile>2</ownerfile>
+								<startline>25</startline>
+								<length>5</length>
+							</rawclonedfragment>
+						</rawclonedfragments>
+					</rawcloneclass>
+				</rawcloneclasses>
+			</version>
+			
+			<version>
+				<id>4</id>
+				<revision>
+					<id>4</id>
+					<identifier>4</identifier>
+					<date>2014-10-15 18:45</date>
+				</revision>
+				<sourcefiles>
+					<sourcefile>
+						<id>3</id>
+						<path>A.java</path>
+					</sourcefile>
+					<sourcefile>
+						<id>2</id>
+						<path>B.java</path>
+					</sourcefile>
+				</sourcefiles>
+				<filechanges>
+					<filechange>
+						<id>5</id>
+						<old>4</old>
+						<new></new>
+						<type>DELETE</type>
+					</filechange>
+				</filechanges>
+				<rawcloneclasses>
+					<rawcloneclass>
+						<id>3</id>
+						<rawclonedfragments>
+							<rawclonedfragment>
+								<id>5</id>
+								<ownerfile>3</ownerfile>
+								<startline>10</startline>
+								<length>5</length>
+							</rawclonedfragment>
+							<rawclonedfragment>
+								<id>6</id>
 								<ownerfile>2</ownerfile>
 								<startline>25</startline>
 								<length>5</length>

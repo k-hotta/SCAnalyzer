@@ -219,7 +219,7 @@ public class VersionProvider {
 		return new Version(IDGenerator.generate(Version.class), new Revision(
 				IDGenerator.generate(Revision.class),
 				"pseudo-initial-revision", null), new HashSet<FileChange>(),
-				new HashSet<RawCloneClass>());
+				new HashSet<RawCloneClass>(), new HashSet<SourceFile>());
 	}
 
 	/**

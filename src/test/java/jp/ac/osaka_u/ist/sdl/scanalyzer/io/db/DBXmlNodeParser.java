@@ -2,8 +2,12 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -42,42 +46,30 @@ public class DBXmlNodeParser {
 	 * maps having data gained from the xml file
 	 */
 
-	private Map<Long, Version> versions;
+	private SortedMap<Long, Version> versions;
 
-	private Map<Long, Revision> revisions;
+	private SortedMap<Long, Revision> revisions;
 
-	private Map<Long, SourceFile> sourceFiles;
+	private SortedMap<Long, SourceFile> sourceFiles;
 
-	private Map<Long, FileChange> fileChanges;
+	private SortedMap<Long, FileChange> fileChanges;
 
-	private Map<Long, RawCloneClass> rawCloneClasses;
+	private SortedMap<Long, RawCloneClass> rawCloneClasses;
 
-	private Map<Long, RawClonedFragment> rawClonedFragments;
+	private SortedMap<Long, RawClonedFragment> rawClonedFragments;
 
-	private Map<Long, VersionSourceFile> versionSourceFiles;
+	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
 
 	private static final DateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm");
 
-	public DBXmlNodeParser() {
-		this.dbms = null;
-		this.path = null;
-		this.versions = new TreeMap<Long, Version>();
-		this.revisions = new TreeMap<Long, Revision>();
-		this.sourceFiles = new TreeMap<Long, SourceFile>();
-		this.fileChanges = new TreeMap<Long, FileChange>();
-		this.rawCloneClasses = new TreeMap<Long, RawCloneClass>();
-		this.rawClonedFragments = new TreeMap<Long, RawClonedFragment>();
-		this.versionSourceFiles = new TreeMap<Long, VersionSourceFile>();
-	}
-
-	public DBXmlNodeParser(final Map<Long, Version> versions,
-			final Map<Long, Revision> revisions,
-			final Map<Long, SourceFile> sourceFiles,
-			final Map<Long, FileChange> fileChanges,
-			final Map<Long, RawCloneClass> rawCloneClasses,
-			final Map<Long, RawClonedFragment> rawClonedFragments,
-			final Map<Long, VersionSourceFile> versionSourceFiles) {
+	public DBXmlNodeParser(final SortedMap<Long, Version> versions,
+			final SortedMap<Long, Revision> revisions,
+			final SortedMap<Long, SourceFile> sourceFiles,
+			final SortedMap<Long, FileChange> fileChanges,
+			final SortedMap<Long, RawCloneClass> rawCloneClasses,
+			final SortedMap<Long, RawClonedFragment> rawClonedFragments,
+			final SortedMap<Long, VersionSourceFile> versionSourceFiles) {
 		this.versions = versions;
 		this.revisions = revisions;
 		this.sourceFiles = sourceFiles;
@@ -189,10 +181,29 @@ public class DBXmlNodeParser {
 	}
 
 	public void processVersionNode(final Node node) throws Exception {
-		final DBXmlNodeParser another = new DBXmlNodeParser();
+		final DBXmlNodeParser another = new DBXmlNodeParser(this.versions,
+				this.revisions, new TreeMap<Long, SourceFile>(),
+				new TreeMap<Long, FileChange>(),
+				new TreeMap<Long, RawCloneClass>(),
+				new TreeMap<Long, RawClonedFragment>(),
+				new TreeMap<Long, VersionSourceFile>());
 		another.visitVersionNode(node);
-		this.versions.putAll(another.getVersions());
-		this.revisions.putAll(another.getRevisions());
+		// this.versions.putAll(another.getVersions());
+		// this.revisions.putAll(another.getRevisions());
+		final Version justProcessedVersion = versions.get(versions.lastKey());
+		for (final SourceFile anotherSourceFile : another.getSourceFiles()
+				.values()) {
+			if (this.sourceFiles.containsKey(anotherSourceFile.getId())) {
+				final SourceFile currentSourceFile = this.sourceFiles
+						.get(anotherSourceFile.getId());
+				currentSourceFile.getVersions().add(justProcessedVersion);
+				justProcessedVersion.getSourceFiles().remove(anotherSourceFile);
+				justProcessedVersion.getSourceFiles().add(currentSourceFile);
+			} else {
+				this.sourceFiles.put(anotherSourceFile.getId(),
+						anotherSourceFile);
+			}
+		}
 		this.sourceFiles.putAll(another.getSourceFiles());
 		this.fileChanges.putAll(another.getFileChanges());
 		this.rawCloneClasses.putAll(another.getRawCloneClasses());
@@ -232,14 +243,17 @@ public class DBXmlNodeParser {
 					"the xml file seems to have a wrong format");
 		}
 
+		final Collection<SourceFile> currentSourceFiles = new ArrayList<SourceFile>();
+		currentSourceFiles.addAll(sourceFiles.values());
 		final Version version = new Version(id, revision, fileChanges.values(),
-				rawCloneClasses.values());
+				rawCloneClasses.values(), currentSourceFiles);
 		this.versions.put(id, version);
 
 		for (final SourceFile sourceFile : this.sourceFiles.values()) {
 			final VersionSourceFile vsf = new VersionSourceFile(
 					counter.getAndIncrement(), version, sourceFile);
 			this.versionSourceFiles.put(vsf.getId(), vsf);
+			sourceFile.getVersions().add(version);
 		}
 
 		for (final FileChange fileChange : version.getFileChanges()) {
@@ -322,7 +336,8 @@ public class DBXmlNodeParser {
 		}
 
 		if (!sourceFiles.containsKey(id)) {
-			final SourceFile sourceFile = new SourceFile(id, path);
+			final SourceFile sourceFile = new SourceFile(id, path,
+					new HashSet<Version>());
 			sourceFiles.put(id, sourceFile);
 		}
 	}
@@ -381,7 +396,13 @@ public class DBXmlNodeParser {
 		SourceFile newSourceFile = null;
 
 		if (oldSourceFileId != null) {
-			oldSourceFile = sourceFiles.get(oldSourceFileId);
+			final Version lastVersion = versions.get(versions.lastKey());
+			for (final SourceFile sourceFileInLastVersion : lastVersion
+					.getSourceFiles()) {
+				if (sourceFileInLastVersion.getId() == oldSourceFileId) {
+					oldSourceFile = sourceFileInLastVersion;
+				}
+			}
 			if (oldSourceFile == null) {
 				throw new IllegalStateException(
 						"the xml file seems to have a wrong format");
@@ -428,11 +449,11 @@ public class DBXmlNodeParser {
 		long id = -1;
 
 		final NodeList children = node.getChildNodes();
-		
+
 		if (children.getLength() == 0) {
 			return;
 		}
-		
+
 		for (int i = 0; i < children.getLength(); i++) {
 			final Node child = children.item(i);
 			final String childName = child.getNodeName();

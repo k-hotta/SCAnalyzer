@@ -52,12 +52,14 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	protected void trace(String msg) {
 		logger.trace(msg);
 	}
-	
+
 	@Override
 	public FileChange refresh(FileChange element) throws SQLException {
-		sourceFileDao.refresh(element.getOldSourceFile());
-		sourceFileDao.refresh(element.getNewSourceFile());
-		versionDao.refresh(element.getVersion());
+		if (element != null) {
+			sourceFileDao.refresh(element.getOldSourceFile());
+			sourceFileDao.refresh(element.getNewSourceFile());
+			versionDao.refresh(element.getVersion());
+		}
 
 		return element;
 	}

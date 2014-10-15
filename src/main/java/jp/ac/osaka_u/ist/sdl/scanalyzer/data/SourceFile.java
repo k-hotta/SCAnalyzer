@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Collection;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -35,6 +37,14 @@ public class SourceFile implements IDBElement {
 	private String path;
 
 	/**
+	 * The collection of all the corresponding versions. <br>
+	 * NOTE: this is NOT a column of the database table. The relationship
+	 * between source files and versions will be stored with
+	 * {@link VersionSourceFile} since it is many-to-many.
+	 */
+	private Collection<Version> versions;
+
+	/**
 	 * The default constructor
 	 */
 	public SourceFile() {
@@ -48,10 +58,15 @@ public class SourceFile implements IDBElement {
 	 *            the id of this source file
 	 * @param path
 	 *            the path of this source file
+	 * @param versions
+	 *            the collection of all the corresponding versions to this
+	 *            source file
 	 */
-	public SourceFile(final long id, final String path) {
+	public SourceFile(final long id, final String path,
+			final Collection<Version> versions) {
 		this.id = id;
 		this.path = path;
+		this.versions = versions;
 	}
 
 	/**
@@ -92,6 +107,27 @@ public class SourceFile implements IDBElement {
 	 */
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	/**
+	 * Get the collection of all the corresponding versions to this source file.
+	 * 
+	 * @return the collection of all the corresponding versions to this source
+	 *         file
+	 */
+	public Collection<Version> getVersions() {
+		return versions;
+	}
+
+	/**
+	 * Set a collection that has all the corresponding versions to this source
+	 * file.
+	 * 
+	 * @param versions
+	 *            the collection to be set
+	 */
+	public void setVersions(final Collection<Version> versions) {
+		this.versions = versions;
 	}
 
 	@Override

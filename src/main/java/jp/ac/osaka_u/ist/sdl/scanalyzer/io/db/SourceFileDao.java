@@ -69,7 +69,7 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 
 	@Override
 	public SourceFile refresh(SourceFile element) throws SQLException {
-		// do nothing because SourceFile table has no foreign fields
+		element.setVersions(getCorrespondingVersions(element));
 		return element;
 	}
 

@@ -62,6 +62,14 @@ public class Version implements IDBElement {
 	private Collection<RawCloneClass> rawCloneClasses;
 
 	/**
+	 * The collection of source files in this version. <br>
+	 * NOTE: this field is NOT a column of database table. The relationship
+	 * between versions and source files will be stored with
+	 * {@link VersionSourceFile} since it is many-to-many.
+	 */
+	private Collection<SourceFile> sourceFiles;
+
+	/**
 	 * The default constructor
 	 */
 	public Version() {
@@ -81,14 +89,19 @@ public class Version implements IDBElement {
 	 * @param rawCloneClasses
 	 *            the collection that contains all the raw clone classes in this
 	 *            version
+	 * @param sourceFiles
+	 *            the collection that contains all the source files in this
+	 *            version
 	 */
 	public Version(final long id, final Revision revision,
 			final Collection<FileChange> fileChanges,
-			final Collection<RawCloneClass> rawCloneClasses) {
+			final Collection<RawCloneClass> rawCloneClasses,
+			final Collection<SourceFile> sourceFiles) {
 		this.id = id;
 		this.revision = revision;
 		this.fileChanges = fileChanges;
 		this.rawCloneClasses = rawCloneClasses;
+		this.sourceFiles = sourceFiles;
 	}
 
 	/**
@@ -172,26 +185,45 @@ public class Version implements IDBElement {
 		this.rawCloneClasses = rawCloneClasses;
 	}
 
+	/**
+	 * Get the collection of all the source files in this version.
+	 * 
+	 * @return the collection of all the source files in this version
+	 */
+	public Collection<SourceFile> getSourceFiles() {
+		return sourceFiles;
+	}
+
+	/**
+	 * Set a collection that has all the source files in this version
+	 * 
+	 * @param sourceFiles
+	 *            the collection to be set
+	 */
+	public void setSourceFiles(Collection<SourceFile> sourceFiles) {
+		this.sourceFiles = sourceFiles;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		
+
 		builder.append("Version " + id + "\n\n");
 		builder.append("revision\n\t" + revision.toString() + "\n\n");
-		
+
 		builder.append("file changes = \n");
 		for (final FileChange fileChange : fileChanges) {
 			builder.append("\t" + fileChange.toString() + "\n");
 		}
 		builder.append("\n");
-		
+
 		builder.append("raw clone classes = \n");
 		for (final RawCloneClass rawCloneClass : rawCloneClasses) {
 			builder.append("\t" + rawCloneClass.toString() + "\n");
 		}
 		builder.append("\n");
-		
+
 		return builder.toString();
 	}
-	
+
 }

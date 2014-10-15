@@ -126,6 +126,7 @@ public class VersionDao extends AbstractDataDao<Version> {
 				rawClonedFragmentDao.refresh(rawClonedFragment);
 			}
 		}
+		element.setSourceFiles(getCorrespondingSourceFiles(element));
 		return element;
 	}
 

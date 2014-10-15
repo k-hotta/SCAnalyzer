@@ -1,17 +1,14 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -20,7 +17,6 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * This class parses an xml file that describes data in a virtual database for
@@ -40,19 +36,19 @@ public class DBXmlParser {
 
 	private String path;
 
-	private Map<Long, Version> versions;
+	private SortedMap<Long, Version> versions;
 
-	private Map<Long, Revision> revisions;
+	private SortedMap<Long, Revision> revisions;
 
-	private Map<Long, SourceFile> sourceFiles;
+	private SortedMap<Long, SourceFile> sourceFiles;
 
-	private Map<Long, FileChange> fileChanges;
+	private SortedMap<Long, FileChange> fileChanges;
 
-	private Map<Long, RawCloneClass> rawCloneClasses;
+	private SortedMap<Long, RawCloneClass> rawCloneClasses;
 
-	private Map<Long, RawClonedFragment> rawClonedFragments;
+	private SortedMap<Long, RawClonedFragment> rawClonedFragments;
 
-	private Map<Long, VersionSourceFile> versionSourceFiles;
+	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
 
 	public static void main(String[] args) throws Exception {
 		DBXmlParser parser = new DBXmlParser("src/test/resources/test-db.xml");
