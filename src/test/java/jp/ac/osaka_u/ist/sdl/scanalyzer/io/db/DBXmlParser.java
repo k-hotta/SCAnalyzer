@@ -36,13 +36,76 @@ public class DBXmlParser {
 	 */
 	private String xmlPath;
 
+	private DBMS dbms;
+
+	private String path;
+
+	private Map<Long, Version> versions;
+
+	private Map<Long, Revision> revisions;
+
+	private Map<Long, SourceFile> sourceFiles;
+
+	private Map<Long, FileChange> fileChanges;
+
+	private Map<Long, RawCloneClass> rawCloneClasses;
+
+	private Map<Long, RawClonedFragment> rawClonedFragments;
+
+	private Map<Long, VersionSourceFile> versionSourceFiles;
+
 	public static void main(String[] args) throws Exception {
 		DBXmlParser parser = new DBXmlParser("src/test/resources/test-db.xml");
 		parser.parse();
 	}
 
 	public DBXmlParser(final String xmlPath) {
+		this.dbms = null;
+		this.path = null;
 		this.xmlPath = xmlPath;
+		this.versions = new TreeMap<Long, Version>();
+		this.revisions = new TreeMap<Long, Revision>();
+		this.sourceFiles = new TreeMap<Long, SourceFile>();
+		this.fileChanges = new TreeMap<Long, FileChange>();
+		this.rawCloneClasses = new TreeMap<Long, RawCloneClass>();
+		this.rawClonedFragments = new TreeMap<Long, RawClonedFragment>();
+		this.versionSourceFiles = new TreeMap<Long, VersionSourceFile>();
+	}
+
+	public final DBMS getDbms() {
+		return dbms;
+	}
+
+	public final String getPath() {
+		return path;
+	}
+
+	public final Map<Long, Version> getVersions() {
+		return versions;
+	}
+
+	public final Map<Long, Revision> getRevisions() {
+		return revisions;
+	}
+
+	public final Map<Long, SourceFile> getSourceFiles() {
+		return sourceFiles;
+	}
+
+	public final Map<Long, FileChange> getFileChanges() {
+		return fileChanges;
+	}
+
+	public final Map<Long, RawCloneClass> getRawCloneClasses() {
+		return rawCloneClasses;
+	}
+
+	public final Map<Long, RawClonedFragment> getRawClonedFragments() {
+		return rawClonedFragments;
+	}
+
+	public final Map<Long, VersionSourceFile> getVersionSourceFiles() {
+		return versionSourceFiles;
 	}
 
 	public void parse() throws Exception {
@@ -54,10 +117,13 @@ public class DBXmlParser {
 			throw new IllegalStateException("the root is not document");
 		}
 
-		final DBXmlNodeParser parser = new DBXmlNodeParser();
+		final DBXmlNodeParser parser = new DBXmlNodeParser(versions, revisions,
+				sourceFiles, fileChanges, rawCloneClasses, rawClonedFragments,
+				versionSourceFiles);
 		parser.processRootNode(root);
-		
-		System.out.println();
+
+		this.dbms = parser.getDbms();
+		this.path = parser.getPath();
 	}
 
 }
