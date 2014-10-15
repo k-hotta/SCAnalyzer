@@ -1,6 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -211,14 +214,29 @@ public class Version implements IDBElement {
 		builder.append("Version " + id + "\n\n");
 		builder.append("revision\n\t" + revision.toString() + "\n\n");
 
-		builder.append("file changes = \n");
-		for (final FileChange fileChange : fileChanges) {
+		builder.append("source files\n");
+		final List<SourceFile> sortedSourceFile = new ArrayList<SourceFile>();
+		sortedSourceFile.addAll(sourceFiles);
+		Collections.sort(sortedSourceFile, new DBElementComparator());
+		for (final SourceFile sourceFile : sortedSourceFile) {
+			builder.append("\t" + sourceFile.toString() + "\n");
+		}
+		builder.append("\n");
+
+		builder.append("file changes\n");
+		final List<FileChange> sortedFileChanges = new ArrayList<FileChange>();
+		sortedFileChanges.addAll(fileChanges);
+		Collections.sort(sortedFileChanges, new DBElementComparator());
+		for (final FileChange fileChange : sortedFileChanges) {
 			builder.append("\t" + fileChange.toString() + "\n");
 		}
 		builder.append("\n");
 
-		builder.append("raw clone classes = \n");
-		for (final RawCloneClass rawCloneClass : rawCloneClasses) {
+		builder.append("raw clone classes\n");
+		final List<RawCloneClass> sortedRawCloneClasses = new ArrayList<RawCloneClass>();
+		sortedRawCloneClasses.addAll(rawCloneClasses);
+		Collections.sort(sortedRawCloneClasses, new DBElementComparator());
+		for (final RawCloneClass rawCloneClass : sortedRawCloneClasses) {
 			builder.append("\t" + rawCloneClass.toString() + "\n");
 		}
 		builder.append("\n");
