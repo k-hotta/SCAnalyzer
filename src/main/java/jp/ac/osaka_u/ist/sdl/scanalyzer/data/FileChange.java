@@ -22,7 +22,27 @@ public class FileChange implements IDBElement {
 	 * 
 	 */
 	public enum Type {
-		ADD, DELETE, MODIFY, RELOCATE
+		ADD('A'), DELETE('D'), MODIFY('M'), RELOCATE('R');
+
+		private final char typeChar;
+
+		private Type(final char typeChar) {
+			this.typeChar = typeChar;
+		}
+
+		private char getChar() {
+			return this.typeChar;
+		}
+
+		public static Type getTypeByChar(final char typeChar) {
+			for (Type type : Type.values()) {
+				if (type.getChar() == typeChar) {
+					return type;
+				}
+			}
+
+			return null;
+		}
 	}
 
 	/**
