@@ -129,8 +129,8 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Revision Revision} and the id values of the two objects
-	 *         are the same to each other; <code>false</code> otherwise.
+	 *         {@link Revision} and the id values of the two objects
+	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
