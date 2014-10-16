@@ -12,6 +12,7 @@ import java.util.zip.DataFormatException;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +31,41 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 	 */
 	private static final Logger eLogger = LogManager.getLogger("error");
 
+	/**
+	 * The format of the files of clones in each revision
+	 */
+	private final String format;
+
+	/**
+	 * The constructor with the format of files of clones in each revision. <br>
+	 * The format must have at least one "%s" to specify the identifier of each
+	 * revision.
+	 * 
+	 * @param format
+	 *            the format to specify a file having clone result for each of
+	 *            revisions
+	 */
+	public ScorpioCloneResultReader(final String format) {
+		this.format = format;
+	}
+
 	@Override
-	public Collection<RawCloneClass> read(File file) throws IOException, IllegalCloneResultFileFormatException {
+	public Collection<RawCloneClass> detectClones(Version version) {
+		try {
+			final String targetPath = String.format(format, version
+					.getRevision().getIdentifier());
+			final File targetFile = new File(targetPath);
+
+			return read(targetFile);
+		} catch (Exception e) {
+			eLogger.fatal("fail to detect clones in version " + version.getId());
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public Collection<RawCloneClass> read(File file) throws IOException,
+			IllegalCloneResultFileFormatException {
 		BufferedReader br = null;
 		Collection<RawCloneClass> result = null;
 

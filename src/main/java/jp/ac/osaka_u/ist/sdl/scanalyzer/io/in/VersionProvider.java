@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -50,6 +53,11 @@ public class VersionProvider {
 	 * relocations will be detected to those reported by file change detector.
 	 */
 	private IRelocationFinder relocationFinder;
+
+	/**
+	 * how to detect clones
+	 */
+	private ICloneDetector cloneDetector;
 
 	/**
 	 * Get the revision provider
@@ -130,6 +138,25 @@ public class VersionProvider {
 	}
 
 	/**
+	 * Get the clone detector
+	 * 
+	 * @return the clone detector
+	 */
+	public ICloneDetector getCloneDetector() {
+		return cloneDetector;
+	}
+
+	public void setCloneDetector(final ICloneDetector cloneDetector) {
+		if (cloneDetector == null) {
+			eLogger.fatal("null is specified for cloneDetector");
+			throw new IllegalArgumentException("cloneDetector must not be null");
+		}
+		this.cloneDetector = cloneDetector;
+		logger.trace("the clone detector has been set: "
+				+ cloneDetector.getClass().getName());
+	}
+
+	/**
 	 * Get the next version of the given current version.
 	 * 
 	 * @param currentVersion
@@ -152,6 +179,42 @@ public class VersionProvider {
 			return providePseudoInitialVersion();
 		}
 
+		// detect the next revision
+		Revision nextRevision = detectNextRevision(currentVersion);
+
+		// check if nextRevision is null
+		if (nextRevision == null) {
+			// all the versions should have been processed
+			logger.trace("no next revision has been detected");
+			return null;
+		}
+
+		// the instance of the next version which is under construction
+		final Version nextVersion = new Version(
+				IDGenerator.generate(Version.class), null,
+				new TreeSet<FileChange>(new DBElementComparator()),
+				new TreeSet<RawCloneClass>(new DBElementComparator()),
+				new TreeSet<SourceFile>(new DBElementComparator()));
+
+		// set the next revision to the next version
+		logger.trace("create a new revision " + nextRevision.toString());
+		nextVersion.setRevision(nextRevision);
+
+		// detect file changes
+		Collection<FileChangeEntry> fileChangeEntries = fileChangeDetector
+				.detectFileChangeEntriesToRevision(nextVersion.getRevision());
+		if (relocationFinder != null) {
+			fileChangeEntries = relocationFinder
+					.fildRelocations(fileChangeEntries);
+		}
+
+		// instantiate file changes and detect source files
+		processFileChanges(currentVersion, nextVersion, fileChangeEntries);
+
+		return nextVersion;
+	}
+
+	private Revision detectNextRevision(final Version currentVersion) {
 		final Revision currentRevision = currentVersion.getRevision();
 
 		// the next revision
@@ -163,28 +226,7 @@ public class VersionProvider {
 			nextRevision = revisionProvider.getNextRevision(currentRevision);
 		}
 
-		// check if nextRevision is null
-		if (nextRevision == null) {
-			logger.trace("no next revision has been detected");
-			return null;
-		}
-
-		// detecting file changes
-		Collection<FileChangeEntry> fileChangeEntries = fileChangeDetector
-				.detectFileChangeEntriesToRevision(nextRevision);
-		if (relocationFinder != null) {
-			fileChangeEntries = relocationFinder
-					.fildRelocations(fileChangeEntries);
-		}
-
-		// the source files in the current revision
-		//final Map<String, SourceFile> sourceFilesInCurrentVersion = getSourceFilesAsMap(sourceFiles);
-
-		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
-
-		}
-
-		return null; // TODO implement
+		return nextRevision;
 	}
 
 	/**
@@ -206,6 +248,11 @@ public class VersionProvider {
 			eLogger.fatal("file change detector has not been specified");
 			ready = false;
 		}
+		
+		if (cloneDetector == null) {
+			eLogger.fatal("clone detector has not been specified");
+			ready = false;
+		}
 
 		return ready;
 	}
@@ -216,10 +263,100 @@ public class VersionProvider {
 	 * @return pseudo initial version
 	 */
 	private final Version providePseudoInitialVersion() {
+		logger.trace("the initial version will be provided");
 		return new Version(IDGenerator.generate(Version.class), new Revision(
 				IDGenerator.generate(Revision.class),
 				"pseudo-initial-revision", null), new HashSet<FileChange>(),
 				new HashSet<RawCloneClass>(), new HashSet<SourceFile>());
+	}
+
+	/**
+	 * Process all the file changes and create instances of {@link FileChange}
+	 * and {@link SourceFile}
+	 * 
+	 * @param currentVersion
+	 *            the current version
+	 * @param nextVersion
+	 *            the next version under construction
+	 * @param fileChangeEntries
+	 *            file change entries between the current version and the next
+	 *            version
+	 */
+	private void processFileChanges(final Version currentVersion,
+			final Version nextVersion,
+			Collection<FileChangeEntry> fileChangeEntries) {
+		/*
+		 * Source files under consideration, which will be initialized with the
+		 * source files in the current version. This map will be updated through
+		 * processing file changes to the next version. This map will have
+		 * source files in the NEXT version after all the file changes
+		 * processed.
+		 */
+		final Map<String, SourceFile> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
+				.getSourceFiles());
+
+		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
+			final String oldPath = fileChangeEntry.getBeforePath();
+			final String newPath = fileChangeEntry.getAfterPath();
+			final Type type = Type.getTypeByChar(fileChangeEntry.getType());
+
+			if (type == null) {
+				eLogger.fatal("invalid character has been specified as a file change type");
+				throw new IllegalStateException(fileChangeEntry.getType()
+						+ " is not a valid type of file change");
+			}
+
+			SourceFile oldSourceFile = null;
+			if (oldPath != null) {
+				if (type == Type.ADD) {
+					// this is a copy
+					oldSourceFile = sourceFilesUnderConsideration.get(oldPath);
+				} else {
+					// this is a deletion or relocation
+					oldSourceFile = sourceFilesUnderConsideration
+							.remove(oldPath);
+				}
+
+				if (oldSourceFile == null) {
+					eLogger.fatal("source file before changed does not exist in the previous version");
+					throw new IllegalStateException(
+							"cannot find source file before changed " + oldPath
+									+ " in version " + currentVersion.getId());
+				}
+			}
+
+			SourceFile newSourceFile = null;
+			if (newPath != null) {
+				// create new instance of source file
+				newSourceFile = new SourceFile(
+						IDGenerator.generate(SourceFile.class), newPath,
+						new TreeSet<Version>(new DBElementComparator()));
+				logger.trace("create a new source file "
+						+ newSourceFile.toString());
+				sourceFilesUnderConsideration.put(newPath, newSourceFile);
+			}
+
+			if (oldSourceFile == null && newSourceFile == null) {
+				// this is an illegal case
+				eLogger.fatal("at least one of the two source files in a file change must be non-null");
+				throw new IllegalStateException(
+						"both of the two source files in a file change are null");
+			}
+
+			final FileChange fileChange = new FileChange(
+					IDGenerator.generate(FileChange.class), oldSourceFile,
+					newSourceFile, type, nextVersion);
+			logger.trace("create a new file change " + fileChange.toString());
+			nextVersion.getFileChanges().add(fileChange);
+		}
+
+		for (final SourceFile sourceFile : sourceFilesUnderConsideration
+				.values()) {
+			logger.trace("add " + sourceFile.getPath() + " into version "
+					+ nextVersion.getId());
+			sourceFile.getVersions().add(nextVersion);
+			nextVersion.getSourceFiles().add(sourceFile);
+		}
 	}
 
 	/**

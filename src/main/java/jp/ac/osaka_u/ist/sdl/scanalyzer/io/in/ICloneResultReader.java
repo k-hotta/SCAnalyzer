@@ -14,7 +14,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatEx
  * @author k-hotta
  * 
  */
-public interface ICloneResultReader {
+public interface ICloneResultReader extends ICloneDetector {
 
 	/**
 	 * Read the given file to get raw clone classes.
