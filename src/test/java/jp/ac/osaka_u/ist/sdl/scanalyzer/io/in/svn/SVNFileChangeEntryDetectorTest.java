@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 
-public class SVNVersionProviderTest {
+public class SVNFileChangeEntryDetectorTest {
 
 	private static final String PATH_OF_TEST_REPO = "src/test/resources/repository-clonetracker";
 
