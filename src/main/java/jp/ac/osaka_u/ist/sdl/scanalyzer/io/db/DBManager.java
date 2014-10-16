@@ -120,7 +120,6 @@ public class DBManager {
 				setupDaos(SINGLETON);
 				logger.trace("set up the database connection");
 			} else {
-				assert false; // here shouldn't be reached
 				eLogger.warn("the instance of DBManager has been already initialized, so nothing will be done here");
 			}
 		} catch (SQLException e) {
