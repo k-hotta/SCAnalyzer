@@ -153,8 +153,13 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *             If any error occurred when connecting the database
 	 */
 	public void register(final D element) throws SQLException {
-		trace("register the element whose id is " + element.getId());
-		originalDao.create(element);
+		if (element == null) {
+			eLogger.fatal("null is specified as an argument of register method");
+			throw new IllegalStateException("null is attemptted to be register");
+		} else {
+			trace("register the element whose id is " + element.getId());
+			originalDao.create(element);
+		}
 	}
 
 	/**
@@ -165,7 +170,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public void register(final Collection<D> elements) throws SQLException {
+	public void registerAll(final Collection<D> elements) throws SQLException {
 		for (final D element : elements) {
 			register(element);
 		}
@@ -210,6 +215,11 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	public List<D> query(final PreparedQuery<D> preparedQuery)
 			throws SQLException {
+		if (preparedQuery == null) {
+			eLogger.warn("the specified prepared query is null, so nothing will be done");
+			return new ArrayList<D>();
+		}
+
 		trace("query " + preparedQuery.getStatement());
 		return refreshAll(originalDao.query(preparedQuery));
 	}

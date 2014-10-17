@@ -9,8 +9,9 @@ import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -23,23 +24,30 @@ public class FileChangeDaoTest {
 
 	private static final String TEST_DB_XML_PATH = "src/test/resources/test-db.xml";
 
-	private DBXmlParser parser;
+	private static DBXmlParser parser;
 
-	private TestDBConnection connection;
+	private static TestDBConnection connection;
 
-	private FileChangeDao dao;
+	private static FileChangeDao dao;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 		parser = new DBXmlParser(TEST_DB_XML_PATH);
 		parser.parse();
 		connection = TestDBConnection.create(parser);
+		connection.initializeTables();
 		connection.storeAll(parser);
 		dao = new FileChangeDao();
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+		connection.initializeTables();
+		connection.storeAll(parser);
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
 		connection.close();
 	}
 
@@ -128,7 +136,7 @@ public class FileChangeDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet4() throws Exception {
 		final long id1 = 1;
@@ -142,7 +150,7 @@ public class FileChangeDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet5() throws Exception {
 		final long id1 = 1;
@@ -159,7 +167,7 @@ public class FileChangeDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet6() throws Exception {
 		final long id1 = 1;
@@ -188,5 +196,46 @@ public class FileChangeDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
+	@Test
+	public void testRegister1() throws Exception {
+		boolean caughtException = false;
+
+		try {
+			dao.register(null);
+		} catch (IllegalStateException e) {
+			caughtException = true;
+		}
+
+		assertTrue(caughtException);
+	}
+
+	@Test
+	public void testRegister2() throws Exception {
+		connection.initializeTable(FileChange.class); // clear tables
+
+		final Map<Long, FileChange> fileChanges = parser.getFileChanges();
+		final FileChange fc1 = fileChanges.get((long) 1);
+
+		dao.register(fc1);
+		final FileChange result = dao.get((long) 1);
+
+		assertTrue(check(result, fc1));
+	}
+
+	@Test
+	public void testRegisterAll1() throws Exception {
+		connection.initializeTable(FileChange.class); // clear tables
+		final Map<Long, FileChange> references = parser.getFileChanges();
+		dao.registerAll(references.values());
+		
+		final List<FileChange> results = dao.getAll();
+		
+		assertTrue(results.size() == references.size());
+		for (final FileChange result : results) {
+			final FileChange reference = references.get(result.getId());
+			assertTrue(check(result, reference));
+		}
+	}
+
 }

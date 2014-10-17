@@ -58,7 +58,7 @@ public class TestDBConnection {
 		return connection;
 	}
 
-	private final void initializeTables() throws Exception {
+	public final void initializeTables() throws Exception {
 		manager.initializeTable(Version.class);
 		manager.initializeTable(Revision.class);
 		manager.initializeTable(SourceFile.class);
@@ -66,6 +66,10 @@ public class TestDBConnection {
 		manager.initializeTable(RawCloneClass.class);
 		manager.initializeTable(RawClonedFragment.class);
 		manager.initializeTable(VersionSourceFile.class);
+	}
+	
+	public final void initializeTable(final Class<?> clazz) throws Exception {
+		manager.initializeTable(clazz);
 	}
 
 	private final void setupNativeDaos() throws Exception {
