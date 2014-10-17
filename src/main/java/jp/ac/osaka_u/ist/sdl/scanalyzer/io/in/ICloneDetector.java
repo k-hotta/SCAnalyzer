@@ -15,7 +15,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 public interface ICloneDetector {
 
 	/**
-	 * Detect all the clones in the specified version.
+	 * Detect all the clones in the specified version. <br>
+	 * The given version should be under construction but it must have at least
+	 * the information about the revision and the source files.
 	 * 
 	 * @param version
 	 *            the version to be investigated

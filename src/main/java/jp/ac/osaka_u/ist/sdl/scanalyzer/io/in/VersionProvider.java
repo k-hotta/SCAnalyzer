@@ -211,22 +211,10 @@ public class VersionProvider {
 		// instantiate file changes and detect source files
 		processFileChanges(currentVersion, nextVersion, fileChangeEntries);
 
+		// detect clones in the NEXT version
+		detectClones(nextVersion);
+
 		return nextVersion;
-	}
-
-	private Revision detectNextRevision(final Version currentVersion) {
-		final Revision currentRevision = currentVersion.getRevision();
-
-		// the next revision
-		Revision nextRevision = null;
-		if (currentRevision.getDate() == null) {
-			// the current revision is pseudo initial revision
-			nextRevision = revisionProvider.getFirstRevision();
-		} else {
-			nextRevision = revisionProvider.getNextRevision(currentRevision);
-		}
-
-		return nextRevision;
 	}
 
 	/**
@@ -248,7 +236,7 @@ public class VersionProvider {
 			eLogger.fatal("file change detector has not been specified");
 			ready = false;
 		}
-		
+
 		if (cloneDetector == null) {
 			eLogger.fatal("clone detector has not been specified");
 			ready = false;
@@ -268,6 +256,28 @@ public class VersionProvider {
 				IDGenerator.generate(Revision.class),
 				"pseudo-initial-revision", null), new HashSet<FileChange>(),
 				new HashSet<RawCloneClass>(), new HashSet<SourceFile>());
+	}
+
+	/**
+	 * Detect next revision of the given current version
+	 * 
+	 * @param currentVersion
+	 *            current version
+	 * @return the next revision if detected, <code>null</code> otherwise
+	 */
+	private Revision detectNextRevision(final Version currentVersion) {
+		final Revision currentRevision = currentVersion.getRevision();
+
+		// the next revision
+		Revision nextRevision = null;
+		if (currentRevision.getDate() == null) {
+			// the current revision is pseudo initial revision
+			nextRevision = revisionProvider.getFirstRevision();
+		} else {
+			nextRevision = revisionProvider.getNextRevision(currentRevision);
+		}
+
+		return nextRevision;
 	}
 
 	/**
@@ -312,7 +322,7 @@ public class VersionProvider {
 					// this is a copy
 					oldSourceFile = sourceFilesUnderConsideration.get(oldPath);
 				} else {
-					// this is a deletion or relocation
+					// this is a deletion, modification, or relocation
 					oldSourceFile = sourceFilesUnderConsideration
 							.remove(oldPath);
 				}
@@ -376,6 +386,22 @@ public class VersionProvider {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Detect clones with the specified clone detector in the next version
+	 * 
+	 * @param nextVersion
+	 *            the next version where clones are to be detected
+	 */
+	private void detectClones(final Version nextVersion) {
+		final Collection<RawCloneClass> rawCloneClasses = cloneDetector
+				.detectClones(nextVersion);
+		for (final RawCloneClass rawCloneClass : rawCloneClasses) {
+			nextVersion.getRawCloneClasses().add(rawCloneClass);
+			rawCloneClass.setVersion(nextVersion);
+		}
+
 	}
 
 }
