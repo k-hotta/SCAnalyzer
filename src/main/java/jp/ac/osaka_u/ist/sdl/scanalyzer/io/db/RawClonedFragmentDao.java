@@ -63,9 +63,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<RawClonedFragment> {
 	@Override
 	public RawClonedFragment refresh(RawClonedFragment element)
 			throws SQLException {
-		versionDao.refresh(element.getVersion());
-		sourceFileDao.refresh(element.getSourceFile());
-		rawCloneClassDao.refresh(element.getCloneClass());
+		if (element != null) {
+			versionDao.refresh(element.getVersion());
+			sourceFileDao.refresh(element.getSourceFile());
+			rawCloneClassDao.refresh(element.getCloneClass());
+		}
 
 		return element;
 	}
