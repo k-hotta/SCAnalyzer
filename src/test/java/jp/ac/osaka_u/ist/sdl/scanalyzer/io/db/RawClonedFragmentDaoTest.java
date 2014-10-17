@@ -49,8 +49,11 @@ public class RawClonedFragmentDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTables();
-		connection.storeAll(parser);
+		connection.initializeTable(RawClonedFragment.class);
+		for (final RawClonedFragment rawClonedFragment : parser
+				.getRawClonedFragments().values()) {
+			connection.storeRawClonedFragmentWithNativeWay(rawClonedFragment);
+		}
 	}
 
 	private boolean check(final RawClonedFragment result,

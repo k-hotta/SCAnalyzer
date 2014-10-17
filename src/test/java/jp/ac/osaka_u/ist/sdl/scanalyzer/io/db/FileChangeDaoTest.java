@@ -42,8 +42,10 @@ public class FileChangeDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTables();
-		connection.storeAll(parser);
+		connection.initializeTable(FileChange.class);
+		for (final FileChange fileChange : parser.getFileChanges().values()) {
+			connection.storeFileChangeWithNativeWay(fileChange);
+		}
 	}
 
 	@AfterClass

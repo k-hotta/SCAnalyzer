@@ -43,8 +43,10 @@ public class RawCloneClassDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTables();
-		connection.storeAll(parser);
+		connection.initializeTable(RawCloneClass.class);
+		for (final RawCloneClass rawCloneClass : parser.getRawCloneClasses().values()) {
+			connection.storeRawCloneClassWithNativeWay(rawCloneClass);
+		}
 	}
 
 	@AfterClass
