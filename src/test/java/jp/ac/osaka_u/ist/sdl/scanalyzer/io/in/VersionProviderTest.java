@@ -471,7 +471,7 @@ public class VersionProviderTest {
 		final Collection<FileChange> fileChanges = ver4.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
-		final FileChangeEntry dummy = new FileChangeEntry(null, null, 'A');
+		final FileChangeEntry dummy = new FileChangeEntry("Dummy.java", null, 'A');
 		fileChangeEntries.add(dummy);
 
 		final Version versionUnderConstructed = new Version(ver4.getId(),
