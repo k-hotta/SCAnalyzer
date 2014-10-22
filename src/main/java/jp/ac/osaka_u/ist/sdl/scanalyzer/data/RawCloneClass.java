@@ -53,7 +53,7 @@ public class RawCloneClass implements IDBElement {
 	/**
 	 * A collection having all the members of this clone class
 	 */
-	@ForeignCollectionField(eager = false, columnName = ELEMENTS_COLUMN_NAME)
+	@ForeignCollectionField(eager = true, columnName = ELEMENTS_COLUMN_NAME)
 	private Collection<RawClonedFragment> elements;
 
 	/**

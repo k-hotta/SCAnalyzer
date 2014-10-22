@@ -55,13 +55,13 @@ public class Version implements IDBElement {
 	 * The collection of changes on source files between the last version and
 	 * this version
 	 */
-	@ForeignCollectionField(eager = false, columnName = FILE_CHANGES_COLUMN_NAME)
+	@ForeignCollectionField(eager = true, columnName = FILE_CHANGES_COLUMN_NAME)
 	private Collection<FileChange> fileChanges;
 
 	/**
 	 * The collection of raw clone classes in this version
 	 */
-	@ForeignCollectionField(eager = false, columnName = RAW_CLONE_CLASSES_COLUMN_NAME)
+	@ForeignCollectionField(eager = true, columnName = RAW_CLONE_CLASSES_COLUMN_NAME)
 	private Collection<RawCloneClass> rawCloneClasses;
 
 	/**

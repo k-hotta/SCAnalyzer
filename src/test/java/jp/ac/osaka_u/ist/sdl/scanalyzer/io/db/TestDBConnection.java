@@ -19,6 +19,8 @@ import com.j256.ormlite.dao.Dao;
  * 
  */
 public class TestDBConnection {
+	
+	private static final int MAXIMUM_EKEMENTS_STORED = 100000;
 
 	/**
 	 * The manager of database connection
@@ -47,7 +49,7 @@ public class TestDBConnection {
 		// the instance must be created only from this class
 		final String url = DBUrlProvider.getUrl(parser.getDbms(),
 				parser.getPath());
-		this.manager = DBManager.setup(url);
+		this.manager = DBManager.setup(url, MAXIMUM_EKEMENTS_STORED);
 	}
 
 	public static final TestDBConnection create(final DBXmlParser parser)

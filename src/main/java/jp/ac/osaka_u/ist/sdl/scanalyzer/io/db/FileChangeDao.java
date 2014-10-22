@@ -32,20 +32,40 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	 * The DAO for source files. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<SourceFile, Long> sourceFileDao;
+	private SourceFileDao sourceFileDao;
 
 	/**
 	 * The DAO for versions. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<Version, Long> versionDao;
+	private VersionDao versionDao;
 
 	@SuppressWarnings("unchecked")
-	public FileChangeDao() throws SQLException {
+	public FileChangeDao(final int maximumElementsStored) throws SQLException {
 		super((Dao<FileChange, Long>) DBManager.getInstance().getNativeDao(
-				FileChange.class));
-		this.sourceFileDao = this.manager.getNativeDao(SourceFile.class);
-		this.versionDao = this.manager.getNativeDao(Version.class);
+				FileChange.class), maximumElementsStored);
+		this.sourceFileDao = null;
+		this.versionDao = null;
+	}
+
+	/**
+	 * Set the DAO for SourceFile with the specified one
+	 * 
+	 * @param sourceFileDao
+	 *            the DAO to be set
+	 */
+	void setSourceFileDao(final SourceFileDao sourceFileDao) {
+		this.sourceFileDao = sourceFileDao;
+	}
+
+	/**
+	 * Set the DAO for Version with the specified one
+	 * 
+	 * @param versionDao
+	 *            the DAO to be set
+	 */
+	void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
 	}
 
 	@Override
@@ -55,11 +75,15 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 
 	@Override
 	public FileChange refresh(FileChange element) throws SQLException {
-		if (element != null) {
-			sourceFileDao.refresh(element.getOldSourceFile());
-			sourceFileDao.refresh(element.getNewSourceFile());
-			versionDao.refresh(element.getVersion());
+		if (element.getOldSourceFile() != null) {
+			element.setOldSourceFile(sourceFileDao.get(element
+					.getOldSourceFile().getId()));
 		}
+		if (element.getNewSourceFile() != null) {
+			element.setNewSourceFile(sourceFileDao.get(element
+					.getNewSourceFile().getId()));
+		}
+		element.setVersion(versionDao.get(element.getVersion().getId()));
 
 		return element;
 	}

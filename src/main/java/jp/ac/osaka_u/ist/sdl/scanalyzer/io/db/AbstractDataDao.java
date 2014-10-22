@@ -4,6 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDBElement;
 
@@ -41,6 +45,26 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	protected final Dao<D, Long> originalDao;
 
 	/**
+	 * The map that has elements retrieved previously. <br>
+	 * If the number of elements stored in this map exceeds {@link
+	 * this#maximumElementsStored}, half of the stored elements will be removed
+	 * in chronological order.
+	 */
+	protected final ConcurrentMap<Long, D> retrievedElements;
+
+	/**
+	 * The maximum number of elements can be stored in {@link
+	 * this#retrievedElements}
+	 */
+	private final int maximumElementsStored;
+
+	/**
+	 * This queue contains ids of stored elements in {@link
+	 * this#retrievedElements} in chronological order of their registration.
+	 */
+	private final Queue<Long> chronologicalPutOrder;
+
+	/**
 	 * * The constructor.
 	 * 
 	 * <p>
@@ -51,10 +75,17 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param originalDao
 	 *            the instance of DAO provided by ORMLite which corresponds to
 	 *            the data class
+	 * @param maximumElementsStored
+	 *            the maximum number of elements can be stored in {@link
+	 *            this#retrievedElements}
 	 */
-	public AbstractDataDao(final Dao<D, Long> originalDao) {
+	public AbstractDataDao(final Dao<D, Long> originalDao,
+			final int maximumElementsStored) {
 		this.manager = DBManager.getInstance();
 		this.originalDao = originalDao;
+		this.maximumElementsStored = maximumElementsStored;
+		this.retrievedElements = new ConcurrentSkipListMap<Long, D>();
+		this.chronologicalPutOrder = new ConcurrentLinkedQueue<Long>();
 	}
 
 	/**
@@ -66,7 +97,27 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	protected abstract void trace(final String msg);
 
 	/**
-	 * Get all the elements in the table as a list
+	 * Retrieve the elements from database whose id equals to the given value.
+	 * 
+	 * @param id
+	 *            the id of the element to be retrieved
+	 * @return the retrieved element if exists, <code>null</code> otherwise
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	private synchronized D retrieve(final long id) throws SQLException {
+		trace("get the element whose id is " + id + " from database");
+		final D result = originalDao.queryForId(id);
+
+		if (result == null) {
+			eLogger.warn("cannot find the corresponding element for id " + id);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get all the elements in the table as a list.
 	 * 
 	 * @return all the instances
 	 * @throws SQLException
@@ -74,7 +125,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	public List<D> getAll() throws SQLException {
 		trace("get all the elements of this table from database");
-		return originalDao.queryForAll();
+		return refreshAll(originalDao.queryForAll());
 	}
 
 	/**
@@ -88,14 +139,54 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *             If any error occurred when connecting the database
 	 */
 	public D get(final long id) throws SQLException {
-		trace("get the element whose id is " + id + " from database");
-		final D result = originalDao.queryForId(id);
+		if (retrievedElements.containsKey(id)) {
+			return retrievedElements.get(id);
+		} else {
+			final D result = retrieve(id);
+			return checkAndRefresh(result);
+		}
+	}
 
+	/**
+	 * Put the given element into the map. <br>
+	 * If the number of the elements in the map in this operation, it also
+	 * removes half of stored elements from the map.
+	 * 
+	 * @param element
+	 *            the element to be stored
+	 * @return the put element
+	 */
+	protected D put(final D element) {
+		D result = retrievedElements.get(element.getId());
 		if (result == null) {
-			eLogger.warn("cannot find the corresponding element for id " + id);
+			result = element;
+			this.retrievedElements.put(element.getId(), element);
+			this.chronologicalPutOrder.offer(element.getId());
+			trace("the element " + element.getId() + " was put");
+
+			synchronized (retrievedElements) {
+				if (this.retrievedElements.size() > maximumElementsStored) {
+					trace("the number of stored elements "
+							+ this.retrievedElements.size()
+							+ " is greater than given threshold");
+					trace("old elements will be removed");
+
+					int half = maximumElementsStored / 2;
+					int currentSize = this.retrievedElements.size();
+
+					while (currentSize > half) {
+						long toBeRemoved = chronologicalPutOrder.poll();
+						this.retrievedElements.remove(toBeRemoved);
+
+						currentSize = this.retrievedElements.size();
+					}
+
+					trace("now there are " + currentSize + " elements stored");
+				}
+			}
 		}
 
-		return refresh(result);
+		return result;
 	}
 
 	/**
@@ -189,6 +280,31 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	public abstract D refresh(final D element) throws SQLException;
 
 	/**
+	 * Check whether the given element is already stored. If so, this method
+	 * returns the stored element. Otherwise, this method stores the new element
+	 * refreshed.
+	 * 
+	 * @param element
+	 *            element to be checked
+	 * @return <code>null</code> in case element is null, the already stored
+	 *         element if exists, otherwise newly stored element.
+	 * @throws SQLException
+	 *             If any error occurred when connecting the database
+	 */
+	private D checkAndRefresh(final D element) throws SQLException {
+		if (element == null) {
+			return null;
+		}
+
+		if (this.retrievedElements.containsKey(element.getId())) {
+			return this.retrievedElements.get(element.getId());
+		}
+
+		put(element);
+		return refresh(element);
+	}
+
+	/**
 	 * Perform refreshing on all the given elements.
 	 * 
 	 * @param elements
@@ -197,11 +313,13 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws SQLException
 	 */
 	public List<D> refreshAll(final List<D> elements) throws SQLException {
+		final List<D> result = new ArrayList<D>();
+
 		for (final D element : elements) {
-			refresh(element);
+			result.add(checkAndRefresh(element));
 		}
 
-		return elements;
+		return result;
 	}
 
 	/**

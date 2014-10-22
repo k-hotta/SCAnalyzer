@@ -21,6 +21,8 @@ import org.junit.Test;
  * 
  */
 public class FileChangeDaoTest {
+	
+	private static final int MAXIMUM_EKEMENTS_STORED = 100000;
 
 	private static final String TEST_DB_XML_PATH = "src/test/resources/test-db.xml";
 
@@ -37,7 +39,7 @@ public class FileChangeDaoTest {
 		connection = TestDBConnection.create(parser);
 		connection.initializeTables();
 		connection.storeAll(parser);
-		dao = new FileChangeDao();
+		dao = DBManager.getInstance().getFileChangeDao();
 	}
 
 	@Before

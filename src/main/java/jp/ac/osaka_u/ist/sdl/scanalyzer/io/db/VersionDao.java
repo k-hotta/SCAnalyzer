@@ -1,6 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
@@ -38,19 +40,19 @@ public class VersionDao extends AbstractDataDao<Version> {
 	 * The DAO for Revision. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<Revision, Long> revisionDao;
+	private RevisionDao revisionDao;
 
 	/**
 	 * The DAO for FileChange. <br>
 	 * This is for refreshing
 	 */
-	private final Dao<FileChange, Long> fileChangeDao;
+	private FileChangeDao fileChangeDao;
 
 	/**
 	 * The DAO for RawCloneClass. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<RawCloneClass, Long> rawCloneClassDao;
+	private RawCloneClassDao rawCloneClassDao;
 
 	/**
 	 * The DAO for SourceFile. <br>
@@ -62,18 +64,18 @@ public class VersionDao extends AbstractDataDao<Version> {
 	 * The DAO for RawClonedFragment. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<RawClonedFragment, Long> rawClonedFragmentDao;
+	private RawClonedFragmentDao rawClonedFragmentDao;
 
 	/**
 	 * The DAO for VersionSourceFile. <br>
 	 * This is for retrieving corresponding source files to each version.
 	 */
-	private final Dao<VersionSourceFile, Long> versionSourceFileDao;
+	private final Dao<VersionSourceFile, Long> nativeVersionSourceFileDao;
 
 	/**
 	 * The data DAO for SourceFile
 	 */
-	private SourceFileDao sourceFileDataDao;
+	private SourceFileDao sourceFileDao;
 
 	/**
 	 * The query to get corresponding source files
@@ -81,29 +83,68 @@ public class VersionDao extends AbstractDataDao<Version> {
 	private PreparedQuery<SourceFile> sourceFilesForVersionQuery;
 
 	@SuppressWarnings("unchecked")
-	public VersionDao() throws SQLException {
+	public VersionDao(final int maximumElementsStored) throws SQLException {
 		super((Dao<Version, Long>) DBManager.getInstance().getNativeDao(
-				Version.class));
-		this.revisionDao = this.manager.getNativeDao(Revision.class);
-		this.fileChangeDao = this.manager.getNativeDao(FileChange.class);
-		this.rawCloneClassDao = this.manager.getNativeDao(RawCloneClass.class);
+				Version.class), maximumElementsStored);
+		this.revisionDao = null;
+		this.fileChangeDao = null;
+		this.rawCloneClassDao = null;
 		this.nativeSourceFileDao = this.manager.getNativeDao(SourceFile.class);
-		this.rawClonedFragmentDao = this.manager
-				.getNativeDao(RawClonedFragment.class);
-		this.versionSourceFileDao = this.manager
+		this.rawClonedFragmentDao = null;
+		this.nativeVersionSourceFileDao = this.manager
 				.getNativeDao(VersionSourceFile.class);
-		sourceFileDataDao = null;
-		sourceFilesForVersionQuery = null;
+		this.sourceFileDao = null;
+		this.sourceFilesForVersionQuery = null;
 	}
 
 	/**
-	 * Set the data DAO for SourceFile with the specified one.
+	 * Set the DAO for Revision with the specified one.
 	 * 
-	 * @param sourceFileDataDao
-	 *            the data DAO to be set
+	 * @param revisionDao
+	 *            the DAO to be set
 	 */
-	void setSourceFileDataDao(final SourceFileDao sourceFileDataDao) {
-		this.sourceFileDataDao = sourceFileDataDao;
+	void setRevidionDao(final RevisionDao revisionDao) {
+		this.revisionDao = revisionDao;
+	}
+
+	/**
+	 * Set the DAO for FileChange with the specified one.
+	 * 
+	 * @param fileChangeDao
+	 *            the DAO to be set
+	 */
+	void setFileChangeDao(final FileChangeDao fileChangeDao) {
+		this.fileChangeDao = fileChangeDao;
+	}
+
+	/**
+	 * Set the DAO for RawCloneClass with the specified one.
+	 * 
+	 * @param rawCloneClassDao
+	 *            the DAO to be set
+	 */
+	void setRawCloneClassDao(final RawCloneClassDao rawCloneClassDao) {
+		this.rawCloneClassDao = rawCloneClassDao;
+	}
+
+	/**
+	 * Set the DAO for RawClonedFragment with the specified one.
+	 * 
+	 * @param rawClonedFragmentDao
+	 *            the DAO to be set
+	 */
+	void setRawClonedFragmentDao(final RawClonedFragmentDao rawClonedFragmentDao) {
+		this.rawClonedFragmentDao = rawClonedFragmentDao;
+	}
+
+	/**
+	 * Set the DAO for SourceFile with the specified one.
+	 * 
+	 * @param sourceFileDao
+	 *            the DAO to be set
+	 */
+	void setSourceFileDao(final SourceFileDao sourceFileDao) {
+		this.sourceFileDao = sourceFileDao;
 	}
 
 	@Override
@@ -126,7 +167,9 @@ public class VersionDao extends AbstractDataDao<Version> {
 				rawClonedFragmentDao.refresh(rawClonedFragment);
 			}
 		}
+
 		element.setSourceFiles(getCorrespondingSourceFiles(element));
+
 		return element;
 	}
 
@@ -161,12 +204,12 @@ public class VersionDao extends AbstractDataDao<Version> {
 		}
 		sourceFilesForVersionQuery.setArgumentHolderValue(0, version);
 
-		return sourceFileDataDao.query(sourceFilesForVersionQuery);
+		return sourceFileDao.query(sourceFilesForVersionQuery);
 	}
 
 	private PreparedQuery<SourceFile> makeSourceFilesForVersionQuery()
 			throws SQLException {
-		QueryBuilder<VersionSourceFile, Long> versionSourceFileQb = versionSourceFileDao
+		QueryBuilder<VersionSourceFile, Long> versionSourceFileQb = nativeVersionSourceFileDao
 				.queryBuilder();
 
 		versionSourceFileQb

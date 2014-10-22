@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 
 import org.junit.AfterClass;
@@ -23,6 +22,8 @@ import org.junit.Test;
  */
 public class RawCloneClassDaoTest {
 
+	private static final int MAXIMUM_EKEMENTS_STORED = 100000;
+	
 	private static final String TEST_DB_XML_PATH = "src/test/resources/test-db.xml";
 
 	private static DBXmlParser parser;
@@ -38,7 +39,7 @@ public class RawCloneClassDaoTest {
 		connection = TestDBConnection.create(parser);
 		connection.initializeTables();
 		connection.storeAll(parser);
-		dao = new RawCloneClassDao();
+		dao = DBManager.getInstance().getRawCloneClassDao();
 	}
 
 	@Before

@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
@@ -43,9 +44,9 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 	private final Dao<Version, Long> nativeVersionDao;
 
 	/**
-	 * The data DAO for Version.
+	 * The DAO for Version.
 	 */
-	private VersionDao versionDataDao;
+	private VersionDao versionDao;
 
 	/**
 	 * The query to get corresponding versions
@@ -53,13 +54,13 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 	private PreparedQuery<Version> versionsForSourceFileQuery = null;
 
 	@SuppressWarnings("unchecked")
-	public SourceFileDao() throws SQLException {
+	public SourceFileDao(final int maximumElementsStored) throws SQLException {
 		super((Dao<SourceFile, Long>) DBManager.getInstance().getNativeDao(
-				SourceFile.class));
+				SourceFile.class), maximumElementsStored);
 		this.versionSourceFileDao = this.manager
 				.getNativeDao(VersionSourceFile.class);
 		this.nativeVersionDao = this.manager.getNativeDao(Version.class);
-		versionDataDao = null;
+		versionDao = null;
 	}
 
 	@Override
@@ -70,17 +71,18 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 	@Override
 	public SourceFile refresh(SourceFile element) throws SQLException {
 		element.setVersions(getCorrespondingVersions(element));
+
 		return element;
 	}
 
 	/**
-	 * Set the data DAO for Version with the specified one
+	 * Set the DAO for Version with the specified one
 	 * 
-	 * @param versionDataDao
-	 *            the data DAO to be set
+	 * @param versionDao
+	 *            the DAO to be set
 	 */
-	void setVersionDao(final VersionDao versionDataDao) {
-		this.versionDataDao = versionDataDao;
+	void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
 	}
 
 	/**
@@ -113,7 +115,7 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 		}
 		versionsForSourceFileQuery.setArgumentHolderValue(0, sourceFile);
 
-		return versionDataDao.query(versionsForSourceFileQuery);
+		return versionDao.query(versionsForSourceFileQuery);
 	}
 
 	private PreparedQuery<Version> makeVersionsForSourceFileQuery()

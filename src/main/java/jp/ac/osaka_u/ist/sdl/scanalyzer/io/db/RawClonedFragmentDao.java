@@ -32,27 +32,58 @@ public class RawClonedFragmentDao extends AbstractDataDao<RawClonedFragment> {
 	 * The DAO for versions. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<Version, Long> versionDao;
+	private VersionDao versionDao;
 
 	/**
 	 * The DAO for source files. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<SourceFile, Long> sourceFileDao;
+	private SourceFileDao sourceFileDao;
 
 	/**
 	 * The DAO for raw clone classes. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<RawCloneClass, Long> rawCloneClassDao;
+	private RawCloneClassDao rawCloneClassDao;
 
 	@SuppressWarnings("unchecked")
-	public RawClonedFragmentDao() throws SQLException {
+	public RawClonedFragmentDao(final int maximumElementsStored)
+			throws SQLException {
 		super((Dao<RawClonedFragment, Long>) DBManager.getInstance()
-				.getNativeDao(RawClonedFragment.class));
-		versionDao = this.manager.getNativeDao(Version.class);
-		sourceFileDao = this.manager.getNativeDao(SourceFile.class);
-		rawCloneClassDao = this.manager.getNativeDao(RawCloneClass.class);
+				.getNativeDao(RawClonedFragment.class), maximumElementsStored);
+		versionDao = null;
+		sourceFileDao = null;
+		rawCloneClassDao = null;
+	}
+
+	/**
+	 * Set the DAO for SourceFile with the specified one
+	 * 
+	 * @param sourceFileDao
+	 *            the DAO to be set
+	 */
+	void setSourceFileDao(final SourceFileDao sourceFileDao) {
+		this.sourceFileDao = sourceFileDao;
+	}
+
+	/**
+	 * Set the DAO for Version with the specified one
+	 * 
+	 * @param versionDao
+	 *            the DAO to be set
+	 */
+	void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
+	}
+
+	/**
+	 * Set the DAO for RawCloneClass with the specified one
+	 * 
+	 * @param rawCloneClassDao
+	 *            the DAO to be set
+	 */
+	void setRawCloneClassDao(final RawCloneClassDao rawCloneClassDao) {
+		this.rawCloneClassDao = rawCloneClassDao;
 	}
 
 	@Override
@@ -63,11 +94,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<RawClonedFragment> {
 	@Override
 	public RawClonedFragment refresh(RawClonedFragment element)
 			throws SQLException {
-		if (element != null) {
-			versionDao.refresh(element.getVersion());
-			sourceFileDao.refresh(element.getSourceFile());
-			rawCloneClassDao.refresh(element.getCloneClass());
-		}
+		element.setVersion(versionDao.get(element.getVersion().getId()));
+		element.setSourceFile(sourceFileDao
+				.get(element.getSourceFile().getId()));
+		element.setCloneClass(rawCloneClassDao.get(element.getCloneClass()
+				.getId()));
 
 		return element;
 	}

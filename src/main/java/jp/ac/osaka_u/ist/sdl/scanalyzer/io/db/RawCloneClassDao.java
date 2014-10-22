@@ -1,6 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
@@ -31,21 +33,41 @@ public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
 	 * The DAO for versions. <br>
 	 * This is for refreshing
 	 */
-	private final Dao<Version, Long> versionDao;
+	private VersionDao versionDao;
 
 	/**
 	 * The DAO for raw cloned fragments. <br>
 	 * This is for refreshing.
 	 */
-	private final Dao<RawClonedFragment, Long> rawClonedFragmentDao;
+	private RawClonedFragmentDao rawClonedFragmentDao;
 
 	@SuppressWarnings("unchecked")
-	public RawCloneClassDao() throws SQLException {
+	public RawCloneClassDao(final int maximumElementsStored)
+			throws SQLException {
 		super((Dao<RawCloneClass, Long>) DBManager.getInstance().getNativeDao(
-				RawCloneClass.class));
-		this.versionDao = this.manager.getNativeDao(Version.class);
-		this.rawClonedFragmentDao = this.manager
-				.getNativeDao(RawClonedFragment.class);
+				RawCloneClass.class), maximumElementsStored);
+		this.versionDao = null;
+		this.rawClonedFragmentDao = null;
+	}
+
+	/**
+	 * Set the DAO for SourceFile with the specified one
+	 * 
+	 * @param rawClonedFragmentDao
+	 *            the DAO to be set
+	 */
+	void setRawClonedFragmentDao(final RawClonedFragmentDao rawClonedFragmentDao) {
+		this.rawClonedFragmentDao = rawClonedFragmentDao;
+	}
+
+	/**
+	 * Set the DAO for Version with the specified one
+	 * 
+	 * @param versionDao
+	 *            the DAO to be set
+	 */
+	void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
 	}
 
 	@Override
@@ -55,13 +77,13 @@ public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
 
 	@Override
 	public RawCloneClass refresh(RawCloneClass element) throws SQLException {
-		if (element != null) {
-			versionDao.refresh(element.getVersion());
-			for (final RawClonedFragment rawClonedFragment : element
-					.getElements()) {
-				rawClonedFragmentDao.refresh(rawClonedFragment);
-			}
+		element.setVersion(versionDao.get(element.getVersion().getId()));
+		final Collection<RawClonedFragment> rawClonedFragments = new ArrayList<RawClonedFragment>();
+		for (final RawClonedFragment rawClonedFragment : element.getElements()) {
+			rawClonedFragments.add(rawClonedFragmentDao.get(rawClonedFragment
+					.getId()));
 		}
+		element.setElements(rawClonedFragments);
 
 		return element;
 	}

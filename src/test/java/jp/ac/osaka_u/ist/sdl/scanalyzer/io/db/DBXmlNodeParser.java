@@ -200,13 +200,14 @@ public class DBXmlNodeParser {
 				currentSourceFile.getVersions().add(justProcessedVersion);
 				justProcessedVersion.getSourceFiles().remove(anotherSourceFile);
 				justProcessedVersion.getSourceFiles().add(currentSourceFile);
+				this.sourceFiles.remove(anotherSourceFile.getId());
+				this.sourceFiles.put(currentSourceFile.getId(), currentSourceFile);
 			} else {
 				this.sourceFiles.put(anotherSourceFile.getId(),
 						anotherSourceFile);
 			}
 		}
 
-		this.sourceFiles.putAll(another.getSourceFiles());
 		this.fileChanges.putAll(another.getFileChanges());
 		this.rawCloneClasses.putAll(another.getRawCloneClasses());
 		this.rawClonedFragments.putAll(another.getRawClonedFragments());

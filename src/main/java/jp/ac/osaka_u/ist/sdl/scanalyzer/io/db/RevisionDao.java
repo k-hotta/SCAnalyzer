@@ -27,9 +27,9 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 			.getLogger(RevisionDao.class);
 
 	@SuppressWarnings("unchecked")
-	public RevisionDao() throws SQLException {
+	public RevisionDao(final int maximumElementsStored) throws SQLException {
 		super((Dao<Revision, Long>) DBManager.getInstance().getNativeDao(
-				Revision.class));
+				Revision.class), maximumElementsStored);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 
 	@Override
 	public Revision refresh(Revision element) throws SQLException {
-		// do nothing because Revision table has no foreign fields
+		// do nothing because Revision doesn't have any foreign field
 		return element;
 	}
 
