@@ -19,8 +19,6 @@ import com.j256.ormlite.dao.Dao;
  * 
  */
 public class TestDBConnection {
-	
-	private static final int MAXIMUM_EKEMENTS_STORED = 100000;
 
 	/**
 	 * The manager of database connection
@@ -49,7 +47,7 @@ public class TestDBConnection {
 		// the instance must be created only from this class
 		final String url = DBUrlProvider.getUrl(parser.getDbms(),
 				parser.getPath());
-		this.manager = DBManager.setup(url, MAXIMUM_EKEMENTS_STORED);
+		this.manager = DBManager.setup(url);
 	}
 
 	public static final TestDBConnection create(final DBXmlParser parser)
@@ -69,7 +67,7 @@ public class TestDBConnection {
 		manager.initializeTable(RawClonedFragment.class);
 		manager.initializeTable(VersionSourceFile.class);
 	}
-	
+
 	public final void initializeTable(final Class<?> clazz) throws Exception {
 		manager.initializeTable(clazz);
 	}

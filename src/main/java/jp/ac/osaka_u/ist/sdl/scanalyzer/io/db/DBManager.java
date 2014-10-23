@@ -105,21 +105,17 @@ public class DBManager {
 	 * 
 	 * @param url
 	 *            the url of the database
-	 * @param maximumElementsStored
-	 *            The maximum number of elements can be stored in
-	 *            DBElementManager for each data class
 	 * @return the instance that initialized by the method call (at the first
 	 *         call)<br>
 	 *         the instance that has been already initialized (otherwise)
 	 * @throws SQLException
 	 *             If the connection cannot be created
 	 */
-	public static DBManager setup(final String url,
-			final int maximumElementsStored) throws SQLException {
+	public static DBManager setup(final String url) throws SQLException {
 		try {
 			if (SINGLETON == null) {
 				SINGLETON = new DBManager(url);
-				setupDaos(SINGLETON, maximumElementsStored);
+				setupDaos(SINGLETON);
 				logger.trace("set up the database connection");
 			} else {
 				eLogger.warn("the instance of DBManager has been already initialized, so nothing will be done here");
@@ -155,35 +151,27 @@ public class DBManager {
 	 * 
 	 * @param instance
 	 *            the instance for which DAOs required to be set up
-	 * @param maximumElementsStored
-	 *            The maximum number of elements can be stored in
-	 *            DBElementManager for each data class
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	private static void setupDaos(final DBManager instance,
-			final int maximumElementsStored) throws SQLException {
-		final FileChangeDao fileChangeDao = new FileChangeDao(
-				maximumElementsStored);
-		final RawCloneClassDao rawCloneClassDao = new RawCloneClassDao(
-				maximumElementsStored);
-		final RawClonedFragmentDao rawClonedFragmentDao = new RawClonedFragmentDao(
-				maximumElementsStored);
-		final RevisionDao revisionDao = new RevisionDao(maximumElementsStored);
-		final SourceFileDao sourceFileDao = new SourceFileDao(
-				maximumElementsStored);
-		final VersionDao versionDao = new VersionDao(maximumElementsStored);
+	private static void setupDaos(final DBManager instance) throws SQLException {
+		final FileChangeDao fileChangeDao = new FileChangeDao();
+		final RawCloneClassDao rawCloneClassDao = new RawCloneClassDao();
+		final RawClonedFragmentDao rawClonedFragmentDao = new RawClonedFragmentDao();
+		final RevisionDao revisionDao = new RevisionDao();
+		final SourceFileDao sourceFileDao = new SourceFileDao();
+		final VersionDao versionDao = new VersionDao();
 
 		fileChangeDao.setSourceFileDao(sourceFileDao);
 		fileChangeDao.setVersionDao(versionDao);
-		
+
 		rawCloneClassDao.setRawClonedFragmentDao(rawClonedFragmentDao);
 		rawCloneClassDao.setVersionDao(versionDao);
-		
+
 		rawClonedFragmentDao.setRawCloneClassDao(rawCloneClassDao);
 		rawClonedFragmentDao.setSourceFileDao(sourceFileDao);
 		rawClonedFragmentDao.setVersionDao(versionDao);
-		
+
 		versionDao.setRevidionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);
 		versionDao.setRawCloneClassDao(rawCloneClassDao);

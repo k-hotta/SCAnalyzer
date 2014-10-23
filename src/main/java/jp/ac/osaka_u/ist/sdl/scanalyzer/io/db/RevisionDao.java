@@ -27,9 +27,9 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 			.getLogger(RevisionDao.class);
 
 	@SuppressWarnings("unchecked")
-	public RevisionDao(final int maximumElementsStored) throws SQLException {
+	public RevisionDao() throws SQLException {
 		super((Dao<Revision, Long>) DBManager.getInstance().getNativeDao(
-				Revision.class), maximumElementsStored);
+				Revision.class));
 	}
 
 	@Override

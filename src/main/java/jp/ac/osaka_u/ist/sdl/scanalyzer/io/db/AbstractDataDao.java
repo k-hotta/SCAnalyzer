@@ -44,25 +44,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	protected final Dao<D, Long> originalDao;
 
-	/**
-	 * The map that has elements retrieved previously. <br>
-	 * If the number of elements stored in this map exceeds {@link
-	 * this#maximumElementsStored}, half of the stored elements will be removed
-	 * in chronological order.
-	 */
 	protected final ConcurrentMap<Long, D> retrievedElements;
-
-	/**
-	 * The maximum number of elements can be stored in {@link
-	 * this#retrievedElements}
-	 */
-	private final int maximumElementsStored;
-
-	/**
-	 * This queue contains ids of stored elements in {@link
-	 * this#retrievedElements} in chronological order of their registration.
-	 */
-	private final Queue<Long> chronologicalPutOrder;
 
 	/**
 	 * * The constructor.
@@ -75,17 +57,11 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param originalDao
 	 *            the instance of DAO provided by ORMLite which corresponds to
 	 *            the data class
-	 * @param maximumElementsStored
-	 *            the maximum number of elements can be stored in {@link
-	 *            this#retrievedElements}
 	 */
-	public AbstractDataDao(final Dao<D, Long> originalDao,
-			final int maximumElementsStored) {
+	public AbstractDataDao(final Dao<D, Long> originalDao) {
 		this.manager = DBManager.getInstance();
 		this.originalDao = originalDao;
-		this.maximumElementsStored = maximumElementsStored;
 		this.retrievedElements = new ConcurrentSkipListMap<Long, D>();
-		this.chronologicalPutOrder = new ConcurrentLinkedQueue<Long>();
 	}
 
 	/**
@@ -161,29 +137,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		if (result == null) {
 			result = element;
 			this.retrievedElements.put(element.getId(), element);
-			this.chronologicalPutOrder.offer(element.getId());
 			trace("the element " + element.getId() + " was put");
-
-			synchronized (retrievedElements) {
-				if (this.retrievedElements.size() > maximumElementsStored) {
-					trace("the number of stored elements "
-							+ this.retrievedElements.size()
-							+ " is greater than given threshold");
-					trace("old elements will be removed");
-
-					int half = maximumElementsStored / 2;
-					int currentSize = this.retrievedElements.size();
-
-					while (currentSize > half) {
-						long toBeRemoved = chronologicalPutOrder.poll();
-						this.retrievedElements.remove(toBeRemoved);
-
-						currentSize = this.retrievedElements.size();
-					}
-
-					trace("now there are " + currentSize + " elements stored");
-				}
-			}
 		}
 
 		return result;

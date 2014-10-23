@@ -41,9 +41,9 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	private VersionDao versionDao;
 
 	@SuppressWarnings("unchecked")
-	public FileChangeDao(final int maximumElementsStored) throws SQLException {
+	public FileChangeDao() throws SQLException {
 		super((Dao<FileChange, Long>) DBManager.getInstance().getNativeDao(
-				FileChange.class), maximumElementsStored);
+				FileChange.class));
 		this.sourceFileDao = null;
 		this.versionDao = null;
 	}

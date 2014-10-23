@@ -47,10 +47,10 @@ public class RawClonedFragmentDao extends AbstractDataDao<RawClonedFragment> {
 	private RawCloneClassDao rawCloneClassDao;
 
 	@SuppressWarnings("unchecked")
-	public RawClonedFragmentDao(final int maximumElementsStored)
+	public RawClonedFragmentDao()
 			throws SQLException {
 		super((Dao<RawClonedFragment, Long>) DBManager.getInstance()
-				.getNativeDao(RawClonedFragment.class), maximumElementsStored);
+				.getNativeDao(RawClonedFragment.class));
 		versionDao = null;
 		sourceFileDao = null;
 		rawCloneClassDao = null;

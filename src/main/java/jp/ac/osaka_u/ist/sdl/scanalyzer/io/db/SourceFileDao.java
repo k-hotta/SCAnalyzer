@@ -27,9 +27,9 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 	private static Logger logger = LogManager.getLogger(SourceFileDao.class);
 
 	@SuppressWarnings("unchecked")
-	public SourceFileDao(final int maximumElementsStored) throws SQLException {
+	public SourceFileDao() throws SQLException {
 		super((Dao<SourceFile, Long>) DBManager.getInstance().getNativeDao(
-				SourceFile.class), maximumElementsStored);
+				SourceFile.class));
 	}
 
 	@Override

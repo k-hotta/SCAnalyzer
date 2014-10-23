@@ -81,9 +81,9 @@ public class VersionDao extends AbstractDataDao<Version> {
 	private PreparedQuery<SourceFile> sourceFilesForVersionQuery;
 
 	@SuppressWarnings("unchecked")
-	public VersionDao(final int maximumElementsStored) throws SQLException {
+	public VersionDao() throws SQLException {
 		super((Dao<Version, Long>) DBManager.getInstance().getNativeDao(
-				Version.class), maximumElementsStored);
+				Version.class));
 		this.revisionDao = null;
 		this.fileChangeDao = null;
 		this.rawCloneClassDao = null;
