@@ -10,6 +10,7 @@ import java.util.Map;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,6 +47,11 @@ public class SourceFileDaoTest {
 		for (final SourceFile sourceFile : parser.getSourceFiles().values()) {
 			connection.storeSourceFileWithNativeWay(sourceFile);
 		}
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		DBManager.getInstance().clearDaos();
 	}
 
 	private boolean check(final SourceFile result, final SourceFile reference) {

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -53,6 +54,11 @@ public class RawCloneClassDaoTest {
 		connection.close();
 	}
 
+	@After
+	public void tearDown() throws Exception {
+		DBManager.getInstance().clearDaos();
+	}
+	
 	private boolean check(final RawCloneClass result,
 			final RawCloneClass reference) {
 		if (result == null && reference == null) {

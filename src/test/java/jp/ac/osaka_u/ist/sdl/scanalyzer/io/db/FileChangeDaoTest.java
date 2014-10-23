@@ -9,6 +9,7 @@ import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,6 +47,11 @@ public class FileChangeDaoTest {
 		for (final FileChange fileChange : parser.getFileChanges().values()) {
 			connection.storeFileChangeWithNativeWay(fileChange);
 		}
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		DBManager.getInstance().clearDaos();
 	}
 
 	@AfterClass

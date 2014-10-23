@@ -9,6 +9,7 @@ import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -51,6 +52,11 @@ public class RevisionDaoTest {
 		for (final Revision revision : parser.getRevisions().values()) {
 			connection.storeRevisionWithNativeWay(revision);
 		}
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		DBManager.getInstance().clearDaos();
 	}
 
 	private boolean check(final Revision result, final Revision reference) {

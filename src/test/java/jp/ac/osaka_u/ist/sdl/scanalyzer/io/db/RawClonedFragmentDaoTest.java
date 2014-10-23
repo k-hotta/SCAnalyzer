@@ -9,6 +9,7 @@ import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,6 +44,11 @@ public class RawClonedFragmentDaoTest {
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		connection.close();
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		DBManager.getInstance().clearDaos();
 	}
 
 	@Before
