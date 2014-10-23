@@ -212,6 +212,18 @@ public class DBManager {
 	}
 
 	/**
+	 * Clear all the DAOs.
+	 */
+	public final void clearDaos() {
+		fileChangeDao.clear();
+		rawCloneClassDao.clear();
+		rawClonedFragmentDao.clear();
+		revisionDao.clear();
+		sourceFileDao.clear();
+		versionDao.clear();
+	}
+
+	/**
 	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange}.
 	 * 
 	 * @return the DAO for
