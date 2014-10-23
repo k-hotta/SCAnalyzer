@@ -1,6 +1,13 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 
 import org.junit.AfterClass;
@@ -79,6 +86,122 @@ public class SourceFileDaoTest {
 		final SourceFile result = dao.get(id);
 
 		assertTrue(check(result, reference));
+	}
+
+	@Test
+	public void testGet3() throws Exception {
+		final long id1 = 1;
+		final long id2 = 2;
+		final List<SourceFile> results = dao.get(id1, id2);
+
+		assertTrue(results.size() == 2);
+		for (final SourceFile result : results) {
+			final SourceFile reference = parser.getSourceFiles().get(
+					result.getId());
+			assertTrue(check(result, reference));
+		}
+	}
+	
+	@Test
+	public void testGet4() throws Exception {
+		final long id1 = 1;
+		final long id2 = -1;
+		final List<SourceFile> results = dao.get(id1, id2);
+
+		assertTrue(results.size() == 1);
+		for (final SourceFile result : results) {
+			final SourceFile reference = parser.getSourceFiles().get(
+					result.getId());
+			assertTrue(check(result, reference));
+		}
+	}
+	
+	@Test
+	public void testGet5() throws Exception {
+		final long id1 = 1;
+		final long id2 = 2;
+		final List<Long> ids = new ArrayList<Long>();
+		ids.add(id1);
+		ids.add(id2);
+		final List<SourceFile> results = dao.get(ids);
+
+		assertTrue(results.size() == 2);
+		for (final SourceFile result : results) {
+			final SourceFile reference = parser.getSourceFiles().get(
+					result.getId());
+			assertTrue(check(result, reference));
+		}
+	}
+	
+	@Test
+	public void testGet6() throws Exception {
+		final long id1 = 1;
+		final long id2 = -1;
+		final List<Long> ids = new ArrayList<Long>();
+		ids.add(id1);
+		ids.add(id2);
+		final List<SourceFile> results = dao.get(ids);
+
+		assertTrue(results.size() == 1);
+		for (final SourceFile result : results) {
+			final SourceFile reference = parser.getSourceFiles().get(
+					result.getId());
+			assertTrue(check(result, reference));
+		}
+	}
+	
+	@Test
+	public void testGetAll() throws Exception {
+		final Map<Long, SourceFile> references = parser.getSourceFiles();
+		final Collection<SourceFile> results = dao.getAll();
+		
+		assertTrue(results.size() == references.size());
+		for (final SourceFile result : results) {
+			final SourceFile reference = references.get(result.getId());
+			assertTrue(check(result, reference));
+		}
+	}
+	
+	@Test
+	public void testRegister1() throws Exception {
+		boolean caughtException = false;
+
+		try {
+			dao.register(null);
+		} catch (IllegalStateException e) {
+			caughtException = true;
+		}
+
+		assertTrue(caughtException);
+	}
+	
+	@Test
+	public void testRegister2() throws Exception {
+		connection.initializeTable(SourceFile.class); // clear tables
+
+		final Map<Long, SourceFile> sourceFiles = parser.getSourceFiles();
+		final SourceFile sf1 = sourceFiles.get((long) 1);
+
+		dao.register(sf1);
+		final SourceFile result = dao.get((long) 1);
+
+		assertTrue(check(result, sf1));
+	}
+	
+	@Test
+	public void testRegisterAll1() throws Exception {
+		connection.initializeTable(SourceFile.class); // clear tables
+
+		final Map<Long, SourceFile> references = parser.getSourceFiles();
+		dao.registerAll(references.values());
+		
+		List<SourceFile> results = dao.getAll();
+
+		assertTrue(results.size() == references.size());
+		for (final SourceFile result : results) {
+			final SourceFile reference = references.get(result.getId());
+			assertTrue(check(result, reference));
+		}
 	}
 
 }
