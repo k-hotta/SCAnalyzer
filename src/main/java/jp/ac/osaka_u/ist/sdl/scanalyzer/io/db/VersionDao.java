@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -221,5 +222,17 @@ public class VersionDao extends AbstractDataDao<Version> {
 		sourceFileQb.where().in(SourceFile.ID_COLUMN_NAME, versionSourceFileQb);
 
 		return sourceFileQb.prepare();
+	}
+
+	@Override
+	public void register(final Version element) throws SQLException {
+		super.register(element); // register Version itself
+
+		for (final SourceFile sourceFile : element.getSourceFiles()) {
+			final VersionSourceFile vsf = new VersionSourceFile(
+					IDGenerator.generate(VersionSourceFile.class), element,
+					sourceFile);
+			nativeVersionSourceFileDao.create(vsf);
+		}
 	}
 }
