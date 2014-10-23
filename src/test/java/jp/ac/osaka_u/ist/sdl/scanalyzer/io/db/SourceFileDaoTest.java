@@ -2,7 +2,6 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import static org.junit.Assert.assertTrue;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,8 +9,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SourceFileDaoTest {
-
-	private static final int MAXIMUM_EKEMENTS_STORED = 100000;
 
 	private static final String TEST_DB_XML_PATH = "src/test/resources/test-db.xml";
 
@@ -56,18 +53,6 @@ public class SourceFileDaoTest {
 		}
 
 		if (result.getId() != reference.getId()) {
-			return false;
-		}
-
-		if (result.getVersions().size() != reference.getVersions().size()) {
-			return false;
-		}
-		
-		if (!result.getVersions().containsAll(reference.getVersions())) {
-			return false;
-		}
-		
-		if (!reference.getVersions().containsAll(result.getVersions())) {
 			return false;
 		}
 

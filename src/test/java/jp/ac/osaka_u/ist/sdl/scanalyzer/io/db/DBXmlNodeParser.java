@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -197,11 +196,11 @@ public class DBXmlNodeParser {
 			if (this.sourceFiles.containsKey(anotherSourceFile.getId())) {
 				final SourceFile currentSourceFile = this.sourceFiles
 						.get(anotherSourceFile.getId());
-				currentSourceFile.getVersions().add(justProcessedVersion);
 				justProcessedVersion.getSourceFiles().remove(anotherSourceFile);
 				justProcessedVersion.getSourceFiles().add(currentSourceFile);
 				this.sourceFiles.remove(anotherSourceFile.getId());
-				this.sourceFiles.put(currentSourceFile.getId(), currentSourceFile);
+				this.sourceFiles.put(currentSourceFile.getId(),
+						currentSourceFile);
 			} else {
 				this.sourceFiles.put(anotherSourceFile.getId(),
 						anotherSourceFile);
@@ -256,7 +255,6 @@ public class DBXmlNodeParser {
 			final VersionSourceFile vsf = new VersionSourceFile(
 					counter.getAndIncrement(), version, sourceFile);
 			this.versionSourceFiles.put(vsf.getId(), vsf);
-			sourceFile.getVersions().add(version);
 		}
 
 		for (final FileChange fileChange : version.getFileChanges()) {
@@ -339,8 +337,7 @@ public class DBXmlNodeParser {
 		}
 
 		if (!sourceFiles.containsKey(id)) {
-			final SourceFile sourceFile = new SourceFile(id, path,
-					new HashSet<Version>());
+			final SourceFile sourceFile = new SourceFile(id, path);
 			sourceFiles.put(id, sourceFile);
 		}
 	}

@@ -1,8 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -185,8 +183,6 @@ public class DBManager {
 		rawClonedFragmentDao.setRawCloneClassDao(rawCloneClassDao);
 		rawClonedFragmentDao.setSourceFileDao(sourceFileDao);
 		rawClonedFragmentDao.setVersionDao(versionDao);
-		
-		sourceFileDao.setVersionDao(versionDao);
 		
 		versionDao.setRevidionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);

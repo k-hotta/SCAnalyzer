@@ -1,8 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;

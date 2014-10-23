@@ -339,8 +339,7 @@ public class VersionProvider {
 			if (newPath != null) {
 				// create new instance of source file
 				newSourceFile = new SourceFile(
-						IDGenerator.generate(SourceFile.class), newPath,
-						new TreeSet<Version>(new DBElementComparator()));
+						IDGenerator.generate(SourceFile.class), newPath);
 				logger.trace("create a new source file "
 						+ newSourceFile.toString());
 				sourceFilesUnderConsideration.put(newPath, newSourceFile);
@@ -364,7 +363,6 @@ public class VersionProvider {
 				.values()) {
 			logger.trace("add " + sourceFile.getPath() + " into version "
 					+ nextVersion.getId());
-			sourceFile.getVersions().add(nextVersion);
 			nextVersion.getSourceFiles().add(sourceFile);
 		}
 	}
