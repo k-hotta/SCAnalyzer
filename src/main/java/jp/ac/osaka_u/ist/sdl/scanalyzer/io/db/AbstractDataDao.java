@@ -124,6 +124,13 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	}
 
 	/**
+	 * Clear all the stored elements.
+	 */
+	public void clear() {
+		this.retrievedElements.clear();
+	}
+
+	/**
 	 * Put the given element into the map. <br>
 	 * If the number of the elements in the map in this operation, it also
 	 * removes half of stored elements from the map.
