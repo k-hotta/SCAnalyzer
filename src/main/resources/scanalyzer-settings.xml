@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+	<general>
+		<dbms>SQLITE</dbms>
+	</general>
+	<target>
+		<language>JAVA</language>
+		<repository>src/test/resources/repository-clonetracker</repository>
+		<version-control>SVN</version-control>
+		<database>src/test/resources/test.db</database>
+	</target>
+	<clone-detection>
+		<detector>Scorpio</detector>
+		<result-directory>src/test/resources/scorpio/</result-directory>
+		<filename-format>clonetracker-scorpio-rev%s.txt</filename-format>
+	</clone-detection>
+</config>
