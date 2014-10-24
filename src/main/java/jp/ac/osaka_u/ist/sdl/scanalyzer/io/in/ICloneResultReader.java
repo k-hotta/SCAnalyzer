@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 /**
@@ -21,6 +22,8 @@ public interface ICloneResultReader extends ICloneDetector {
 	 * 
 	 * @param file
 	 *            the file in which raw clone classes
+	 * @param version
+	 *            the version under consideration
 	 * @return a collection that has all the raw clone classes reported in the
 	 *         given file
 	 * @throws IOException
@@ -28,7 +31,7 @@ public interface ICloneResultReader extends ICloneDetector {
 	 * @throws IllegalCloneResultFileFormatException
 	 *             If the format of the given file is invalid
 	 */
-	public Collection<RawCloneClass> read(final File file) throws IOException,
-			IllegalCloneResultFileFormatException;
+	public Collection<RawCloneClass> read(final File file, final Version version)
+			throws IOException, IllegalCloneResultFileFormatException;
 
 }
