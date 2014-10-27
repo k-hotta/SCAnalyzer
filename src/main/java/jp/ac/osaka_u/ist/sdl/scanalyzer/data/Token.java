@@ -116,4 +116,39 @@ public class Token implements IAtomicElement {
 		return offset;
 	}
 
+	/**
+	 * Judge whether the given object equals to this object. <br>
+	 * 
+	 * @return <code>true</code> if the given object is an instance of
+	 *         {@link Token} and the id values of the two tokens are the same to
+	 *         each other, <code>false</code> otherwise.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof Token)) {
+			return false;
+		}
+
+		final Token another = (Token) obj;
+
+		return this.value.equals(another.getValue());
+	}
+
+	/**
+	 * Return a hash code value of this object, which is just the result of
+	 * {@link java.lang.String#hashCode() hashCode()} on the value of this
+	 * token.
+	 * 
+	 * @return the hash value, which is calculated with the value of this token
+	 */
+	@Override
+	public int hashCode() {
+		return this.value.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return this.value;
+	}
+
 }
