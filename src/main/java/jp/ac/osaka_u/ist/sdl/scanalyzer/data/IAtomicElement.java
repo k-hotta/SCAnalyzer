@@ -9,5 +9,19 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
  * 
  */
 public interface IAtomicElement {
-	
+
+	/**
+	 * Get the owner source file of this element
+	 * 
+	 * @return the owner source file
+	 */
+	public SourceFile<?> getOwnerSourceFile();
+
+	/**
+	 * Get the position of this element within the owner source file.
+	 * 
+	 * @return the position
+	 */
+	public int getPosition();
+
 }
