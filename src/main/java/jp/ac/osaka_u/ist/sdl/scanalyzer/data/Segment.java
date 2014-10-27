@@ -163,4 +163,39 @@ public class Segment implements IDBElement {
 		this.endPosition = endPosition;
 	}
 
+	/**
+	 * Judge whether the given object equals to this object. <br>
+	 * 
+	 * @return <code>true</code> if the given object is an instance of
+	 *         {@link SourceFile} and the id values of the two objects are the
+	 *         same to each other, <code>false</code> otherwise.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof Segment)) {
+			return false;
+		}
+
+		final Segment another = (Segment) obj;
+
+		return this.id == another.getId();
+	}
+
+	/**
+	 * Return a hash code value of this object. <br>
+	 * The hash value of this object is just the value of the id. <br>
+	 * 
+	 * @return the hash value, which equals to the value of id of this object
+	 */
+	@Override
+	public int hashCode() {
+		return (int) this.id;
+	}
+
+	@Override
+	public String toString() {
+		return this.id + " " + this.sourceFile + " " + this.startPosition + "-"
+				+ this.endPosition;
+	}
+
 }
