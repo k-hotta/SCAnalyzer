@@ -24,4 +24,11 @@ public interface IAtomicElement {
 	 */
 	public int getPosition();
 
+	/**
+	 * Get the value of this element
+	 * 
+	 * @return the value
+	 */
+	public String getValue();
+
 }
