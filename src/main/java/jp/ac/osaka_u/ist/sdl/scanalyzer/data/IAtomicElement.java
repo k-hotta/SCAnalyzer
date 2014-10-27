@@ -15,7 +15,7 @@ public interface IAtomicElement {
 	 * 
 	 * @return the owner source file
 	 */
-	public SourceFile<?> getOwnerSourceFile();
+	public SourceFile getOwnerSourceFile();
 
 	/**
 	 * Get the position of this element within the owner source file.
