@@ -120,7 +120,7 @@ public class Token implements IAtomicElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Token} and the id values of the two tokens are the same to
+	 *         {@link Token} and the values of the two tokens are the same to
 	 *         each other, <code>false</code> otherwise.
 	 */
 	@Override
