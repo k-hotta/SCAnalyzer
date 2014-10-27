@@ -66,7 +66,7 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 * @param contents
 	 *            the contents to be set
 	 */
-	public final void setContenst(final Map<Integer, E> contents) {
+	public final void setContents(final Map<Integer, E> contents) {
 		this.contents = contents;
 	}
 
