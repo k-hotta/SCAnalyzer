@@ -167,7 +167,7 @@ public class Segment implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link SourceFile} and the id values of the two objects are the
+	 *         {@link Segment} and the id values of the two objects are the
 	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
