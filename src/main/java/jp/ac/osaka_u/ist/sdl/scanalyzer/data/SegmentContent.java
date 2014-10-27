@@ -11,6 +11,11 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author k-hotta
  * 
+ * @param <E>
+ *            the type of elements (e.g. Token)
+ * 
+ * @see Segment
+ * @see IAtomicElement
  */
 public class SegmentContent<E extends IAtomicElement> {
 
@@ -130,13 +135,13 @@ public class SegmentContent<E extends IAtomicElement> {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		
+
 		builder.append(this.segment + "\n");
 		for (final E content : this.contents.values()) {
 			builder.append(content);
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 }

@@ -6,10 +6,11 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * This class represents segments, which is a set of continuous elements in a
  * single file. Note that this class has only surface-level information. The
- * contents of the segments will be stored in another class.
+ * contents of the segments would be stored in {@link SegmentContent}.
  * 
  * @author k-hotta
  * 
+ * @see SegmentContent
  */
 @DatabaseTable(tableName = "SEGMENTS")
 public class Segment implements IDBElement {
@@ -167,8 +168,8 @@ public class Segment implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Segment} and the id values of the two objects are the
-	 *         same to each other, <code>false</code> otherwise.
+	 *         {@link Segment} and the id values of the two objects are the same
+	 *         to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
