@@ -70,4 +70,42 @@ public class SourceFileContent<E extends IAtomicElement> {
 		this.contents = contents;
 	}
 
+	/**
+	 * Judge whether the given object equals to this object. <br>
+	 * 
+	 * @return <code>true</code> if the given object is an instance of
+	 *         {@link SourceFileContent} and the owner files of the two objects
+	 *         are the same to each other, <code>false</code> otherwise.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof SourceFileContent)) {
+			return false;
+		}
+
+		final SourceFileContent<?> another = (SourceFileContent<?>) obj;
+
+		return this.sourceFile.equals(another.getSourceFile());
+	}
+
+	/**
+	 * Return a hash value, which equals to the hash code of {@link SourceFile}.
+	 */
+	@Override
+	public int hashCode() {
+		return this.sourceFile.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+
+		builder.append(this.sourceFile + "\n");
+		for (final E content : this.contents.values()) {
+			builder.append(content);
+		}
+
+		return builder.toString();
+	}
+
 }
