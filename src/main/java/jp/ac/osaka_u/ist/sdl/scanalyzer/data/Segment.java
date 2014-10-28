@@ -36,6 +36,11 @@ public class Segment implements IDBElement {
 	public static final String END_POSITION_COLUMN_NAME = "END_POSITION";
 
 	/**
+	 * The column name for codeFragment
+	 */
+	public static final String CODE_FRAGMENT_COLUMN_NAME = "CODE_FRAGMENT";
+
+	/**
 	 * The id of this segment
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -60,6 +65,12 @@ public class Segment implements IDBElement {
 	private int endPosition;
 
 	/**
+	 * The owner code fragment of this segment
+	 */
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CODE_FRAGMENT_COLUMN_NAME)
+	private CodeFragment codeFragment;
+
+	/**
 	 * The default constructor
 	 */
 	public Segment() {
@@ -79,11 +90,13 @@ public class Segment implements IDBElement {
 	 *            the end position of this segment
 	 */
 	public Segment(final long id, final SourceFile sourceFile,
-			final int startPosition, final int endPosition) {
+			final int startPosition, final int endPosition,
+			final CodeFragment codeFragment) {
 		this.id = id;
 		this.sourceFile = sourceFile;
 		this.startPosition = startPosition;
 		this.endPosition = endPosition;
+		this.codeFragment = codeFragment;
 	}
 
 	/**
@@ -162,6 +175,25 @@ public class Segment implements IDBElement {
 	 */
 	public final void setEndPosition(int endPosition) {
 		this.endPosition = endPosition;
+	}
+
+	/**
+	 * Get the owner code fragment of this segment
+	 * 
+	 * @return the owner code fragment
+	 */
+	public final CodeFragment getCodeFragment() {
+		return codeFragment;
+	}
+
+	/**
+	 * Set the owner code fragment of this segment with the specified one.
+	 * 
+	 * @param codeFragment
+	 *            the owner code fragment to be set
+	 */
+	public final void setCodeFragmen(final CodeFragment codeFragment) {
+		this.codeFragment = codeFragment;
 	}
 
 	/**
