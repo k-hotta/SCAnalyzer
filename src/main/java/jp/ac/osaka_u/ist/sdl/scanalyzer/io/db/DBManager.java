@@ -65,6 +65,21 @@ public class DBManager {
 	private RawClonedFragmentDao rawClonedFragmentDao;
 
 	/**
+	 * The DAO for Segment
+	 */
+	private SegmentDao segmentDao;
+
+	/**
+	 * The DAO for CodeFragment
+	 */
+	private CodeFragmentDao codeFragmentDao;
+
+	/**
+	 * The DAO for CloneClass
+	 */
+	private CloneClassDao cloneClassDao;
+
+	/**
 	 * The DAO for Revision
 	 */
 	private RevisionDao revisionDao;
@@ -158,6 +173,9 @@ public class DBManager {
 		final FileChangeDao fileChangeDao = new FileChangeDao();
 		final RawCloneClassDao rawCloneClassDao = new RawCloneClassDao();
 		final RawClonedFragmentDao rawClonedFragmentDao = new RawClonedFragmentDao();
+		final SegmentDao segmentDao = new SegmentDao();
+		final CodeFragmentDao codeFragmentDao = new CodeFragmentDao();
+		final CloneClassDao cloneClassDao = new CloneClassDao();
 		final RevisionDao revisionDao = new RevisionDao();
 		final SourceFileDao sourceFileDao = new SourceFileDao();
 		final VersionDao versionDao = new VersionDao();
@@ -172,6 +190,12 @@ public class DBManager {
 		rawClonedFragmentDao.setSourceFileDao(sourceFileDao);
 		rawClonedFragmentDao.setVersionDao(versionDao);
 
+		segmentDao.setSourceFileDao(sourceFileDao);
+
+		codeFragmentDao.setSegmentDao(segmentDao);
+
+		cloneClassDao.setCodeFragmentDao(codeFragmentDao);
+
 		versionDao.setRevidionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);
 		versionDao.setRawCloneClassDao(rawCloneClassDao);
@@ -181,6 +205,9 @@ public class DBManager {
 		instance.setFileChangeDao(fileChangeDao);
 		instance.setRawCloneClassDao(rawCloneClassDao);
 		instance.setRawClonedFragmentDao(rawClonedFragmentDao);
+		instance.setSegmentDao(segmentDao);
+		instance.setCodeFragmentDao(codeFragmentDao);
+		instance.setCloneClassDao(cloneClassDao);
 		instance.setRevisionDao(revisionDao);
 		instance.setSourceFileDao(sourceFileDao);
 		instance.setVersionDao(versionDao);
@@ -197,6 +224,18 @@ public class DBManager {
 	private void setRawClonedFragmentDao(
 			final RawClonedFragmentDao rawClonedFragmentDao) {
 		this.rawClonedFragmentDao = rawClonedFragmentDao;
+	}
+
+	private void setSegmentDao(final SegmentDao segmentDao) {
+		this.segmentDao = segmentDao;
+	}
+
+	private void setCodeFragmentDao(final CodeFragmentDao codeFragmentDao) {
+		this.codeFragmentDao = codeFragmentDao;
+	}
+
+	private void setCloneClassDao(final CloneClassDao cloneClassDao) {
+		this.cloneClassDao = cloneClassDao;
 	}
 
 	private void setRevisionDao(final RevisionDao revisionDao) {
@@ -218,6 +257,9 @@ public class DBManager {
 		fileChangeDao.clear();
 		rawCloneClassDao.clear();
 		rawClonedFragmentDao.clear();
+		segmentDao.clear();
+		codeFragmentDao.clear();
+		cloneClassDao.clear();
 		revisionDao.clear();
 		sourceFileDao.clear();
 		versionDao.clear();
@@ -253,6 +295,36 @@ public class DBManager {
 	 */
 	public final RawClonedFragmentDao getRawClonedFragmentDao() {
 		return rawClonedFragmentDao;
+	}
+
+	/**
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment}.
+	 * 
+	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment}
+	 */
+	public final SegmentDao getSegmentDao() {
+		return segmentDao;
+	}
+
+	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment}
+	 */
+	public final CodeFragmentDao getCodeFragmentDao() {
+		return codeFragmentDao;
+	}
+
+	/**
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass}
+	 */
+	public final CloneClassDao getCloneClassDao() {
+		return cloneClassDao;
 	}
 
 	/**
