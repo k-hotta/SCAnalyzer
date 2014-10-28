@@ -61,6 +61,17 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 				.getNativeDao(CodeFragment.class);
 		this.nativeCloneClassCodeFragmentDao = this.manager
 				.getNativeDao(CloneClassCodeFragment.class);
+		codeFragmentDao = null;
+	}
+
+	/**
+	 * Set the DAO for CodeFragment with the specified one.
+	 * 
+	 * @param codeFragmentDao
+	 *            the DAO to be set
+	 */
+	void setCodeFragmentDao(final CodeFragmentDao codeFragmentDao) {
+		this.codeFragmentDao = codeFragmentDao;
 	}
 
 	@Override
