@@ -227,8 +227,8 @@ public class Segment implements IDBElement {
 
 	@Override
 	public String toString() {
-		return this.id + " " + this.sourceFile + " " + this.startPosition + "-"
-				+ this.endPosition;
+		return this.id + " [" + this.sourceFile + " " + this.startPosition + "-"
+				+ this.endPosition + "]";
 	}
 
 }

@@ -130,7 +130,7 @@ public class CodeFragment implements IDBElement {
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 		
-		builder.append(id + "{");
+		builder.append(id + " (");
 	
 		for (final Segment segment : segments) {
 			builder.append(segment.toString() + ", ");
@@ -139,7 +139,7 @@ public class CodeFragment implements IDBElement {
 			builder.deleteCharAt(builder.length() - 1);
 			builder.deleteCharAt(builder.length() - 1);
 		}
-		builder.append("}");
+		builder.append(")");
 		
 		return builder.toString();
 	}
