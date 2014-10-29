@@ -20,10 +20,18 @@ public class CloneClass implements IDBElement {
 	public static final String ID_COLUMN_NAME = "ID";
 
 	/**
+	 * The column name for version
+	 */
+	public static final String VERSION_COLUMN_NAME = "VERSION";
+
+	/**
 	 * The id of this clone class
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
 	private long id;
+
+	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
+	private Version version;
 
 	/**
 	 * The code fragments. NOTE: this is not a database column.
@@ -42,10 +50,12 @@ public class CloneClass implements IDBElement {
 	 * 
 	 * @param id
 	 *            the id of this clone class
+	 * @param version
+	 *            the owner version of this clone class
 	 * @param codeFragments
 	 *            the code fragments in this clone class
 	 */
-	public CloneClass(final long id,
+	public CloneClass(final long id, final Version version,
 			final Collection<CodeFragment> codeFragments) {
 		this.id = id;
 		this.codeFragments = codeFragments;
@@ -70,6 +80,25 @@ public class CloneClass implements IDBElement {
 	@Override
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	/**
+	 * Get the owner version of this clone class.
+	 * 
+	 * @return the owner version of this clone class
+	 */
+	public Version getVersion() {
+		return version;
+	}
+
+	/**
+	 * Set the owner version of this clone class with the specified one.
+	 * 
+	 * @param version
+	 *            the owner version to be set
+	 */
+	public void setVersion(final Version version) {
+		this.version = version;
 	}
 
 	/**
