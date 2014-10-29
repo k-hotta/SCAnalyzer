@@ -45,7 +45,7 @@ public class CodeFragment implements IDBElement {
 	/**
 	 * The owner clone class of this fragment
 	 */
-	@DatabaseField(canBeNull = false, columnName = CLONE_CLASS_COLUMN_NAME)
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_COLUMN_NAME)
 	private CloneClass cloneClass;
 
 	/**

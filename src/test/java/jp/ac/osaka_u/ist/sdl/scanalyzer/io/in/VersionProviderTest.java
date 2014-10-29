@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
@@ -54,7 +55,7 @@ public class VersionProviderTest {
 	private static final Version INITIAL_VERSION = new Version((long) 0,
 			new Revision(0, "pseudo-initial-revision", null),
 			new HashSet<FileChange>(), new HashSet<RawCloneClass>(),
-			new HashSet<SourceFile>());
+			new HashSet<CloneClass>(), new HashSet<SourceFile>());
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -324,6 +325,7 @@ public class VersionProviderTest {
 		final Version versionUnderConstructed = new Version(ver1.getId(),
 				ver1.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -347,6 +349,7 @@ public class VersionProviderTest {
 		final Version versionUnderConstructed = new Version(ver2.getId(),
 				ver2.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -370,6 +373,7 @@ public class VersionProviderTest {
 		final Version versionUnderConstructed = new Version(ver3.getId(),
 				ver3.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -393,6 +397,7 @@ public class VersionProviderTest {
 		final Version versionUnderConstructed = new Version(ver4.getId(),
 				ver4.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -419,6 +424,7 @@ public class VersionProviderTest {
 		final Version versionUnderConstructed = new Version(ver4.getId(),
 				ver4.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -448,6 +454,7 @@ public class VersionProviderTest {
 		final Version versionUnderConstructed = new Version(ver4.getId(),
 				ver4.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -471,12 +478,14 @@ public class VersionProviderTest {
 		final Collection<FileChange> fileChanges = ver4.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
-		final FileChangeEntry dummy = new FileChangeEntry("Dummy.java", null, 'A');
+		final FileChangeEntry dummy = new FileChangeEntry("Dummy.java", null,
+				'A');
 		fileChangeEntries.add(dummy);
 
 		final Version versionUnderConstructed = new Version(ver4.getId(),
 				ver4.getRevision(), new TreeSet<FileChange>(
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
+						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()));
 
@@ -532,7 +541,7 @@ public class VersionProviderTest {
 		assertEquals(reference.getRawCloneClasses().size(), result
 				.getRawCloneClasses().size());
 	}
-	
+
 	@Test
 	public void testGetNextVersion4() throws Exception {
 		Version current = parser.getVersions().get((long) 1);
@@ -550,7 +559,7 @@ public class VersionProviderTest {
 		assertEquals(reference.getRawCloneClasses().size(), result
 				.getRawCloneClasses().size());
 	}
-	
+
 	@Test
 	public void testGetNextVersion5() throws Exception {
 		Version current = parser.getVersions().get((long) 2);
@@ -568,7 +577,7 @@ public class VersionProviderTest {
 		assertEquals(reference.getRawCloneClasses().size(), result
 				.getRawCloneClasses().size());
 	}
-	
+
 	@Test
 	public void testGetNextVersion6() throws Exception {
 		Version current = parser.getVersions().get((long) 3);
@@ -586,7 +595,7 @@ public class VersionProviderTest {
 		assertEquals(reference.getRawCloneClasses().size(), result
 				.getRawCloneClasses().size());
 	}
-	
+
 	@Test
 	public void testGetNextVersion7() throws Exception {
 		Version current = parser.getVersions().get((long) 4);

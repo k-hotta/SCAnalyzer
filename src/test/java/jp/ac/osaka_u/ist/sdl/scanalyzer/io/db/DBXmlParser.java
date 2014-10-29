@@ -8,10 +8,13 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
@@ -44,6 +47,12 @@ public class DBXmlParser {
 
 	private SortedMap<Long, FileChange> fileChanges;
 
+	private SortedMap<Long, Segment> segments;
+
+	private SortedMap<Long, CodeFragment> codeFragments;
+
+	private SortedMap<Long, CloneClass> cloneClasses;
+
 	private SortedMap<Long, RawCloneClass> rawCloneClasses;
 
 	private SortedMap<Long, RawClonedFragment> rawClonedFragments;
@@ -63,6 +72,9 @@ public class DBXmlParser {
 		this.revisions = new TreeMap<Long, Revision>();
 		this.sourceFiles = new TreeMap<Long, SourceFile>();
 		this.fileChanges = new TreeMap<Long, FileChange>();
+		this.segments = new TreeMap<Long, Segment>();
+		this.codeFragments = new TreeMap<Long, CodeFragment>();
+		this.cloneClasses = new TreeMap<Long, CloneClass>();
 		this.rawCloneClasses = new TreeMap<Long, RawCloneClass>();
 		this.rawClonedFragments = new TreeMap<Long, RawClonedFragment>();
 		this.versionSourceFiles = new TreeMap<Long, VersionSourceFile>();
@@ -92,6 +104,18 @@ public class DBXmlParser {
 		return fileChanges;
 	}
 
+	public final Map<Long, Segment> getSegments() {
+		return segments;
+	}
+
+	public final Map<Long, CodeFragment> getCodeFragments() {
+		return codeFragments;
+	}
+
+	public final Map<Long, CloneClass> getCloneClasses() {
+		return cloneClasses;
+	}
+
 	public final Map<Long, RawCloneClass> getRawCloneClasses() {
 		return rawCloneClasses;
 	}
@@ -114,7 +138,8 @@ public class DBXmlParser {
 		}
 
 		final DBXmlNodeParser parser = new DBXmlNodeParser(versions, revisions,
-				sourceFiles, fileChanges, rawCloneClasses, rawClonedFragments,
+				sourceFiles, fileChanges, segments, codeFragments,
+				cloneClasses, rawCloneClasses, rawClonedFragments,
 				versionSourceFiles);
 		parser.processRootNode(root);
 

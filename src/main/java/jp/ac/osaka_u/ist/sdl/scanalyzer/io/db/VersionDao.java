@@ -128,7 +128,7 @@ public class VersionDao extends AbstractDataDao<Version> {
 	void setRawCloneClassDao(final RawCloneClassDao rawCloneClassDao) {
 		this.rawCloneClassDao = rawCloneClassDao;
 	}
-	
+
 	/**
 	 * Set the DAO for CloneClass with the specified one.
 	 * 
@@ -165,7 +165,8 @@ public class VersionDao extends AbstractDataDao<Version> {
 		}
 		element.setFileChanges(fileChanges);
 
-		final Collection<RawCloneClass> rawCloneClasses = new TreeSet<RawCloneClass>();
+		final Collection<RawCloneClass> rawCloneClasses = new TreeSet<RawCloneClass>(
+				new DBElementComparator());
 		for (final RawCloneClass rawCloneClass : element.getRawCloneClasses()) {
 			rawCloneClasses.add(rawCloneClassDao.get(rawCloneClass.getId()));
 		}

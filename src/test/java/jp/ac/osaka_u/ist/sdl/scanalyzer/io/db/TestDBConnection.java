@@ -2,10 +2,13 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
@@ -63,6 +66,9 @@ public class TestDBConnection {
 		manager.initializeTable(Revision.class);
 		manager.initializeTable(SourceFile.class);
 		manager.initializeTable(FileChange.class);
+		manager.initializeTable(Segment.class);
+		manager.initializeTable(CodeFragment.class);
+		manager.initializeTable(CloneClass.class);
 		manager.initializeTable(RawCloneClass.class);
 		manager.initializeTable(RawClonedFragment.class);
 		manager.initializeTable(VersionSourceFile.class);
