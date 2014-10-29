@@ -192,7 +192,7 @@ public class Segment implements IDBElement {
 	 * @param codeFragment
 	 *            the owner code fragment to be set
 	 */
-	public final void setCodeFragmen(final CodeFragment codeFragment) {
+	public final void setCodeFragment(final CodeFragment codeFragment) {
 		this.codeFragment = codeFragment;
 	}
 

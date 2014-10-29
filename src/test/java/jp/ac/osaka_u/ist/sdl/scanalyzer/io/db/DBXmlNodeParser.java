@@ -591,7 +591,7 @@ public class DBXmlNodeParser {
 				startLine + length - 1, null);
 		final CodeFragment codeFragment = new CodeFragment(id,
 				new TreeSet<Segment>(new DBElementComparator()), null);
-		segment.setCodeFragmen(codeFragment);
+		segment.setCodeFragment(codeFragment);
 		codeFragment.getSegments().add(segment);
 
 		this.segments.put(id, segment);
