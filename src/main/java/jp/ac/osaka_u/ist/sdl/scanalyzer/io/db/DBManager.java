@@ -195,11 +195,12 @@ public class DBManager {
 		codeFragmentDao.setSegmentDao(segmentDao);
 
 		cloneClassDao.setCodeFragmentDao(codeFragmentDao);
+		cloneClassDao.setVersionDao(versionDao);
 
 		versionDao.setRevidionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);
 		versionDao.setRawCloneClassDao(rawCloneClassDao);
-		versionDao.setRawClonedFragmentDao(rawClonedFragmentDao);
+		versionDao.setCloneClassDao(cloneClassDao);
 		versionDao.setSourceFileDao(sourceFileDao);
 
 		instance.setFileChangeDao(fileChangeDao);
@@ -409,6 +410,15 @@ public class DBManager {
 			eLogger.fatal("cannot initialize the table for " + clazz.getName());
 			throw e;
 		}
+	}
+
+	/**
+	 * Get the URL of the database under managed.
+	 * 
+	 * @return the URL of the database
+	 */
+	public final String getUrl() {
+		return url;
 	}
 
 }

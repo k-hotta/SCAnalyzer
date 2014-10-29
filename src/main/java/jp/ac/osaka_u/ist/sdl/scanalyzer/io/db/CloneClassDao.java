@@ -1,11 +1,14 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +47,11 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 	private final Dao<CloneClassCodeFragment, Long> nativeCloneClassCodeFragmentDao;
 
 	/**
+	 * The DAO for version
+	 */
+	private VersionDao versionDao;
+
+	/**
 	 * The DAO for CodeFragment
 	 */
 	private CodeFragmentDao codeFragmentDao;
@@ -62,6 +70,7 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 		this.nativeCloneClassCodeFragmentDao = this.manager
 				.getNativeDao(CloneClassCodeFragment.class);
 		codeFragmentDao = null;
+		versionDao = null;
 	}
 
 	/**
@@ -74,6 +83,16 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 		this.codeFragmentDao = codeFragmentDao;
 	}
 
+	/**
+	 * Set the DAO for Version with the specified one.
+	 * 
+	 * @param versionDao
+	 *            the DAO to be set
+	 */
+	void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
+	}
+
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
@@ -81,8 +100,16 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 
 	@Override
 	public CloneClass refresh(CloneClass element) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		final Collection<CodeFragment> codeFragments = new TreeSet<CodeFragment>(
+				new DBElementComparator());
+		for (final CodeFragment codeFragment : element.getCodeFragments()) {
+			codeFragments.add(codeFragmentDao.get(codeFragment.getId()));
+		}
+		element.setCodeFragments(codeFragments);
+
+		element.setVersion(versionDao.get(element.getVersion().getId()));
+
+		return element;
 	}
 
 	/**

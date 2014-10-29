@@ -1,12 +1,15 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
@@ -60,10 +63,10 @@ public class VersionDao extends AbstractDataDao<Version> {
 	private final Dao<SourceFile, Long> nativeSourceFileDao;
 
 	/**
-	 * The DAO for RawClonedFragment. <br>
+	 * The DAO for CloneClass. <br>
 	 * This is for refreshing.
 	 */
-	private RawClonedFragmentDao rawClonedFragmentDao;
+	private CloneClassDao cloneClassDao;
 
 	/**
 	 * The DAO for VersionSourceFile. <br>
@@ -89,7 +92,7 @@ public class VersionDao extends AbstractDataDao<Version> {
 		this.fileChangeDao = null;
 		this.rawCloneClassDao = null;
 		this.nativeSourceFileDao = this.manager.getNativeDao(SourceFile.class);
-		this.rawClonedFragmentDao = null;
+		this.cloneClassDao = null;
 		this.nativeVersionSourceFileDao = this.manager
 				.getNativeDao(VersionSourceFile.class);
 		this.sourceFileDao = null;
@@ -125,15 +128,15 @@ public class VersionDao extends AbstractDataDao<Version> {
 	void setRawCloneClassDao(final RawCloneClassDao rawCloneClassDao) {
 		this.rawCloneClassDao = rawCloneClassDao;
 	}
-
+	
 	/**
-	 * Set the DAO for RawClonedFragment with the specified one.
+	 * Set the DAO for CloneClass with the specified one.
 	 * 
-	 * @param rawClonedFragmentDao
+	 * @param cloneClassDao
 	 *            the DAO to be set
 	 */
-	void setRawClonedFragmentDao(final RawClonedFragmentDao rawClonedFragmentDao) {
-		this.rawClonedFragmentDao = rawClonedFragmentDao;
+	void setCloneClassDao(final CloneClassDao cloneClassDao) {
+		this.cloneClassDao = cloneClassDao;
 	}
 
 	/**
@@ -153,19 +156,26 @@ public class VersionDao extends AbstractDataDao<Version> {
 
 	@Override
 	public Version refresh(Version element) throws SQLException {
-		revisionDao.refresh(element.getRevision());
+		element.setRevision(revisionDao.get(element.getId()));
+
+		final Collection<FileChange> fileChanges = new TreeSet<FileChange>(
+				new DBElementComparator());
 		for (final FileChange fileChange : element.getFileChanges()) {
-			fileChangeDao.refresh(fileChange);
-			nativeSourceFileDao.refresh(fileChange.getOldSourceFile());
-			nativeSourceFileDao.refresh(fileChange.getNewSourceFile());
+			fileChanges.add(fileChangeDao.get(fileChange.getId()));
 		}
+		element.setFileChanges(fileChanges);
+
+		final Collection<RawCloneClass> rawCloneClasses = new TreeSet<RawCloneClass>();
 		for (final RawCloneClass rawCloneClass : element.getRawCloneClasses()) {
-			rawCloneClassDao.refresh(rawCloneClass);
-			for (final RawClonedFragment rawClonedFragment : rawCloneClass
-					.getElements()) {
-				rawClonedFragmentDao.refresh(rawClonedFragment);
-			}
+			rawCloneClasses.add(rawCloneClassDao.get(rawCloneClass.getId()));
 		}
+		element.setRawCloneClasses(rawCloneClasses);
+
+		final Collection<CloneClass> cloneClasses = new TreeSet<CloneClass>();
+		for (final CloneClass cloneClass : element.getCloneClasses()) {
+			cloneClasses.add(cloneClassDao.get(cloneClass.getId()));
+		}
+		element.setCloneClasses(cloneClasses);
 
 		element.setSourceFiles(getCorrespondingSourceFiles(element));
 
