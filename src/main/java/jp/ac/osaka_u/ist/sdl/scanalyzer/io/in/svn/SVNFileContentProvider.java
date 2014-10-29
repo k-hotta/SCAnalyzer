@@ -1,12 +1,15 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.util.StringUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,29 +78,42 @@ public class SVNFileContentProvider implements IFileContentProvider {
 
 	private String getFileContent(final long revisionNum, final String path)
 			throws SVNException {
-		final StringBuilder builder = new StringBuilder();
-
-		final SVNURL target = repositoryManager.getUrl()
-				.appendPath(path, false);
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 		final SVNClientManager clientManager = SVNClientManager.newInstance();
+		String result = null;
 
 		try {
+			final SVNURL target = repositoryManager.getUrl().appendPath(path,
+					false);
+
 			final SVNWCClient wcClient = clientManager.getWCClient();
 			wcClient.doGetFileContents(target, SVNRevision.create(revisionNum),
 					SVNRevision.create(revisionNum), false, new OutputStream() {
 						@Override
 						public void write(int b) throws IOException {
-							builder.append((char) b);
+							os.write(b);
 						}
 					});
+
+			final byte[] bytes = os.toByteArray();
+			final Charset guessEncoding = StringUtil.guessEncoding(bytes);
+
+			result = new String(bytes, guessEncoding);
 
 		} finally {
 			if (clientManager != null) {
 				clientManager.dispose();
 			}
+			if (os != null) {
+				try {
+					os.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
-		return builder.toString();
+		return result;
 	}
 
 }
