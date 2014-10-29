@@ -40,6 +40,11 @@ public class Version implements IDBElement {
 	public static final String RAW_CLONE_CLASSES_COLUMN_NAME = "RAW_CLONE_CLASSES";
 
 	/**
+	 * The column name for cloneClasses
+	 */
+	public static final String CLONE_CLASSES_COLUMN_NAME = "CLONE_CLASSES";
+
+	/**
 	 * The id of the version
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -63,6 +68,12 @@ public class Version implements IDBElement {
 	 */
 	@ForeignCollectionField(eager = true, columnName = RAW_CLONE_CLASSES_COLUMN_NAME)
 	private Collection<RawCloneClass> rawCloneClasses;
+
+	/**
+	 * The collection of clone classes in this version
+	 */
+	@ForeignCollectionField(eager = true, columnName = CLONE_CLASSES_COLUMN_NAME)
+	private Collection<CloneClass> cloneClasses;
 
 	/**
 	 * The collection of source files in this version. <br>
@@ -92,6 +103,8 @@ public class Version implements IDBElement {
 	 * @param rawCloneClasses
 	 *            the collection that contains all the raw clone classes in this
 	 *            version
+	 * @param the
+	 *            collection that contains all the clone classes in this version
 	 * @param sourceFiles
 	 *            the collection that contains all the source files in this
 	 *            version
@@ -99,11 +112,13 @@ public class Version implements IDBElement {
 	public Version(final long id, final Revision revision,
 			final Collection<FileChange> fileChanges,
 			final Collection<RawCloneClass> rawCloneClasses,
+			final Collection<CloneClass> cloneClasses,
 			final Collection<SourceFile> sourceFiles) {
 		this.id = id;
 		this.revision = revision;
 		this.fileChanges = fileChanges;
 		this.rawCloneClasses = rawCloneClasses;
+		this.cloneClasses = cloneClasses;
 		this.sourceFiles = sourceFiles;
 	}
 
@@ -189,6 +204,25 @@ public class Version implements IDBElement {
 	}
 
 	/**
+	 * Get the collection of all the clone classes in this version.
+	 * 
+	 * @return the collection of all the clone classes
+	 */
+	public Collection<CloneClass> getCloneClasses() {
+		return cloneClasses;
+	}
+
+	/**
+	 * Set a collection that has all the clone classes in this version.
+	 * 
+	 * @param cloneClasses
+	 *            the collection to be set
+	 */
+	public void setCloneClasses(Collection<CloneClass> cloneClasses) {
+		this.cloneClasses = cloneClasses;
+	}
+
+	/**
 	 * Get the collection of all the source files in this version.
 	 * 
 	 * @return the collection of all the source files in this version
@@ -206,13 +240,13 @@ public class Version implements IDBElement {
 	public void setSourceFiles(Collection<SourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
 	}
-	
+
 	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Version} and the id values of the two objects
-	 *         are the same to each other, <code>false</code> otherwise.
+	 *         {@link Version} and the id values of the two objects are the same
+	 *         to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {

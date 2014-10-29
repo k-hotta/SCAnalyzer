@@ -6,9 +6,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeSet;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -194,6 +195,7 @@ public class VersionProvider {
 				IDGenerator.generate(Version.class), null,
 				new TreeSet<FileChange>(new DBElementComparator()),
 				new TreeSet<RawCloneClass>(new DBElementComparator()),
+				new TreeSet<CloneClass>(new DBElementComparator()),
 				new TreeSet<SourceFile>(new DBElementComparator()));
 
 		// set the next revision to the next version
@@ -255,7 +257,8 @@ public class VersionProvider {
 		return new Version(IDGenerator.generate(Version.class), new Revision(
 				IDGenerator.generate(Revision.class),
 				"pseudo-initial-revision", null), new HashSet<FileChange>(),
-				new HashSet<RawCloneClass>(), new HashSet<SourceFile>());
+				new HashSet<RawCloneClass>(), new HashSet<CloneClass>(),
+				new HashSet<SourceFile>());
 	}
 
 	/**
