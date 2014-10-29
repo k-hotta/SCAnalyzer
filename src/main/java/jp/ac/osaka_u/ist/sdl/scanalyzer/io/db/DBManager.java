@@ -193,6 +193,7 @@ public class DBManager {
 		segmentDao.setSourceFileDao(sourceFileDao);
 
 		codeFragmentDao.setSegmentDao(segmentDao);
+		codeFragmentDao.setCloneClassDao(cloneClassDao);
 
 		cloneClassDao.setCodeFragmentDao(codeFragmentDao);
 		cloneClassDao.setVersionDao(versionDao);

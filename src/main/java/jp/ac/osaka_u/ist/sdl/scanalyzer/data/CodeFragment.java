@@ -26,6 +26,11 @@ public class CodeFragment implements IDBElement {
 	public static final String SEGMENTS_COLUMN_NAME = "SEGMENTS";
 
 	/**
+	 * The column name for cloneClass
+	 */
+	public static final String CLONE_CLASS_COLUMN_NAME = "CLONE_CLASS";
+
+	/**
 	 * The id of this fragment
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -36,6 +41,12 @@ public class CodeFragment implements IDBElement {
 	 */
 	@ForeignCollectionField(eager = true, columnName = SEGMENTS_COLUMN_NAME)
 	private Collection<Segment> segments;
+
+	/**
+	 * The owner clone class of this fragment
+	 */
+	@DatabaseField(canBeNull = false, columnName = CLONE_CLASS_COLUMN_NAME)
+	private CloneClass cloneClass;
 
 	/**
 	 * The default constructor
@@ -51,10 +62,14 @@ public class CodeFragment implements IDBElement {
 	 *            the id of this fragment
 	 * @param segments
 	 *            the segments in this fragment
+	 * @param cloneClass
+	 *            the owner clone class of this fragment
 	 */
-	public CodeFragment(final long id, final Collection<Segment> segments) {
+	public CodeFragment(final long id, final Collection<Segment> segments,
+			final CloneClass cloneClass) {
 		this.id = id;
 		this.segments = segments;
+		this.cloneClass = cloneClass;
 	}
 
 	/**
@@ -98,23 +113,42 @@ public class CodeFragment implements IDBElement {
 	}
 
 	/**
+	 * Get the owner clone class of this fragment.
+	 * 
+	 * @return the owner clone class of this fragment
+	 */
+	public CloneClass getCloneClass() {
+		return cloneClass;
+	}
+
+	/**
+	 * Set the owner clone class of this fragment with the specified one.
+	 * 
+	 * @param cloneClass
+	 *            the clone class to be set
+	 */
+	public void setCloneClass(final CloneClass cloneClass) {
+		this.cloneClass = cloneClass;
+	}
+
+	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link CodeFragment} and the id values of the two objects are the same
-	 *         to each other, <code>false</code> otherwise.
+	 *         {@link CodeFragment} and the id values of the two objects are the
+	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof CodeFragment)) {
 			return false;
 		}
-		
+
 		final CodeFragment another = (CodeFragment) obj;
-		
+
 		return this.id == another.getId();
 	}
-	
+
 	/**
 	 * Return a hash code value of this object. <br>
 	 * The hash value of this object is just the value of the id. <br>
@@ -129,9 +163,9 @@ public class CodeFragment implements IDBElement {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		
+
 		builder.append(id + " (");
-	
+
 		for (final Segment segment : segments) {
 			builder.append(segment.toString() + ", ");
 		}
@@ -140,8 +174,8 @@ public class CodeFragment implements IDBElement {
 			builder.deleteCharAt(builder.length() - 1);
 		}
 		builder.append(")");
-		
+
 		return builder.toString();
 	}
-	
+
 }

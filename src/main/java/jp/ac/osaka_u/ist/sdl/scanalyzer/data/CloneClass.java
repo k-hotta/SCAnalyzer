@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 import java.util.Collection;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -23,6 +24,11 @@ public class CloneClass implements IDBElement {
 	 * The column name for version
 	 */
 	public static final String VERSION_COLUMN_NAME = "VERSION";
+	
+	/**
+	 * The column name for codeFragments
+	 */
+	public static final String CODE_FRAGMENTS_COLUMN_NAME = "CODE_FRAGMENTS";
 
 	/**
 	 * The id of this clone class
@@ -34,8 +40,9 @@ public class CloneClass implements IDBElement {
 	private Version version;
 
 	/**
-	 * The code fragments. NOTE: this is not a database column.
+	 * The code fragments
 	 */
+	@ForeignCollectionField(eager = true, columnName = CODE_FRAGMENTS_COLUMN_NAME)
 	private Collection<CodeFragment> codeFragments;
 
 	/**
@@ -58,6 +65,7 @@ public class CloneClass implements IDBElement {
 	public CloneClass(final long id, final Version version,
 			final Collection<CodeFragment> codeFragments) {
 		this.id = id;
+		this.version = version;
 		this.codeFragments = codeFragments;
 	}
 

@@ -33,11 +33,18 @@ public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
 	 */
 	private SegmentDao segmentDao;
 
+	/**
+	 * The DAO for clone classes. <br>
+	 * This is for refreshing.
+	 */
+	private CloneClassDao cloneClassDao;
+
 	@SuppressWarnings("unchecked")
 	public CodeFragmentDao() throws SQLException {
 		super((Dao<CodeFragment, Long>) DBManager.getInstance().getNativeDao(
 				CodeFragment.class));
 		segmentDao = null;
+		cloneClassDao = null;
 	}
 
 	/**
@@ -48,6 +55,16 @@ public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
 	 */
 	void setSegmentDao(final SegmentDao segmentDao) {
 		this.segmentDao = segmentDao;
+	}
+
+	/**
+	 * Set the DAO for CloneClass with the specified one.
+	 * 
+	 * @param cloneClassDao
+	 *            the DAO to be set
+	 */
+	void setCloneClassDao(final CloneClassDao cloneClassDao) {
+		this.cloneClassDao = cloneClassDao;
 	}
 
 	@Override
@@ -62,7 +79,10 @@ public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
 			segments.add(segmentDao.get(segment.getId()));
 		}
 		element.setSegments(segments);
-		
+
+		element.setCloneClass(cloneClassDao
+				.get(element.getCloneClass().getId()));
+
 		return element;
 	}
 
