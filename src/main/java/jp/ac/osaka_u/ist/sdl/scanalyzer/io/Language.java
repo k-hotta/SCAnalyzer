@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io;
 
+import org.conqat.lib.scanner.ELanguage;
+
 /**
  * This enumeration describes usable programming languages and their relative
  * suffixes.
@@ -12,17 +14,17 @@ public enum Language {
 	/**
 	 * Java
 	 */
-	JAVA("java"),
+	JAVA(ELanguage.JAVA, "java"),
 
 	/**
 	 * C
 	 */
-	C("c", "h"),
+	C(ELanguage.CPP, "c", "h"),
 
 	/**
 	 * C++
 	 */
-	CPP("c", "cpp", "cxx", "h", "hxx", "hpp");
+	CPP(ELanguage.CPP, "c", "cpp", "cxx", "h", "hxx", "hpp");
 
 	/**
 	 * The array of suffixes
@@ -30,13 +32,28 @@ public enum Language {
 	private final String[] suffixes;
 
 	/**
+	 * The language defined in conqat
+	 */
+	private final ELanguage eLanguage;
+
+	/**
 	 * The constructor with the array of suffixes
 	 * 
 	 * @param suffixes
 	 *            the array of suffixes
 	 */
-	private Language(String... suffixes) {
+	private Language(ELanguage eLanguage, String... suffixes) {
+		this.eLanguage = eLanguage;
 		this.suffixes = suffixes;
+	}
+
+	/**
+	 * Get the corresponding ELanguage.
+	 * 
+	 * @return the corresponding ELanguage
+	 */
+	public final ELanguage getCorrespondingELanguage() {
+		return this.eLanguage;
 	}
 
 	/**
