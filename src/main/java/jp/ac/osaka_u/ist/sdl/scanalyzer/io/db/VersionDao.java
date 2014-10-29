@@ -172,7 +172,8 @@ public class VersionDao extends AbstractDataDao<Version> {
 		}
 		element.setRawCloneClasses(rawCloneClasses);
 
-		final Collection<CloneClass> cloneClasses = new TreeSet<CloneClass>();
+		final Collection<CloneClass> cloneClasses = new TreeSet<CloneClass>(
+				new DBElementComparator());
 		for (final CloneClass cloneClass : element.getCloneClasses()) {
 			cloneClasses.add(cloneClassDao.get(cloneClass.getId()));
 		}
