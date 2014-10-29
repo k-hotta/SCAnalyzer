@@ -91,6 +91,19 @@ public class VersionDaoTest {
 			return false;
 		}
 
+		if (result.getCloneClasses().size() != reference.getCloneClasses()
+				.size()) {
+			return false;
+		}
+
+		if (!result.getCloneClasses().containsAll(reference.getCloneClasses())) {
+			return false;
+		}
+
+		if (!reference.getCloneClasses().containsAll(result.getCloneClasses())) {
+			return false;
+		}
+
 		if (result.getRawCloneClasses().size() != reference
 				.getRawCloneClasses().size()) {
 			return false;
