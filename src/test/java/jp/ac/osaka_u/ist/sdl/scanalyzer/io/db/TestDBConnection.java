@@ -40,6 +40,12 @@ public class TestDBConnection {
 
 	private Dao<FileChange, Long> nativeFileChangeDao;
 
+	private Dao<Segment, Long> nativeSegmentDao;
+
+	private Dao<CodeFragment, Long> nativeCodeFragmentDao;
+
+	private Dao<CloneClass, Long> nativeCloneClassDao;
+
 	private Dao<RawCloneClass, Long> nativeRawCloneClassDao;
 
 	private Dao<RawClonedFragment, Long> nativeRawClonedFragmentDao;
@@ -83,6 +89,9 @@ public class TestDBConnection {
 		nativeRevisionDao = manager.getNativeDao(Revision.class);
 		nativeSourceFileDao = manager.getNativeDao(SourceFile.class);
 		nativeFileChangeDao = manager.getNativeDao(FileChange.class);
+		nativeSegmentDao = manager.getNativeDao(Segment.class);
+		nativeCodeFragmentDao = manager.getNativeDao(CodeFragment.class);
+		nativeCloneClassDao = manager.getNativeDao(CloneClass.class);
 		nativeRawCloneClassDao = manager.getNativeDao(RawCloneClass.class);
 		nativeRawClonedFragmentDao = manager
 				.getNativeDao(RawClonedFragment.class);
@@ -115,6 +124,18 @@ public class TestDBConnection {
 
 		for (final FileChange fileChange : parser.getFileChanges().values()) {
 			storeFileChangeWithNativeWay(fileChange);
+		}
+		
+		for (final Segment segment : parser.getSegments().values()) {
+			storeSegmentWithNativeWay(segment);
+		}
+		
+		for (final CodeFragment codeFragment : parser.getCodeFragments().values()) {
+			storeCodeFragmentWithNativeWay(codeFragment);
+		}
+		
+		for (final CloneClass cloneClass : parser.getCloneClasses().values()) {
+			storeCloneClassWithNativeWay(cloneClass);
 		}
 
 		for (final RawCloneClass rawCloneClass : parser.getRawCloneClasses()
@@ -151,6 +172,21 @@ public class TestDBConnection {
 	public void storeFileChangeWithNativeWay(final FileChange fileChange)
 			throws Exception {
 		nativeFileChangeDao.create(fileChange);
+	}
+
+	public void storeSegmentWithNativeWay(final Segment segment)
+			throws Exception {
+		nativeSegmentDao.create(segment);
+	}
+
+	public void storeCodeFragmentWithNativeWay(final CodeFragment codeFragment)
+			throws Exception {
+		nativeCodeFragmentDao.create(codeFragment);
+	}
+
+	public void storeCloneClassWithNativeWay(final CloneClass cloneClass)
+			throws Exception {
+		nativeCloneClassDao.create(cloneClass);
 	}
 
 	public void storeRawCloneClassWithNativeWay(
