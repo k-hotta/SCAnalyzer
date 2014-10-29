@@ -239,6 +239,9 @@ public class DBXmlNodeParser {
 		}
 
 		this.fileChanges.putAll(another.getFileChanges());
+		this.segments.putAll(another.getSegments());
+		this.codeFragments.putAll(another.getCodeFragments());
+		this.cloneClasses.putAll(another.getCloneClasses());
 		this.rawCloneClasses.putAll(another.getRawCloneClasses());
 		this.rawClonedFragments.putAll(another.getRawClonedFragments());
 		this.versionSourceFiles.putAll(another.getVersionSourceFiles());
@@ -480,6 +483,9 @@ public class DBXmlNodeParser {
 				new TreeMap<Long, RawCloneClass>(),
 				new TreeMap<Long, RawClonedFragment>(), this.versionSourceFiles);
 		another.visitRawCloneClassNode(node);
+		this.segments.putAll(another.getSegments());
+		this.codeFragments.putAll(another.getCodeFragments());
+		this.cloneClasses.putAll(another.getCloneClasses());
 		this.rawCloneClasses.putAll(another.getRawCloneClasses());
 		this.rawClonedFragments.putAll(another.getRawClonedFragments());
 	}

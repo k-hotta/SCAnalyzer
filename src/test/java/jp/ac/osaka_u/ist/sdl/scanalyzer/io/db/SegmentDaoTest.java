@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SourceFileDaoTest {
+public class SegmentDaoTest {
 
 	private static final String TEST_DB_XML_PATH = "src/test/resources/test-db.xml";
 
@@ -23,7 +23,7 @@ public class SourceFileDaoTest {
 
 	private static TestDBConnection connection;
 
-	private static SourceFileDao dao;
+	private static SegmentDao dao;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -32,7 +32,7 @@ public class SourceFileDaoTest {
 		connection = TestDBConnection.create(parser);
 		connection.initializeTables();
 		connection.storeAll(parser);
-		dao = DBManager.getInstance().getSourceFileDao();
+		dao = DBManager.getInstance().getSegmentDao();
 	}
 
 	@AfterClass
@@ -42,18 +42,18 @@ public class SourceFileDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(SourceFile.class);
-		for (final SourceFile sourceFile : parser.getSourceFiles().values()) {
-			connection.storeSourceFileWithNativeWay(sourceFile);
+		connection.initializeTable(Segment.class);
+		for (final Segment segment : parser.getSegments().values()) {
+			connection.storeSegmentWithNativeWay(segment);
 		}
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		DBManager.getInstance().clearDaos();
 	}
 
-	private boolean check(final SourceFile result, final SourceFile reference) {
+	private boolean check(final Segment result, final Segment reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -68,7 +68,20 @@ public class SourceFileDaoTest {
 			return false;
 		}
 
-		if (!result.getPath().equals(reference.getPath())) {
+		if (result.getCodeFragment().getId() != reference.getCodeFragment()
+				.getId()) {
+			return false;
+		}
+
+		if (result.getSourceFile().getId() != reference.getSourceFile().getId()) {
+			return false;
+		}
+
+		if (result.getStartPosition() != reference.getStartPosition()) {
+			return false;
+		}
+
+		if (result.getEndPosition() != reference.getEndPosition()) {
 			return false;
 		}
 
@@ -78,8 +91,8 @@ public class SourceFileDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final SourceFile reference = parser.getSourceFiles().get(id);
-		final SourceFile result = dao.get(id);
+		final Segment reference = parser.getSegments().get(id);
+		final Segment result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -87,8 +100,8 @@ public class SourceFileDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final SourceFile reference = parser.getSourceFiles().get(id);
-		final SourceFile result = dao.get(id);
+		final Segment reference = parser.getSegments().get(id);
+		final Segment result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -97,30 +110,28 @@ public class SourceFileDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<SourceFile> results = dao.get(id1, id2);
+		final List<Segment> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
-					result.getId());
+		for (final Segment result : results) {
+			final Segment reference = parser.getSegments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<SourceFile> results = dao.get(id1, id2);
+		final List<Segment> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
-					result.getId());
+		for (final Segment result : results) {
+			final Segment reference = parser.getSegments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet5() throws Exception {
 		final long id1 = 1;
@@ -128,16 +139,15 @@ public class SourceFileDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<SourceFile> results = dao.get(ids);
+		final List<Segment> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
-					result.getId());
+		for (final Segment result : results) {
+			final Segment reference = parser.getSegments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet6() throws Exception {
 		final long id1 = 1;
@@ -145,24 +155,23 @@ public class SourceFileDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<SourceFile> results = dao.get(ids);
+		final List<Segment> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
-					result.getId());
+		for (final Segment result : results) {
+			final Segment reference = parser.getSegments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGetAll() throws Exception {
-		final Map<Long, SourceFile> references = parser.getSourceFiles();
-		final Collection<SourceFile> results = dao.getAll();
-		
+		final Map<Long, Segment> references = parser.getSegments();
+		final Collection<Segment> results = dao.getAll();
+
 		assertTrue(results.size() == references.size());
-		for (final SourceFile result : results) {
-			final SourceFile reference = references.get(result.getId());
+		for (final Segment result : results) {
+			final Segment reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -182,31 +191,32 @@ public class SourceFileDaoTest {
 	
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(SourceFile.class); // clear tables
+		connection.initializeTable(Segment.class); // clear tables
 
-		final Map<Long, SourceFile> sourceFiles = parser.getSourceFiles();
-		final SourceFile sf1 = sourceFiles.get((long) 1);
+		final Map<Long, Segment> references = parser.getSegments();
+		final Segment sg1 = references.get((long) 1);
 
-		dao.register(sf1);
-		final SourceFile result = dao.get((long) 1);
+		dao.register(sg1);
+		final Segment result = dao.get((long) 1);
 
-		assertTrue(check(result, sf1));
+		assertTrue(check(result, sg1));
 	}
-	
-	@Test
-	public void testRegisterAll1() throws Exception {
-		connection.initializeTable(SourceFile.class); // clear tables
 
-		final Map<Long, SourceFile> references = parser.getSourceFiles();
+	@Test
+	public void testRegister3() throws Exception {
+		connection.initializeTable(Segment.class); // clear tables
+
+		final Map<Long, Segment> references = parser.getSegments();
+
 		dao.registerAll(references.values());
 		
-		List<SourceFile> results = dao.getAll();
+		List<Segment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final SourceFile result : results) {
-			final SourceFile reference = references.get(result.getId());
+		for (final Segment result : results) {
+			final Segment reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
-
+	
 }
