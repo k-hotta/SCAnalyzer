@@ -61,6 +61,11 @@ public class VersionProvider {
 	private ICloneDetector cloneDetector;
 
 	/**
+	 * how to provide the contents of source files
+	 */
+	private IFileContentProvider contentProvider;
+
+	/**
 	 * Get the revision provider
 	 * 
 	 * @return the revision provider
@@ -147,6 +152,12 @@ public class VersionProvider {
 		return cloneDetector;
 	}
 
+	/**
+	 * Set the clone detector with the specified one.
+	 * 
+	 * @param cloneDetector
+	 *            the clone detector to be set
+	 */
 	public void setCloneDetector(final ICloneDetector cloneDetector) {
 		if (cloneDetector == null) {
 			eLogger.fatal("null is specified for cloneDetector");
@@ -155,6 +166,32 @@ public class VersionProvider {
 		this.cloneDetector = cloneDetector;
 		logger.trace("the clone detector has been set: "
 				+ cloneDetector.getClass().getName());
+	}
+
+	/**
+	 * Get the content provider.
+	 * 
+	 * @return the content provider
+	 */
+	public IFileContentProvider getContentProvider() {
+		return contentProvider;
+	}
+
+	/**
+	 * Set the content provider with the specified one.
+	 * 
+	 * @param contentProvider
+	 *            the content provider to be set
+	 */
+	public void setContentProvider(final IFileContentProvider contentProvider) {
+		if (contentProvider == null) {
+			eLogger.fatal("null is specified for contentProvider");
+			throw new IllegalArgumentException(
+					"contentProvider must not be null");
+		}
+		this.contentProvider = contentProvider;
+		logger.trace("the content provider has been set:"
+				+ contentProvider.getClass().getName());
 	}
 
 	/**
@@ -169,8 +206,8 @@ public class VersionProvider {
 	 */
 	public Version getNextVersion(final Version currentVersion)
 			throws Exception {
+		// ready?
 		if (!ready()) {
-			// ready?
 			throw new IllegalStateException(
 					"the provider has not been ready to work");
 		}
@@ -241,6 +278,11 @@ public class VersionProvider {
 
 		if (cloneDetector == null) {
 			eLogger.fatal("clone detector has not been specified");
+			ready = false;
+		}
+
+		if (contentProvider == null) {
+			eLogger.fatal("content provider has not been specified");
 			ready = false;
 		}
 
