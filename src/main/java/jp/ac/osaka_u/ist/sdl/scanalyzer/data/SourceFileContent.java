@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This class maps each source file and its contents.
@@ -68,6 +69,43 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 */
 	public final void setContents(final Map<Integer, E> contents) {
 		this.contents = contents;
+	}
+
+	/**
+	 * Get the contents within the specified range. Both of the contents at the
+	 * start position and at the end position are included in the result.
+	 * 
+	 * @param startPosition
+	 *            the start position of the range, which must be smaller than or
+	 *            equal to the size of the contents of this file
+	 * @param endPosition
+	 *            the end position of the range, which must be greater than or
+	 *            equal to the start position. (This can be greater than the
+	 *            size of the contents of this file. In this case all the
+	 *            contents after the start position will be included in the
+	 *            result)
+	 * @return the contents within the specified range
+	 */
+	public final Map<Integer, E> getContentsIn(final int startPosition,
+			final int endPosition) {
+		if (startPosition > this.contents.size()) {
+			throw new IllegalArgumentException(
+					"the start position exceeds the size of the contents");
+		}
+		if (startPosition > endPosition) {
+			throw new IllegalArgumentException(
+					"the end posidion exceeds the start position");
+		}
+
+		final Map<Integer, E> result = new TreeMap<Integer, E>();
+
+		final int fixedEndPosition = Math
+				.min(endPosition, this.contents.size());
+		for (int i = startPosition; i <= fixedEndPosition; i++) {
+			result.put(i, this.contents.get(i));
+		}
+
+		return result;
 	}
 
 	/**
