@@ -103,6 +103,7 @@ public class Token implements IAtomicElement {
 	 * 
 	 * @return the line
 	 */
+	@Override
 	public int getLine() {
 		return line;
 	}

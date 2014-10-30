@@ -25,6 +25,13 @@ public interface IAtomicElement {
 	public int getPosition();
 
 	/**
+	 * Get the line number where this element located
+	 * 
+	 * @return the line number where this element located
+	 */
+	public int getLine();
+
+	/**
 	 * Get the value of this element
 	 * 
 	 * @return the value
