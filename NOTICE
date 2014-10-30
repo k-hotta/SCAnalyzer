@@ -43,3 +43,8 @@
 	Purpose:	Guessing character encoding
 	Web-site:	https://code.google.com/p/juniversalchardet/
 	License:	Mozilla Public License 1.1 (licenses/mpl-1.1.txt)
+	
+** Java Diff Utils **
+	Purpose:	Comparing two sequences
+	Web-site:	http://code.google.com/p/java-diff-utils/
+	License:	Apache Software License, Version 2.0 (licenses/apache-2.0.txt)
