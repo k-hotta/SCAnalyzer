@@ -1,7 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
@@ -43,7 +43,7 @@ public class TokenSourceFileParser implements ISourceFileParser<Token> {
 	}
 
 	@Override
-	public Map<Integer, Token> parse(SourceFile sourceFile, String contents) {
+	public SortedMap<Integer, Token> parse(SourceFile sourceFile, String contents) {
 		if (sourceFile == null) {
 			eLogger.fatal("cannot parse the given souceFile with TokenSourceFileParser: sourceFile must not be null");
 			throw new IllegalArgumentException("sourceFile is null");
@@ -60,7 +60,7 @@ public class TokenSourceFileParser implements ISourceFileParser<Token> {
 			throw new IllegalArgumentException("content is null");
 		}
 
-		final Map<Integer, Token> result = new TreeMap<Integer, Token>();
+		final SortedMap<Integer, Token> result = new TreeMap<Integer, Token>();
 		int count = 0;
 
 		IScanner scanner = null;

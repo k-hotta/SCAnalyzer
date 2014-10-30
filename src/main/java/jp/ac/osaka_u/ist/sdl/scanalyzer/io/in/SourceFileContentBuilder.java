@@ -1,6 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
@@ -44,7 +44,7 @@ public class SourceFileContentBuilder<E extends IAtomicElement> {
 	 */
 	public SourceFileContent<E> build(final SourceFile sourceFile,
 			final String contentsStr) {
-		final Map<Integer, E> contents = parser.parse(sourceFile, contentsStr);
+		final SortedMap<Integer, E> contents = parser.parse(sourceFile, contentsStr);
 
 		return new SourceFileContent<E>(sourceFile, contents);
 	}

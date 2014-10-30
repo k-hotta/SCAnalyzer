@@ -1,7 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
 
 /**
  * This class maps each source file and its contents.
@@ -25,10 +26,10 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 * The contents as a map. The key is the position of each content, and the
 	 * value is the content itself.
 	 */
-	private Map<Integer, E> contents;
+	private SortedMap<Integer, E> contents;
 
 	public SourceFileContent(final SourceFile sourceFile,
-			final Map<Integer, E> contents) {
+			final SortedMap<Integer, E> contents) {
 		this.sourceFile = sourceFile;
 		this.contents = contents;
 	}
@@ -57,7 +58,7 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 * 
 	 * @return the contents
 	 */
-	public final Map<Integer, E> getContents() {
+	public final SortedMap<Integer, E> getContents() {
 		return this.contents;
 	}
 
@@ -67,7 +68,7 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 * @param contents
 	 *            the contents to be set
 	 */
-	public final void setContents(final Map<Integer, E> contents) {
+	public final void setContents(final SortedMap<Integer, E> contents) {
 		this.contents = contents;
 	}
 
@@ -86,7 +87,7 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 *            result)
 	 * @return the contents within the specified range
 	 */
-	public final Map<Integer, E> getContentsIn(final int startPosition,
+	public final List<E> getContentsIn(final int startPosition,
 			final int endPosition) {
 		if (startPosition > this.contents.size()) {
 			throw new IllegalArgumentException(
@@ -97,12 +98,12 @@ public class SourceFileContent<E extends IAtomicElement> {
 					"the end posidion exceeds the start position");
 		}
 
-		final Map<Integer, E> result = new TreeMap<Integer, E>();
+		final List<E> result = new ArrayList<E>();
 
 		final int fixedEndPosition = Math
 				.min(endPosition, this.contents.size());
 		for (int i = startPosition; i <= fixedEndPosition; i++) {
-			result.put(i, this.contents.get(i));
+			result.add(this.contents.get(i));
 		}
 
 		return result;

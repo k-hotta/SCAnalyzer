@@ -1,6 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
@@ -25,7 +25,7 @@ public interface ISourceFileParser<E extends IAtomicElement> {
 	 *            the contents of the source file to be parsed
 	 * @return a map which contains all the elements in the given string
 	 */
-	public Map<Integer, E> parse(final SourceFile sourceFile,
+	public SortedMap<Integer, E> parse(final SourceFile sourceFile,
 			final String contentsStr);
 
 }

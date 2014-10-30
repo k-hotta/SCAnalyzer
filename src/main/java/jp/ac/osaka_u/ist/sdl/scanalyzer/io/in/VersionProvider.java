@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.sound.midi.Patch;
+
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
@@ -523,8 +525,10 @@ public class VersionProvider {
 		for (final RawCloneClass rawCloneClass : rawCloneClasses) {
 			nextVersion.getRawCloneClasses().add(rawCloneClass);
 			rawCloneClass.setVersion(nextVersion);
+			
+			
 		}
-
+		
 	}
 
 }
