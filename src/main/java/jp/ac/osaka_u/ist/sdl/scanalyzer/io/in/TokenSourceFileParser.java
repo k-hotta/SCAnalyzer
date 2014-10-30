@@ -21,7 +21,7 @@ import org.conqat.lib.scanner.ScannerFactory;
  * 
  * @author k-hotta
  * 
- * @see jp.ac.osaka_u.ist.sdl.scanalylzer.data.Token
+ * @see jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token
  */
 public class TokenSourceFileParser implements ISourceFileParser<Token> {
 
@@ -36,9 +36,14 @@ public class TokenSourceFileParser implements ISourceFileParser<Token> {
 	 */
 	private static final Logger eLogger = LogManager.getLogger("error");
 
+	private final Language language;
+
+	public TokenSourceFileParser(final Language language) {
+		this.language = language;
+	}
+
 	@Override
-	public Map<Integer, Token> parse(Language language, SourceFile sourceFile,
-			String contents) {
+	public Map<Integer, Token> parse(SourceFile sourceFile, String contents) {
 		if (sourceFile == null) {
 			eLogger.fatal("cannot parse the given souceFile with TokenSourceFileParser: sourceFile must not be null");
 			throw new IllegalArgumentException("sourceFile is null");
@@ -92,4 +97,5 @@ public class TokenSourceFileParser implements ISourceFileParser<Token> {
 
 		return result;
 	}
+
 }

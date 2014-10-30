@@ -7,9 +7,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
@@ -20,7 +22,10 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBXmlParser;
 
 import org.easymock.EasyMock;
@@ -42,6 +47,11 @@ public class VersionProviderTest {
 
 	private static ICloneDetector cloneDetectorMock;
 
+	private static IFileContentProvider contentProviderMock;
+
+	private static ISourceFileParser<Token> fileParser = new TokenSourceFileParser(
+			Language.JAVA);
+
 	private static Method mReady;
 
 	private static Method mDetectNextRevision;
@@ -55,7 +65,30 @@ public class VersionProviderTest {
 	private static final Version INITIAL_VERSION = new Version((long) 0,
 			new Revision(0, "pseudo-initial-revision", null),
 			new HashSet<FileChange>(), new HashSet<RawCloneClass>(),
-			new HashSet<CloneClass>(), new HashSet<SourceFile>());
+			new HashSet<CloneClass>(), new HashSet<SourceFile>(),
+			new HashMap<Long, SourceFileContent<?>>());
+
+	private static class TempFileContentProvider implements
+			IFileContentProvider {
+
+		private TempStringProvider stringProvider;
+
+		public TempFileContentProvider(final TempStringProvider stringProvider) {
+			this.stringProvider = stringProvider;
+		}
+
+		@Override
+		public String getFileContent(Version version, SourceFile sourceFile) {
+			return stringProvider.provide(version, sourceFile.getPath());
+		}
+
+	}
+
+	private interface TempStringProvider {
+
+		public String provide(final Version version, final String path);
+
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -133,6 +166,44 @@ public class VersionProviderTest {
 						(long) 4))).andStubReturn(
 				parser.getVersions().get((long) 4).getRawCloneClasses());
 
+		// setup mock for IFileContentProvider
+		TempStringProvider stringProviderMock = EasyMock
+				.createMock(TempStringProvider.class);
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 1),
+						parser.getSourceFiles().get((long) 1).getPath()))
+				.andStubReturn("int A = 0;");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 2),
+						parser.getSourceFiles().get((long) 1).getPath()))
+				.andStubReturn("int A = 0;");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 2),
+						parser.getSourceFiles().get((long) 2).getPath()))
+				.andStubReturn("public interface B { }");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 3),
+						parser.getSourceFiles().get((long) 2).getPath()))
+				.andStubReturn("public interface B { }");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 3),
+						parser.getSourceFiles().get((long) 3).getPath()))
+				.andStubReturn("double A = 0.0;");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 3),
+						parser.getSourceFiles().get((long) 4).getPath()))
+				.andStubReturn("public static void C() {}");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 4),
+						parser.getSourceFiles().get((long) 2).getPath()))
+				.andStubReturn("public interface B { }");
+		EasyMock.expect(
+				stringProviderMock.provide(parser.getVersions().get((long) 4),
+						parser.getSourceFiles().get((long) 3).getPath()))
+				.andStubReturn("double A = 0.0;");
+		EasyMock.replay(stringProviderMock);
+		contentProviderMock = new TempFileContentProvider(stringProviderMock);
+
 		// enable every mock
 		EasyMock.replay(revisionProviderMock);
 		EasyMock.replay(fileChangeEntryDetectorMock);
@@ -162,6 +233,9 @@ public class VersionProviderTest {
 		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
 		// provider.setRelocationFinder(relocationFinderMock);
 		provider.setCloneDetector(cloneDetectorMock);
+		provider.setContentProvider(contentProviderMock);
+		provider.setContentBuilder(new SourceFileContentBuilder<Token>(
+				fileParser));
 	}
 
 	@Before
@@ -201,7 +275,7 @@ public class VersionProviderTest {
 		provider.setRevisionProvider(revisionProviderMock);
 		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
 		provider.setCloneDetector(cloneDetectorMock);
-		assertTrue((Boolean) mReady.invoke(provider));
+		assertFalse((Boolean) mReady.invoke(provider));
 	}
 
 	@Test
@@ -210,6 +284,29 @@ public class VersionProviderTest {
 		provider.setRevisionProvider(revisionProviderMock);
 		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
 		provider.setCloneDetector(cloneDetectorMock);
+		provider.setContentProvider(contentProviderMock);
+		assertFalse((Boolean) mReady.invoke(provider));
+	}
+
+	@Test
+	public void testReady6() throws Exception {
+		final VersionProvider provider = new VersionProvider();
+		provider.setRevisionProvider(revisionProviderMock);
+		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
+		provider.setCloneDetector(cloneDetectorMock);
+		provider.setContentProvider(contentProviderMock);
+		provider.setContentBuilder(new SourceFileContentBuilder<Token>(null));
+		assertTrue((Boolean) mReady.invoke(provider));
+	}
+
+	@Test
+	public void testReady7() throws Exception {
+		final VersionProvider provider = new VersionProvider();
+		provider.setRevisionProvider(revisionProviderMock);
+		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
+		provider.setCloneDetector(cloneDetectorMock);
+		provider.setContentProvider(contentProviderMock);
+		provider.setContentBuilder(new SourceFileContentBuilder<Token>(null));
 		provider.setRelocationFinder(relocationFinderMock);
 		assertTrue((Boolean) mReady.invoke(provider));
 	}
@@ -327,7 +424,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver0, versionUnderConstructed,
 				fileChangeEntries);
@@ -351,7 +449,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver1, versionUnderConstructed,
 				fileChangeEntries);
@@ -375,7 +474,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver2, versionUnderConstructed,
 				fileChangeEntries);
@@ -399,7 +499,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver3, versionUnderConstructed,
 				fileChangeEntries);
@@ -426,7 +527,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		boolean caughtException = false;
 		try {
@@ -456,7 +558,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		boolean caughtException = false;
 		try {
@@ -487,7 +590,8 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<RawCloneClass>(
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
-						new DBElementComparator()));
+						new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		boolean caughtException = false;
 		try {

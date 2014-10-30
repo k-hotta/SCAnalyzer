@@ -88,6 +88,8 @@ public class Segment implements IDBElement {
 	 *            the start position of this segment
 	 * @param endPosition
 	 *            the end position of this segment
+	 * @param codeFragment
+	 *            the owner code fragment of this segment
 	 */
 	public Segment(final long id, final SourceFile sourceFile,
 			final int startPosition, final int endPosition,
@@ -227,8 +229,8 @@ public class Segment implements IDBElement {
 
 	@Override
 	public String toString() {
-		return this.id + " [" + this.sourceFile + " " + this.startPosition + "-"
-				+ this.endPosition + "]";
+		return this.id + " [" + this.sourceFile + " " + this.startPosition
+				+ "-" + this.endPosition + "]";
 	}
 
 }

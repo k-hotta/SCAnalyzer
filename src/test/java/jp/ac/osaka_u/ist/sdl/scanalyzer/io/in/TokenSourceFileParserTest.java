@@ -25,7 +25,8 @@ public class TokenSourceFileParserTest {
 
 	private static SVNFileContentProvider provider;
 
-	private static final TokenSourceFileParser parser = new TokenSourceFileParser();
+	private static final TokenSourceFileParser parser = new TokenSourceFileParser(
+			Language.JAVA);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -39,7 +40,7 @@ public class TokenSourceFileParserTest {
 		boolean caughtException = false;
 
 		try {
-			parser.parse(Language.JAVA, null, null);
+			parser.parse(null, null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -52,7 +53,7 @@ public class TokenSourceFileParserTest {
 		boolean caughtException = false;
 
 		try {
-			parser.parse(Language.JAVA, new SourceFile(), null);
+			parser.parse(new SourceFile(), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -66,7 +67,7 @@ public class TokenSourceFileParserTest {
 
 		try {
 			SourceFile sourceFile = new SourceFile(1, "A.java");
-			parser.parse(Language.JAVA, sourceFile, null);
+			parser.parse(sourceFile, null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -77,8 +78,8 @@ public class TokenSourceFileParserTest {
 	@Test
 	public void testParse4() throws Exception {
 		SourceFile sourceFile = new SourceFile(1, "A.java");
-		final Map<Integer, Token> result = parser.parse(Language.JAVA,
-				sourceFile, "int x = 0;");
+		final Map<Integer, Token> result = parser.parse(sourceFile,
+				"int x = 0;");
 		assertTrue(result.size() == 5);
 	}
 
@@ -89,9 +90,9 @@ public class TokenSourceFileParserTest {
 		final SourceFile sourceFile = new SourceFile(1,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java");
 		final String content = provider.getFileContent(version, sourceFile);
-		
-		final Map<Integer, Token> result = parser.parse(Language.JAVA, sourceFile, content);
-		
+
+		final Map<Integer, Token> result = parser.parse(sourceFile, content);
+
 		assertTrue(result.get(1).getValue().equals("package"));
 	}
 

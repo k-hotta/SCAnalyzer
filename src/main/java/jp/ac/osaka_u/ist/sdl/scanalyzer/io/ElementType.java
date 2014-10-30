@@ -6,7 +6,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 /**
  * This is an enumeration which describes what kind of elements can be analyzed.
  * Here, a kind of element corresponds to an implementation of
- * {@link jp.ac.osaka_u.ist.sdl.scanalzer.IAtomicElement}.
+ * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement}.
  * 
  * @author k-hotta
  * 

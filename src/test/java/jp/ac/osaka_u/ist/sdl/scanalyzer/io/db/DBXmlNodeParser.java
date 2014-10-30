@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -21,6 +22,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
 
@@ -283,7 +285,7 @@ public class DBXmlNodeParser {
 		currentSourceFiles.addAll(sourceFiles.values());
 		final Version version = new Version(id, revision, fileChanges.values(),
 				rawCloneClasses.values(), cloneClasses.values(),
-				currentSourceFiles);
+				currentSourceFiles, new HashMap<Long, SourceFileContent<?>>());
 		this.versions.put(id, version);
 
 		for (final SourceFile sourceFile : this.sourceFiles.values()) {

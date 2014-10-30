@@ -142,7 +142,7 @@ public class SVNRepositoryManager {
 			pathUriWithRelative = new URI(this.path + fixedRelativePath);
 			pathUriWithoutRelative = new URI(this.path);
 		} catch (URISyntaxException e) {
-			eLogger.warn(this.path + this.relativePath + " is not a valid URI");
+			eLogger.warn(this.path + fixedRelativePath + " is not a valid URI");
 			eLogger.warn("try to find " + this.path + fixedRelativePath
 					+ " as a repository in local");
 		}

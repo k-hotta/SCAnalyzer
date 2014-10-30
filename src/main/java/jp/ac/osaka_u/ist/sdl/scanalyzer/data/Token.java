@@ -101,7 +101,7 @@ public class Token implements IAtomicElement {
 	/**
 	 * Get the line
 	 * 
-	 * @return
+	 * @return the line
 	 */
 	public int getLine() {
 		return line;
@@ -110,7 +110,7 @@ public class Token implements IAtomicElement {
 	/**
 	 * Get the offset
 	 * 
-	 * @return
+	 * @return the offset
 	 */
 	public int getOffset() {
 		return offset;

@@ -136,8 +136,7 @@ public class SVNRepositoryManagerTest {
 		try {
 			final SVNRepositoryManager manager = new SVNRepositoryManager(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
-			final List<String> result = manager
-					.getListOfRelevantFiles((long) 1000);
+			manager.getListOfRelevantFiles((long) 1000);
 			fail(); // here shouldn't be reached
 		} catch (Exception e) {
 			assertTrue(true);
@@ -245,7 +244,7 @@ public class SVNRepositoryManagerTest {
 			fail();
 		}
 	}
-	
+
 	@Test
 	public void testGetLog3() {
 		try {
@@ -274,7 +273,7 @@ public class SVNRepositoryManagerTest {
 			fail();
 		}
 	}
-	
+
 	private Map<String, String> readDiffFile(final String path)
 			throws Exception {
 		final Map<String, String> result = new HashMap<String, String>();

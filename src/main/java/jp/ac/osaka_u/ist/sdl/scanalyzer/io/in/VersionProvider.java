@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
@@ -14,6 +15,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
 import org.apache.logging.log4j.LogManager;
@@ -64,6 +66,11 @@ public class VersionProvider {
 	 * how to provide the contents of source files
 	 */
 	private IFileContentProvider contentProvider;
+
+	/**
+	 * how to parser the contents of source files
+	 */
+	private SourceFileContentBuilder<?> contentBuilder;
 
 	/**
 	 * Get the revision provider
@@ -195,6 +202,33 @@ public class VersionProvider {
 	}
 
 	/**
+	 * Get the content builder.
+	 * 
+	 * @return the content builder
+	 */
+	public SourceFileContentBuilder<?> getContentBuilder() {
+		return contentBuilder;
+	}
+
+	/**
+	 * Set the content builder with the specified one.
+	 * 
+	 * @param contentBuilder
+	 *            the content builder to be set
+	 */
+	public void setContentBuilder(
+			final SourceFileContentBuilder<?> contentBuilder) {
+		if (contentBuilder == null) {
+			eLogger.fatal("null is specified for contentBuilder");
+			throw new IllegalArgumentException(
+					"contentBuilder must not be null");
+		}
+		this.contentBuilder = contentBuilder;
+		logger.trace("the content builder has been set:"
+				+ contentBuilder.getClass().getName());
+	}
+
+	/**
 	 * Get the next version of the given current version.
 	 * 
 	 * @param currentVersion
@@ -233,7 +267,8 @@ public class VersionProvider {
 				new TreeSet<FileChange>(new DBElementComparator()),
 				new TreeSet<RawCloneClass>(new DBElementComparator()),
 				new TreeSet<CloneClass>(new DBElementComparator()),
-				new TreeSet<SourceFile>(new DBElementComparator()));
+				new TreeSet<SourceFile>(new DBElementComparator()),
+				new TreeMap<Long, SourceFileContent<?>>());
 
 		// set the next revision to the next version
 		logger.trace("create a new revision " + nextRevision.toString());
@@ -286,6 +321,11 @@ public class VersionProvider {
 			ready = false;
 		}
 
+		if (contentBuilder == null) {
+			eLogger.fatal("content builder has not been specified");
+			ready = false;
+		}
+
 		return ready;
 	}
 
@@ -300,7 +340,8 @@ public class VersionProvider {
 				IDGenerator.generate(Revision.class),
 				"pseudo-initial-revision", null), new HashSet<FileChange>(),
 				new HashSet<RawCloneClass>(), new HashSet<CloneClass>(),
-				new HashSet<SourceFile>());
+				new HashSet<SourceFile>(),
+				new TreeMap<Long, SourceFileContent<?>>());
 	}
 
 	/**
@@ -350,6 +391,10 @@ public class VersionProvider {
 		final Map<String, SourceFile> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
 				.getSourceFiles());
 
+		// the contents of each source file in current revision
+		final Map<Long, SourceFileContent<?>> sourceFileContentsUnderConsideration = new TreeMap<Long, SourceFileContent<?>>(
+				currentVersion.getSourceFileContents());
+
 		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
 			final String oldPath = fileChangeEntry.getBeforePath();
 			final String newPath = fileChangeEntry.getAfterPath();
@@ -387,7 +432,13 @@ public class VersionProvider {
 						IDGenerator.generate(SourceFile.class), newPath);
 				logger.trace("create a new source file "
 						+ newSourceFile.toString());
+
+				SourceFileContent<?> content = parseFile(nextVersion,
+						newSourceFile);
+
 				sourceFilesUnderConsideration.put(newPath, newSourceFile);
+				sourceFileContentsUnderConsideration.put(newSourceFile.getId(),
+						content);
 			}
 
 			if (oldSourceFile == null && newSourceFile == null) {
@@ -409,6 +460,10 @@ public class VersionProvider {
 			logger.trace("add " + sourceFile.getPath() + " into version "
 					+ nextVersion.getId());
 			nextVersion.getSourceFiles().add(sourceFile);
+			nextVersion.getSourceFileContents()
+					.put(sourceFile.getId(),
+							sourceFileContentsUnderConsideration.get(sourceFile
+									.getId()));
 		}
 	}
 
@@ -429,6 +484,31 @@ public class VersionProvider {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Parse the given source file and get the contents in it.
+	 * 
+	 * @param version
+	 *            the version in which the target source file exists
+	 * @param sourceFile
+	 *            the target source file
+	 * @return the contents of the source file
+	 */
+	private final SourceFileContent<?> parseFile(final Version version,
+			final SourceFile sourceFile) {
+		final String contentsStr = contentProvider.getFileContent(version,
+				sourceFile);
+
+		if (contentsStr == null) {
+			eLogger.fatal("cannot find source code of " + sourceFile.getId()
+					+ " in version " + version.getId());
+			throw new IllegalStateException("source code of "
+					+ sourceFile.getId() + " in version " + version.getId()
+					+ " is null");
+		}
+
+		return contentBuilder.build(sourceFile, contentsStr);
 	}
 
 	/**

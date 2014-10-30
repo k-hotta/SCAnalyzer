@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 
 import org.junit.After;
 import org.junit.AfterClass;

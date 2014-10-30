@@ -19,7 +19,6 @@ import com.j256.ormlite.dao.Dao;
  * @author k-hotta
  * 
  * @see CloneClass
- * @see CloneClassCodeFragment
  */
 public class CloneClassDao extends AbstractDataDao<CloneClass> {
 

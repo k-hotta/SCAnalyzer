@@ -282,7 +282,7 @@ public class DBManager {
 	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClassDao}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass}
 	 */
 	public final RawCloneClassDao getRawCloneClassDao() {
 		return rawCloneClassDao;

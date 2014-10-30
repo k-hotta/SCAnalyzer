@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -84,6 +85,12 @@ public class Version implements IDBElement {
 	private Collection<SourceFile> sourceFiles;
 
 	/**
+	 * The map between the id of source file and its content. <br>
+	 * NOTE: this field is not a column of database table.
+	 */
+	private Map<Long, SourceFileContent<?>> sourceFileContents;
+
+	/**
 	 * The default constructor
 	 */
 	public Version() {
@@ -103,23 +110,28 @@ public class Version implements IDBElement {
 	 * @param rawCloneClasses
 	 *            the collection that contains all the raw clone classes in this
 	 *            version
-	 * @param the
-	 *            collection that contains all the clone classes in this version
+	 * @param cloneClasses
+	 *            the collection that contains all the clone classes in this
+	 *            version
 	 * @param sourceFiles
 	 *            the collection that contains all the source files in this
 	 *            version
+	 * @param sourceFileContents
+	 *            the map between source file id and its content
 	 */
 	public Version(final long id, final Revision revision,
 			final Collection<FileChange> fileChanges,
 			final Collection<RawCloneClass> rawCloneClasses,
 			final Collection<CloneClass> cloneClasses,
-			final Collection<SourceFile> sourceFiles) {
+			final Collection<SourceFile> sourceFiles,
+			final Map<Long, SourceFileContent<?>> sourceFileContents) {
 		this.id = id;
 		this.revision = revision;
 		this.fileChanges = fileChanges;
 		this.rawCloneClasses = rawCloneClasses;
 		this.cloneClasses = cloneClasses;
 		this.sourceFiles = sourceFiles;
+		this.sourceFileContents = sourceFileContents;
 	}
 
 	/**
@@ -239,6 +251,26 @@ public class Version implements IDBElement {
 	 */
 	public void setSourceFiles(Collection<SourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
+	}
+
+	/**
+	 * Get the map between file id and its content
+	 * 
+	 * @return the map between file id and its content
+	 */
+	public Map<Long, SourceFileContent<?>> getSourceFileContents() {
+		return sourceFileContents;
+	}
+
+	/**
+	 * Set the map between file id and its content with the specified one.
+	 * 
+	 * @param sourceFileContents
+	 *            the map to be set
+	 */
+	public void setSourceFileContents(
+			final Map<Long, SourceFileContent<?>> sourceFileContents) {
+		this.sourceFileContents = sourceFileContents;
 	}
 
 	/**

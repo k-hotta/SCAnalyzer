@@ -19,7 +19,7 @@ public interface IFileChangeEntryDetector {
 	 * <p>
 	 * Note: this method should detect file changes <b>TO</b> the given
 	 * revision, <b>not from</b> the given revision. In other words, the next
-	 * revision will be given. <\p>
+	 * revision will be given. </p>
 	 * 
 	 * @param revision
 	 *            the target revision
