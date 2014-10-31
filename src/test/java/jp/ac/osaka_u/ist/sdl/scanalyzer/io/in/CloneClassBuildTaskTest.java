@@ -12,6 +12,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
@@ -405,6 +408,48 @@ public class CloneClassBuildTaskTest {
 			for (final CodeFragment frag2 : result.getCodeFragments()) {
 				assertTrue(compareFragments(frag1, frag2, contents));
 			}
+		}
+	}
+
+	@Test
+	public void testCall4() throws Exception {
+		ExecutorService pool = Executors.newCachedThreadPool();
+
+		try {
+			final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+			contents.putAll(version419Mock.getSourceFileContents());
+
+			final CloneClassBuildTask task1 = new CloneClassBuildTask(contents,
+					rawCloneClassMock1, version419Mock);
+			final CloneClassBuildTask task2 = new CloneClassBuildTask(contents,
+					rawCloneClassMock2, version419Mock);
+			final CloneClassBuildTask task3 = new CloneClassBuildTask(contents,
+					rawCloneClassMock1, version419Mock);
+
+			final List<Future<CloneClass>> futures = new ArrayList<>();
+			futures.add(pool.submit(task1));
+			futures.add(pool.submit(task2));
+			futures.add(pool.submit(task3));
+
+			final List<CloneClass> results = new ArrayList<>();
+
+			for (Future<CloneClass> future : futures) {
+				try {
+					results.add(future.get());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			for (final CloneClass result : results) {
+				for (final CodeFragment frag1 : result.getCodeFragments()) {
+					for (final CodeFragment frag2 : result.getCodeFragments()) {
+						assertTrue(compareFragments(frag1, frag2, contents));
+					}
+				}
+			}
+		} finally {
+			pool.shutdown();
 		}
 	}
 
