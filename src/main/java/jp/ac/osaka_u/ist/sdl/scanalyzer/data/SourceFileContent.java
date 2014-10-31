@@ -141,7 +141,7 @@ public class SourceFileContent<E extends IAtomicElement> {
 
 		builder.append(this.sourceFile + "\n");
 		for (final E content : this.contents.values()) {
-			builder.append(content);
+			builder.append(content + " ");
 		}
 
 		return builder.toString();
