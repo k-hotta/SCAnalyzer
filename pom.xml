@@ -108,7 +108,7 @@
   			<artifactId>maven-javadoc-plugin</artifactId>
   			<configuration>
   				<author>true</author>
-  				<source>1.7</source>
+  				<source>1.8</source>
   				<show>protected</show>
   				<encoding>UTF-8</encoding>
   				<charset>UTF-8</charset>
@@ -136,6 +136,14 @@
   		<plugin>
   			<groupId>org.codehaus.mojo</groupId>
   			<artifactId>cobertura-maven-plugin</artifactId>
+  			<version>2.6</version>
+  			<dependencies>
+  				<dependency>
+  					<groupId>org.ow2.asm</groupId>
+  					<artifactId>asm</artifactId>
+  					<version>5.0.3</version>
+  				</dependency>
+  			</dependencies>
   			<configuration>
   				<instrumentation>
   					<excludes>
