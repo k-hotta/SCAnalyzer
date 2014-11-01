@@ -4,11 +4,11 @@ import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 
 /**
  * This class is for parsing source file and making instances of
- * {@link SourceFileContent}.
+ * {@link SourceFileWithContent}.
  * 
  * @author k-hotta
  *
@@ -33,7 +33,7 @@ public class SourceFileContentBuilder<E extends IAtomicElement> {
 	}
 
 	/**
-	 * Build the instance of {@link SourceFileContent} with the specified
+	 * Build the instance of {@link SourceFileWithContent} with the specified
 	 * values.
 	 * 
 	 * @param sourceFile
@@ -42,11 +42,11 @@ public class SourceFileContentBuilder<E extends IAtomicElement> {
 	 *            the string representation of the contents of the source file
 	 * @return the built instance
 	 */
-	public SourceFileContent<E> build(final SourceFile sourceFile,
+	public SourceFileWithContent<E> build(final SourceFile sourceFile,
 			final String contentsStr) {
 		final SortedMap<Integer, E> contents = parser.parse(sourceFile, contentsStr);
 
-		return new SourceFileContent<E>(sourceFile, contents);
+		return new SourceFileWithContent<E>(sourceFile, contents);
 	}
 
 }

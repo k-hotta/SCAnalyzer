@@ -6,11 +6,11 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * A class that represents source files. <br>
  * Note that this class has just surface-level information. The contents of the
- * file would be stored in {@link SourceFileContent}.
+ * file would be stored in {@link SourceFileWithContent}.
  * 
  * @author k-hotta
  * 
- * @see SourceFileContent
+ * @see SourceFileWithContent
  */
 @DatabaseTable(tableName = "SOURCE_FILES")
 public class SourceFile implements IDBElement {

@@ -22,7 +22,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
@@ -66,7 +66,7 @@ public class VersionProviderTest {
 			new Revision(0, "pseudo-initial-revision", null),
 			new HashSet<FileChange>(), new HashSet<RawCloneClass>(),
 			new HashSet<CloneClass>(), new HashSet<SourceFile>(),
-			new HashMap<Long, SourceFileContent<?>>());
+			new HashMap<Long, SourceFileWithContent<?>>());
 
 	private static class TempFileContentProvider implements
 			IFileContentProvider {
@@ -425,7 +425,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver0, versionUnderConstructed,
 				fileChangeEntries);
@@ -450,7 +450,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver1, versionUnderConstructed,
 				fileChangeEntries);
@@ -475,7 +475,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver2, versionUnderConstructed,
 				fileChangeEntries);
@@ -500,7 +500,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		mProcessFileChanges.invoke(provider, ver3, versionUnderConstructed,
 				fileChangeEntries);
@@ -528,7 +528,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		boolean caughtException = false;
 		try {
@@ -559,7 +559,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		boolean caughtException = false;
 		try {
@@ -591,7 +591,7 @@ public class VersionProviderTest {
 						new DBElementComparator()), new TreeSet<CloneClass>(
 						new DBElementComparator()), new TreeSet<SourceFile>(
 						new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		boolean caughtException = false;
 		try {

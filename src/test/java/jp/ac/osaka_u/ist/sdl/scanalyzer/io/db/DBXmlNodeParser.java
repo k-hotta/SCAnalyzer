@@ -23,7 +23,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
@@ -77,7 +77,7 @@ public class DBXmlNodeParser {
 
 	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
 
-	private SortedMap<Long, SourceFileContent<Token>> fileContents;
+	private SortedMap<Long, SourceFileWithContent<Token>> fileContents;
 
 	private SortedMap<Long, String> fileContentsStr;
 
@@ -100,7 +100,7 @@ public class DBXmlNodeParser {
 			final SortedMap<Long, RawCloneClass> rawCloneClasses,
 			final SortedMap<Long, RawClonedFragment> rawClonedFragments,
 			final SortedMap<Long, VersionSourceFile> versionSourceFiles,
-			final SortedMap<Long, SourceFileContent<Token>> fileContents,
+			final SortedMap<Long, SourceFileWithContent<Token>> fileContents,
 			final SortedMap<Long, String> fileContentsStr) {
 		this.versions = versions;
 		this.revisions = revisions;
@@ -164,7 +164,7 @@ public class DBXmlNodeParser {
 		return versionSourceFiles;
 	}
 
-	public final Map<Long, SourceFileContent<Token>> getFileContents() {
+	public final Map<Long, SourceFileWithContent<Token>> getFileContents() {
 		return fileContents;
 	}
 
@@ -246,7 +246,7 @@ public class DBXmlNodeParser {
 				new TreeMap<Long, RawCloneClass>(),
 				new TreeMap<Long, RawClonedFragment>(),
 				new TreeMap<Long, VersionSourceFile>(),
-				new TreeMap<Long, SourceFileContent<Token>>(),
+				new TreeMap<Long, SourceFileWithContent<Token>>(),
 				new TreeMap<Long, String>());
 		another.visitVersionNode(node);
 		// this.versions.putAll(another.getVersions());
@@ -258,7 +258,7 @@ public class DBXmlNodeParser {
 			if (this.sourceFiles.containsKey(anotherSourceFile.getId())) {
 				final SourceFile currentSourceFile = this.sourceFiles
 						.get(anotherSourceFile.getId());
-				final SourceFileContent<Token> currentContent = this.fileContents
+				final SourceFileWithContent<Token> currentContent = this.fileContents
 						.get(anotherSourceFile.getId());
 				final String currentContentStr = this.fileContentsStr
 						.get(anotherSourceFile.getId());
@@ -331,7 +331,7 @@ public class DBXmlNodeParser {
 		final Collection<SourceFile> currentSourceFiles = new ArrayList<SourceFile>();
 		currentSourceFiles.addAll(sourceFiles.values());
 
-		final Map<Long, SourceFileContent<? extends IAtomicElement>> currentContents = new HashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		final Map<Long, SourceFileWithContent<? extends IAtomicElement>> currentContents = new HashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
 		currentContents.putAll(fileContents);
 
 		final Version version = new Version(id, revision, fileChanges.values(),

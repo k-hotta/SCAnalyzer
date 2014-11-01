@@ -15,7 +15,7 @@ import java.util.SortedMap;
  * @see SourceFile
  * @see IAtomicElement
  */
-public class SourceFileContent<E extends IAtomicElement> {
+public class SourceFileWithContent<E extends IAtomicElement> {
 
 	/**
 	 * The source file
@@ -28,7 +28,7 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 */
 	private SortedMap<Integer, E> contents;
 
-	public SourceFileContent(final SourceFile sourceFile,
+	public SourceFileWithContent(final SourceFile sourceFile,
 			final SortedMap<Integer, E> contents) {
 		this.sourceFile = sourceFile;
 		this.contents = contents;
@@ -113,16 +113,16 @@ public class SourceFileContent<E extends IAtomicElement> {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link SourceFileContent} and the owner files of the two objects
+	 *         {@link SourceFileWithContent} and the owner files of the two objects
 	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof SourceFileContent)) {
+		if (!(obj instanceof SourceFileWithContent)) {
 			return false;
 		}
 
-		final SourceFileContent<?> another = (SourceFileContent<?>) obj;
+		final SourceFileWithContent<?> another = (SourceFileWithContent<?>) obj;
 
 		return this.sourceFile.equals(another.getSourceFile());
 	}

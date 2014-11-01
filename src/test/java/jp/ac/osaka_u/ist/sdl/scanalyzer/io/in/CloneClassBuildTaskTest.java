@@ -26,7 +26,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SegmentComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
@@ -160,7 +160,7 @@ public class CloneClassBuildTaskTest {
 				"419", null), new HashSet<FileChange>(),
 				new HashSet<RawCloneClass>(), new HashSet<CloneClass>(),
 				new HashSet<SourceFile>(),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		final SourceFile similarityCalculatorJava = new SourceFile(1,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/util/SimilarityCalculator.java");
@@ -179,13 +179,13 @@ public class CloneClassBuildTaskTest {
 		final SourceFileContentBuilder<Token> builder = new SourceFileContentBuilder<>(
 				parser);
 
-		final SourceFileContent<Token> contentSimilarityCalulatorJava = builder
+		final SourceFileWithContent<Token> contentSimilarityCalulatorJava = builder
 				.build(similarityCalculatorJava, similarityCalculatorJavaStr);
 		version419Mock.getSourceFileContents().put(
 				similarityCalculatorJava.getId(),
 				contentSimilarityCalulatorJava);
 
-		final SourceFileContent<Token> contentLevenshteinDistanceCalculatorJava = builder
+		final SourceFileWithContent<Token> contentLevenshteinDistanceCalculatorJava = builder
 				.build(levenshteinDistanceCalculatorJava,
 						levenshteinDistanceCalculatorJavaStr);
 		version419Mock.getSourceFileContents().put(
@@ -334,7 +334,7 @@ public class CloneClassBuildTaskTest {
 	private boolean compareFragments(
 			final CodeFragment frag1,
 			final CodeFragment frag2,
-			final Map<Long, SourceFileContent<? extends IAtomicElement>> fileContents) {
+			final Map<Long, SourceFileWithContent<? extends IAtomicElement>> fileContents) {
 		final List<Segment> segments1 = new ArrayList<Segment>();
 		segments1.addAll(frag1.getSegments());
 		Collections.sort(segments1, new SegmentComparator());
@@ -346,14 +346,14 @@ public class CloneClassBuildTaskTest {
 		final List<IAtomicElement> segContent1 = new ArrayList<IAtomicElement>();
 		final List<IAtomicElement> segContent2 = new ArrayList<IAtomicElement>();
 
-		final SourceFileContent<? extends IAtomicElement> content1 = fileContents
+		final SourceFileWithContent<? extends IAtomicElement> content1 = fileContents
 				.get(segments1.get(0).getSourceFile().getId());
 		for (final Segment segment : segments1) {
 			segContent1.addAll(content1.getContentsIn(
 					segment.getStartPosition(), segment.getEndPosition()));
 		}
 
-		final SourceFileContent<? extends IAtomicElement> content2 = fileContents
+		final SourceFileWithContent<? extends IAtomicElement> content2 = fileContents
 				.get(segments2.get(0).getSourceFile().getId());
 		for (final Segment segment : segments2) {
 			segContent2.addAll(content2.getContentsIn(
@@ -365,7 +365,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testCall1() throws Exception {
-		final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
 		contents.putAll(version419Mock.getSourceFileContents());
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
@@ -381,7 +381,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testCall2() throws Exception {
-		final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
 		contents.putAll(version419Mock.getSourceFileContents());
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
@@ -397,7 +397,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testCall3() throws Exception {
-		final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
 		contents.putAll(version419Mock.getSourceFileContents());
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
@@ -416,7 +416,7 @@ public class CloneClassBuildTaskTest {
 		ExecutorService pool = Executors.newCachedThreadPool();
 
 		try {
-			final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+			final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
 			contents.putAll(version419Mock.getSourceFileContents());
 
 			final CloneClassBuildTask task1 = new CloneClassBuildTask(contents,

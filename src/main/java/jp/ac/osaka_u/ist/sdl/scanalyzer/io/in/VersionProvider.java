@@ -23,7 +23,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
 import org.apache.logging.log4j.LogManager;
@@ -276,7 +276,7 @@ public class VersionProvider {
 				new TreeSet<RawCloneClass>(new DBElementComparator()),
 				new TreeSet<CloneClass>(new DBElementComparator()),
 				new TreeSet<SourceFile>(new DBElementComparator()),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		// set the next revision to the next version
 		logger.trace("create a new revision " + nextRevision.toString());
@@ -349,7 +349,7 @@ public class VersionProvider {
 				"pseudo-initial-revision", null), new HashSet<FileChange>(),
 				new HashSet<RawCloneClass>(), new HashSet<CloneClass>(),
 				new HashSet<SourceFile>(),
-				new TreeMap<Long, SourceFileContent<?>>());
+				new TreeMap<Long, SourceFileWithContent<?>>());
 	}
 
 	/**
@@ -400,7 +400,7 @@ public class VersionProvider {
 				.getSourceFiles());
 
 		// the contents of each source file in current revision
-		final Map<Long, SourceFileContent<?>> sourceFileContentsUnderConsideration = new TreeMap<Long, SourceFileContent<?>>(
+		final Map<Long, SourceFileWithContent<?>> sourceFileContentsUnderConsideration = new TreeMap<Long, SourceFileWithContent<?>>(
 				currentVersion.getSourceFileContents());
 
 		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
@@ -441,7 +441,7 @@ public class VersionProvider {
 				logger.trace("create a new source file "
 						+ newSourceFile.toString());
 
-				SourceFileContent<?> content = parseFile(nextVersion,
+				SourceFileWithContent<?> content = parseFile(nextVersion,
 						newSourceFile);
 
 				sourceFilesUnderConsideration.put(newPath, newSourceFile);
@@ -503,7 +503,7 @@ public class VersionProvider {
 	 *            the target source file
 	 * @return the contents of the source file
 	 */
-	private final SourceFileContent<?> parseFile(final Version version,
+	private final SourceFileWithContent<?> parseFile(final Version version,
 			final SourceFile sourceFile) {
 		final String contentsStr = contentProvider.getFileContent(version,
 				sourceFile);
@@ -529,7 +529,7 @@ public class VersionProvider {
 		final Collection<RawCloneClass> rawCloneClasses = cloneDetector
 				.detectClones(nextVersion);
 
-		final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
 		concurrentContents.putAll(nextVersion.getSourceFileContents());
 
 		ExecutorService pool = Executors.newCachedThreadPool();

@@ -20,7 +20,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import difflib.Chunk;
 import difflib.Delta;
@@ -30,14 +30,14 @@ import difflib.PatchFailedException;
 
 public class CloneClassBuildTask implements Callable<CloneClass> {
 
-	private final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> fileContents;
+	private final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> fileContents;
 
 	private final RawCloneClass rawCloneClass;
 
 	private final Version version;
 
 	public CloneClassBuildTask(
-			final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> fileContents,
+			final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> fileContents,
 			final RawCloneClass rawCloineClass, final Version version) {
 		this.fileContents = fileContents;
 		this.rawCloneClass = rawCloineClass;
@@ -178,7 +178,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 
 		for (final RawClonedFragment rawClonedFragment : rawCloneClass
 				.getElements()) {
-			final SourceFileContent<? extends IAtomicElement> content = fileContents
+			final SourceFileWithContent<? extends IAtomicElement> content = fileContents
 					.get(rawClonedFragment.getSourceFile().getId());
 			final int startPosition = searchStartPositionWithLine(
 					content.getContents(), rawClonedFragment.getStartLine());

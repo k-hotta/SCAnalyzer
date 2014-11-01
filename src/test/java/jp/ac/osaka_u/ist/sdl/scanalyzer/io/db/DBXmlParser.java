@@ -16,7 +16,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
@@ -61,7 +61,7 @@ public class DBXmlParser {
 
 	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
 
-	private SortedMap<Long, SourceFileContent<Token>> fileContents;
+	private SortedMap<Long, SourceFileWithContent<Token>> fileContents;
 
 	private SortedMap<Long, String> fileContentsStr;
 
@@ -84,7 +84,7 @@ public class DBXmlParser {
 		this.rawCloneClasses = new TreeMap<Long, RawCloneClass>();
 		this.rawClonedFragments = new TreeMap<Long, RawClonedFragment>();
 		this.versionSourceFiles = new TreeMap<Long, VersionSourceFile>();
-		this.fileContents = new TreeMap<Long, SourceFileContent<Token>>();
+		this.fileContents = new TreeMap<Long, SourceFileWithContent<Token>>();
 		this.fileContentsStr = new TreeMap<Long, String>();
 	}
 
@@ -136,7 +136,7 @@ public class DBXmlParser {
 		return versionSourceFiles;
 	}
 
-	public final Map<Long, SourceFileContent<Token>> getFileContents() {
+	public final Map<Long, SourceFileWithContent<Token>> getFileContents() {
 		return fileContents;
 	}
 

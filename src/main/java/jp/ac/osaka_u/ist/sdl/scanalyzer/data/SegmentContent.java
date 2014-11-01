@@ -45,7 +45,7 @@ public class SegmentContent<E extends IAtomicElement> {
 	 *            the contents of source file
 	 */
 	public SegmentContent(final Segment segment,
-			final SourceFileContent<E> contentsOfFile) {
+			final SourceFileWithContent<E> contentsOfFile) {
 		if (segment == null) {
 			eLogger.fatal("segment is null");
 			throw new IllegalArgumentException("segment must not be null");
