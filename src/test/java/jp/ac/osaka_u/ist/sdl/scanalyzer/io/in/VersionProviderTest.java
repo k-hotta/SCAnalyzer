@@ -634,6 +634,7 @@ public class VersionProviderTest {
 		Version reference = parser.getVersions().get((long) 1);
 
 		IDGenerator.initialize(Version.class, current.getId() + 1);
+		IDGenerator.initialize(SourceFile.class, 1);
 		Version result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()
@@ -652,6 +653,7 @@ public class VersionProviderTest {
 		Version reference = parser.getVersions().get((long) 2);
 
 		IDGenerator.initialize(Version.class, current.getId() + 1);
+		IDGenerator.initialize(SourceFile.class, 2);
 		Version result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()
@@ -670,6 +672,7 @@ public class VersionProviderTest {
 		Version reference = parser.getVersions().get((long) 3);
 
 		IDGenerator.initialize(Version.class, current.getId() + 1);
+		IDGenerator.initialize(SourceFile.class, 3);
 		Version result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()

@@ -99,7 +99,7 @@ public class CloneClassBuildTaskTest {
 		mTraceBack.setAccessible(true);
 
 		mSearchPositionWithLine = CloneClassBuildTask.class.getDeclaredMethod(
-				"searchPositionWithLine", SortedMap.class, int.class);
+				"searchStartPositionWithLine", SortedMap.class, int.class);
 		mSearchPositionWithLine.setAccessible(true);
 
 		mock1 = EasyMock.createMock(IAtomicElement.class);

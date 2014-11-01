@@ -167,7 +167,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 		for (int i : toBeRemoved) {
 			target.remove(i);
 		}
-		
+
 		return target;
 	}
 
@@ -180,13 +180,15 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 				.getElements()) {
 			final SourceFileContent<? extends IAtomicElement> content = fileContents
 					.get(rawClonedFragment.getSourceFile().getId());
-			final int startPosition = searchPositionWithLine(
+			final int startPosition = searchStartPositionWithLine(
 					content.getContents(), rawClonedFragment.getStartLine());
 
 			// first detects the first index of the NEXT line and decrement it
-			final int endPosition = searchPositionWithLine(
-					content.getContents(), rawClonedFragment.getStartLine()
-							+ rawClonedFragment.getLength()) - 1;
+			final int endPosition = searchEndPositionWithLine(
+					content.getContents(),
+					startPosition,
+					rawClonedFragment.getStartLine()
+							+ rawClonedFragment.getLength() - 1);
 
 			if (startPosition == -1 || endPosition == -1) {
 				throw new IllegalStateException(
@@ -319,7 +321,23 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 
 	}
 
-	private int searchPositionWithLine(
+	private int searchEndPositionWithLine(
+			final SortedMap<Integer, ? extends IAtomicElement> elements,
+			final int startPosition, final int line) {
+		int result = elements.lastKey();
+
+		for (int i = startPosition; i < result; i++) {
+			final IAtomicElement currentElement = elements.get(i);
+			final int currentLine = currentElement.getLine();
+			if (currentLine > line) {
+				result = i - 1;
+			}
+		}
+
+		return result;
+	}
+
+	private int searchStartPositionWithLine(
 			final SortedMap<Integer, ? extends IAtomicElement> elements,
 			final int line) {
 		int lowKey = elements.firstKey();
