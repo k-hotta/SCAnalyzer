@@ -146,7 +146,8 @@ public class CloneClass<E extends IProgramElement> implements
 	 *            the code fragment to be added
 	 * @throws IllegalArgumentException
 	 *             if the given code fragment is not included in the code
-	 *             fragments in the core, or the given code fragment is null
+	 *             fragments in the core, or the given code fragment is
+	 *             <code>null</code>
 	 */
 	public void addCodeFragment(final CodeFragment<E> codeFragment) {
 		if (codeFragment == null) {

@@ -31,7 +31,7 @@ public class RawClonedFragment<E extends IProgramElement> implements
 	/**
 	 * The owner raw clone class of this raw cloned fragment
 	 */
-	private RawCloneClass rawCloneClass;
+	private RawCloneClass<E> rawCloneClass;
 
 	/**
 	 * The constructor with core
@@ -125,7 +125,7 @@ public class RawClonedFragment<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if the owner raw clone class has not been set
 	 */
-	public RawCloneClass getRawCloneClass() {
+	public RawCloneClass<E> getRawCloneClass() {
 		if (rawCloneClass == null) {
 			throw new IllegalStateException(
 					"the raw clone class has not been set");
@@ -146,7 +146,7 @@ public class RawClonedFragment<E extends IProgramElement> implements
 	 *             core of this raw cloned fragment, or the given raw clone
 	 *             class is <code>null</code>
 	 */
-	public void setRawCloneClass(final RawCloneClass rawCloneClass) {
+	public void setRawCloneClass(final RawCloneClass<E> rawCloneClass) {
 		if (rawCloneClass == null) {
 			throw new IllegalArgumentException(
 					"the given raw clone class is null");
