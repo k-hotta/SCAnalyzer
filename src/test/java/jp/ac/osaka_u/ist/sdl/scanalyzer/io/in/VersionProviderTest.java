@@ -172,35 +172,35 @@ public class VersionProviderTest {
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 1),
 						parser.getSourceFiles().get((long) 1).getPath()))
-				.andStubReturn("int A = 0;");
+				.andStubReturn(parser.getFileContentsStr().get((long) 1));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 2),
 						parser.getSourceFiles().get((long) 1).getPath()))
-				.andStubReturn("int A = 0;");
+				.andStubReturn(parser.getFileContentsStr().get((long) 1));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 2),
 						parser.getSourceFiles().get((long) 2).getPath()))
-				.andStubReturn("public interface B { }");
+				.andStubReturn(parser.getFileContentsStr().get((long) 2));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 3),
 						parser.getSourceFiles().get((long) 2).getPath()))
-				.andStubReturn("public interface B { }");
+				.andStubReturn(parser.getFileContentsStr().get((long) 2));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 3),
 						parser.getSourceFiles().get((long) 3).getPath()))
-				.andStubReturn("double A = 0.0;");
+				.andStubReturn(parser.getFileContentsStr().get((long) 3));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 3),
 						parser.getSourceFiles().get((long) 4).getPath()))
-				.andStubReturn("public static void C() {}");
+				.andStubReturn(parser.getFileContentsStr().get((long) 4));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 4),
 						parser.getSourceFiles().get((long) 2).getPath()))
-				.andStubReturn("public interface B { }");
+				.andStubReturn(parser.getFileContentsStr().get((long) 2));
 		EasyMock.expect(
 				stringProviderMock.provide(parser.getVersions().get((long) 4),
 						parser.getSourceFiles().get((long) 3).getPath()))
-				.andStubReturn("double A = 0.0;");
+				.andStubReturn(parser.getFileContentsStr().get((long) 3));
 		EasyMock.replay(stringProviderMock);
 		contentProviderMock = new TempFileContentProvider(stringProviderMock);
 

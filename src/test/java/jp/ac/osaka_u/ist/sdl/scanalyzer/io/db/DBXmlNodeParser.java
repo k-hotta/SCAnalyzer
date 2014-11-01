@@ -17,14 +17,19 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.SourceFileContentBuilder;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.TokenSourceFileParser;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -72,6 +77,16 @@ public class DBXmlNodeParser {
 
 	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
 
+	private SortedMap<Long, SourceFileContent<Token>> fileContents;
+
+	private SortedMap<Long, String> fileContentsStr;
+
+	private TokenSourceFileParser parser = new TokenSourceFileParser(
+			Language.JAVA);
+
+	private SourceFileContentBuilder<Token> builder = new SourceFileContentBuilder<>(
+			parser);
+
 	private static final DateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm");
 
@@ -84,7 +99,9 @@ public class DBXmlNodeParser {
 			final SortedMap<Long, CloneClass> cloneClasses,
 			final SortedMap<Long, RawCloneClass> rawCloneClasses,
 			final SortedMap<Long, RawClonedFragment> rawClonedFragments,
-			final SortedMap<Long, VersionSourceFile> versionSourceFiles) {
+			final SortedMap<Long, VersionSourceFile> versionSourceFiles,
+			final SortedMap<Long, SourceFileContent<Token>> fileContents,
+			final SortedMap<Long, String> fileContentsStr) {
 		this.versions = versions;
 		this.revisions = revisions;
 		this.sourceFiles = sourceFiles;
@@ -95,6 +112,8 @@ public class DBXmlNodeParser {
 		this.rawCloneClasses = rawCloneClasses;
 		this.rawClonedFragments = rawClonedFragments;
 		this.versionSourceFiles = versionSourceFiles;
+		this.fileContents = fileContents;
+		this.fileContentsStr = fileContentsStr;
 	}
 
 	public final DBMS getDbms() {
@@ -143,6 +162,14 @@ public class DBXmlNodeParser {
 
 	public final Map<Long, VersionSourceFile> getVersionSourceFiles() {
 		return versionSourceFiles;
+	}
+
+	public final Map<Long, SourceFileContent<Token>> getFileContents() {
+		return fileContents;
+	}
+
+	public final Map<Long, String> getFileContentsStr() {
+		return fileContentsStr;
 	}
 
 	public void processRootNode(final Node node) throws Exception {
@@ -218,7 +245,9 @@ public class DBXmlNodeParser {
 				new TreeMap<Long, CloneClass>(),
 				new TreeMap<Long, RawCloneClass>(),
 				new TreeMap<Long, RawClonedFragment>(),
-				new TreeMap<Long, VersionSourceFile>());
+				new TreeMap<Long, VersionSourceFile>(),
+				new TreeMap<Long, SourceFileContent<Token>>(),
+				new TreeMap<Long, String>());
 		another.visitVersionNode(node);
 		// this.versions.putAll(another.getVersions());
 		this.revisions.putAll(another.getRevisions());
@@ -229,14 +258,32 @@ public class DBXmlNodeParser {
 			if (this.sourceFiles.containsKey(anotherSourceFile.getId())) {
 				final SourceFile currentSourceFile = this.sourceFiles
 						.get(anotherSourceFile.getId());
+				final SourceFileContent<Token> currentContent = this.fileContents
+						.get(anotherSourceFile.getId());
+				final String currentContentStr = this.fileContentsStr
+						.get(anotherSourceFile.getId());
 				justProcessedVersion.getSourceFiles().remove(anotherSourceFile);
 				justProcessedVersion.getSourceFiles().add(currentSourceFile);
+				justProcessedVersion.getSourceFileContents().remove(
+						anotherSourceFile.getId());
+				justProcessedVersion.getSourceFileContents().put(
+						currentSourceFile.getId(), currentContent);
 				this.sourceFiles.remove(anotherSourceFile.getId());
 				this.sourceFiles.put(currentSourceFile.getId(),
 						currentSourceFile);
+				this.fileContents.remove(anotherSourceFile.getId());
+				this.fileContents
+						.put(currentSourceFile.getId(), currentContent);
+				this.fileContentsStr.remove(anotherSourceFile.getId());
+				this.fileContentsStr.put(currentSourceFile.getId(),
+						currentContentStr);
 			} else {
 				this.sourceFiles.put(anotherSourceFile.getId(),
 						anotherSourceFile);
+				this.fileContents.put(anotherSourceFile.getId(), another
+						.getFileContents().get(anotherSourceFile.getId()));
+				this.fileContentsStr.put(anotherSourceFile.getId(), another
+						.getFileContentsStr().get(anotherSourceFile.getId()));
 			}
 		}
 
@@ -283,9 +330,13 @@ public class DBXmlNodeParser {
 
 		final Collection<SourceFile> currentSourceFiles = new ArrayList<SourceFile>();
 		currentSourceFiles.addAll(sourceFiles.values());
+
+		final Map<Long, SourceFileContent<? extends IAtomicElement>> currentContents = new HashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		currentContents.putAll(fileContents);
+
 		final Version version = new Version(id, revision, fileChanges.values(),
 				rawCloneClasses.values(), cloneClasses.values(),
-				currentSourceFiles, new HashMap<Long, SourceFileContent<?>>());
+				currentSourceFiles, currentContents);
 		this.versions.put(id, version);
 
 		for (final SourceFile sourceFile : this.sourceFiles.values()) {
@@ -359,6 +410,7 @@ public class DBXmlNodeParser {
 	public void processSourceFileNode(final Node node) throws Exception {
 		long id = -1;
 		String path = null;
+		String contentStr = null;
 
 		final NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
@@ -369,6 +421,9 @@ public class DBXmlNodeParser {
 				id = Long.parseLong(child.getFirstChild().getNodeValue());
 			} else if (childName.equals("path")) {
 				path = child.getFirstChild().getNodeValue();
+			} else if (childName.equals("contents")) {
+				String str = child.getFirstChild().getNodeValue();
+				contentStr = str.replaceAll("\\\\n", "\n");
 			}
 		}
 
@@ -380,6 +435,8 @@ public class DBXmlNodeParser {
 		if (!sourceFiles.containsKey(id)) {
 			final SourceFile sourceFile = new SourceFile(id, path);
 			sourceFiles.put(id, sourceFile);
+			fileContentsStr.put(id, contentStr);
+			fileContents.put(id, builder.build(sourceFile, contentStr));
 		}
 	}
 
@@ -483,7 +540,9 @@ public class DBXmlNodeParser {
 				new TreeMap<Long, CodeFragment>(),
 				new TreeMap<Long, CloneClass>(),
 				new TreeMap<Long, RawCloneClass>(),
-				new TreeMap<Long, RawClonedFragment>(), this.versionSourceFiles);
+				new TreeMap<Long, RawClonedFragment>(),
+				this.versionSourceFiles, this.fileContents,
+				this.fileContentsStr);
 		another.visitRawCloneClassNode(node);
 		this.segments.putAll(another.getSegments());
 		this.codeFragments.putAll(another.getCodeFragments());

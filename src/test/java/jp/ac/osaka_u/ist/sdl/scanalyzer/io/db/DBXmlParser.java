@@ -16,6 +16,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
 
@@ -59,6 +61,10 @@ public class DBXmlParser {
 
 	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
 
+	private SortedMap<Long, SourceFileContent<Token>> fileContents;
+
+	private SortedMap<Long, String> fileContentsStr;
+
 	public static void main(String[] args) throws Exception {
 		DBXmlParser parser = new DBXmlParser("src/test/resources/test-db.xml");
 		parser.parse();
@@ -78,6 +84,8 @@ public class DBXmlParser {
 		this.rawCloneClasses = new TreeMap<Long, RawCloneClass>();
 		this.rawClonedFragments = new TreeMap<Long, RawClonedFragment>();
 		this.versionSourceFiles = new TreeMap<Long, VersionSourceFile>();
+		this.fileContents = new TreeMap<Long, SourceFileContent<Token>>();
+		this.fileContentsStr = new TreeMap<Long, String>();
 	}
 
 	public final DBMS getDbms() {
@@ -128,6 +136,14 @@ public class DBXmlParser {
 		return versionSourceFiles;
 	}
 
+	public final Map<Long, SourceFileContent<Token>> getFileContents() {
+		return fileContents;
+	}
+
+	public final Map<Long, String> getFileContentsStr() {
+		return fileContentsStr;
+	}
+
 	public void parse() throws Exception {
 		final DocumentBuilder builder = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
@@ -140,7 +156,7 @@ public class DBXmlParser {
 		final DBXmlNodeParser parser = new DBXmlNodeParser(versions, revisions,
 				sourceFiles, fileChanges, segments, codeFragments,
 				cloneClasses, rawCloneClasses, rawClonedFragments,
-				versionSourceFiles);
+				versionSourceFiles, fileContents, fileContentsStr);
 		parser.processRootNode(root);
 
 		this.dbms = parser.getDbms();

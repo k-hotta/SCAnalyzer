@@ -19,6 +19,7 @@
 					<sourcefile>
 						<id>1</id>
 						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
 					</sourcefile>
 				</sourcefiles>
 				<filechanges>
@@ -45,10 +46,12 @@
 					<sourcefile>
 						<id>1</id>
 						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
 					</sourcefile>
 					<sourcefile>
 						<id>2</id>
 						<path>B.java</path>
+						<contents>int y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
 					</sourcefile>
 				</sourcefiles>
 				<filechanges>
@@ -66,14 +69,14 @@
 							<rawclonedfragment>
 								<id>1</id>
 								<ownerfile>1</ownerfile>
-								<startline>10</startline>
-								<length>5</length>
+								<startline>2</startline>
+								<length>3</length>
 							</rawclonedfragment>
 							<rawclonedfragment>
 								<id>2</id>
 								<ownerfile>2</ownerfile>
-								<startline>25</startline>
-								<length>5</length>
+								<startline>1</startline>
+								<length>3</length>
 							</rawclonedfragment>
 						</rawclonedfragments>
 					</rawcloneclass>
@@ -91,14 +94,17 @@
 					<sourcefile>
 						<id>3</id>
 						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");\nint w = 0;</contents>
 					</sourcefile>
 					<sourcefile>
 						<id>2</id>
 						<path>B.java</path>
+						<contents>int y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
 					</sourcefile>
 					<sourcefile>
 						<id>4</id>
 						<path>C.java</path>
+						<contents>while (br.ready()) {\nSystem.out.println(br.getLine());\n}</contents>
 					</sourcefile>
 				</sourcefiles>
 				<filechanges>
@@ -122,14 +128,14 @@
 							<rawclonedfragment>
 								<id>3</id>
 								<ownerfile>3</ownerfile>
-								<startline>10</startline>
-								<length>5</length>
+								<startline>2</startline>
+								<length>3</length>
 							</rawclonedfragment>
 							<rawclonedfragment>
 								<id>4</id>
 								<ownerfile>2</ownerfile>
-								<startline>25</startline>
-								<length>5</length>
+								<startline>1</startline>
+								<length>3</length>
 							</rawclonedfragment>
 						</rawclonedfragments>
 					</rawcloneclass>
@@ -147,10 +153,12 @@
 					<sourcefile>
 						<id>3</id>
 						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");\nint w = 0;</contents>
 					</sourcefile>
 					<sourcefile>
 						<id>2</id>
 						<path>B.java</path>
+						<contents>int y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
 					</sourcefile>
 				</sourcefiles>
 				<filechanges>
@@ -168,14 +176,14 @@
 							<rawclonedfragment>
 								<id>5</id>
 								<ownerfile>3</ownerfile>
-								<startline>10</startline>
-								<length>5</length>
+								<startline>2</startline>
+								<length>3</length>
 							</rawclonedfragment>
 							<rawclonedfragment>
 								<id>6</id>
 								<ownerfile>2</ownerfile>
-								<startline>25</startline>
-								<length>5</length>
+								<startline>1</startline>
+								<length>3</length>
 							</rawclonedfragment>
 						</rawclonedfragments>
 					</rawcloneclass>
