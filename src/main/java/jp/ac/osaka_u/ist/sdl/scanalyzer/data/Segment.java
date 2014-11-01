@@ -6,11 +6,11 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * This class represents segments, which is a set of continuous elements in a
  * single file. Note that this class has only surface-level information. The
- * contents of the segments would be stored in {@link SegmentContent}.
+ * contents of the segments would be stored in {@link SegmentWithContent}.
  * 
  * @author k-hotta
  * 
- * @see SegmentContent
+ * @see SegmentWithContent
  */
 @DatabaseTable(tableName = "SEGMENTS")
 public class Segment implements IDBElement {

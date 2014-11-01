@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  * @see Segment
  * @see IAtomicElement
  */
-public class SegmentContent<E extends IAtomicElement> {
+public class SegmentWithContent<E extends IAtomicElement> {
 
 	/**
 	 * The logger for errors
@@ -44,7 +44,7 @@ public class SegmentContent<E extends IAtomicElement> {
 	 * @param contentsOfFile
 	 *            the contents of source file
 	 */
-	public SegmentContent(final Segment segment,
+	public SegmentWithContent(final Segment segment,
 			final SourceFileWithContent<E> contentsOfFile) {
 		if (segment == null) {
 			eLogger.fatal("segment is null");
@@ -110,16 +110,16 @@ public class SegmentContent<E extends IAtomicElement> {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link SegmentContent} and the owner segments of the two objects
+	 *         {@link SegmentWithContent} and the owner segments of the two objects
 	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof SegmentContent)) {
+		if (!(obj instanceof SegmentWithContent)) {
 			return false;
 		}
 
-		final SegmentContent<?> another = (SegmentContent<?>) obj;
+		final SegmentWithContent<?> another = (SegmentWithContent<?>) obj;
 
 		return this.segment.equals(another.getSegment());
 	}
