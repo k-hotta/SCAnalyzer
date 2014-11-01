@@ -30,7 +30,7 @@ public class CloneClass<E extends IProgramElement> implements
 	/**
 	 * The owner version of this clone class
 	 */
-	private Version version;
+	private Version<E> version;
 
 	/**
 	 * The code fragments in this clone class
@@ -89,7 +89,7 @@ public class CloneClass<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if the owner version has not been set
 	 */
-	public Version getVersion() {
+	public Version<E> getVersion() {
 		if (version == null) {
 			throw new IllegalStateException("the version has not been set");
 		}
@@ -108,7 +108,7 @@ public class CloneClass<E extends IProgramElement> implements
 	 *             if the given version doesn't match to that in the core of
 	 *             this clone class, or the given version is <code>null</code>
 	 */
-	public void setVersion(final Version version) {
+	public void setVersion(final Version<E> version) {
 		if (version == null) {
 			throw new IllegalArgumentException("the given version is null");
 		}

@@ -30,7 +30,7 @@ public class RawCloneClass<E extends IProgramElement> implements
 	/**
 	 * The owner version of this raw clone class
 	 */
-	private Version version;
+	private Version<E> version;
 
 	/**
 	 * The raw cloned fragments in this raw clone class
@@ -89,7 +89,7 @@ public class RawCloneClass<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if the owner version has not been set
 	 */
-	public Version getVersion() {
+	public Version<E> getVersion() {
 		if (version == null) {
 			throw new IllegalStateException("the version has not been set");
 		}
@@ -109,7 +109,7 @@ public class RawCloneClass<E extends IProgramElement> implements
 	 *             this raw clone class, or the given version is
 	 *             <code>null</code>
 	 */
-	public void setVersion(final Version version) {
+	public void setVersion(final Version<E> version) {
 		if (version == null) {
 			throw new IllegalArgumentException("the given version is null");
 		}
