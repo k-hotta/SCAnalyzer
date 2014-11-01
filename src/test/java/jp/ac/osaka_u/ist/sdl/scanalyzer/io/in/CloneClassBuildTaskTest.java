@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -43,31 +43,31 @@ public class CloneClassBuildTaskTest {
 
 	private static Method mSearchPositionWithLine;
 
-	private static IAtomicElement mock1;
+	private static IProgramElement mock1;
 
-	private static IAtomicElement mock2;
+	private static IProgramElement mock2;
 
-	private static IAtomicElement mock3_1;
+	private static IProgramElement mock3_1;
 
-	private static IAtomicElement mock3_2;
+	private static IProgramElement mock3_2;
 
-	private static IAtomicElement mock3_3;
+	private static IProgramElement mock3_3;
 
-	private static IAtomicElement mock4;
+	private static IProgramElement mock4;
 
-	private static IAtomicElement mock5;
+	private static IProgramElement mock5;
 
-	private static IAtomicElement mock6;
+	private static IProgramElement mock6;
 
-	private static IAtomicElement mock7;
+	private static IProgramElement mock7;
 
-	private static IAtomicElement mock8;
+	private static IProgramElement mock8;
 
-	private static IAtomicElement mock9;
+	private static IProgramElement mock9;
 
-	private static IAtomicElement mock10;
+	private static IProgramElement mock10;
 
-	private static SortedMap<Integer, IAtomicElement> mockElements;
+	private static SortedMap<Integer, IProgramElement> mockElements;
 
 	private static final String PATH_OF_TEST_REPO = "src/test/resources/repository-clonetracker";
 
@@ -102,46 +102,46 @@ public class CloneClassBuildTaskTest {
 				"searchStartPositionWithLine", SortedMap.class, int.class);
 		mSearchPositionWithLine.setAccessible(true);
 
-		mock1 = EasyMock.createMock(IAtomicElement.class);
+		mock1 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock1.getLine()).andStubReturn(1);
 
-		mock2 = EasyMock.createMock(IAtomicElement.class);
+		mock2 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock2.getLine()).andStubReturn(2);
 
-		mock3_1 = EasyMock.createMock(IAtomicElement.class);
+		mock3_1 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock3_1.getLine()).andStubReturn(3);
 
-		mock3_2 = EasyMock.createMock(IAtomicElement.class);
+		mock3_2 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock3_2.getLine()).andStubReturn(3);
 
-		mock3_3 = EasyMock.createMock(IAtomicElement.class);
+		mock3_3 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock3_3.getLine()).andStubReturn(3);
 
-		mock4 = EasyMock.createMock(IAtomicElement.class);
+		mock4 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock4.getLine()).andStubReturn(4);
 
-		mock5 = EasyMock.createMock(IAtomicElement.class);
+		mock5 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock5.getLine()).andStubReturn(5);
 
-		mock6 = EasyMock.createMock(IAtomicElement.class);
+		mock6 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock6.getLine()).andStubReturn(6);
 
-		mock7 = EasyMock.createMock(IAtomicElement.class);
+		mock7 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock7.getLine()).andStubReturn(7);
 
-		mock8 = EasyMock.createMock(IAtomicElement.class);
+		mock8 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock8.getLine()).andStubReturn(8);
 
-		mock9 = EasyMock.createMock(IAtomicElement.class);
+		mock9 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock9.getLine()).andStubReturn(9);
 
-		mock10 = EasyMock.createMock(IAtomicElement.class);
+		mock10 = EasyMock.createMock(IProgramElement.class);
 		EasyMock.expect(mock10.getLine()).andStubReturn(10);
 
 		EasyMock.replay(mock1, mock2, mock3_1, mock3_2, mock3_3, mock4, mock5,
 				mock6, mock7, mock8, mock9, mock10);
 
-		mockElements = new TreeMap<Integer, IAtomicElement>();
+		mockElements = new TreeMap<Integer, IProgramElement>();
 		int count = 1;
 		mockElements.put(count++, mock1);
 		mockElements.put(count++, mock2);
@@ -243,7 +243,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine1() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		elements.remove(6);
 		elements.put(6, mock5);
@@ -254,7 +254,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine2() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		elements.remove(6);
 		elements.put(6, mock5);
@@ -265,7 +265,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine3() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		elements.remove(6);
 		elements.put(6, mock5);
@@ -276,7 +276,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine4() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		elements.remove(6);
 		elements.put(6, mock3_3);
@@ -287,7 +287,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine5() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		elements.remove(9);
 		elements.put(9, mock6);
@@ -298,7 +298,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine6() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		elements.remove(9);
 		elements.put(9, mock8);
@@ -309,7 +309,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine7() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		for (int i = 4; i <= 12; i++) {
 			elements.remove(i);
@@ -321,7 +321,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testSearchPositionWithLine8() throws Exception {
-		final SortedMap<Integer, IAtomicElement> elements = new TreeMap<Integer, IAtomicElement>(
+		final SortedMap<Integer, IProgramElement> elements = new TreeMap<Integer, IProgramElement>(
 				mockElements);
 		for (int i = 4; i <= 12; i++) {
 			elements.remove(i);
@@ -334,7 +334,7 @@ public class CloneClassBuildTaskTest {
 	private boolean compareFragments(
 			final CodeFragment frag1,
 			final CodeFragment frag2,
-			final Map<Long, SourceFileWithContent<? extends IAtomicElement>> fileContents) {
+			final Map<Long, SourceFileWithContent<? extends IProgramElement>> fileContents) {
 		final List<Segment> segments1 = new ArrayList<Segment>();
 		segments1.addAll(frag1.getSegments());
 		Collections.sort(segments1, new SegmentComparator());
@@ -343,17 +343,17 @@ public class CloneClassBuildTaskTest {
 		segments2.addAll(frag2.getSegments());
 		Collections.sort(segments2, new SegmentComparator());
 
-		final List<IAtomicElement> segContent1 = new ArrayList<IAtomicElement>();
-		final List<IAtomicElement> segContent2 = new ArrayList<IAtomicElement>();
+		final List<IProgramElement> segContent1 = new ArrayList<IProgramElement>();
+		final List<IProgramElement> segContent2 = new ArrayList<IProgramElement>();
 
-		final SourceFileWithContent<? extends IAtomicElement> content1 = fileContents
+		final SourceFileWithContent<? extends IProgramElement> content1 = fileContents
 				.get(segments1.get(0).getSourceFile().getId());
 		for (final Segment segment : segments1) {
 			segContent1.addAll(content1.getContentsIn(
 					segment.getStartPosition(), segment.getEndPosition()));
 		}
 
-		final SourceFileWithContent<? extends IAtomicElement> content2 = fileContents
+		final SourceFileWithContent<? extends IProgramElement> content2 = fileContents
 				.get(segments2.get(0).getSourceFile().getId());
 		for (final Segment segment : segments2) {
 			segContent2.addAll(content2.getContentsIn(
@@ -365,7 +365,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testCall1() throws Exception {
-		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 		contents.putAll(version419Mock.getSourceFileContents());
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
@@ -381,7 +381,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testCall2() throws Exception {
-		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 		contents.putAll(version419Mock.getSourceFileContents());
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
@@ -397,7 +397,7 @@ public class CloneClassBuildTaskTest {
 
 	@Test
 	public void testCall3() throws Exception {
-		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 		contents.putAll(version419Mock.getSourceFileContents());
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
@@ -416,7 +416,7 @@ public class CloneClassBuildTaskTest {
 		ExecutorService pool = Executors.newCachedThreadPool();
 
 		try {
-			final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
+			final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> contents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 			contents.putAll(version419Mock.getSourceFileContents());
 
 			final CloneClassBuildTask task1 = new CloneClassBuildTask(contents,

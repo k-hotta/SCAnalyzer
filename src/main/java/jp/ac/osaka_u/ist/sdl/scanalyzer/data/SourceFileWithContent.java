@@ -13,9 +13,9 @@ import java.util.SortedMap;
  *            the type of elements of source code, e.g. Token
  * 
  * @see SourceFile
- * @see IAtomicElement
+ * @see IProgramElement
  */
-public class SourceFileWithContent<E extends IAtomicElement> {
+public class SourceFileWithContent<E extends IProgramElement> {
 
 	/**
 	 * The source file

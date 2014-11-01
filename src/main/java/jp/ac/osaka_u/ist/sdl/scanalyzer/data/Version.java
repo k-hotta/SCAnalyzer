@@ -88,7 +88,7 @@ public class Version implements IDBElement {
 	 * The map between the id of source file and its content. <br>
 	 * NOTE: this field is not a column of database table.
 	 */
-	private Map<Long, SourceFileWithContent<? extends IAtomicElement>> sourceFileContents;
+	private Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents;
 
 	/**
 	 * The default constructor
@@ -126,7 +126,7 @@ public class Version implements IDBElement {
 			final Collection<RawCloneClass> rawCloneClasses,
 			final Collection<CloneClass> cloneClasses,
 			final Collection<SourceFile> sourceFiles,
-			final Map<Long, SourceFileWithContent<? extends IAtomicElement>> sourceFileContents) {
+			final Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents) {
 		this.id = id;
 		this.revision = revision;
 		this.fileChanges = fileChanges;
@@ -260,7 +260,7 @@ public class Version implements IDBElement {
 	 * 
 	 * @return the map between file id and its content
 	 */
-	public Map<Long, SourceFileWithContent<? extends IAtomicElement>> getSourceFileContents() {
+	public Map<Long, SourceFileWithContent<? extends IProgramElement>> getSourceFileContents() {
 		return sourceFileContents;
 	}
 
@@ -271,7 +271,7 @@ public class Version implements IDBElement {
 	 *            the map to be set
 	 */
 	public void setSourceFileContents(
-			final Map<Long, SourceFileWithContent<? extends IAtomicElement>> sourceFileContents) {
+			final Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents) {
 		this.sourceFileContents = sourceFileContents;
 	}
 

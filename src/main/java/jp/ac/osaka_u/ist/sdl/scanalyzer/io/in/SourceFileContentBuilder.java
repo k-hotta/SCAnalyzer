@@ -2,7 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.util.SortedMap;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 
@@ -15,7 +15,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
  * @param <E>
  *            the type of elements (e.g. Token)
  */
-public class SourceFileContentBuilder<E extends IAtomicElement> {
+public class SourceFileContentBuilder<E extends IProgramElement> {
 
 	/**
 	 * The parser

@@ -9,7 +9,7 @@ import org.conqat.lib.scanner.IToken;
  * @author k-hotta
  * 
  */
-public class Token implements IAtomicElement {
+public class Token implements IProgramElement {
 
 	/**
 	 * The type of token

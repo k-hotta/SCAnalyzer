@@ -15,9 +15,9 @@ import org.apache.logging.log4j.Logger;
  *            the type of elements (e.g. Token)
  * 
  * @see Segment
- * @see IAtomicElement
+ * @see IProgramElement
  */
-public class SegmentWithContent<E extends IAtomicElement> {
+public class SegmentWithContent<E extends IProgramElement> {
 
 	/**
 	 * The logger for errors

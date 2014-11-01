@@ -17,7 +17,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -331,7 +331,7 @@ public class DBXmlNodeParser {
 		final Collection<SourceFile> currentSourceFiles = new ArrayList<SourceFile>();
 		currentSourceFiles.addAll(sourceFiles.values());
 
-		final Map<Long, SourceFileWithContent<? extends IAtomicElement>> currentContents = new HashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
+		final Map<Long, SourceFileWithContent<? extends IProgramElement>> currentContents = new HashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 		currentContents.putAll(fileContents);
 
 		final Version version = new Version(id, revision, fileChanges.values(),

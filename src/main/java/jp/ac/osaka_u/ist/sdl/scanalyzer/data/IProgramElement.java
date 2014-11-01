@@ -8,7 +8,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
  * @author k-hotta
  * 
  */
-public interface IAtomicElement {
+public interface IProgramElement {
 
 	/**
 	 * Get the owner source file of this element

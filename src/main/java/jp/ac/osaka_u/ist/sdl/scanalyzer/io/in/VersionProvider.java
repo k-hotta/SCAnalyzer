@@ -18,7 +18,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -529,7 +529,7 @@ public class VersionProvider {
 		final Collection<RawCloneClass> rawCloneClasses = cloneDetector
 				.detectClones(nextVersion);
 
-		final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IAtomicElement>>();
+		final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 		concurrentContents.putAll(nextVersion.getSourceFileContents());
 
 		ExecutorService pool = Executors.newCachedThreadPool();

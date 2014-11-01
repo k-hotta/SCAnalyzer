@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
@@ -30,14 +30,14 @@ import difflib.PatchFailedException;
 
 public class CloneClassBuildTask implements Callable<CloneClass> {
 
-	private final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> fileContents;
+	private final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> fileContents;
 
 	private final RawCloneClass rawCloneClass;
 
 	private final Version version;
 
 	public CloneClassBuildTask(
-			final ConcurrentMap<Long, SourceFileWithContent<? extends IAtomicElement>> fileContents,
+			final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> fileContents,
 			final RawCloneClass rawCloineClass, final Version version) {
 		this.fileContents = fileContents;
 		this.rawCloneClass = rawCloineClass;
@@ -46,7 +46,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 
 	@Override
 	public CloneClass call() throws Exception {
-		final Map<Integer, List<IAtomicElement>> targetFragments = new TreeMap<Integer, List<IAtomicElement>>();
+		final Map<Integer, List<IProgramElement>> targetFragments = new TreeMap<Integer, List<IProgramElement>>();
 		final Map<Integer, SourceFile> targetFragmentsSourceFiles = new TreeMap<Integer, SourceFile>();
 		final SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment = new TreeMap<Integer, SortedSet<Integer>>();
 
@@ -62,7 +62,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private CloneClass constructCloneClass(
-			final Map<Integer, List<IAtomicElement>> targetFragments,
+			final Map<Integer, List<IProgramElement>> targetFragments,
 			final Map<Integer, SourceFile> targetFragmentsSourceFiles,
 			SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment) {
 		final CloneClass result = new CloneClass(
@@ -79,12 +79,12 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private void detectLCS(
-			final Map<Integer, List<IAtomicElement>> targetFragments,
+			final Map<Integer, List<IProgramElement>> targetFragments,
 			SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment)
 			throws PatchFailedException {
 		// this is the LCS between all the fragments
 		// first this is initialized with the first fragment
-		List<IAtomicElement> lcs = new ArrayList<IAtomicElement>();
+		List<IProgramElement> lcs = new ArrayList<IProgramElement>();
 		lcs.addAll(targetFragments.get(0));
 
 		// this is for storing which element is in the LCS for each fragment
@@ -104,9 +104,9 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 		lcsElementsInEachFragment.put(0, lcsElementsInFirstFragment);
 
 		for (int i = 1; i < targetFragments.size(); i++) {
-			final List<IAtomicElement> target = targetFragments.get(i);
+			final List<IProgramElement> target = targetFragments.get(i);
 
-			final Patch<IAtomicElement> patch = DiffUtils.diff(lcs, target);
+			final Patch<IProgramElement> patch = DiffUtils.diff(lcs, target);
 			final SortedMap<Integer, Integer> mapping = detectMapping(patch,
 					lcs, target);
 
@@ -148,11 +148,11 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 		}
 	}
 
-	private List<IAtomicElement> update(final List<IAtomicElement> target,
-			final Patch<IAtomicElement> patch) {
+	private List<IProgramElement> update(final List<IProgramElement> target,
+			final Patch<IProgramElement> patch) {
 		final List<Integer> toBeRemoved = new ArrayList<Integer>();
 
-		for (final Delta<IAtomicElement> delta : patch.getDeltas()) {
+		for (final Delta<IProgramElement> delta : patch.getDeltas()) {
 			int position = delta.getOriginal().getPosition();
 			int size = delta.getOriginal().size();
 			for (int i = 0; i < size; i++) {
@@ -172,13 +172,13 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private void extractTargetFragments(
-			final Map<Integer, List<IAtomicElement>> targetFragments,
+			final Map<Integer, List<IProgramElement>> targetFragments,
 			final Map<Integer, SourceFile> targetFragmentsSourceFiles) {
 		int count = 0;
 
 		for (final RawClonedFragment rawClonedFragment : rawCloneClass
 				.getElements()) {
-			final SourceFileWithContent<? extends IAtomicElement> content = fileContents
+			final SourceFileWithContent<? extends IProgramElement> content = fileContents
 					.get(rawClonedFragment.getSourceFile().getId());
 			final int startPosition = searchStartPositionWithLine(
 					content.getContents(), rawClonedFragment.getStartLine());
@@ -199,7 +199,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 			}
 
 			@SuppressWarnings("unchecked")
-			final List<IAtomicElement> targetFragment = (List<IAtomicElement>) content
+			final List<IProgramElement> targetFragment = (List<IProgramElement>) content
 					.getContentsIn(startPosition, endPosition);
 			targetFragments.put(count, targetFragment);
 
@@ -208,7 +208,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 		}
 	}
 
-	private CodeFragment constructFragment(final List<IAtomicElement> elements,
+	private CodeFragment constructFragment(final List<IProgramElement> elements,
 			final SortedSet<Integer> indexInLcs, final SourceFile sourceFile) {
 		final CodeFragment result = new CodeFragment(
 				IDGenerator.generate(CodeFragment.class),
@@ -249,8 +249,8 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private SortedMap<Integer, Integer> detectMapping(
-			final Patch<IAtomicElement> patch, final List<IAtomicElement> left,
-			final List<IAtomicElement> right) {
+			final Patch<IProgramElement> patch, final List<IProgramElement> left,
+			final List<IProgramElement> right) {
 		final SortedMap<Integer, Integer> result = new TreeMap<Integer, Integer>();
 
 		int counterForLeft = 0;
@@ -261,14 +261,14 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 		// list of indexes for elements in right which are in the lcs
 		final List<Integer> lcsIndexRight = new ArrayList<Integer>();
 
-		final List<Delta<IAtomicElement>> deltas = new ArrayList<Delta<IAtomicElement>>();
+		final List<Delta<IProgramElement>> deltas = new ArrayList<Delta<IProgramElement>>();
 		deltas.addAll(patch.getDeltas());
 
 		// make sure deltas are sorted based on left
 		Collections.sort(deltas, new OriginalDeltaComparator());
 
-		for (final Delta<IAtomicElement> delta : deltas) {
-			final Chunk<IAtomicElement> chunk = delta.getOriginal();
+		for (final Delta<IProgramElement> delta : deltas) {
+			final Chunk<IProgramElement> chunk = delta.getOriginal();
 			while (counterForLeft < chunk.getPosition()) {
 				lcsIndexLeft.add(counterForLeft++);
 			}
@@ -281,8 +281,8 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 		// make sure deltas are sorted based on right
 		Collections.sort(deltas, new RevisedDeltaComparator());
 
-		for (final Delta<IAtomicElement> delta : deltas) {
-			final Chunk<IAtomicElement> chunk = delta.getRevised();
+		for (final Delta<IProgramElement> delta : deltas) {
+			final Chunk<IProgramElement> chunk = delta.getRevised();
 			while (counterForRight < chunk.getPosition()) {
 				lcsIndexRight.add(counterForRight++);
 			}
@@ -322,12 +322,12 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private int searchEndPositionWithLine(
-			final SortedMap<Integer, ? extends IAtomicElement> elements,
+			final SortedMap<Integer, ? extends IProgramElement> elements,
 			final int startPosition, final int line) {
 		int result = elements.lastKey();
 
 		for (int i = startPosition; i < result; i++) {
-			final IAtomicElement currentElement = elements.get(i);
+			final IProgramElement currentElement = elements.get(i);
 			final int currentLine = currentElement.getLine();
 			if (currentLine > line) {
 				result = i - 1;
@@ -338,7 +338,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private int searchStartPositionWithLine(
-			final SortedMap<Integer, ? extends IAtomicElement> elements,
+			final SortedMap<Integer, ? extends IProgramElement> elements,
 			final int line) {
 		int lowKey = elements.firstKey();
 		int lowLine = elements.get(lowKey).getLine();
@@ -377,7 +377,7 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private int traceBack(
-			final SortedMap<Integer, ? extends IAtomicElement> elements,
+			final SortedMap<Integer, ? extends IProgramElement> elements,
 			final int origin) {
 		final int originLine = elements.get(origin).getLine();
 
