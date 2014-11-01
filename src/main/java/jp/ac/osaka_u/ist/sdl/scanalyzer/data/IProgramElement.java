@@ -15,7 +15,7 @@ public interface IProgramElement {
 	 * 
 	 * @return the owner source file
 	 */
-	public SourceFile getOwnerSourceFile();
+	public DBSourceFile getOwnerSourceFile();
 
 	/**
 	 * Get the position of this element within the owner source file.

@@ -13,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  */
 @DatabaseTable(tableName = "CLONE_CLASSES")
-public class CloneClass implements IDBElement {
+public class DBCloneClass implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -37,7 +37,7 @@ public class CloneClass implements IDBElement {
 	private long id;
 
 	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
-	private Version version;
+	private DBVersion version;
 
 	/**
 	 * The code fragments
@@ -48,7 +48,7 @@ public class CloneClass implements IDBElement {
 	/**
 	 * The default constructor
 	 */
-	public CloneClass() {
+	public DBCloneClass() {
 
 	}
 
@@ -62,7 +62,7 @@ public class CloneClass implements IDBElement {
 	 * @param codeFragments
 	 *            the code fragments in this clone class
 	 */
-	public CloneClass(final long id, final Version version,
+	public DBCloneClass(final long id, final DBVersion version,
 			final Collection<CodeFragment> codeFragments) {
 		this.id = id;
 		this.version = version;
@@ -95,7 +95,7 @@ public class CloneClass implements IDBElement {
 	 * 
 	 * @return the owner version of this clone class
 	 */
-	public Version getVersion() {
+	public DBVersion getVersion() {
 		return version;
 	}
 
@@ -105,7 +105,7 @@ public class CloneClass implements IDBElement {
 	 * @param version
 	 *            the owner version to be set
 	 */
-	public void setVersion(final Version version) {
+	public void setVersion(final DBVersion version) {
 		this.version = version;
 	}
 
@@ -132,16 +132,16 @@ public class CloneClass implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link CloneClass} and the id values of the two objects are the
+	 *         {@link DBCloneClass} and the id values of the two objects are the
 	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof CloneClass)) {
+		if (!(obj instanceof DBCloneClass)) {
 			return false;
 		}
 
-		final CloneClass another = (CloneClass) obj;
+		final DBCloneClass another = (DBCloneClass) obj;
 
 		return this.id == another.getId();
 	}

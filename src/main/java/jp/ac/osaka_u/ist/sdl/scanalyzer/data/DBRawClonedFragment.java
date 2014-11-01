@@ -17,11 +17,11 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  * @author k-hotta
  * 
- * @see RawCloneClass
+ * @see DBRawCloneClass
  * 
  */
 @DatabaseTable(tableName = "RAW_CLONED_FRAGMENTS")
-public class RawClonedFragment implements IDBElement {
+public class DBRawClonedFragment implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -63,19 +63,19 @@ public class RawClonedFragment implements IDBElement {
 	 * The owner version of this fragment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, index = true, columnName = VERSION_COLUMN_NAME)
-	private Version version;
+	private DBVersion version;
 
 	/**
 	 * The the owner source file of this fragment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, index = true, columnName = SOURCE_FILE_COLUMN_NAME)
-	private SourceFile sourceFile;
+	private DBSourceFile sourceFile;
 
 	/**
 	 * The owner clone class of this fragment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_COLUMN_NAME)
-	private RawCloneClass cloneClass;
+	private DBRawCloneClass cloneClass;
 
 	/**
 	 * The line number within the file where this fragment starts
@@ -92,7 +92,7 @@ public class RawClonedFragment implements IDBElement {
 	/**
 	 * The default constructor
 	 */
-	public RawClonedFragment() {
+	public DBRawClonedFragment() {
 
 	}
 
@@ -112,9 +112,9 @@ public class RawClonedFragment implements IDBElement {
 	 * @param cloneClass
 	 *            the owner clone class of this fragment
 	 */
-	public RawClonedFragment(final long id, final Version version,
-			final SourceFile sourceFile, final int startLine, final int length,
-			final RawCloneClass cloneClass) {
+	public DBRawClonedFragment(final long id, final DBVersion version,
+			final DBSourceFile sourceFile, final int startLine, final int length,
+			final DBRawCloneClass cloneClass) {
 		this.id = id;
 		this.version = version;
 		this.sourceFile = sourceFile;
@@ -149,7 +149,7 @@ public class RawClonedFragment implements IDBElement {
 	 * 
 	 * @return the owner version of this fragment
 	 */
-	public Version getVersion() {
+	public DBVersion getVersion() {
 		return version;
 	}
 
@@ -159,7 +159,7 @@ public class RawClonedFragment implements IDBElement {
 	 * @param version
 	 *            the owner version to be set
 	 */
-	public void setVersion(Version version) {
+	public void setVersion(DBVersion version) {
 		this.version = version;
 	}
 
@@ -168,7 +168,7 @@ public class RawClonedFragment implements IDBElement {
 	 * 
 	 * @return the owner source file of this fragment
 	 */
-	public SourceFile getSourceFile() {
+	public DBSourceFile getSourceFile() {
 		return sourceFile;
 	}
 
@@ -178,7 +178,7 @@ public class RawClonedFragment implements IDBElement {
 	 * @param sourceFile
 	 *            the owner source file to be set
 	 */
-	public void setSourceFile(SourceFile sourceFile) {
+	public void setSourceFile(DBSourceFile sourceFile) {
 		this.sourceFile = sourceFile;
 	}
 
@@ -225,7 +225,7 @@ public class RawClonedFragment implements IDBElement {
 	 * 
 	 * @return the owner clone class of this fragment
 	 */
-	public RawCloneClass getCloneClass() {
+	public DBRawCloneClass getCloneClass() {
 		return cloneClass;
 	}
 
@@ -235,7 +235,7 @@ public class RawClonedFragment implements IDBElement {
 	 * @param cloneClass
 	 *            the owner clone class to be set
 	 */
-	public void setCloneClass(RawCloneClass cloneClass) {
+	public void setCloneClass(DBRawCloneClass cloneClass) {
 		this.cloneClass = cloneClass;
 	}
 
@@ -243,15 +243,15 @@ public class RawClonedFragment implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link RawClonedFragment} and the id values of the two objects
+	 *         {@link DBRawClonedFragment} and the id values of the two objects
 	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof RawClonedFragment)) {
+		if (!(obj instanceof DBRawClonedFragment)) {
 			return false;
 		}
-		final RawClonedFragment another = (RawClonedFragment) obj;
+		final DBRawClonedFragment another = (DBRawClonedFragment) obj;
 
 		return this.id == another.getId();
 	}

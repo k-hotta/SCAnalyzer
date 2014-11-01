@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.junit.After;
@@ -41,9 +41,9 @@ public class ScorpioCloneResultReaderTest {
 	 */
 	private static final String FORMAT = "src/test/resources/clonetracker-scorpio-rev%s.txt";
 
-	private static Version dummyVersion;
+	private static DBVersion dummyVersion;
 
-	private static Collection<SourceFile> dummySourceFiles;
+	private static Collection<DBSourceFile> dummySourceFiles;
 
 	private BufferedReader br;
 
@@ -57,14 +57,14 @@ public class ScorpioCloneResultReaderTest {
 		final Collection<String> fileList = makeFileList(
 				"src/test/resources/clonetracker-latest-src/",
 				"/c20r_main/src/");
-		dummyVersion = new Version();
-		Revision dummyRevision = new Revision(421, "421", null);
+		dummyVersion = new DBVersion();
+		DBRevision dummyRevision = new DBRevision(421, "421", null);
 		dummySourceFiles = makeDummySourceFiles(fileList);
 		dummyVersion.setRevision(dummyRevision);
 		dummyVersion.setSourceFiles(dummySourceFiles);
 
 		mPrivateRead = ScorpioCloneResultReader.class.getDeclaredMethod("read",
-				BufferedReader.class, Version.class);
+				BufferedReader.class, DBVersion.class);
 		mPrivateRead.setAccessible(true);
 		mGetSourceFilesAsMapWithPath = ScorpioCloneResultReader.class
 				.getDeclaredMethod("getSourceFilesAsMapWithPath",
@@ -83,14 +83,14 @@ public class ScorpioCloneResultReaderTest {
 		br.close();
 	}
 
-	private static Collection<SourceFile> makeDummySourceFiles(
+	private static Collection<DBSourceFile> makeDummySourceFiles(
 			final Collection<String> list) {
-		final Collection<SourceFile> result = new TreeSet<SourceFile>(
+		final Collection<DBSourceFile> result = new TreeSet<DBSourceFile>(
 				new DBElementComparator());
 
 		int count = 0;
 		for (final String path : list) {
-			final SourceFile dummy = new SourceFile(++count, path);
+			final DBSourceFile dummy = new DBSourceFile(++count, path);
 			result.add(dummy);
 		}
 
@@ -128,12 +128,12 @@ public class ScorpioCloneResultReaderTest {
 	@Test
 	public void testGetSourceFilesAsMapWithPath1() throws Exception {
 		@SuppressWarnings("unchecked")
-		Map<String, SourceFile> results = (Map<String, SourceFile>) mGetSourceFilesAsMapWithPath
+		Map<String, DBSourceFile> results = (Map<String, DBSourceFile>) mGetSourceFilesAsMapWithPath
 				.invoke(null, dummySourceFiles);
 
 		assertTrue(results.size() == dummySourceFiles.size());
-		for (final SourceFile dummy : dummySourceFiles) {
-			SourceFile result = results.get(dummy.getPath());
+		for (final DBSourceFile dummy : dummySourceFiles) {
+			DBSourceFile result = results.get(dummy.getPath());
 			assertTrue(result != null);
 			assertTrue(result.equals(dummy));
 		}
@@ -142,7 +142,7 @@ public class ScorpioCloneResultReaderTest {
 	@Test
 	public void testRead1() throws Exception {
 		@SuppressWarnings("unchecked")
-		Collection<RawCloneClass> result = (Collection<RawCloneClass>) mPrivateRead
+		Collection<DBRawCloneClass> result = (Collection<DBRawCloneClass>) mPrivateRead
 				.invoke(reader, br, dummyVersion);
 
 		assertTrue(result.size() == 1059);
@@ -150,7 +150,7 @@ public class ScorpioCloneResultReaderTest {
 
 	@Test
 	public void testDetectClones1() throws Exception {
-		Collection<RawCloneClass> result = reader.detectClones(dummyVersion);
+		Collection<DBRawCloneClass> result = reader.detectClones(dummyVersion);
 
 		assertTrue(result.size() == 1059);
 	}

@@ -13,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see SourceFileWithContent
  */
 @DatabaseTable(tableName = "SOURCE_FILES")
-public class SourceFile implements IDBElement {
+public class DBSourceFile implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -40,7 +40,7 @@ public class SourceFile implements IDBElement {
 	/**
 	 * The default constructor
 	 */
-	public SourceFile() {
+	public DBSourceFile() {
 
 	}
 
@@ -52,7 +52,7 @@ public class SourceFile implements IDBElement {
 	 * @param path
 	 *            the path of this source file
 	 */
-	public SourceFile(final long id, final String path) {
+	public DBSourceFile(final long id, final String path) {
 		this.id = id;
 		this.path = path;
 	}
@@ -101,15 +101,15 @@ public class SourceFile implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link SourceFile} and the id values of the two objects are the
+	 *         {@link DBSourceFile} and the id values of the two objects are the
 	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof SourceFile)) {
+		if (!(obj instanceof DBSourceFile)) {
 			return false;
 		}
-		final SourceFile another = (SourceFile) obj;
+		final DBSourceFile another = (DBSourceFile) obj;
 
 		return this.id == another.getId();
 	}

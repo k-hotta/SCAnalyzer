@@ -2,10 +2,10 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
 import java.util.Comparator;
 
-public class SegmentComparator implements Comparator<Segment> {
+public class SegmentComparator implements Comparator<DBSegment> {
 
 	@Override
-	public int compare(Segment o1, Segment o2) {
+	public int compare(DBSegment o1, DBSegment o2) {
 		int comparePath = o1.getSourceFile().getPath()
 				.compareTo(o2.getSourceFile().getPath());
 		if (comparePath != 0) {

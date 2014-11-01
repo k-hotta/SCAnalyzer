@@ -13,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  */
 @DatabaseTable(tableName = "FILE_CHANGES")
-public class FileChange implements IDBElement {
+public class DBFileChange implements IDBElement {
 
 	/**
 	 * Enumerates types of file changes
@@ -81,14 +81,14 @@ public class FileChange implements IDBElement {
 	 * file change is {@link Type#ADD}
 	 */
 	@DatabaseField(canBeNull = true, foreign = true, columnName = OLD_SOURCE_FILE_COLUMN_NAME)
-	private SourceFile oldSourceFile;
+	private DBSourceFile oldSourceFile;
 
 	/**
 	 * The source file after changed, <code>null</code> if the type of this file
 	 * change is {@link Type#DELETE}
 	 */
 	@DatabaseField(canBeNull = true, foreign = true, columnName = NEW_SOURCE_FILE_COLUMN_NAME)
-	private SourceFile newSourceFile;
+	private DBSourceFile newSourceFile;
 
 	/**
 	 * The type of this file change
@@ -101,12 +101,12 @@ public class FileChange implements IDBElement {
 	 * the owner version and its last (previous) version.
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
-	private Version version;
+	private DBVersion version;
 
 	/**
 	 * The default constructor
 	 */
-	public FileChange() {
+	public DBFileChange() {
 
 	}
 
@@ -130,9 +130,9 @@ public class FileChange implements IDBElement {
 	 *            change occurred between the owner version and its last
 	 *            (previous) one
 	 */
-	public FileChange(final long id, final SourceFile oldSourceFile,
-			final SourceFile newSourceFile, final Type type,
-			final Version version) {
+	public DBFileChange(final long id, final DBSourceFile oldSourceFile,
+			final DBSourceFile newSourceFile, final Type type,
+			final DBVersion version) {
 		assert ((type == Type.ADD && oldSourceFile == null && newSourceFile != null)
 				|| (type == Type.DELETE && oldSourceFile != null && newSourceFile == null) || (oldSourceFile != null && newSourceFile != null));
 
@@ -171,7 +171,7 @@ public class FileChange implements IDBElement {
 	 *         be <code>null</code> if the type of this file change is
 	 *         {@link Type#ADD}.
 	 */
-	public SourceFile getOldSourceFile() {
+	public DBSourceFile getOldSourceFile() {
 		return oldSourceFile;
 	}
 
@@ -181,7 +181,7 @@ public class FileChange implements IDBElement {
 	 * @param oldSourceFile
 	 *            the source file before changed to be set
 	 */
-	public void setOldSourceFile(SourceFile oldSourceFile) {
+	public void setOldSourceFile(DBSourceFile oldSourceFile) {
 		this.oldSourceFile = oldSourceFile;
 	}
 
@@ -192,7 +192,7 @@ public class FileChange implements IDBElement {
 	 *         be <code>null</code> if the type of this file change is
 	 *         {@link Type#DELETE}.
 	 */
-	public SourceFile getNewSourceFile() {
+	public DBSourceFile getNewSourceFile() {
 		return newSourceFile;
 	}
 
@@ -202,7 +202,7 @@ public class FileChange implements IDBElement {
 	 * @param newSourceFile
 	 *            the source file after changed to be set
 	 */
-	public void setNewSourceFile(SourceFile newSourceFile) {
+	public void setNewSourceFile(DBSourceFile newSourceFile) {
 		this.newSourceFile = newSourceFile;
 	}
 
@@ -230,7 +230,7 @@ public class FileChange implements IDBElement {
 	 * 
 	 * @return the owner version of this file change
 	 */
-	public Version getVersion() {
+	public DBVersion getVersion() {
 		return version;
 	}
 
@@ -240,7 +240,7 @@ public class FileChange implements IDBElement {
 	 * @param version
 	 *            the owner version of this file change
 	 */
-	public void setVersion(Version version) {
+	public void setVersion(DBVersion version) {
 		this.version = version;
 	}
 
@@ -248,15 +248,15 @@ public class FileChange implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link FileChange} and the id values of the two objects are the
+	 *         {@link DBFileChange} and the id values of the two objects are the
 	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof FileChange)) {
+		if (!(obj instanceof DBFileChange)) {
 			return false;
 		}
-		final FileChange another = (FileChange) obj;
+		final DBFileChange another = (DBFileChange) obj;
 
 		return this.id == another.getId();
 	}

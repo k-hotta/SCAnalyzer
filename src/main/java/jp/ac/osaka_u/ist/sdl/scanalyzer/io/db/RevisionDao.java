@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,13 +12,13 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link Revision}.
+ * The DAO for {@link DBRevision}.
  * 
  * @author k-hotta
  * 
- * @see Revision
+ * @see DBRevision
  */
-public class RevisionDao extends AbstractDataDao<Revision> {
+public class RevisionDao extends AbstractDataDao<DBRevision> {
 
 	/**
 	 * The logger
@@ -28,8 +28,8 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 
 	@SuppressWarnings("unchecked")
 	public RevisionDao() throws SQLException {
-		super((Dao<Revision, Long>) DBManager.getInstance().getNativeDao(
-				Revision.class));
+		super((Dao<DBRevision, Long>) DBManager.getInstance().getNativeDao(
+				DBRevision.class));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 	}
 
 	@Override
-	public Revision refresh(Revision element) throws SQLException {
+	public DBRevision refresh(DBRevision element) throws SQLException {
 		// do nothing because Revision doesn't have any foreign field
 		return element;
 	}
@@ -47,7 +47,7 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 	 * Get the element whose identifier is the specified one. <br>
 	 * <p>
 	 * Note: At most one element should be detected by this operation since the
-	 * identifier of {@link Revision} must be unique.
+	 * identifier of {@link DBRevision} must be unique.
 	 * </p>
 	 * 
 	 * @param identifier
@@ -57,10 +57,10 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public Revision getWithIdentifier(final String identifier)
+	public DBRevision getWithIdentifier(final String identifier)
 			throws SQLException {
-		final List<Revision> resultAsList = refreshAll(originalDao.queryForEq(
-				Revision.IDENTIFIER_COLUMN_NAME, identifier));
+		final List<DBRevision> resultAsList = refreshAll(originalDao.queryForEq(
+				DBRevision.IDENTIFIER_COLUMN_NAME, identifier));
 
 		if (resultAsList.isEmpty()) {
 			return null; // nothing is found
@@ -81,8 +81,8 @@ public class RevisionDao extends AbstractDataDao<Revision> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<Revision> getWithDate(final Date date) throws SQLException {
-		return refreshAll(originalDao.queryForEq(Revision.DATE_COLUMN_NAME,
+	public List<DBRevision> getWithDate(final Date date) throws SQLException {
+		return refreshAll(originalDao.queryForEq(DBRevision.DATE_COLUMN_NAME,
 				date));
 	}
 

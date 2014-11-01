@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.easymock.EasyMock;
@@ -230,15 +230,15 @@ public class SVNRevisionProviderTest {
 
 	@Test
 	public void testGetFirstRevision1() throws Exception {
-		final Revision first = providerWithMock.getFirstRevision();
+		final DBRevision first = providerWithMock.getFirstRevision();
 
 		assertEquals(first.getIdentifier(), "2");
 	}
 
 	@Test
 	public void testGetNextRevision1() throws Exception {
-		final Revision current = new Revision(-1, "1", null);
-		final Revision next = providerWithMock.getNextRevision(current);
+		final DBRevision current = new DBRevision(-1, "1", null);
+		final DBRevision next = providerWithMock.getNextRevision(current);
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
@@ -248,8 +248,8 @@ public class SVNRevisionProviderTest {
 
 	@Test
 	public void testGetNextRevision2() throws Exception {
-		final Revision current = new Revision(-1, "2", null);
-		final Revision next = providerWithMock.getNextRevision(current);
+		final DBRevision current = new DBRevision(-1, "2", null);
+		final DBRevision next = providerWithMock.getNextRevision(current);
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
@@ -259,8 +259,8 @@ public class SVNRevisionProviderTest {
 	
 	@Test
 	public void testGetNextRevision3() throws Exception {
-		final Revision current = new Revision(-1, "3", null);
-		final Revision next = providerWithMock.getNextRevision(current);
+		final DBRevision current = new DBRevision(-1, "3", null);
+		final DBRevision next = providerWithMock.getNextRevision(current);
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
@@ -270,8 +270,8 @@ public class SVNRevisionProviderTest {
 	
 	@Test
 	public void testGetNextRevision4() throws Exception {
-		final Revision current = new Revision(-1, "4", null);
-		final Revision next = providerWithMock.getNextRevision(current);
+		final DBRevision current = new DBRevision(-1, "4", null);
+		final DBRevision next = providerWithMock.getNextRevision(current);
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
@@ -281,8 +281,8 @@ public class SVNRevisionProviderTest {
 	
 	@Test
 	public void testGetNextRevision5() throws Exception {
-		final Revision current = new Revision(-1, "5", null);
-		final Revision next = providerWithMock.getNextRevision(current);
+		final DBRevision current = new DBRevision(-1, "5", null);
+		final DBRevision next = providerWithMock.getNextRevision(current);
 		assertNull(next);
 	}
 	

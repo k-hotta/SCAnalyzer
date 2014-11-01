@@ -14,10 +14,10 @@ import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,7 +55,7 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 	}
 
 	@Override
-	public Collection<RawCloneClass> detectClones(Version version) {
+	public Collection<DBRawCloneClass> detectClones(DBVersion version) {
 		try {
 			final String targetPath = String.format(format, version
 					.getRevision().getIdentifier());
@@ -69,10 +69,10 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 	}
 
 	@Override
-	public Collection<RawCloneClass> read(File file, Version version)
+	public Collection<DBRawCloneClass> read(File file, DBVersion version)
 			throws IOException, IllegalCloneResultFileFormatException {
 		BufferedReader br = null;
-		Collection<RawCloneClass> result = null;
+		Collection<DBRawCloneClass> result = null;
 
 		try {
 			br = new BufferedReader(new FileReader(file));
@@ -99,11 +99,11 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 		return result;
 	}
 
-	private Collection<RawCloneClass> read(final BufferedReader br,
-			final Version version) throws IOException,
+	private Collection<DBRawCloneClass> read(final BufferedReader br,
+			final DBVersion version) throws IOException,
 			IllegalCloneResultFileFormatException {
-		final Collection<RawCloneClass> result = new HashSet<RawCloneClass>();
-		final Map<String, SourceFile> sourceFiles = getSourceFilesAsMapWithPath(version
+		final Collection<DBRawCloneClass> result = new HashSet<DBRawCloneClass>();
+		final Map<String, DBSourceFile> sourceFiles = getSourceFilesAsMapWithPath(version
 				.getSourceFiles());
 
 		String line;
@@ -118,31 +118,31 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 				final int startLine2 = Integer.parseInt(splitLine[4]);
 				final int endLine2 = Integer.parseInt(splitLine[5]);
 
-				final SourceFile sourceFile1 = sourceFiles.get(path1);
+				final DBSourceFile sourceFile1 = sourceFiles.get(path1);
 				if (sourceFile1 == null) {
 					eLogger.fatal("cannot find " + path1 + " in this version");
 					throw new IllegalStateException(path1
 							+ " doesn't exist in the version");
 				}
-				final SourceFile sourceFile2 = sourceFiles.get(path2);
+				final DBSourceFile sourceFile2 = sourceFiles.get(path2);
 				if (sourceFile2 == null) {
 					eLogger.fatal("cannot find " + path2 + " in this version");
 					throw new IllegalStateException(path2
 							+ " doesn't exist in the version");
 				}
 
-				final RawClonedFragment fragment1 = new RawClonedFragment(
-						IDGenerator.generate(RawClonedFragment.class), version,
+				final DBRawClonedFragment fragment1 = new DBRawClonedFragment(
+						IDGenerator.generate(DBRawClonedFragment.class), version,
 						sourceFile1, startLine1, endLine1 - startLine1 + 1,
 						null);
-				final RawClonedFragment fragment2 = new RawClonedFragment(
-						IDGenerator.generate(RawClonedFragment.class), version,
+				final DBRawClonedFragment fragment2 = new DBRawClonedFragment(
+						IDGenerator.generate(DBRawClonedFragment.class), version,
 						sourceFile2, startLine2, endLine2 - startLine2 + 1,
 						null);
 
-				final RawCloneClass cloneClass = new RawCloneClass(
-						IDGenerator.generate(RawCloneClass.class), version,
-						new TreeSet<RawClonedFragment>(
+				final DBRawCloneClass cloneClass = new DBRawCloneClass(
+						IDGenerator.generate(DBRawCloneClass.class), version,
+						new TreeSet<DBRawClonedFragment>(
 								new DBElementComparator()));
 				cloneClass.getElements().add(fragment1);
 				cloneClass.getElements().add(fragment2);
@@ -165,11 +165,11 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 		return Collections.unmodifiableCollection(result);
 	}
 
-	private static Map<String, SourceFile> getSourceFilesAsMapWithPath(
-			final Collection<SourceFile> sourceFiles) {
-		final Map<String, SourceFile> result = new TreeMap<String, SourceFile>();
+	private static Map<String, DBSourceFile> getSourceFilesAsMapWithPath(
+			final Collection<DBSourceFile> sourceFiles) {
+		final Map<String, DBSourceFile> result = new TreeMap<String, DBSourceFile>();
 
-		for (final SourceFile sourceFile : sourceFiles) {
+		for (final DBSourceFile sourceFile : sourceFiles) {
 			result.put(sourceFile.getPath(), sourceFile);
 		}
 

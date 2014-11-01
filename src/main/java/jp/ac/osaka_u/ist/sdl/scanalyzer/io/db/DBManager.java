@@ -268,10 +268,10 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange}.
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange}
 	 */
 	public final FileChangeDao getFileChangeDao() {
 		return fileChangeDao;
@@ -279,10 +279,10 @@ public class DBManager {
 
 	/**
 	 * Get the DAO for
-	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass}.
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass}
 	 */
 	public final RawCloneClassDao getRawCloneClassDao() {
 		return rawCloneClassDao;
@@ -290,19 +290,19 @@ public class DBManager {
 
 	/**
 	 * Get the DAO for
-	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment}.
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment}
 	 */
 	public final RawClonedFragmentDao getRawClonedFragmentDao() {
 		return rawClonedFragmentDao;
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment}.
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment}.
 	 * 
-	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment}
+	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment}
 	 */
 	public final SegmentDao getSegmentDao() {
 		return segmentDao;
@@ -320,39 +320,39 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass}.
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass}
 	 */
 	public final CloneClassDao getCloneClassDao() {
 		return cloneClassDao;
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision}.
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision}
 	 */
 	public final RevisionDao getRevisionDao() {
 		return revisionDao;
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile}.
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile}
 	 */
 	public final SourceFileDao getSourceFileDao() {
 		return sourceFileDao;
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version}.
+	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion}.
 	 * 
-	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version}
+	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion}
 	 */
 	public final VersionDao getVersionDao() {
 		return versionDao;

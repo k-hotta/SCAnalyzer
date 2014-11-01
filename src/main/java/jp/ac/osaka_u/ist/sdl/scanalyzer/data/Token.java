@@ -19,7 +19,7 @@ public class Token implements IProgramElement {
 	/**
 	 * The source file
 	 */
-	private SourceFile sourceFile;
+	private DBSourceFile sourceFile;
 
 	/**
 	 * The line within the source file
@@ -51,7 +51,7 @@ public class Token implements IProgramElement {
 	 * @param position
 	 *            the position
 	 */
-	public Token(final IToken token, final SourceFile sourceFile,
+	public Token(final IToken token, final DBSourceFile sourceFile,
 			final int position) {
 		this.type = token.getType();
 		this.sourceFile = sourceFile;
@@ -69,7 +69,7 @@ public class Token implements IProgramElement {
 	 * Get the source file
 	 */
 	@Override
-	public SourceFile getOwnerSourceFile() {
+	public DBSourceFile getOwnerSourceFile() {
 		return sourceFile;
 	}
 

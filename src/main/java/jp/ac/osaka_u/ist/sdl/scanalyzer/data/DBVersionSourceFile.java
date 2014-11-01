@@ -5,16 +5,16 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * This class is just for realizing many-to-many relationship between
- * {@link Version} and {@link SourceFile}. An instance of this class represents
- * a relationship between an instance of {@link Version} and an instance of
- * {@link SourceFile}.
+ * {@link DBVersion} and {@link DBSourceFile}. An instance of this class represents
+ * a relationship between an instance of {@link DBVersion} and an instance of
+ * {@link DBSourceFile}.
  * 
  * @author k-hotta
- * @see Version
- * @see SourceFile
+ * @see DBVersion
+ * @see DBSourceFile
  */
 @DatabaseTable(tableName = "VERSION_SOURCE_FILES")
-public class VersionSourceFile {
+public class DBVersionSourceFile {
 
 	/**
 	 * The column name for id
@@ -41,18 +41,18 @@ public class VersionSourceFile {
 	 * The corresponding version
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
-	private Version version;
+	private DBVersion version;
 
 	/**
 	 * The corresponding source file
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = SOURCE_FILE_COLUMN_NAME)
-	private SourceFile sourceFile;
+	private DBSourceFile sourceFile;
 
 	/**
 	 * The default constructor for ORMLite.
 	 */
-	public VersionSourceFile() {
+	public DBVersionSourceFile() {
 
 	}
 
@@ -66,8 +66,8 @@ public class VersionSourceFile {
 	 * @param sourceFile
 	 *            the corresponding source file
 	 */
-	public VersionSourceFile(final long id, final Version version,
-			final SourceFile sourceFile) {
+	public DBVersionSourceFile(final long id, final DBVersion version,
+			final DBSourceFile sourceFile) {
 		this.id = id;
 		this.version = version;
 		this.sourceFile = sourceFile;
@@ -97,7 +97,7 @@ public class VersionSourceFile {
 	 * 
 	 * @return the corresponding version of this relationship
 	 */
-	public Version getVersion() {
+	public DBVersion getVersion() {
 		return version;
 	}
 
@@ -107,7 +107,7 @@ public class VersionSourceFile {
 	 * @param version
 	 *            the corresponding version to be set
 	 */
-	public void setVersion(Version version) {
+	public void setVersion(DBVersion version) {
 		this.version = version;
 	}
 
@@ -116,7 +116,7 @@ public class VersionSourceFile {
 	 * 
 	 * @return the corresponding source file of this relationship
 	 */
-	public SourceFile getSourceFile() {
+	public DBSourceFile getSourceFile() {
 		return sourceFile;
 	}
 
@@ -126,7 +126,7 @@ public class VersionSourceFile {
 	 * @param sourceFile
 	 *            the corresponding source file to be set
 	 */
-	public void setSourceFile(SourceFile sourceFile) {
+	public void setSourceFile(DBSourceFile sourceFile) {
 		this.sourceFile = sourceFile;
 	}
 	
@@ -134,15 +134,15 @@ public class VersionSourceFile {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link VersionSourceFile} and the id values of the two objects
+	 *         {@link DBVersionSourceFile} and the id values of the two objects
 	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof VersionSourceFile)) {
+		if (!(obj instanceof DBVersionSourceFile)) {
 			return false;
 		}
-		final VersionSourceFile another = (VersionSourceFile) obj;
+		final DBVersionSourceFile another = (DBVersionSourceFile) obj;
 
 		return this.id == another.getId();
 	}

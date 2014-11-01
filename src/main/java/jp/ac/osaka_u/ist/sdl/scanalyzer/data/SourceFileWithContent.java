@@ -12,7 +12,7 @@ import java.util.SortedMap;
  * @param <E>
  *            the type of elements of source code, e.g. Token
  * 
- * @see SourceFile
+ * @see DBSourceFile
  * @see IProgramElement
  */
 public class SourceFileWithContent<E extends IProgramElement> {
@@ -20,7 +20,7 @@ public class SourceFileWithContent<E extends IProgramElement> {
 	/**
 	 * The source file
 	 */
-	private SourceFile sourceFile;
+	private DBSourceFile sourceFile;
 
 	/**
 	 * The contents as a map. The key is the position of each content, and the
@@ -28,7 +28,7 @@ public class SourceFileWithContent<E extends IProgramElement> {
 	 */
 	private SortedMap<Integer, E> contents;
 
-	public SourceFileWithContent(final SourceFile sourceFile,
+	public SourceFileWithContent(final DBSourceFile sourceFile,
 			final SortedMap<Integer, E> contents) {
 		this.sourceFile = sourceFile;
 		this.contents = contents;
@@ -39,7 +39,7 @@ public class SourceFileWithContent<E extends IProgramElement> {
 	 * 
 	 * @return the source file
 	 */
-	public final SourceFile getSourceFile() {
+	public final DBSourceFile getSourceFile() {
 		return sourceFile;
 	}
 
@@ -49,7 +49,7 @@ public class SourceFileWithContent<E extends IProgramElement> {
 	 * @param sourceFile
 	 *            the source file to be set
 	 */
-	public final void setSourceFile(final SourceFile sourceFile) {
+	public final void setSourceFile(final DBSourceFile sourceFile) {
 		this.sourceFile = sourceFile;
 	}
 
@@ -128,7 +128,7 @@ public class SourceFileWithContent<E extends IProgramElement> {
 	}
 
 	/**
-	 * Return a hash value, which equals to the hash code of {@link SourceFile}.
+	 * Return a hash value, which equals to the hash code of {@link DBSourceFile}.
 	 */
 	@Override
 	public int hashCode() {

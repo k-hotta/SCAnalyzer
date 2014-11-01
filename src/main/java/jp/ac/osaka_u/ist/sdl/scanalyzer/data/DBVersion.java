@@ -18,7 +18,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  */
 @DatabaseTable(tableName = "VERSIONS")
-public class Version implements IDBElement {
+public class DBVersion implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -55,34 +55,34 @@ public class Version implements IDBElement {
 	 * The corresponding revision
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = REVISION_COLUMN_NAME)
-	private Revision revision;
+	private DBRevision revision;
 
 	/**
 	 * The collection of changes on source files between the last version and
 	 * this version
 	 */
 	@ForeignCollectionField(eager = true, columnName = FILE_CHANGES_COLUMN_NAME)
-	private Collection<FileChange> fileChanges;
+	private Collection<DBFileChange> fileChanges;
 
 	/**
 	 * The collection of raw clone classes in this version
 	 */
 	@ForeignCollectionField(eager = true, columnName = RAW_CLONE_CLASSES_COLUMN_NAME)
-	private Collection<RawCloneClass> rawCloneClasses;
+	private Collection<DBRawCloneClass> rawCloneClasses;
 
 	/**
 	 * The collection of clone classes in this version
 	 */
 	@ForeignCollectionField(eager = true, columnName = CLONE_CLASSES_COLUMN_NAME)
-	private Collection<CloneClass> cloneClasses;
+	private Collection<DBCloneClass> cloneClasses;
 
 	/**
 	 * The collection of source files in this version. <br>
 	 * NOTE: this field is NOT a column of database table. The relationship
 	 * between versions and source files will be stored with
-	 * {@link VersionSourceFile} since it is many-to-many.
+	 * {@link DBVersionSourceFile} since it is many-to-many.
 	 */
-	private Collection<SourceFile> sourceFiles;
+	private Collection<DBSourceFile> sourceFiles;
 
 	/**
 	 * The map between the id of source file and its content. <br>
@@ -93,7 +93,7 @@ public class Version implements IDBElement {
 	/**
 	 * The default constructor
 	 */
-	public Version() {
+	public DBVersion() {
 
 	}
 
@@ -119,13 +119,13 @@ public class Version implements IDBElement {
 	 * @param sourceFileContents
 	 *            the map between source file id and its content
 	 */
-	public Version(
+	public DBVersion(
 			final long id,
-			final Revision revision,
-			final Collection<FileChange> fileChanges,
-			final Collection<RawCloneClass> rawCloneClasses,
-			final Collection<CloneClass> cloneClasses,
-			final Collection<SourceFile> sourceFiles,
+			final DBRevision revision,
+			final Collection<DBFileChange> fileChanges,
+			final Collection<DBRawCloneClass> rawCloneClasses,
+			final Collection<DBCloneClass> cloneClasses,
+			final Collection<DBSourceFile> sourceFiles,
 			final Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents) {
 		this.id = id;
 		this.revision = revision;
@@ -162,7 +162,7 @@ public class Version implements IDBElement {
 	 * 
 	 * @return the corresponding revision of this version
 	 */
-	public Revision getRevision() {
+	public DBRevision getRevision() {
 		return revision;
 	}
 
@@ -172,7 +172,7 @@ public class Version implements IDBElement {
 	 * @param revision
 	 *            the corresponding revision of this version to be set
 	 */
-	public void setRevision(Revision revision) {
+	public void setRevision(DBRevision revision) {
 		this.revision = revision;
 	}
 
@@ -183,7 +183,7 @@ public class Version implements IDBElement {
 	 * @return the collection of all the file changes between the last version
 	 *         and this version
 	 */
-	public Collection<FileChange> getFileChanges() {
+	public Collection<DBFileChange> getFileChanges() {
 		return fileChanges;
 	}
 
@@ -194,7 +194,7 @@ public class Version implements IDBElement {
 	 * @param fileChanges
 	 *            the collection to be set
 	 */
-	public void setFileChanges(Collection<FileChange> fileChanges) {
+	public void setFileChanges(Collection<DBFileChange> fileChanges) {
 		this.fileChanges = fileChanges;
 	}
 
@@ -203,7 +203,7 @@ public class Version implements IDBElement {
 	 * 
 	 * @return the collection of all the raw clone classes in this version
 	 */
-	public Collection<RawCloneClass> getRawCloneClasses() {
+	public Collection<DBRawCloneClass> getRawCloneClasses() {
 		return rawCloneClasses;
 	}
 
@@ -213,7 +213,7 @@ public class Version implements IDBElement {
 	 * @param rawCloneClasses
 	 *            the collection to be set
 	 */
-	public void setRawCloneClasses(Collection<RawCloneClass> rawCloneClasses) {
+	public void setRawCloneClasses(Collection<DBRawCloneClass> rawCloneClasses) {
 		this.rawCloneClasses = rawCloneClasses;
 	}
 
@@ -222,7 +222,7 @@ public class Version implements IDBElement {
 	 * 
 	 * @return the collection of all the clone classes
 	 */
-	public Collection<CloneClass> getCloneClasses() {
+	public Collection<DBCloneClass> getCloneClasses() {
 		return cloneClasses;
 	}
 
@@ -232,7 +232,7 @@ public class Version implements IDBElement {
 	 * @param cloneClasses
 	 *            the collection to be set
 	 */
-	public void setCloneClasses(Collection<CloneClass> cloneClasses) {
+	public void setCloneClasses(Collection<DBCloneClass> cloneClasses) {
 		this.cloneClasses = cloneClasses;
 	}
 
@@ -241,7 +241,7 @@ public class Version implements IDBElement {
 	 * 
 	 * @return the collection of all the source files in this version
 	 */
-	public Collection<SourceFile> getSourceFiles() {
+	public Collection<DBSourceFile> getSourceFiles() {
 		return sourceFiles;
 	}
 
@@ -251,7 +251,7 @@ public class Version implements IDBElement {
 	 * @param sourceFiles
 	 *            the collection to be set
 	 */
-	public void setSourceFiles(Collection<SourceFile> sourceFiles) {
+	public void setSourceFiles(Collection<DBSourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
 	}
 
@@ -279,15 +279,15 @@ public class Version implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Version} and the id values of the two objects are the same
+	 *         {@link DBVersion} and the id values of the two objects are the same
 	 *         to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof Version)) {
+		if (!(obj instanceof DBVersion)) {
 			return false;
 		}
-		final Version another = (Version) obj;
+		final DBVersion another = (DBVersion) obj;
 
 		return this.id == another.getId();
 	}
@@ -311,28 +311,28 @@ public class Version implements IDBElement {
 		builder.append("revision\n\t" + revision.toString() + "\n\n");
 
 		builder.append("source files\n");
-		final List<SourceFile> sortedSourceFile = new ArrayList<SourceFile>();
+		final List<DBSourceFile> sortedSourceFile = new ArrayList<DBSourceFile>();
 		sortedSourceFile.addAll(sourceFiles);
 		Collections.sort(sortedSourceFile, new DBElementComparator());
-		for (final SourceFile sourceFile : sortedSourceFile) {
+		for (final DBSourceFile sourceFile : sortedSourceFile) {
 			builder.append("\t" + sourceFile.toString() + "\n");
 		}
 		builder.append("\n");
 
 		builder.append("file changes\n");
-		final List<FileChange> sortedFileChanges = new ArrayList<FileChange>();
+		final List<DBFileChange> sortedFileChanges = new ArrayList<DBFileChange>();
 		sortedFileChanges.addAll(fileChanges);
 		Collections.sort(sortedFileChanges, new DBElementComparator());
-		for (final FileChange fileChange : sortedFileChanges) {
+		for (final DBFileChange fileChange : sortedFileChanges) {
 			builder.append("\t" + fileChange.toString() + "\n");
 		}
 		builder.append("\n");
 
 		builder.append("raw clone classes\n");
-		final List<RawCloneClass> sortedRawCloneClasses = new ArrayList<RawCloneClass>();
+		final List<DBRawCloneClass> sortedRawCloneClasses = new ArrayList<DBRawCloneClass>();
 		sortedRawCloneClasses.addAll(rawCloneClasses);
 		Collections.sort(sortedRawCloneClasses, new DBElementComparator());
-		for (final RawCloneClass rawCloneClass : sortedRawCloneClasses) {
+		for (final DBRawCloneClass rawCloneClass : sortedRawCloneClasses) {
 			builder.append("\t" + rawCloneClass.toString() + "\n");
 		}
 		builder.append("\n");

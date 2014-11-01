@@ -14,17 +14,17 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBXmlParser;
 
@@ -62,10 +62,10 @@ public class VersionProviderTest {
 
 	private static VersionProvider provider;
 
-	private static final Version INITIAL_VERSION = new Version((long) 0,
-			new Revision(0, "pseudo-initial-revision", null),
-			new HashSet<FileChange>(), new HashSet<RawCloneClass>(),
-			new HashSet<CloneClass>(), new HashSet<SourceFile>(),
+	private static final DBVersion INITIAL_VERSION = new DBVersion((long) 0,
+			new DBRevision(0, "pseudo-initial-revision", null),
+			new HashSet<DBFileChange>(), new HashSet<DBRawCloneClass>(),
+			new HashSet<DBCloneClass>(), new HashSet<DBSourceFile>(),
 			new HashMap<Long, SourceFileWithContent<?>>());
 
 	private static class TempFileContentProvider implements
@@ -78,7 +78,7 @@ public class VersionProviderTest {
 		}
 
 		@Override
-		public String getFileContent(Version version, SourceFile sourceFile) {
+		public String getFileContent(DBVersion version, DBSourceFile sourceFile) {
 			return stringProvider.provide(version, sourceFile.getPath());
 		}
 
@@ -86,7 +86,7 @@ public class VersionProviderTest {
 
 	private interface TempStringProvider {
 
-		public String provide(final Version version, final String path);
+		public String provide(final DBVersion version, final String path);
 
 	}
 
@@ -215,11 +215,11 @@ public class VersionProviderTest {
 		mReady.setAccessible(true);
 
 		mDetectNextRevision = VersionProvider.class.getDeclaredMethod(
-				"detectNextRevision", Version.class);
+				"detectNextRevision", DBVersion.class);
 		mDetectNextRevision.setAccessible(true);
 
 		mProcessFileChanges = VersionProvider.class.getDeclaredMethod(
-				"processFileChanges", Version.class, Version.class,
+				"processFileChanges", DBVersion.class, DBVersion.class,
 				Collection.class);
 		mProcessFileChanges.setAccessible(true);
 
@@ -240,12 +240,12 @@ public class VersionProviderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		IDGenerator.initialize(Version.class, 0);
-		IDGenerator.initialize(Revision.class, 0);
-		IDGenerator.initialize(SourceFile.class, Long.MIN_VALUE);
-		IDGenerator.initialize(FileChange.class, Long.MIN_VALUE);
-		IDGenerator.initialize(RawCloneClass.class, Long.MIN_VALUE);
-		IDGenerator.initialize(RawClonedFragment.class, Long.MIN_VALUE);
+		IDGenerator.initialize(DBVersion.class, 0);
+		IDGenerator.initialize(DBRevision.class, 0);
+		IDGenerator.initialize(DBSourceFile.class, Long.MIN_VALUE);
+		IDGenerator.initialize(DBFileChange.class, Long.MIN_VALUE);
+		IDGenerator.initialize(DBRawCloneClass.class, Long.MIN_VALUE);
+		IDGenerator.initialize(DBRawClonedFragment.class, Long.MIN_VALUE);
 	}
 
 	@Test
@@ -385,45 +385,45 @@ public class VersionProviderTest {
 
 	@Test
 	public void testDetectNextRevision1() throws Exception {
-		final Revision revision = (Revision) mDetectNextRevision.invoke(
+		final DBRevision revision = (DBRevision) mDetectNextRevision.invoke(
 				provider, INITIAL_VERSION);
 		assertEquals(revision, parser.getRevisions().get((long) 1));
 	}
 
 	@Test
 	public void testDetectNextRevision2() throws Exception {
-		final Revision revision = (Revision) mDetectNextRevision.invoke(
+		final DBRevision revision = (DBRevision) mDetectNextRevision.invoke(
 				provider, parser.getVersions().get((long) 4));
 		assertNull(revision);
 	}
 
 	@Test
 	public void testGetSourceFilesAsMap() throws Exception {
-		final Collection<SourceFile> references = parser.getVersions()
+		final Collection<DBSourceFile> references = parser.getVersions()
 				.get((long) 2).getSourceFiles();
 		@SuppressWarnings("unchecked")
-		final Map<String, SourceFile> result = (Map<String, SourceFile>) mGetSourceFilesAsMap
+		final Map<String, DBSourceFile> result = (Map<String, DBSourceFile>) mGetSourceFilesAsMap
 				.invoke(provider, references);
 
 		assertEquals(references.size(), result.size());
-		for (final SourceFile reference : references) {
+		for (final DBSourceFile reference : references) {
 			assertTrue(result.containsValue(reference));
 		}
 	}
 
 	@Test
 	public void testProcessFileChanges1() throws Exception {
-		final Version ver0 = INITIAL_VERSION;
-		final Version ver1 = parser.getVersions().get((long) 1);
-		final Collection<FileChange> fileChanges = ver1.getFileChanges();
+		final DBVersion ver0 = INITIAL_VERSION;
+		final DBVersion ver1 = parser.getVersions().get((long) 1);
+		final Collection<DBFileChange> fileChanges = ver1.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 
-		final Version versionUnderConstructed = new Version(ver1.getId(),
-				ver1.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver1.getId(),
+				ver1.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -438,17 +438,17 @@ public class VersionProviderTest {
 
 	@Test
 	public void testProcessFileChanges2() throws Exception {
-		final Version ver1 = parser.getVersions().get((long) 1);
-		final Version ver2 = parser.getVersions().get((long) 2);
-		final Collection<FileChange> fileChanges = ver2.getFileChanges();
+		final DBVersion ver1 = parser.getVersions().get((long) 1);
+		final DBVersion ver2 = parser.getVersions().get((long) 2);
+		final Collection<DBFileChange> fileChanges = ver2.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 
-		final Version versionUnderConstructed = new Version(ver2.getId(),
-				ver2.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver2.getId(),
+				ver2.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -463,17 +463,17 @@ public class VersionProviderTest {
 
 	@Test
 	public void testProcessFileChanges3() throws Exception {
-		final Version ver2 = parser.getVersions().get((long) 2);
-		final Version ver3 = parser.getVersions().get((long) 3);
-		final Collection<FileChange> fileChanges = ver3.getFileChanges();
+		final DBVersion ver2 = parser.getVersions().get((long) 2);
+		final DBVersion ver3 = parser.getVersions().get((long) 3);
+		final Collection<DBFileChange> fileChanges = ver3.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 
-		final Version versionUnderConstructed = new Version(ver3.getId(),
-				ver3.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver3.getId(),
+				ver3.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -488,17 +488,17 @@ public class VersionProviderTest {
 
 	@Test
 	public void testProcessFileChanges4() throws Exception {
-		final Version ver3 = parser.getVersions().get((long) 3);
-		final Version ver4 = parser.getVersions().get((long) 4);
-		final Collection<FileChange> fileChanges = ver4.getFileChanges();
+		final DBVersion ver3 = parser.getVersions().get((long) 3);
+		final DBVersion ver4 = parser.getVersions().get((long) 4);
+		final Collection<DBFileChange> fileChanges = ver4.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 
-		final Version versionUnderConstructed = new Version(ver4.getId(),
-				ver4.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver4.getId(),
+				ver4.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -513,20 +513,20 @@ public class VersionProviderTest {
 
 	@Test
 	public void testProcessFileChanges5() throws Exception {
-		final Version ver3 = parser.getVersions().get((long) 3);
-		final Version ver4 = parser.getVersions().get((long) 4);
-		final Collection<FileChange> fileChanges = ver4.getFileChanges();
+		final DBVersion ver3 = parser.getVersions().get((long) 3);
+		final DBVersion ver4 = parser.getVersions().get((long) 4);
+		final Collection<DBFileChange> fileChanges = ver4.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 		final FileChangeEntry dummy = new FileChangeEntry("Dummy.java", null,
 				'D');
 		fileChangeEntries.add(dummy);
 
-		final Version versionUnderConstructed = new Version(ver4.getId(),
-				ver4.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver4.getId(),
+				ver4.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -545,19 +545,19 @@ public class VersionProviderTest {
 
 	@Test
 	public void testProcessFileChanges6() throws Exception {
-		final Version ver3 = parser.getVersions().get((long) 3);
-		final Version ver4 = parser.getVersions().get((long) 4);
-		final Collection<FileChange> fileChanges = ver4.getFileChanges();
+		final DBVersion ver3 = parser.getVersions().get((long) 3);
+		final DBVersion ver4 = parser.getVersions().get((long) 4);
+		final Collection<DBFileChange> fileChanges = ver4.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 		final FileChangeEntry dummy = new FileChangeEntry("A.java", null, 'U');
 		fileChangeEntries.add(dummy);
 
-		final Version versionUnderConstructed = new Version(ver4.getId(),
-				ver4.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver4.getId(),
+				ver4.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -576,20 +576,20 @@ public class VersionProviderTest {
 
 	@Test
 	public void testProcessFileChanges7() throws Exception {
-		final Version ver3 = parser.getVersions().get((long) 3);
-		final Version ver4 = parser.getVersions().get((long) 4);
-		final Collection<FileChange> fileChanges = ver4.getFileChanges();
+		final DBVersion ver3 = parser.getVersions().get((long) 3);
+		final DBVersion ver4 = parser.getVersions().get((long) 4);
+		final Collection<DBFileChange> fileChanges = ver4.getFileChanges();
 
 		final Set<FileChangeEntry> fileChangeEntries = getFileChangeEntries(fileChanges);
 		final FileChangeEntry dummy = new FileChangeEntry("Dummy.java", null,
 				'A');
 		fileChangeEntries.add(dummy);
 
-		final Version versionUnderConstructed = new Version(ver4.getId(),
-				ver4.getRevision(), new TreeSet<FileChange>(
-						new DBElementComparator()), new TreeSet<RawCloneClass>(
-						new DBElementComparator()), new TreeSet<CloneClass>(
-						new DBElementComparator()), new TreeSet<SourceFile>(
+		final DBVersion versionUnderConstructed = new DBVersion(ver4.getId(),
+				ver4.getRevision(), new TreeSet<DBFileChange>(
+						new DBElementComparator()), new TreeSet<DBRawCloneClass>(
+						new DBElementComparator()), new TreeSet<DBCloneClass>(
+						new DBElementComparator()), new TreeSet<DBSourceFile>(
 						new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
@@ -622,7 +622,7 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetNextVersion2() throws Exception {
-		Version result = provider.getNextVersion(null);
+		DBVersion result = provider.getNextVersion(null);
 		assertTrue(result.getId() == 0);
 		assertEquals(result.getRevision().getIdentifier(),
 				"pseudo-initial-revision");
@@ -630,12 +630,12 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetNextVersion3() throws Exception {
-		Version current = INITIAL_VERSION;
-		Version reference = parser.getVersions().get((long) 1);
+		DBVersion current = INITIAL_VERSION;
+		DBVersion reference = parser.getVersions().get((long) 1);
 
-		IDGenerator.initialize(Version.class, current.getId() + 1);
-		IDGenerator.initialize(SourceFile.class, 1);
-		Version result = provider.getNextVersion(current);
+		IDGenerator.initialize(DBVersion.class, current.getId() + 1);
+		IDGenerator.initialize(DBSourceFile.class, 1);
+		DBVersion result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()
 				.size());
@@ -649,12 +649,12 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetNextVersion4() throws Exception {
-		Version current = parser.getVersions().get((long) 1);
-		Version reference = parser.getVersions().get((long) 2);
+		DBVersion current = parser.getVersions().get((long) 1);
+		DBVersion reference = parser.getVersions().get((long) 2);
 
-		IDGenerator.initialize(Version.class, current.getId() + 1);
-		IDGenerator.initialize(SourceFile.class, 2);
-		Version result = provider.getNextVersion(current);
+		IDGenerator.initialize(DBVersion.class, current.getId() + 1);
+		IDGenerator.initialize(DBSourceFile.class, 2);
+		DBVersion result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()
 				.size());
@@ -668,12 +668,12 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetNextVersion5() throws Exception {
-		Version current = parser.getVersions().get((long) 2);
-		Version reference = parser.getVersions().get((long) 3);
+		DBVersion current = parser.getVersions().get((long) 2);
+		DBVersion reference = parser.getVersions().get((long) 3);
 
-		IDGenerator.initialize(Version.class, current.getId() + 1);
-		IDGenerator.initialize(SourceFile.class, 3);
-		Version result = provider.getNextVersion(current);
+		IDGenerator.initialize(DBVersion.class, current.getId() + 1);
+		IDGenerator.initialize(DBSourceFile.class, 3);
+		DBVersion result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()
 				.size());
@@ -687,11 +687,11 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetNextVersion6() throws Exception {
-		Version current = parser.getVersions().get((long) 3);
-		Version reference = parser.getVersions().get((long) 4);
+		DBVersion current = parser.getVersions().get((long) 3);
+		DBVersion reference = parser.getVersions().get((long) 4);
 
-		IDGenerator.initialize(Version.class, current.getId() + 1);
-		Version result = provider.getNextVersion(current);
+		IDGenerator.initialize(DBVersion.class, current.getId() + 1);
+		DBVersion result = provider.getNextVersion(current);
 
 		assertEquals(reference.getFileChanges().size(), result.getFileChanges()
 				.size());
@@ -705,19 +705,19 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetNextVersion7() throws Exception {
-		Version current = parser.getVersions().get((long) 4);
+		DBVersion current = parser.getVersions().get((long) 4);
 
-		IDGenerator.initialize(Version.class, current.getId() + 1);
-		Version result = provider.getNextVersion(current);
+		IDGenerator.initialize(DBVersion.class, current.getId() + 1);
+		DBVersion result = provider.getNextVersion(current);
 
 		assertNull(result);
 	}
 
 	private static Set<FileChangeEntry> getFileChangeEntries(
-			final Collection<FileChange> fileChanges) {
+			final Collection<DBFileChange> fileChanges) {
 		final Set<FileChangeEntry> fileChangeEntries = new HashSet<FileChangeEntry>();
 
-		for (final FileChange fileChange : fileChanges) {
+		for (final DBFileChange fileChange : fileChanges) {
 			final String oldPath = (fileChange.getOldSourceFile() == null) ? null
 					: fileChange.getOldSourceFile().getPath();
 			final String newPath = (fileChange.getNewSourceFile() == null) ? null

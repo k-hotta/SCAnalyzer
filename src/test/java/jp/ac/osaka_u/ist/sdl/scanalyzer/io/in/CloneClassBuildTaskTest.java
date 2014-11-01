@@ -16,19 +16,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SegmentComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
@@ -80,13 +80,13 @@ public class CloneClassBuildTaskTest {
 	private static final TokenSourceFileParser parser = new TokenSourceFileParser(
 			Language.JAVA);
 
-	private static Version version419Mock;
+	private static DBVersion version419Mock;
 
-	private static RawCloneClass rawCloneClassMock1;
+	private static DBRawCloneClass rawCloneClassMock1;
 
-	private static RawCloneClass rawCloneClassMock2;
+	private static DBRawCloneClass rawCloneClassMock2;
 
-	private static RawCloneClass rawCloneClassMock3;
+	private static DBRawCloneClass rawCloneClassMock3;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -156,19 +156,19 @@ public class CloneClassBuildTaskTest {
 		mockElements.put(count++, mock9);
 		mockElements.put(count++, mock10);
 
-		version419Mock = new Version((long) 419, new Revision((long) 419,
-				"419", null), new HashSet<FileChange>(),
-				new HashSet<RawCloneClass>(), new HashSet<CloneClass>(),
-				new HashSet<SourceFile>(),
+		version419Mock = new DBVersion((long) 419, new DBRevision((long) 419,
+				"419", null), new HashSet<DBFileChange>(),
+				new HashSet<DBRawCloneClass>(), new HashSet<DBCloneClass>(),
+				new HashSet<DBSourceFile>(),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
-		final SourceFile similarityCalculatorJava = new SourceFile(1,
+		final DBSourceFile similarityCalculatorJava = new DBSourceFile(1,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/util/SimilarityCalculator.java");
 		version419Mock.getSourceFiles().add(similarityCalculatorJava);
 		final String similarityCalculatorJavaStr = provider.getFileContent(
 				version419Mock, similarityCalculatorJava);
 
-		final SourceFile levenshteinDistanceCalculatorJava = new SourceFile(
+		final DBSourceFile levenshteinDistanceCalculatorJava = new DBSourceFile(
 				2,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/LevenshteinDistanceCalculator.java");
 		version419Mock.getSourceFiles().add(levenshteinDistanceCalculatorJava);
@@ -192,40 +192,40 @@ public class CloneClassBuildTaskTest {
 				levenshteinDistanceCalculatorJava.getId(),
 				contentLevenshteinDistanceCalculatorJava);
 
-		rawCloneClassMock1 = new RawCloneClass(1, version419Mock,
-				new HashSet<RawClonedFragment>());
-		final RawClonedFragment frag1_1 = new RawClonedFragment(1,
+		rawCloneClassMock1 = new DBRawCloneClass(1, version419Mock,
+				new HashSet<DBRawClonedFragment>());
+		final DBRawClonedFragment frag1_1 = new DBRawClonedFragment(1,
 				version419Mock, similarityCalculatorJava, 12, 4,
 				rawCloneClassMock1);
-		final RawClonedFragment frag1_2 = new RawClonedFragment(2,
+		final DBRawClonedFragment frag1_2 = new DBRawClonedFragment(2,
 				version419Mock, similarityCalculatorJava, 19, 2,
 				rawCloneClassMock1);
 		rawCloneClassMock1.getElements().add(frag1_1);
 		rawCloneClassMock1.getElements().add(frag1_2);
 
-		rawCloneClassMock2 = new RawCloneClass(2, version419Mock,
-				new HashSet<RawClonedFragment>());
-		final RawClonedFragment frag2_1 = new RawClonedFragment(3,
+		rawCloneClassMock2 = new DBRawCloneClass(2, version419Mock,
+				new HashSet<DBRawClonedFragment>());
+		final DBRawClonedFragment frag2_1 = new DBRawClonedFragment(3,
 				version419Mock, similarityCalculatorJava, 10, 22,
 				rawCloneClassMock2);
-		final RawClonedFragment frag2_2 = new RawClonedFragment(4,
+		final DBRawClonedFragment frag2_2 = new DBRawClonedFragment(4,
 				version419Mock, levenshteinDistanceCalculatorJava, 24, 22,
 				rawCloneClassMock2);
 		rawCloneClassMock2.getElements().add(frag2_1);
 		rawCloneClassMock2.getElements().add(frag2_2);
 
-		rawCloneClassMock3 = new RawCloneClass(3, version419Mock,
-				new HashSet<RawClonedFragment>());
-		final RawClonedFragment frag3_1 = new RawClonedFragment(5,
+		rawCloneClassMock3 = new DBRawCloneClass(3, version419Mock,
+				new HashSet<DBRawClonedFragment>());
+		final DBRawClonedFragment frag3_1 = new DBRawClonedFragment(5,
 				version419Mock, similarityCalculatorJava, 12, 4,
 				rawCloneClassMock3);
-		final RawClonedFragment frag3_2 = new RawClonedFragment(6,
+		final DBRawClonedFragment frag3_2 = new DBRawClonedFragment(6,
 				version419Mock, similarityCalculatorJava, 19, 2,
 				rawCloneClassMock3);
-		final RawClonedFragment frag3_3 = new RawClonedFragment(7,
+		final DBRawClonedFragment frag3_3 = new DBRawClonedFragment(7,
 				version419Mock, levenshteinDistanceCalculatorJava, 26, 4,
 				rawCloneClassMock3);
-		final RawClonedFragment frag3_4 = new RawClonedFragment(8,
+		final DBRawClonedFragment frag3_4 = new DBRawClonedFragment(8,
 				version419Mock, levenshteinDistanceCalculatorJava, 33, 2,
 				rawCloneClassMock3);
 		rawCloneClassMock3.getElements().add(frag3_1);
@@ -335,11 +335,11 @@ public class CloneClassBuildTaskTest {
 			final CodeFragment frag1,
 			final CodeFragment frag2,
 			final Map<Long, SourceFileWithContent<? extends IProgramElement>> fileContents) {
-		final List<Segment> segments1 = new ArrayList<Segment>();
+		final List<DBSegment> segments1 = new ArrayList<DBSegment>();
 		segments1.addAll(frag1.getSegments());
 		Collections.sort(segments1, new SegmentComparator());
 
-		final List<Segment> segments2 = new ArrayList<Segment>();
+		final List<DBSegment> segments2 = new ArrayList<DBSegment>();
 		segments2.addAll(frag2.getSegments());
 		Collections.sort(segments2, new SegmentComparator());
 
@@ -348,14 +348,14 @@ public class CloneClassBuildTaskTest {
 
 		final SourceFileWithContent<? extends IProgramElement> content1 = fileContents
 				.get(segments1.get(0).getSourceFile().getId());
-		for (final Segment segment : segments1) {
+		for (final DBSegment segment : segments1) {
 			segContent1.addAll(content1.getContentsIn(
 					segment.getStartPosition(), segment.getEndPosition()));
 		}
 
 		final SourceFileWithContent<? extends IProgramElement> content2 = fileContents
 				.get(segments2.get(0).getSourceFile().getId());
-		for (final Segment segment : segments2) {
+		for (final DBSegment segment : segments2) {
 			segContent2.addAll(content2.getContentsIn(
 					segment.getStartPosition(), segment.getEndPosition()));
 		}
@@ -370,7 +370,7 @@ public class CloneClassBuildTaskTest {
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
 				rawCloneClassMock1, version419Mock);
-		final CloneClass result = task.call();
+		final DBCloneClass result = task.call();
 
 		for (final CodeFragment frag1 : result.getCodeFragments()) {
 			for (final CodeFragment frag2 : result.getCodeFragments()) {
@@ -386,7 +386,7 @@ public class CloneClassBuildTaskTest {
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
 				rawCloneClassMock2, version419Mock);
-		final CloneClass result = task.call();
+		final DBCloneClass result = task.call();
 
 		for (final CodeFragment frag1 : result.getCodeFragments()) {
 			for (final CodeFragment frag2 : result.getCodeFragments()) {
@@ -402,7 +402,7 @@ public class CloneClassBuildTaskTest {
 
 		final CloneClassBuildTask task = new CloneClassBuildTask(contents,
 				rawCloneClassMock3, version419Mock);
-		final CloneClass result = task.call();
+		final DBCloneClass result = task.call();
 
 		for (final CodeFragment frag1 : result.getCodeFragments()) {
 			for (final CodeFragment frag2 : result.getCodeFragments()) {
@@ -426,14 +426,14 @@ public class CloneClassBuildTaskTest {
 			final CloneClassBuildTask task3 = new CloneClassBuildTask(contents,
 					rawCloneClassMock1, version419Mock);
 
-			final List<Future<CloneClass>> futures = new ArrayList<>();
+			final List<Future<DBCloneClass>> futures = new ArrayList<>();
 			futures.add(pool.submit(task1));
 			futures.add(pool.submit(task2));
 			futures.add(pool.submit(task3));
 
-			final List<CloneClass> results = new ArrayList<>();
+			final List<DBCloneClass> results = new ArrayList<>();
 
-			for (Future<CloneClass> future : futures) {
+			for (Future<DBCloneClass> future : futures) {
 				try {
 					results.add(future.get());
 				} catch (Exception e) {
@@ -441,7 +441,7 @@ public class CloneClassBuildTaskTest {
 				}
 			}
 
-			for (final CloneClass result : results) {
+			for (final DBCloneClass result : results) {
 				for (final CodeFragment frag1 : result.getCodeFragments()) {
 					for (final CodeFragment frag2 : result.getCodeFragments()) {
 						assertTrue(compareFragments(frag1, frag2, contents));

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRevisionProvider;
 
 import org.apache.logging.log4j.LogManager;
@@ -106,12 +106,12 @@ public class SVNRevisionProvider implements IRevisionProvider {
 	}
 
 	@Override
-	public Revision getFirstRevision() {
+	public DBRevision getFirstRevision() {
 		return getNextRevision(this.startRevisionNum, this.endRevisionNum);
 	}
 
 	@Override
-	public Revision getNextRevision(Revision currentRevision) {
+	public DBRevision getNextRevision(DBRevision currentRevision) {
 		final long currentRevisionNum = Long.parseLong(currentRevision
 				.getIdentifier());
 
@@ -130,7 +130,7 @@ public class SVNRevisionProvider implements IRevisionProvider {
 	 * @return the next earliest revision in the specified range if found,
 	 *         <code>null</code> if not found
 	 */
-	private Revision getNextRevision(final long startRevisionNum,
+	private DBRevision getNextRevision(final long startRevisionNum,
 			final long endRevisionNum) {
 		for (long rev = startRevisionNum; rev <= endRevisionNum; rev++) {
 			try {
@@ -141,8 +141,8 @@ public class SVNRevisionProvider implements IRevisionProvider {
 					for (SVNLogEntryPath path : logEntry.getChangedPaths()
 							.values()) {
 						if (isTarget(rev, path, logEntry)) {
-							return new Revision(
-									IDGenerator.generate(Revision.class),
+							return new DBRevision(
+									IDGenerator.generate(DBRevision.class),
 									String.valueOf(rev), logEntry.getDate());
 						}
 					}

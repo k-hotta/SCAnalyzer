@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,8 +37,8 @@ public class CloneClassDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(CloneClass.class);
-		for (final CloneClass cloneClass : parser.getCloneClasses().values()) {
+		connection.initializeTable(DBCloneClass.class);
+		for (final DBCloneClass cloneClass : parser.getCloneClasses().values()) {
 			connection.storeCloneClassWithNativeWay(cloneClass);
 		}
 	}
@@ -53,8 +53,8 @@ public class CloneClassDaoTest {
 		DBManager.getInstance().clearDaos();
 	}
 	
-	private boolean check(final CloneClass result,
-			final CloneClass reference) {
+	private boolean check(final DBCloneClass result,
+			final DBCloneClass reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -83,8 +83,8 @@ public class CloneClassDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final CloneClass reference = parser.getCloneClasses().get(id);
-		final CloneClass result = dao.get(id);
+		final DBCloneClass reference = parser.getCloneClasses().get(id);
+		final DBCloneClass result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -92,8 +92,8 @@ public class CloneClassDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final CloneClass reference = parser.getCloneClasses().get(id);
-		final CloneClass result = dao.get(id);
+		final DBCloneClass reference = parser.getCloneClasses().get(id);
+		final DBCloneClass result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -102,11 +102,11 @@ public class CloneClassDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<CloneClass> results = dao.get(id1, id2);
+		final List<DBCloneClass> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final CloneClass result : results) {
-			final CloneClass reference = parser.getCloneClasses().get(
+		for (final DBCloneClass result : results) {
+			final DBCloneClass reference = parser.getCloneClasses().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -116,11 +116,11 @@ public class CloneClassDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<CloneClass> results = dao.get(id1, id2);
+		final List<DBCloneClass> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final CloneClass result : results) {
-			final CloneClass reference = parser.getCloneClasses().get(
+		for (final DBCloneClass result : results) {
+			final DBCloneClass reference = parser.getCloneClasses().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -133,11 +133,11 @@ public class CloneClassDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<CloneClass> results = dao.get(ids);
+		final List<DBCloneClass> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final CloneClass result : results) {
-			final CloneClass reference = parser.getCloneClasses().get(
+		for (final DBCloneClass result : results) {
+			final DBCloneClass reference = parser.getCloneClasses().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -150,11 +150,11 @@ public class CloneClassDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<CloneClass> results = dao.get(ids);
+		final List<DBCloneClass> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final CloneClass result : results) {
-			final CloneClass reference = parser.getCloneClasses().get(
+		for (final DBCloneClass result : results) {
+			final DBCloneClass reference = parser.getCloneClasses().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -162,12 +162,12 @@ public class CloneClassDaoTest {
 
 	@Test
 	public void testGetAll1() throws Exception {
-		final Map<Long, CloneClass> references = parser.getCloneClasses();
-		final Collection<CloneClass> results = dao.getAll();
+		final Map<Long, DBCloneClass> references = parser.getCloneClasses();
+		final Collection<DBCloneClass> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final CloneClass result : results) {
-			final CloneClass reference = references.get(result.getId());
+		for (final DBCloneClass result : results) {
+			final DBCloneClass reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -187,29 +187,29 @@ public class CloneClassDaoTest {
 
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(CloneClass.class); // clear tables
+		connection.initializeTable(DBCloneClass.class); // clear tables
 
-		final Map<Long, CloneClass> references = parser.getCloneClasses();
-		final CloneClass reference = references.get((long) 1);
+		final Map<Long, DBCloneClass> references = parser.getCloneClasses();
+		final DBCloneClass reference = references.get((long) 1);
 
 		dao.register(reference);
-		final CloneClass result = dao.get((long) 1);
+		final DBCloneClass result = dao.get((long) 1);
 
 		assertTrue(check(result, reference));
 	}
 
 	@Test
 	public void testRegister3() throws Exception {
-		connection.initializeTable(CloneClass.class); // clear tables
+		connection.initializeTable(DBCloneClass.class); // clear tables
 
-		final Map<Long, CloneClass> references = parser.getCloneClasses();
+		final Map<Long, DBCloneClass> references = parser.getCloneClasses();
 		dao.registerAll(references.values());
 
-		final List<CloneClass> results = dao.getAll();
+		final List<DBCloneClass> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final CloneClass result : results) {
-			final CloneClass reference = references.get(result.getId());
+		for (final DBCloneClass result : results) {
+			final DBCloneClass reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

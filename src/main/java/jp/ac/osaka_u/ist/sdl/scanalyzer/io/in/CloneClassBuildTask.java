@@ -12,42 +12,42 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import difflib.Chunk;
 import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 
-public class CloneClassBuildTask implements Callable<CloneClass> {
+public class CloneClassBuildTask implements Callable<DBCloneClass> {
 
 	private final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> fileContents;
 
-	private final RawCloneClass rawCloneClass;
+	private final DBRawCloneClass rawCloneClass;
 
-	private final Version version;
+	private final DBVersion version;
 
 	public CloneClassBuildTask(
 			final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> fileContents,
-			final RawCloneClass rawCloineClass, final Version version) {
+			final DBRawCloneClass rawCloineClass, final DBVersion version) {
 		this.fileContents = fileContents;
 		this.rawCloneClass = rawCloineClass;
 		this.version = version;
 	}
 
 	@Override
-	public CloneClass call() throws Exception {
+	public DBCloneClass call() throws Exception {
 		final Map<Integer, List<IProgramElement>> targetFragments = new TreeMap<Integer, List<IProgramElement>>();
-		final Map<Integer, SourceFile> targetFragmentsSourceFiles = new TreeMap<Integer, SourceFile>();
+		final Map<Integer, DBSourceFile> targetFragmentsSourceFiles = new TreeMap<Integer, DBSourceFile>();
 		final SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment = new TreeMap<Integer, SortedSet<Integer>>();
 
 		// detect target fragments from raw cloned fragments
@@ -61,12 +61,12 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 				lcsElementsInEachFragment);
 	}
 
-	private CloneClass constructCloneClass(
+	private DBCloneClass constructCloneClass(
 			final Map<Integer, List<IProgramElement>> targetFragments,
-			final Map<Integer, SourceFile> targetFragmentsSourceFiles,
+			final Map<Integer, DBSourceFile> targetFragmentsSourceFiles,
 			SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment) {
-		final CloneClass result = new CloneClass(
-				IDGenerator.generate(CloneClass.class), version,
+		final DBCloneClass result = new DBCloneClass(
+				IDGenerator.generate(DBCloneClass.class), version,
 				new ArrayList<CodeFragment>());
 		for (int i = 0; i < targetFragments.size(); i++) {
 			final CodeFragment fragment = constructFragment(
@@ -173,10 +173,10 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 
 	private void extractTargetFragments(
 			final Map<Integer, List<IProgramElement>> targetFragments,
-			final Map<Integer, SourceFile> targetFragmentsSourceFiles) {
+			final Map<Integer, DBSourceFile> targetFragmentsSourceFiles) {
 		int count = 0;
 
-		for (final RawClonedFragment rawClonedFragment : rawCloneClass
+		for (final DBRawClonedFragment rawClonedFragment : rawCloneClass
 				.getElements()) {
 			final SourceFileWithContent<? extends IProgramElement> content = fileContents
 					.get(rawClonedFragment.getSourceFile().getId());
@@ -209,10 +209,10 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 	}
 
 	private CodeFragment constructFragment(final List<IProgramElement> elements,
-			final SortedSet<Integer> indexInLcs, final SourceFile sourceFile) {
+			final SortedSet<Integer> indexInLcs, final DBSourceFile sourceFile) {
 		final CodeFragment result = new CodeFragment(
 				IDGenerator.generate(CodeFragment.class),
-				new ArrayList<Segment>(), null);
+				new ArrayList<DBSegment>(), null);
 
 		final List<Integer> indexesInSegment = new ArrayList<Integer>();
 		for (int i = 0; i < elements.size(); i++) {
@@ -225,8 +225,8 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 							.getPosition();
 					int endPosition = startPosition + indexesInSegment.size()
 							- 1;
-					final Segment segment = new Segment(
-							IDGenerator.generate(Segment.class), sourceFile,
+					final DBSegment segment = new DBSegment(
+							IDGenerator.generate(DBSegment.class), sourceFile,
 							startPosition, endPosition, result);
 					result.getSegments().add(segment);
 					indexesInSegment.clear();
@@ -238,8 +238,8 @@ public class CloneClassBuildTask implements Callable<CloneClass> {
 			int startPosition = elements.get(indexesInSegment.get(0))
 					.getPosition();
 			int endPosition = startPosition + indexesInSegment.size() - 1;
-			final Segment segment = new Segment(
-					IDGenerator.generate(Segment.class), sourceFile,
+			final DBSegment segment = new DBSegment(
+					IDGenerator.generate(DBSegment.class), sourceFile,
 					startPosition, endPosition, result);
 			result.getSegments().add(segment);
 			indexesInSegment.clear();

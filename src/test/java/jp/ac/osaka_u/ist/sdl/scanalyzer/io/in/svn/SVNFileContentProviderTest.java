@@ -11,9 +11,9 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.junit.BeforeClass;
@@ -47,7 +47,7 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			provider.getFileContent(null, new SourceFile());
+			provider.getFileContent(null, new DBSourceFile());
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -60,7 +60,7 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			provider.getFileContent(new Version(), null);
+			provider.getFileContent(new DBVersion(), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -73,7 +73,7 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			provider.getFileContent(new Version(), new SourceFile());
+			provider.getFileContent(new DBVersion(), new DBSourceFile());
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -86,9 +86,9 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			final Version version = new Version();
-			version.setRevision(new Revision(0, "-1", null));
-			provider.getFileContent(version, new SourceFile());
+			final DBVersion version = new DBVersion();
+			version.setRevision(new DBRevision(0, "-1", null));
+			provider.getFileContent(version, new DBSourceFile());
 		} catch (IllegalStateException e) {
 			caughtException = true;
 		}

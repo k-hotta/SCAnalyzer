@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersionSourceFile;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,12 +43,12 @@ public class VersionDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(Version.class);
-		connection.initializeTable(VersionSourceFile.class);
-		for (final Version version : parser.getVersions().values()) {
+		connection.initializeTable(DBVersion.class);
+		connection.initializeTable(DBVersionSourceFile.class);
+		for (final DBVersion version : parser.getVersions().values()) {
 			connection.storeVersionWithNativeWay(version);
 		}
-		for (final VersionSourceFile vsf : parser.getVersionSourceFiles()
+		for (final DBVersionSourceFile vsf : parser.getVersionSourceFiles()
 				.values()) {
 			connection.storeVersionSourceFileWithNativeWay(vsf);
 		}
@@ -59,7 +59,7 @@ public class VersionDaoTest {
 		DBManager.getInstance().clearDaos();
 	}
 
-	private boolean check(final Version result, final Version reference) {
+	private boolean check(final DBVersion result, final DBVersion reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -136,8 +136,8 @@ public class VersionDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final Version reference = parser.getVersions().get(id);
-		final Version result = dao.get(id);
+		final DBVersion reference = parser.getVersions().get(id);
+		final DBVersion result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -145,8 +145,8 @@ public class VersionDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = 3;
-		final Version reference = parser.getVersions().get(id);
-		final Version result = dao.get(id);
+		final DBVersion reference = parser.getVersions().get(id);
+		final DBVersion result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -154,8 +154,8 @@ public class VersionDaoTest {
 	@Test
 	public void testGet3() throws Exception {
 		final long id = -1;
-		final Version reference = parser.getVersions().get(id);
-		final Version result = dao.get(id);
+		final DBVersion reference = parser.getVersions().get(id);
+		final DBVersion result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -164,11 +164,11 @@ public class VersionDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<Version> results = dao.get(id1, id2);
+		final List<DBVersion> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final Version result : results) {
-			final Version reference = parser.getVersions().get(result.getId());
+		for (final DBVersion result : results) {
+			final DBVersion reference = parser.getVersions().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -177,11 +177,11 @@ public class VersionDaoTest {
 	public void testGet5() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<Version> results = dao.get(id1, id2);
+		final List<DBVersion> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final Version result : results) {
-			final Version reference = parser.getVersions().get(result.getId());
+		for (final DBVersion result : results) {
+			final DBVersion reference = parser.getVersions().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -193,11 +193,11 @@ public class VersionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<Version> results = dao.get(ids);
+		final List<DBVersion> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final Version result : results) {
-			final Version reference = parser.getVersions().get(result.getId());
+		for (final DBVersion result : results) {
+			final DBVersion reference = parser.getVersions().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -209,23 +209,23 @@ public class VersionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<Version> results = dao.get(ids);
+		final List<DBVersion> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final Version result : results) {
-			final Version reference = parser.getVersions().get(result.getId());
+		for (final DBVersion result : results) {
+			final DBVersion reference = parser.getVersions().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
 
 	@Test
 	public void testGetAll() throws Exception {
-		final Map<Long, Version> references = parser.getVersions();
-		final Collection<Version> results = dao.getAll();
+		final Map<Long, DBVersion> references = parser.getVersions();
+		final Collection<DBVersion> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final Version result : results) {
-			final Version reference = references.get(result.getId());
+		for (final DBVersion result : results) {
+			final DBVersion reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -245,31 +245,31 @@ public class VersionDaoTest {
 
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(Version.class); // clear table
-		connection.initializeTable(VersionSourceFile.class);
+		connection.initializeTable(DBVersion.class); // clear table
+		connection.initializeTable(DBVersionSourceFile.class);
 
-		final Map<Long, Version> references = parser.getVersions();
-		final Version v1 = references.get((long) 1);
+		final Map<Long, DBVersion> references = parser.getVersions();
+		final DBVersion v1 = references.get((long) 1);
 
 		dao.register(v1);
-		final Version result = dao.get((long) 1);
+		final DBVersion result = dao.get((long) 1);
 
 		assertTrue(check(result, v1));
 	}
 
 	@Test
 	public void testRegisterAll1() throws Exception {
-		connection.initializeTable(Version.class); // clear table
-		connection.initializeTable(VersionSourceFile.class);
+		connection.initializeTable(DBVersion.class); // clear table
+		connection.initializeTable(DBVersionSourceFile.class);
 
-		final Map<Long, Version> references = parser.getVersions();
+		final Map<Long, DBVersion> references = parser.getVersions();
 		dao.registerAll(references.values());
 
-		final List<Version> results = dao.getAll();
+		final List<DBVersion> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final Version result : results) {
-			final Version reference = references.get(result.getId());
+		for (final DBVersion result : results) {
+			final DBVersion reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

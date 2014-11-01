@@ -3,8 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersionSourceFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,14 +12,14 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link SourceFile}.
+ * The DAO for {@link DBSourceFile}.
  * 
  * @author k-hotta
  * 
- * @see SourceFile
- * @see VersionSourceFile
+ * @see DBSourceFile
+ * @see DBVersionSourceFile
  */
-public class SourceFileDao extends AbstractDataDao<SourceFile> {
+public class SourceFileDao extends AbstractDataDao<DBSourceFile> {
 
 	/**
 	 * The logger
@@ -28,8 +28,8 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 
 	@SuppressWarnings("unchecked")
 	public SourceFileDao() throws SQLException {
-		super((Dao<SourceFile, Long>) DBManager.getInstance().getNativeDao(
-				SourceFile.class));
+		super((Dao<DBSourceFile, Long>) DBManager.getInstance().getNativeDao(
+				DBSourceFile.class));
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 	}
 
 	@Override
-	public SourceFile refresh(SourceFile element) throws SQLException {
+	public DBSourceFile refresh(DBSourceFile element) throws SQLException {
 		// do nothing because Revision doesn't have any foreign field
 		return element;
 	}
@@ -52,8 +52,8 @@ public class SourceFileDao extends AbstractDataDao<SourceFile> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<SourceFile> getWithPath(final String path) throws SQLException {
-		return refreshAll(originalDao.queryForEq(SourceFile.PATH_COLUMN_NAME,
+	public List<DBSourceFile> getWithPath(final String path) throws SQLException {
+		return refreshAll(originalDao.queryForEq(DBSourceFile.PATH_COLUMN_NAME,
 				path));
 	}
 

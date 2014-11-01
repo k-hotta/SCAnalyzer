@@ -4,10 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
@@ -53,7 +53,7 @@ public class TokenSourceFileParserTest {
 		boolean caughtException = false;
 
 		try {
-			parser.parse(new SourceFile(), null);
+			parser.parse(new DBSourceFile(), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -66,7 +66,7 @@ public class TokenSourceFileParserTest {
 		boolean caughtException = false;
 
 		try {
-			SourceFile sourceFile = new SourceFile(1, "A.java");
+			DBSourceFile sourceFile = new DBSourceFile(1, "A.java");
 			parser.parse(sourceFile, null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
@@ -77,7 +77,7 @@ public class TokenSourceFileParserTest {
 
 	@Test
 	public void testParse4() throws Exception {
-		SourceFile sourceFile = new SourceFile(1, "A.java");
+		DBSourceFile sourceFile = new DBSourceFile(1, "A.java");
 		final Map<Integer, Token> result = parser.parse(sourceFile,
 				"int x = 0;");
 		assertTrue(result.size() == 5);
@@ -85,9 +85,9 @@ public class TokenSourceFileParserTest {
 
 	@Test
 	public void testParse5() throws Exception {
-		final Version version = new Version();
-		version.setRevision(new Revision(0, "419", null));
-		final SourceFile sourceFile = new SourceFile(1,
+		final DBVersion version = new DBVersion();
+		version.setRevision(new DBRevision(0, "419", null));
+		final DBSourceFile sourceFile = new DBSourceFile(1,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java");
 		final String content = provider.getFileContent(version, sourceFile);
 

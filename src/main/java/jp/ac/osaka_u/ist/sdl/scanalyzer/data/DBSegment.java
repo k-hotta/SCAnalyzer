@@ -13,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see SegmentWithContent
  */
 @DatabaseTable(tableName = "SEGMENTS")
-public class Segment implements IDBElement {
+public class DBSegment implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -50,7 +50,7 @@ public class Segment implements IDBElement {
 	 * The owner source file of this segment
 	 */
 	@DatabaseField(canBeNull = false, columnName = SOURCE_FILE_COLUMN_NAME, foreign = true)
-	private SourceFile sourceFile;
+	private DBSourceFile sourceFile;
 
 	/**
 	 * The start position within the file
@@ -73,7 +73,7 @@ public class Segment implements IDBElement {
 	/**
 	 * The default constructor
 	 */
-	public Segment() {
+	public DBSegment() {
 		// this is mandatory for ORMLite
 	}
 
@@ -91,7 +91,7 @@ public class Segment implements IDBElement {
 	 * @param codeFragment
 	 *            the owner code fragment of this segment
 	 */
-	public Segment(final long id, final SourceFile sourceFile,
+	public DBSegment(final long id, final DBSourceFile sourceFile,
 			final int startPosition, final int endPosition,
 			final CodeFragment codeFragment) {
 		this.id = id;
@@ -127,7 +127,7 @@ public class Segment implements IDBElement {
 	 * 
 	 * @return the owner source file of this segment
 	 */
-	public final SourceFile getSourceFile() {
+	public final DBSourceFile getSourceFile() {
 		return sourceFile;
 	}
 
@@ -137,7 +137,7 @@ public class Segment implements IDBElement {
 	 * @param sourceFile
 	 *            the owner source file of this segment to be set
 	 */
-	public final void setSourceFile(SourceFile sourceFile) {
+	public final void setSourceFile(DBSourceFile sourceFile) {
 		this.sourceFile = sourceFile;
 	}
 
@@ -202,16 +202,16 @@ public class Segment implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Segment} and the id values of the two objects are the same
+	 *         {@link DBSegment} and the id values of the two objects are the same
 	 *         to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof Segment)) {
+		if (!(obj instanceof DBSegment)) {
 			return false;
 		}
 
-		final Segment another = (Segment) obj;
+		final DBSegment another = (DBSegment) obj;
 
 		return this.id == another.getId();
 	}

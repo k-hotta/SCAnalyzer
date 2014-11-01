@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,8 +42,8 @@ public class SourceFileDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(SourceFile.class);
-		for (final SourceFile sourceFile : parser.getSourceFiles().values()) {
+		connection.initializeTable(DBSourceFile.class);
+		for (final DBSourceFile sourceFile : parser.getSourceFiles().values()) {
 			connection.storeSourceFileWithNativeWay(sourceFile);
 		}
 	}
@@ -53,7 +53,7 @@ public class SourceFileDaoTest {
 		DBManager.getInstance().clearDaos();
 	}
 
-	private boolean check(final SourceFile result, final SourceFile reference) {
+	private boolean check(final DBSourceFile result, final DBSourceFile reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -78,8 +78,8 @@ public class SourceFileDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final SourceFile reference = parser.getSourceFiles().get(id);
-		final SourceFile result = dao.get(id);
+		final DBSourceFile reference = parser.getSourceFiles().get(id);
+		final DBSourceFile result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -87,8 +87,8 @@ public class SourceFileDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final SourceFile reference = parser.getSourceFiles().get(id);
-		final SourceFile result = dao.get(id);
+		final DBSourceFile reference = parser.getSourceFiles().get(id);
+		final DBSourceFile result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -97,11 +97,11 @@ public class SourceFileDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<SourceFile> results = dao.get(id1, id2);
+		final List<DBSourceFile> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
+		for (final DBSourceFile result : results) {
+			final DBSourceFile reference = parser.getSourceFiles().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -111,11 +111,11 @@ public class SourceFileDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<SourceFile> results = dao.get(id1, id2);
+		final List<DBSourceFile> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
+		for (final DBSourceFile result : results) {
+			final DBSourceFile reference = parser.getSourceFiles().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -128,11 +128,11 @@ public class SourceFileDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<SourceFile> results = dao.get(ids);
+		final List<DBSourceFile> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
+		for (final DBSourceFile result : results) {
+			final DBSourceFile reference = parser.getSourceFiles().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -145,11 +145,11 @@ public class SourceFileDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<SourceFile> results = dao.get(ids);
+		final List<DBSourceFile> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final SourceFile result : results) {
-			final SourceFile reference = parser.getSourceFiles().get(
+		for (final DBSourceFile result : results) {
+			final DBSourceFile reference = parser.getSourceFiles().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -157,12 +157,12 @@ public class SourceFileDaoTest {
 	
 	@Test
 	public void testGetAll() throws Exception {
-		final Map<Long, SourceFile> references = parser.getSourceFiles();
-		final Collection<SourceFile> results = dao.getAll();
+		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
+		final Collection<DBSourceFile> results = dao.getAll();
 		
 		assertTrue(results.size() == references.size());
-		for (final SourceFile result : results) {
-			final SourceFile reference = references.get(result.getId());
+		for (final DBSourceFile result : results) {
+			final DBSourceFile reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -182,29 +182,29 @@ public class SourceFileDaoTest {
 	
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(SourceFile.class); // clear tables
+		connection.initializeTable(DBSourceFile.class); // clear tables
 
-		final Map<Long, SourceFile> sourceFiles = parser.getSourceFiles();
-		final SourceFile sf1 = sourceFiles.get((long) 1);
+		final Map<Long, DBSourceFile> sourceFiles = parser.getSourceFiles();
+		final DBSourceFile sf1 = sourceFiles.get((long) 1);
 
 		dao.register(sf1);
-		final SourceFile result = dao.get((long) 1);
+		final DBSourceFile result = dao.get((long) 1);
 
 		assertTrue(check(result, sf1));
 	}
 	
 	@Test
 	public void testRegisterAll1() throws Exception {
-		connection.initializeTable(SourceFile.class); // clear tables
+		connection.initializeTable(DBSourceFile.class); // clear tables
 
-		final Map<Long, SourceFile> references = parser.getSourceFiles();
+		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
 		dao.registerAll(references.values());
 		
-		List<SourceFile> results = dao.getAll();
+		List<DBSourceFile> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final SourceFile result : results) {
-			final SourceFile reference = references.get(result.getId());
+		for (final DBSourceFile result : results) {
+			final DBSourceFile reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

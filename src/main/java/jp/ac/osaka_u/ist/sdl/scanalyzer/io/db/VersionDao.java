@@ -5,15 +5,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersionSourceFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,14 +24,14 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
 
 /**
- * The DAO for {@link Version}.
+ * The DAO for {@link DBVersion}.
  * 
  * @author k-hotta
  * 
- * @see Version
- * @see VersionSourceFile
+ * @see DBVersion
+ * @see DBVersionSourceFile
  */
-public class VersionDao extends AbstractDataDao<Version> {
+public class VersionDao extends AbstractDataDao<DBVersion> {
 
 	/**
 	 * The logger
@@ -60,7 +60,7 @@ public class VersionDao extends AbstractDataDao<Version> {
 	 * The DAO for SourceFile. <br>
 	 * This is for refreshing and to get corresponding source files.
 	 */
-	private final Dao<SourceFile, Long> nativeSourceFileDao;
+	private final Dao<DBSourceFile, Long> nativeSourceFileDao;
 
 	/**
 	 * The DAO for CloneClass. <br>
@@ -72,7 +72,7 @@ public class VersionDao extends AbstractDataDao<Version> {
 	 * The DAO for VersionSourceFile. <br>
 	 * This is for retrieving corresponding source files to each version.
 	 */
-	private final Dao<VersionSourceFile, Long> nativeVersionSourceFileDao;
+	private final Dao<DBVersionSourceFile, Long> nativeVersionSourceFileDao;
 
 	/**
 	 * The data DAO for SourceFile
@@ -82,19 +82,19 @@ public class VersionDao extends AbstractDataDao<Version> {
 	/**
 	 * The query to get corresponding source files
 	 */
-	private PreparedQuery<SourceFile> sourceFilesForVersionQuery;
+	private PreparedQuery<DBSourceFile> sourceFilesForVersionQuery;
 
 	@SuppressWarnings("unchecked")
 	public VersionDao() throws SQLException {
-		super((Dao<Version, Long>) DBManager.getInstance().getNativeDao(
-				Version.class));
+		super((Dao<DBVersion, Long>) DBManager.getInstance().getNativeDao(
+				DBVersion.class));
 		this.revisionDao = null;
 		this.fileChangeDao = null;
 		this.rawCloneClassDao = null;
-		this.nativeSourceFileDao = this.manager.getNativeDao(SourceFile.class);
+		this.nativeSourceFileDao = this.manager.getNativeDao(DBSourceFile.class);
 		this.cloneClassDao = null;
 		this.nativeVersionSourceFileDao = this.manager
-				.getNativeDao(VersionSourceFile.class);
+				.getNativeDao(DBVersionSourceFile.class);
 		this.sourceFileDao = null;
 		this.sourceFilesForVersionQuery = null;
 	}
@@ -155,26 +155,26 @@ public class VersionDao extends AbstractDataDao<Version> {
 	}
 
 	@Override
-	public Version refresh(Version element) throws SQLException {
+	public DBVersion refresh(DBVersion element) throws SQLException {
 		element.setRevision(revisionDao.get(element.getId()));
 
-		final Collection<FileChange> fileChanges = new TreeSet<FileChange>(
+		final Collection<DBFileChange> fileChanges = new TreeSet<DBFileChange>(
 				new DBElementComparator());
-		for (final FileChange fileChange : element.getFileChanges()) {
+		for (final DBFileChange fileChange : element.getFileChanges()) {
 			fileChanges.add(fileChangeDao.get(fileChange.getId()));
 		}
 		element.setFileChanges(fileChanges);
 
-		final Collection<RawCloneClass> rawCloneClasses = new TreeSet<RawCloneClass>(
+		final Collection<DBRawCloneClass> rawCloneClasses = new TreeSet<DBRawCloneClass>(
 				new DBElementComparator());
-		for (final RawCloneClass rawCloneClass : element.getRawCloneClasses()) {
+		for (final DBRawCloneClass rawCloneClass : element.getRawCloneClasses()) {
 			rawCloneClasses.add(rawCloneClassDao.get(rawCloneClass.getId()));
 		}
 		element.setRawCloneClasses(rawCloneClasses);
 
-		final Collection<CloneClass> cloneClasses = new TreeSet<CloneClass>(
+		final Collection<DBCloneClass> cloneClasses = new TreeSet<DBCloneClass>(
 				new DBElementComparator());
-		for (final CloneClass cloneClass : element.getCloneClasses()) {
+		for (final DBCloneClass cloneClass : element.getCloneClasses()) {
 			cloneClasses.add(cloneClassDao.get(cloneClass.getId()));
 		}
 		element.setCloneClasses(cloneClasses);
@@ -193,9 +193,9 @@ public class VersionDao extends AbstractDataDao<Version> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<Version> getWithRevision(final Revision revision)
+	public List<DBVersion> getWithRevision(final DBRevision revision)
 			throws SQLException {
-		return refreshAll(originalDao.queryForEq(Version.REVISION_COLUMN_NAME,
+		return refreshAll(originalDao.queryForEq(DBVersion.REVISION_COLUMN_NAME,
 				revision));
 	}
 
@@ -208,7 +208,7 @@ public class VersionDao extends AbstractDataDao<Version> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<SourceFile> getCorrespondingSourceFiles(final Version version)
+	public List<DBSourceFile> getCorrespondingSourceFiles(final DBVersion version)
 			throws SQLException {
 		if (sourceFilesForVersionQuery == null) {
 			sourceFilesForVersionQuery = makeSourceFilesForVersionQuery();
@@ -218,31 +218,31 @@ public class VersionDao extends AbstractDataDao<Version> {
 		return sourceFileDao.query(sourceFilesForVersionQuery);
 	}
 
-	private PreparedQuery<SourceFile> makeSourceFilesForVersionQuery()
+	private PreparedQuery<DBSourceFile> makeSourceFilesForVersionQuery()
 			throws SQLException {
-		QueryBuilder<VersionSourceFile, Long> versionSourceFileQb = nativeVersionSourceFileDao
+		QueryBuilder<DBVersionSourceFile, Long> versionSourceFileQb = nativeVersionSourceFileDao
 				.queryBuilder();
 
 		versionSourceFileQb
-				.selectColumns(VersionSourceFile.SOURCE_FILE_COLUMN_NAME);
+				.selectColumns(DBVersionSourceFile.SOURCE_FILE_COLUMN_NAME);
 		SelectArg versionSelectArg = new SelectArg();
-		versionSourceFileQb.where().eq(VersionSourceFile.VERSION_COLUMN_NAME,
+		versionSourceFileQb.where().eq(DBVersionSourceFile.VERSION_COLUMN_NAME,
 				versionSelectArg);
 
-		QueryBuilder<SourceFile, Long> sourceFileQb = nativeSourceFileDao
+		QueryBuilder<DBSourceFile, Long> sourceFileQb = nativeSourceFileDao
 				.queryBuilder();
-		sourceFileQb.where().in(SourceFile.ID_COLUMN_NAME, versionSourceFileQb);
+		sourceFileQb.where().in(DBSourceFile.ID_COLUMN_NAME, versionSourceFileQb);
 
 		return sourceFileQb.prepare();
 	}
 
 	@Override
-	public void register(final Version element) throws SQLException {
+	public void register(final DBVersion element) throws SQLException {
 		super.register(element); // register Version itself
 
-		for (final SourceFile sourceFile : element.getSourceFiles()) {
-			final VersionSourceFile vsf = new VersionSourceFile(
-					IDGenerator.generate(VersionSourceFile.class), element,
+		for (final DBSourceFile sourceFile : element.getSourceFiles()) {
+			final DBVersionSourceFile vsf = new DBVersionSourceFile(
+					IDGenerator.generate(DBVersionSourceFile.class), element,
 					sourceFile);
 			nativeVersionSourceFileDao.create(vsf);
 		}

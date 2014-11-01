@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.FileChangeEntry;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileChangeEntryDetector;
 
@@ -53,7 +53,7 @@ public class SVNFileChangeEntryDetector implements IFileChangeEntryDetector {
 
 	@Override
 	public Collection<FileChangeEntry> detectFileChangeEntriesToRevision(
-			Revision revision) throws Exception {
+			DBRevision revision) throws Exception {
 		final Collection<SVNLogEntry> logEntriesToRevision = this.repositoryManager
 				.getLog(Long.parseLong(revision.getIdentifier()));
 

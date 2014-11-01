@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 
@@ -14,13 +14,13 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link CloneClass}.
+ * The DAO for {@link DBCloneClass}.
  * 
  * @author k-hotta
  * 
- * @see CloneClass
+ * @see DBCloneClass
  */
-public class CloneClassDao extends AbstractDataDao<CloneClass> {
+public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 
 	/**
 	 * The logger
@@ -39,8 +39,8 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 
 	@SuppressWarnings("unchecked")
 	public CloneClassDao() throws SQLException {
-		super((Dao<CloneClass, Long>) DBManager.getInstance().getNativeDao(
-				CloneClass.class));
+		super((Dao<DBCloneClass, Long>) DBManager.getInstance().getNativeDao(
+				DBCloneClass.class));
 		codeFragmentDao = null;
 		versionDao = null;
 	}
@@ -71,7 +71,7 @@ public class CloneClassDao extends AbstractDataDao<CloneClass> {
 	}
 
 	@Override
-	public CloneClass refresh(CloneClass element) throws SQLException {
+	public DBCloneClass refresh(DBCloneClass element) throws SQLException {
 		final Collection<CodeFragment> codeFragments = new TreeSet<CodeFragment>(
 				new DBElementComparator());
 		for (final CodeFragment codeFragment : element.getCodeFragments()) {

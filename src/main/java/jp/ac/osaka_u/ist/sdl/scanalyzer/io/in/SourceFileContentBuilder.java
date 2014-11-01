@@ -3,7 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 
 /**
@@ -42,7 +42,7 @@ public class SourceFileContentBuilder<E extends IProgramElement> {
 	 *            the string representation of the contents of the source file
 	 * @return the built instance
 	 */
-	public SourceFileWithContent<E> build(final SourceFile sourceFile,
+	public SourceFileWithContent<E> build(final DBSourceFile sourceFile,
 			final String contentsStr) {
 		final SortedMap<Integer, E> contents = parser.parse(sourceFile, contentsStr);
 

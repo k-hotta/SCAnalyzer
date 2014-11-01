@@ -12,7 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  */
 @DatabaseTable(tableName = "REVISIONS")
-public class Revision implements IDBElement, Comparable<Revision> {
+public class DBRevision implements IDBElement, Comparable<DBRevision> {
 
 	/**
 	 * The column name for id
@@ -52,7 +52,7 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	/**
 	 * The default constructor
 	 */
-	public Revision() {
+	public DBRevision() {
 
 	}
 
@@ -66,7 +66,7 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 * @param date
 	 *            the date when this revision was committed
 	 */
-	public Revision(final long id, final String identifier, final Date date) {
+	public DBRevision(final long id, final String identifier, final Date date) {
 		this.id = id;
 		this.identifier = identifier;
 		this.date = date;
@@ -129,15 +129,15 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link Revision} and the id values of the two objects
+	 *         {@link DBRevision} and the id values of the two objects
 	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof Revision)) {
+		if (!(obj instanceof DBRevision)) {
 			return false;
 		}
-		final Revision another = (Revision) obj;
+		final DBRevision another = (DBRevision) obj;
 
 		return this.id == another.getId();
 	}
@@ -156,7 +156,7 @@ public class Revision implements IDBElement, Comparable<Revision> {
 	/**
 	 * Compare this element to the given one based on their IDs.
 	 */
-	public int compareTo(final Revision another) {
+	public int compareTo(final DBRevision another) {
 		return ((Long) this.id).compareTo(another.getId());
 	}
 

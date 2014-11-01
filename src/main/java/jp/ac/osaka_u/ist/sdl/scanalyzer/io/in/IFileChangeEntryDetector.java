@@ -2,7 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
 
 /**
  * This interface describes how to detect the entries of
@@ -29,6 +29,6 @@ public interface IFileChangeEntryDetector {
 	 *             If any errors occurred
 	 */
 	public Collection<FileChangeEntry> detectFileChangeEntriesToRevision(
-			Revision revision) throws Exception;
+			DBRevision revision) throws Exception;
 
 }

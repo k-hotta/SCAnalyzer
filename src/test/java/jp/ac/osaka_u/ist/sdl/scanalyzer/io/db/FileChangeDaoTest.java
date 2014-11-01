@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,8 +43,8 @@ public class FileChangeDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(FileChange.class);
-		for (final FileChange fileChange : parser.getFileChanges().values()) {
+		connection.initializeTable(DBFileChange.class);
+		for (final DBFileChange fileChange : parser.getFileChanges().values()) {
 			connection.storeFileChangeWithNativeWay(fileChange);
 		}
 	}
@@ -59,7 +59,7 @@ public class FileChangeDaoTest {
 		connection.close();
 	}
 
-	private boolean check(final FileChange result, final FileChange reference) {
+	private boolean check(final DBFileChange result, final DBFileChange reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -116,8 +116,8 @@ public class FileChangeDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final FileChange reference = parser.getFileChanges().get(id);
-		final FileChange result = dao.get(id);
+		final DBFileChange reference = parser.getFileChanges().get(id);
+		final DBFileChange result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -125,8 +125,8 @@ public class FileChangeDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final FileChange reference = parser.getFileChanges().get(id);
-		final FileChange result = dao.get(id);
+		final DBFileChange reference = parser.getFileChanges().get(id);
+		final DBFileChange result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -135,11 +135,11 @@ public class FileChangeDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<FileChange> results = dao.get(id1, id2);
+		final List<DBFileChange> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final FileChange result : results) {
-			final FileChange reference = parser.getFileChanges().get(
+		for (final DBFileChange result : results) {
+			final DBFileChange reference = parser.getFileChanges().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -149,11 +149,11 @@ public class FileChangeDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<FileChange> results = dao.get(id1, id2);
+		final List<DBFileChange> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final FileChange result : results) {
-			final FileChange reference = parser.getFileChanges().get(
+		for (final DBFileChange result : results) {
+			final DBFileChange reference = parser.getFileChanges().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -166,11 +166,11 @@ public class FileChangeDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<FileChange> results = dao.get(ids);
+		final List<DBFileChange> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final FileChange result : results) {
-			final FileChange reference = parser.getFileChanges().get(
+		for (final DBFileChange result : results) {
+			final DBFileChange reference = parser.getFileChanges().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -183,11 +183,11 @@ public class FileChangeDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<FileChange> results = dao.get(ids);
+		final List<DBFileChange> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final FileChange result : results) {
-			final FileChange reference = parser.getFileChanges().get(
+		for (final DBFileChange result : results) {
+			final DBFileChange reference = parser.getFileChanges().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -195,12 +195,12 @@ public class FileChangeDaoTest {
 
 	@Test
 	public void testGetAll1() throws Exception {
-		final Map<Long, FileChange> references = parser.getFileChanges();
-		final Collection<FileChange> results = dao.getAll();
+		final Map<Long, DBFileChange> references = parser.getFileChanges();
+		final Collection<DBFileChange> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final FileChange result : results) {
-			final FileChange reference = references.get(result.getId());
+		for (final DBFileChange result : results) {
+			final DBFileChange reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -220,28 +220,28 @@ public class FileChangeDaoTest {
 
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(FileChange.class); // clear tables
+		connection.initializeTable(DBFileChange.class); // clear tables
 
-		final Map<Long, FileChange> fileChanges = parser.getFileChanges();
-		final FileChange fc1 = fileChanges.get((long) 1);
+		final Map<Long, DBFileChange> fileChanges = parser.getFileChanges();
+		final DBFileChange fc1 = fileChanges.get((long) 1);
 
 		dao.register(fc1);
-		final FileChange result = dao.get((long) 1);
+		final DBFileChange result = dao.get((long) 1);
 
 		assertTrue(check(result, fc1));
 	}
 
 	@Test
 	public void testRegisterAll1() throws Exception {
-		connection.initializeTable(FileChange.class); // clear tables
-		final Map<Long, FileChange> references = parser.getFileChanges();
+		connection.initializeTable(DBFileChange.class); // clear tables
+		final Map<Long, DBFileChange> references = parser.getFileChanges();
 		dao.registerAll(references.values());
 		
-		final List<FileChange> results = dao.getAll();
+		final List<DBFileChange> results = dao.getAll();
 		
 		assertTrue(results.size() == references.size());
-		for (final FileChange result : results) {
-			final FileChange reference = references.get(result.getId());
+		for (final DBFileChange result : results) {
+			final DBFileChange reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

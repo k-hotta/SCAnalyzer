@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This class has test cases for {@link Revision}.
+ * This class has test cases for {@link DBRevision}.
  * 
  * @author k-hotta
  * 
@@ -48,8 +48,8 @@ public class RevisionDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(Revision.class);
-		for (final Revision revision : parser.getRevisions().values()) {
+		connection.initializeTable(DBRevision.class);
+		for (final DBRevision revision : parser.getRevisions().values()) {
 			connection.storeRevisionWithNativeWay(revision);
 		}
 	}
@@ -59,7 +59,7 @@ public class RevisionDaoTest {
 		DBManager.getInstance().clearDaos();
 	}
 
-	private boolean check(final Revision result, final Revision reference) {
+	private boolean check(final DBRevision result, final DBRevision reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -94,8 +94,8 @@ public class RevisionDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final Revision reference = parser.getRevisions().get(id);
-		final Revision result = dao.get(id);
+		final DBRevision reference = parser.getRevisions().get(id);
+		final DBRevision result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -103,8 +103,8 @@ public class RevisionDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final Revision reference = parser.getRevisions().get(id);
-		final Revision result = dao.get(id);
+		final DBRevision reference = parser.getRevisions().get(id);
+		final DBRevision result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -113,11 +113,11 @@ public class RevisionDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<Revision> results = dao.get(id1, id2);
+		final List<DBRevision> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final Revision result : results) {
-			final Revision reference = parser.getRevisions()
+		for (final DBRevision result : results) {
+			final DBRevision reference = parser.getRevisions()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -127,11 +127,11 @@ public class RevisionDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<Revision> results = dao.get(id1, id2);
+		final List<DBRevision> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final Revision result : results) {
-			final Revision reference = parser.getRevisions()
+		for (final DBRevision result : results) {
+			final DBRevision reference = parser.getRevisions()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -144,11 +144,11 @@ public class RevisionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<Revision> results = dao.get(ids);
+		final List<DBRevision> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final Revision result : results) {
-			final Revision reference = parser.getRevisions()
+		for (final DBRevision result : results) {
+			final DBRevision reference = parser.getRevisions()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -161,11 +161,11 @@ public class RevisionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<Revision> results = dao.get(ids);
+		final List<DBRevision> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final Revision result : results) {
-			final Revision reference = parser.getRevisions()
+		for (final DBRevision result : results) {
+			final DBRevision reference = parser.getRevisions()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -173,12 +173,12 @@ public class RevisionDaoTest {
 
 	@Test
 	public void testGetAll1() throws Exception {
-		final Map<Long, Revision> references = parser.getRevisions();
-		final Collection<Revision> results = dao.getAll();
+		final Map<Long, DBRevision> references = parser.getRevisions();
+		final Collection<DBRevision> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final Revision result : results) {
-			final Revision reference = references.get(result.getId());
+		for (final DBRevision result : results) {
+			final DBRevision reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -198,29 +198,29 @@ public class RevisionDaoTest {
 	
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(Revision.class); // clear tables
+		connection.initializeTable(DBRevision.class); // clear tables
 
-		final Map<Long, Revision> references = parser.getRevisions();
-		final Revision reference = references.get((long) 1);
+		final Map<Long, DBRevision> references = parser.getRevisions();
+		final DBRevision reference = references.get((long) 1);
 
 		dao.register(reference);
-		final Revision result = dao.get((long) 1);
+		final DBRevision result = dao.get((long) 1);
 
 		assertTrue(check(result, reference));
 	}
 	
 	@Test
 	public void testRegister3() throws Exception {
-		connection.initializeTable(Revision.class); // clear tables
+		connection.initializeTable(DBRevision.class); // clear tables
 
-		final Map<Long, Revision> references = parser.getRevisions();
+		final Map<Long, DBRevision> references = parser.getRevisions();
 		dao.registerAll(references.values());
 
-		final List<Revision> results = dao.getAll();
+		final List<DBRevision> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final Revision result : results) {
-			final Revision reference = references.get(result.getId());
+		for (final DBRevision result : results) {
+			final DBRevision reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

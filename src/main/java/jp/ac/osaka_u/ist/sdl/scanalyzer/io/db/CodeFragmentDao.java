@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,8 +74,8 @@ public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
 
 	@Override
 	public CodeFragment refresh(CodeFragment element) throws SQLException {
-		final Collection<Segment> segments = new ArrayList<Segment>();
-		for (final Segment segment : element.getSegments()) {
+		final Collection<DBSegment> segments = new ArrayList<DBSegment>();
+		for (final DBSegment segment : element.getSegments()) {
 			segments.add(segmentDao.get(segment.getId()));
 		}
 		element.setSegments(segments);

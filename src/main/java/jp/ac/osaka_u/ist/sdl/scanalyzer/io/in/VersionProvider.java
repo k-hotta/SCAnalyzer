@@ -14,17 +14,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -246,7 +246,7 @@ public class VersionProvider {
 	 * @throws Exception
 	 *             If any error occurred
 	 */
-	public Version getNextVersion(final Version currentVersion)
+	public DBVersion getNextVersion(final DBVersion currentVersion)
 			throws Exception {
 		// ready?
 		if (!ready()) {
@@ -260,7 +260,7 @@ public class VersionProvider {
 		}
 
 		// detect the next revision
-		Revision nextRevision = detectNextRevision(currentVersion);
+		DBRevision nextRevision = detectNextRevision(currentVersion);
 
 		// check if nextRevision is null
 		if (nextRevision == null) {
@@ -270,12 +270,12 @@ public class VersionProvider {
 		}
 
 		// the instance of the next version which is under construction
-		final Version nextVersion = new Version(
-				IDGenerator.generate(Version.class), null,
-				new TreeSet<FileChange>(new DBElementComparator()),
-				new TreeSet<RawCloneClass>(new DBElementComparator()),
-				new TreeSet<CloneClass>(new DBElementComparator()),
-				new TreeSet<SourceFile>(new DBElementComparator()),
+		final DBVersion nextVersion = new DBVersion(
+				IDGenerator.generate(DBVersion.class), null,
+				new TreeSet<DBFileChange>(new DBElementComparator()),
+				new TreeSet<DBRawCloneClass>(new DBElementComparator()),
+				new TreeSet<DBCloneClass>(new DBElementComparator()),
+				new TreeSet<DBSourceFile>(new DBElementComparator()),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 
 		// set the next revision to the next version
@@ -342,13 +342,13 @@ public class VersionProvider {
 	 * 
 	 * @return pseudo initial version
 	 */
-	private final Version providePseudoInitialVersion() {
+	private final DBVersion providePseudoInitialVersion() {
 		logger.trace("the initial version will be provided");
-		return new Version(IDGenerator.generate(Version.class), new Revision(
-				IDGenerator.generate(Revision.class),
-				"pseudo-initial-revision", null), new HashSet<FileChange>(),
-				new HashSet<RawCloneClass>(), new HashSet<CloneClass>(),
-				new HashSet<SourceFile>(),
+		return new DBVersion(IDGenerator.generate(DBVersion.class), new DBRevision(
+				IDGenerator.generate(DBRevision.class),
+				"pseudo-initial-revision", null), new HashSet<DBFileChange>(),
+				new HashSet<DBRawCloneClass>(), new HashSet<DBCloneClass>(),
+				new HashSet<DBSourceFile>(),
 				new TreeMap<Long, SourceFileWithContent<?>>());
 	}
 
@@ -359,11 +359,11 @@ public class VersionProvider {
 	 *            current version
 	 * @return the next revision if detected, <code>null</code> otherwise
 	 */
-	private Revision detectNextRevision(final Version currentVersion) {
-		final Revision currentRevision = currentVersion.getRevision();
+	private DBRevision detectNextRevision(final DBVersion currentVersion) {
+		final DBRevision currentRevision = currentVersion.getRevision();
 
 		// the next revision
-		Revision nextRevision = null;
+		DBRevision nextRevision = null;
 		if (currentRevision.getDate() == null) {
 			// the current revision is pseudo initial revision
 			nextRevision = revisionProvider.getFirstRevision();
@@ -375,8 +375,8 @@ public class VersionProvider {
 	}
 
 	/**
-	 * Process all the file changes and create instances of {@link FileChange}
-	 * and {@link SourceFile}
+	 * Process all the file changes and create instances of {@link DBFileChange}
+	 * and {@link DBSourceFile}
 	 * 
 	 * @param currentVersion
 	 *            the current version
@@ -386,8 +386,8 @@ public class VersionProvider {
 	 *            file change entries between the current version and the next
 	 *            version
 	 */
-	private void processFileChanges(final Version currentVersion,
-			final Version nextVersion,
+	private void processFileChanges(final DBVersion currentVersion,
+			final DBVersion nextVersion,
 			Collection<FileChangeEntry> fileChangeEntries) {
 		/*
 		 * Source files under consideration, which will be initialized with the
@@ -396,7 +396,7 @@ public class VersionProvider {
 		 * source files in the NEXT version after all the file changes
 		 * processed.
 		 */
-		final Map<String, SourceFile> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
+		final Map<String, DBSourceFile> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
 				.getSourceFiles());
 
 		// the contents of each source file in current revision
@@ -414,7 +414,7 @@ public class VersionProvider {
 						+ " is not a valid type of file change");
 			}
 
-			SourceFile oldSourceFile = null;
+			DBSourceFile oldSourceFile = null;
 			if (oldPath != null) {
 				if (type == Type.ADD) {
 					// this is a copy
@@ -433,11 +433,11 @@ public class VersionProvider {
 				}
 			}
 
-			SourceFile newSourceFile = null;
+			DBSourceFile newSourceFile = null;
 			if (newPath != null) {
 				// create new instance of source file
-				newSourceFile = new SourceFile(
-						IDGenerator.generate(SourceFile.class), newPath);
+				newSourceFile = new DBSourceFile(
+						IDGenerator.generate(DBSourceFile.class), newPath);
 				logger.trace("create a new source file "
 						+ newSourceFile.toString());
 
@@ -456,14 +456,14 @@ public class VersionProvider {
 						"both of the two source files in a file change are null");
 			}
 
-			final FileChange fileChange = new FileChange(
-					IDGenerator.generate(FileChange.class), oldSourceFile,
+			final DBFileChange fileChange = new DBFileChange(
+					IDGenerator.generate(DBFileChange.class), oldSourceFile,
 					newSourceFile, type, nextVersion);
 			logger.trace("create a new file change " + fileChange.toString());
 			nextVersion.getFileChanges().add(fileChange);
 		}
 
-		for (final SourceFile sourceFile : sourceFilesUnderConsideration
+		for (final DBSourceFile sourceFile : sourceFilesUnderConsideration
 				.values()) {
 			logger.trace("add " + sourceFile.getPath() + " into version "
 					+ nextVersion.getId());
@@ -483,11 +483,11 @@ public class VersionProvider {
 	 *            a collection of source files
 	 * @return a map generated from the given collection
 	 */
-	private final Map<String, SourceFile> getSourceFilesAsMap(
-			final Collection<SourceFile> sourceFiles) {
-		final Map<String, SourceFile> result = new HashMap<String, SourceFile>();
+	private final Map<String, DBSourceFile> getSourceFilesAsMap(
+			final Collection<DBSourceFile> sourceFiles) {
+		final Map<String, DBSourceFile> result = new HashMap<String, DBSourceFile>();
 
-		for (final SourceFile sourceFile : sourceFiles) {
+		for (final DBSourceFile sourceFile : sourceFiles) {
 			result.put(sourceFile.getPath(), sourceFile);
 		}
 
@@ -503,8 +503,8 @@ public class VersionProvider {
 	 *            the target source file
 	 * @return the contents of the source file
 	 */
-	private final SourceFileWithContent<?> parseFile(final Version version,
-			final SourceFile sourceFile) {
+	private final SourceFileWithContent<?> parseFile(final DBVersion version,
+			final DBSourceFile sourceFile) {
 		final String contentsStr = contentProvider.getFileContent(version,
 				sourceFile);
 
@@ -525,18 +525,18 @@ public class VersionProvider {
 	 * @param nextVersion
 	 *            the next version where clones are to be detected
 	 */
-	private void detectClones(final Version nextVersion) {
-		final Collection<RawCloneClass> rawCloneClasses = cloneDetector
+	private void detectClones(final DBVersion nextVersion) {
+		final Collection<DBRawCloneClass> rawCloneClasses = cloneDetector
 				.detectClones(nextVersion);
 
 		final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
 		concurrentContents.putAll(nextVersion.getSourceFileContents());
 
 		ExecutorService pool = Executors.newCachedThreadPool();
-		final List<Future<CloneClass>> futures = new ArrayList<Future<CloneClass>>();
+		final List<Future<DBCloneClass>> futures = new ArrayList<Future<DBCloneClass>>();
 
 		try {
-			for (final RawCloneClass rawCloneClass : rawCloneClasses) {
+			for (final DBRawCloneClass rawCloneClass : rawCloneClasses) {
 				nextVersion.getRawCloneClasses().add(rawCloneClass);
 				rawCloneClass.setVersion(nextVersion);
 
@@ -545,8 +545,8 @@ public class VersionProvider {
 				futures.add(pool.submit(task));
 			}
 
-			final List<CloneClass> results = new ArrayList<CloneClass>();
-			for (final Future<CloneClass> future : futures) {
+			final List<DBCloneClass> results = new ArrayList<DBCloneClass>();
+			for (final Future<DBCloneClass> future : futures) {
 				try {
 					results.add(future.get());
 				} catch (Exception e) {
@@ -554,7 +554,7 @@ public class VersionProvider {
 				}
 			}
 
-			for (final CloneClass result : results) {
+			for (final DBCloneClass result : results) {
 				nextVersion.getCloneClasses().add(result);
 				result.setVersion(nextVersion);
 			}

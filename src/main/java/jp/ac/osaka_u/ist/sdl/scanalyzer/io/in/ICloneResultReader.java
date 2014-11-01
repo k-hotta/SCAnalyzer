@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 /**
@@ -31,7 +31,7 @@ public interface ICloneResultReader extends ICloneDetector {
 	 * @throws IllegalCloneResultFileFormatException
 	 *             If the format of the given file is invalid
 	 */
-	public Collection<RawCloneClass> read(final File file, final Version version)
+	public Collection<DBRawCloneClass> read(final File file, final DBVersion version)
 			throws IOException, IllegalCloneResultFileFormatException;
 
 }

@@ -7,7 +7,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
- * This class represents a code fragment, which is a set of {@link Segment}.
+ * This class represents a code fragment, which is a set of {@link DBSegment}.
  * 
  * @author k-hotta
  * 
@@ -40,13 +40,13 @@ public class CodeFragment implements IDBElement {
 	 * The segments in this fragment
 	 */
 	@ForeignCollectionField(eager = true, columnName = SEGMENTS_COLUMN_NAME)
-	private Collection<Segment> segments;
+	private Collection<DBSegment> segments;
 
 	/**
 	 * The owner clone class of this fragment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_COLUMN_NAME)
-	private CloneClass cloneClass;
+	private DBCloneClass cloneClass;
 
 	/**
 	 * The default constructor
@@ -65,8 +65,8 @@ public class CodeFragment implements IDBElement {
 	 * @param cloneClass
 	 *            the owner clone class of this fragment
 	 */
-	public CodeFragment(final long id, final Collection<Segment> segments,
-			final CloneClass cloneClass) {
+	public CodeFragment(final long id, final Collection<DBSegment> segments,
+			final DBCloneClass cloneClass) {
 		this.id = id;
 		this.segments = segments;
 		this.cloneClass = cloneClass;
@@ -98,7 +98,7 @@ public class CodeFragment implements IDBElement {
 	 * 
 	 * @return the segments in this fragment
 	 */
-	public Collection<Segment> getSegments() {
+	public Collection<DBSegment> getSegments() {
 		return segments;
 	}
 
@@ -108,7 +108,7 @@ public class CodeFragment implements IDBElement {
 	 * @param segments
 	 *            the segments to be set
 	 */
-	public void setSegments(final Collection<Segment> segments) {
+	public void setSegments(final Collection<DBSegment> segments) {
 		this.segments = segments;
 	}
 
@@ -117,7 +117,7 @@ public class CodeFragment implements IDBElement {
 	 * 
 	 * @return the owner clone class of this fragment
 	 */
-	public CloneClass getCloneClass() {
+	public DBCloneClass getCloneClass() {
 		return cloneClass;
 	}
 
@@ -127,7 +127,7 @@ public class CodeFragment implements IDBElement {
 	 * @param cloneClass
 	 *            the clone class to be set
 	 */
-	public void setCloneClass(final CloneClass cloneClass) {
+	public void setCloneClass(final DBCloneClass cloneClass) {
 		this.cloneClass = cloneClass;
 	}
 
@@ -166,7 +166,7 @@ public class CodeFragment implements IDBElement {
 
 		builder.append(id + " (");
 
-		for (final Segment segment : segments) {
+		for (final DBSegment segment : segments) {
 			builder.append(segment.toString() + ", ");
 		}
 		if (segments.size() > 0) {

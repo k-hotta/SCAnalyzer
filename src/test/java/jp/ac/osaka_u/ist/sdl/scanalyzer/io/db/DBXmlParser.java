@@ -8,18 +8,18 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.VersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersionSourceFile;
 
 import org.w3c.dom.Node;
 
@@ -41,25 +41,25 @@ public class DBXmlParser {
 
 	private String path;
 
-	private SortedMap<Long, Version> versions;
+	private SortedMap<Long, DBVersion> versions;
 
-	private SortedMap<Long, Revision> revisions;
+	private SortedMap<Long, DBRevision> revisions;
 
-	private SortedMap<Long, SourceFile> sourceFiles;
+	private SortedMap<Long, DBSourceFile> sourceFiles;
 
-	private SortedMap<Long, FileChange> fileChanges;
+	private SortedMap<Long, DBFileChange> fileChanges;
 
-	private SortedMap<Long, Segment> segments;
+	private SortedMap<Long, DBSegment> segments;
 
 	private SortedMap<Long, CodeFragment> codeFragments;
 
-	private SortedMap<Long, CloneClass> cloneClasses;
+	private SortedMap<Long, DBCloneClass> cloneClasses;
 
-	private SortedMap<Long, RawCloneClass> rawCloneClasses;
+	private SortedMap<Long, DBRawCloneClass> rawCloneClasses;
 
-	private SortedMap<Long, RawClonedFragment> rawClonedFragments;
+	private SortedMap<Long, DBRawClonedFragment> rawClonedFragments;
 
-	private SortedMap<Long, VersionSourceFile> versionSourceFiles;
+	private SortedMap<Long, DBVersionSourceFile> versionSourceFiles;
 
 	private SortedMap<Long, SourceFileWithContent<Token>> fileContents;
 
@@ -74,16 +74,16 @@ public class DBXmlParser {
 		this.dbms = null;
 		this.path = null;
 		this.xmlPath = xmlPath;
-		this.versions = new TreeMap<Long, Version>();
-		this.revisions = new TreeMap<Long, Revision>();
-		this.sourceFiles = new TreeMap<Long, SourceFile>();
-		this.fileChanges = new TreeMap<Long, FileChange>();
-		this.segments = new TreeMap<Long, Segment>();
+		this.versions = new TreeMap<Long, DBVersion>();
+		this.revisions = new TreeMap<Long, DBRevision>();
+		this.sourceFiles = new TreeMap<Long, DBSourceFile>();
+		this.fileChanges = new TreeMap<Long, DBFileChange>();
+		this.segments = new TreeMap<Long, DBSegment>();
 		this.codeFragments = new TreeMap<Long, CodeFragment>();
-		this.cloneClasses = new TreeMap<Long, CloneClass>();
-		this.rawCloneClasses = new TreeMap<Long, RawCloneClass>();
-		this.rawClonedFragments = new TreeMap<Long, RawClonedFragment>();
-		this.versionSourceFiles = new TreeMap<Long, VersionSourceFile>();
+		this.cloneClasses = new TreeMap<Long, DBCloneClass>();
+		this.rawCloneClasses = new TreeMap<Long, DBRawCloneClass>();
+		this.rawClonedFragments = new TreeMap<Long, DBRawClonedFragment>();
+		this.versionSourceFiles = new TreeMap<Long, DBVersionSourceFile>();
 		this.fileContents = new TreeMap<Long, SourceFileWithContent<Token>>();
 		this.fileContentsStr = new TreeMap<Long, String>();
 	}
@@ -96,23 +96,23 @@ public class DBXmlParser {
 		return path;
 	}
 
-	public final Map<Long, Version> getVersions() {
+	public final Map<Long, DBVersion> getVersions() {
 		return versions;
 	}
 
-	public final Map<Long, Revision> getRevisions() {
+	public final Map<Long, DBRevision> getRevisions() {
 		return revisions;
 	}
 
-	public final Map<Long, SourceFile> getSourceFiles() {
+	public final Map<Long, DBSourceFile> getSourceFiles() {
 		return sourceFiles;
 	}
 
-	public final Map<Long, FileChange> getFileChanges() {
+	public final Map<Long, DBFileChange> getFileChanges() {
 		return fileChanges;
 	}
 
-	public final Map<Long, Segment> getSegments() {
+	public final Map<Long, DBSegment> getSegments() {
 		return segments;
 	}
 
@@ -120,19 +120,19 @@ public class DBXmlParser {
 		return codeFragments;
 	}
 
-	public final Map<Long, CloneClass> getCloneClasses() {
+	public final Map<Long, DBCloneClass> getCloneClasses() {
 		return cloneClasses;
 	}
 
-	public final Map<Long, RawCloneClass> getRawCloneClasses() {
+	public final Map<Long, DBRawCloneClass> getRawCloneClasses() {
 		return rawCloneClasses;
 	}
 
-	public final Map<Long, RawClonedFragment> getRawClonedFragments() {
+	public final Map<Long, DBRawClonedFragment> getRawClonedFragments() {
 		return rawClonedFragments;
 	}
 
-	public final Map<Long, VersionSourceFile> getVersionSourceFiles() {
+	public final Map<Long, DBVersionSourceFile> getVersionSourceFiles() {
 		return versionSourceFiles;
 	}
 

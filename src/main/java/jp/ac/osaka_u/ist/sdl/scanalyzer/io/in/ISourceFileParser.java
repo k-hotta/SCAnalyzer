@@ -3,7 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 
 /**
  * This interface describes how to parse each source file. <br>
@@ -25,7 +25,7 @@ public interface ISourceFileParser<E extends IProgramElement> {
 	 *            the contents of the source file to be parsed
 	 * @return a map which contains all the elements in the given string
 	 */
-	public SortedMap<Integer, E> parse(final SourceFile sourceFile,
+	public SortedMap<Integer, E> parse(final DBSourceFile sourceFile,
 			final String contentsStr);
 
 }

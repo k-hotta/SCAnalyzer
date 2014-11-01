@@ -17,11 +17,11 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  * @author k-hotta
  * 
- * @see RawClonedFragment
+ * @see DBRawClonedFragment
  * 
  */
 @DatabaseTable(tableName = "RAW_CLONE_CLASSES")
-public class RawCloneClass implements IDBElement {
+public class DBRawCloneClass implements IDBElement {
 	
 	/**
 	 * The column name for id
@@ -48,18 +48,18 @@ public class RawCloneClass implements IDBElement {
 	 * The owner version of this raw clone class
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
-	private Version version;
+	private DBVersion version;
 
 	/**
 	 * A collection having all the members of this clone class
 	 */
 	@ForeignCollectionField(eager = true, columnName = ELEMENTS_COLUMN_NAME)
-	private Collection<RawClonedFragment> elements;
+	private Collection<DBRawClonedFragment> elements;
 
 	/**
 	 * The default constructor
 	 */
-	public RawCloneClass() {
+	public DBRawCloneClass() {
 
 	}
 
@@ -73,8 +73,8 @@ public class RawCloneClass implements IDBElement {
 	 * @param elements
 	 *            the collection that has all the elements of this clone class
 	 */
-	public RawCloneClass(final long id, final Version version,
-			final Collection<RawClonedFragment> elements) {
+	public DBRawCloneClass(final long id, final DBVersion version,
+			final Collection<DBRawClonedFragment> elements) {
 		this.id = id;
 		this.version = version;
 		this.elements = elements;
@@ -106,7 +106,7 @@ public class RawCloneClass implements IDBElement {
 	 * 
 	 * @return the owner version of this raw clone class
 	 */
-	public Version getVersion() {
+	public DBVersion getVersion() {
 		return version;
 	}
 
@@ -116,7 +116,7 @@ public class RawCloneClass implements IDBElement {
 	 * @param version
 	 *            the owner version of this raw clone class
 	 */
-	public void setVersion(Version version) {
+	public void setVersion(DBVersion version) {
 		this.version = version;
 	}
 
@@ -125,7 +125,7 @@ public class RawCloneClass implements IDBElement {
 	 * 
 	 * @return a collection having all the elements of this clone class
 	 */
-	public Collection<RawClonedFragment> getElements() {
+	public Collection<DBRawClonedFragment> getElements() {
 		return elements;
 	}
 
@@ -135,7 +135,7 @@ public class RawCloneClass implements IDBElement {
 	 * @param elements
 	 *            the collection having all the elements in this clone class
 	 */
-	public void setElements(Collection<RawClonedFragment> elements) {
+	public void setElements(Collection<DBRawClonedFragment> elements) {
 		this.elements = elements;
 	}
 	
@@ -143,15 +143,15 @@ public class RawCloneClass implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link RawCloneClass} and the id values of the two objects
+	 *         {@link DBRawCloneClass} and the id values of the two objects
 	 *         are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof RawCloneClass)) {
+		if (!(obj instanceof DBRawCloneClass)) {
 			return false;
 		}
-		final RawCloneClass another = (RawCloneClass) obj;
+		final DBRawCloneClass another = (DBRawCloneClass) obj;
 
 		return this.id == another.getId();
 	}
@@ -172,7 +172,7 @@ public class RawCloneClass implements IDBElement {
 		final StringBuilder builder = new StringBuilder();
 		
 		builder.append("{");
-		for (final RawClonedFragment element : elements) {
+		for (final DBRawClonedFragment element : elements) {
 			builder.append(" " + element.toString() + ",");
 		}
 		builder.deleteCharAt(builder.length() - 1);

@@ -3,8 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,13 +12,13 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link Segment}.
+ * The DAO for {@link DBSegment}.
  * 
  * @author k-hotta
  * 
- * @see Segment
+ * @see DBSegment
  */
-public class SegmentDao extends AbstractDataDao<Segment> {
+public class SegmentDao extends AbstractDataDao<DBSegment> {
 
 	/**
 	 * The logger
@@ -33,8 +33,8 @@ public class SegmentDao extends AbstractDataDao<Segment> {
 
 	@SuppressWarnings("unchecked")
 	public SegmentDao() throws SQLException {
-		super((Dao<Segment, Long>) DBManager.getInstance().getNativeDao(
-				Segment.class));
+		super((Dao<DBSegment, Long>) DBManager.getInstance().getNativeDao(
+				DBSegment.class));
 		this.sourceFileDao = null;
 	}
 	
@@ -54,7 +54,7 @@ public class SegmentDao extends AbstractDataDao<Segment> {
 	}
 
 	@Override
-	public Segment refresh(Segment element) throws SQLException {
+	public DBSegment refresh(DBSegment element) throws SQLException {
 		element.setSourceFile(sourceFileDao
 				.get(element.getSourceFile().getId()));
 		return element;
@@ -69,10 +69,10 @@ public class SegmentDao extends AbstractDataDao<Segment> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<Segment> getWithSourceFile(final SourceFile sourceFile)
+	public List<DBSegment> getWithSourceFile(final DBSourceFile sourceFile)
 			throws SQLException {
 		return refreshAll(originalDao.queryForEq(
-				Segment.SOURCE_FILE_COLUMN_NAME, sourceFile));
+				DBSegment.SOURCE_FILE_COLUMN_NAME, sourceFile));
 	}
 
 }

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,15 +53,15 @@ public class RawClonedFragmentDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(RawClonedFragment.class);
-		for (final RawClonedFragment rawClonedFragment : parser
+		connection.initializeTable(DBRawClonedFragment.class);
+		for (final DBRawClonedFragment rawClonedFragment : parser
 				.getRawClonedFragments().values()) {
 			connection.storeRawClonedFragmentWithNativeWay(rawClonedFragment);
 		}
 	}
 
-	private boolean check(final RawClonedFragment result,
-			final RawClonedFragment reference) {
+	private boolean check(final DBRawClonedFragment result,
+			final DBRawClonedFragment reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -102,9 +102,9 @@ public class RawClonedFragmentDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final RawClonedFragment reference = parser.getRawClonedFragments().get(
+		final DBRawClonedFragment reference = parser.getRawClonedFragments().get(
 				id);
-		final RawClonedFragment result = dao.get(id);
+		final DBRawClonedFragment result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -112,9 +112,9 @@ public class RawClonedFragmentDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final RawClonedFragment reference = parser.getRawClonedFragments().get(
+		final DBRawClonedFragment reference = parser.getRawClonedFragments().get(
 				id);
-		final RawClonedFragment result = dao.get(id);
+		final DBRawClonedFragment result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -123,11 +123,11 @@ public class RawClonedFragmentDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<RawClonedFragment> results = dao.get(id1, id2);
+		final List<DBRawClonedFragment> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final RawClonedFragment result : results) {
-			final RawClonedFragment reference = parser.getRawClonedFragments()
+		for (final DBRawClonedFragment result : results) {
+			final DBRawClonedFragment reference = parser.getRawClonedFragments()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -137,11 +137,11 @@ public class RawClonedFragmentDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<RawClonedFragment> results = dao.get(id1, id2);
+		final List<DBRawClonedFragment> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final RawClonedFragment result : results) {
-			final RawClonedFragment reference = parser.getRawClonedFragments()
+		for (final DBRawClonedFragment result : results) {
+			final DBRawClonedFragment reference = parser.getRawClonedFragments()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -154,11 +154,11 @@ public class RawClonedFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<RawClonedFragment> results = dao.get(ids);
+		final List<DBRawClonedFragment> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final RawClonedFragment result : results) {
-			final RawClonedFragment reference = parser.getRawClonedFragments()
+		for (final DBRawClonedFragment result : results) {
+			final DBRawClonedFragment reference = parser.getRawClonedFragments()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -171,11 +171,11 @@ public class RawClonedFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<RawClonedFragment> results = dao.get(ids);
+		final List<DBRawClonedFragment> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final RawClonedFragment result : results) {
-			final RawClonedFragment reference = parser.getRawClonedFragments()
+		for (final DBRawClonedFragment result : results) {
+			final DBRawClonedFragment reference = parser.getRawClonedFragments()
 					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -183,13 +183,13 @@ public class RawClonedFragmentDaoTest {
 
 	@Test
 	public void testGetAll1() throws Exception {
-		final Map<Long, RawClonedFragment> references = parser
+		final Map<Long, DBRawClonedFragment> references = parser
 				.getRawClonedFragments();
-		final Collection<RawClonedFragment> results = dao.getAll();
+		final Collection<DBRawClonedFragment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final RawClonedFragment result : results) {
-			final RawClonedFragment reference = references.get(result.getId());
+		for (final DBRawClonedFragment result : results) {
+			final DBRawClonedFragment reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -209,31 +209,31 @@ public class RawClonedFragmentDaoTest {
 
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(RawClonedFragment.class); // clear tables
+		connection.initializeTable(DBRawClonedFragment.class); // clear tables
 
-		final Map<Long, RawClonedFragment> references = parser
+		final Map<Long, DBRawClonedFragment> references = parser
 				.getRawClonedFragments();
-		final RawClonedFragment reference = references.get((long) 1);
+		final DBRawClonedFragment reference = references.get((long) 1);
 
 		dao.register(reference);
-		final RawClonedFragment result = dao.get((long) 1);
+		final DBRawClonedFragment result = dao.get((long) 1);
 
 		assertTrue(check(result, reference));
 	}
 
 	@Test
 	public void testRegister3() throws Exception {
-		connection.initializeTable(RawClonedFragment.class); // clear tables
+		connection.initializeTable(DBRawClonedFragment.class); // clear tables
 
-		final Map<Long, RawClonedFragment> references = parser
+		final Map<Long, DBRawClonedFragment> references = parser
 				.getRawClonedFragments();
 		dao.registerAll(references.values());
 
-		final List<RawClonedFragment> results = dao.getAll();
+		final List<DBRawClonedFragment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final RawClonedFragment result : results) {
-			final RawClonedFragment reference = references.get(result.getId());
+		for (final DBRawClonedFragment result : results) {
+			final DBRawClonedFragment reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

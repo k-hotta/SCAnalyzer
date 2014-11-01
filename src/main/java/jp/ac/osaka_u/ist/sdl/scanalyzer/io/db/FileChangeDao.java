@@ -3,10 +3,10 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,13 +14,13 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link FileChange}.
+ * The DAO for {@link DBFileChange}.
  * 
  * @author k-hotta
  * 
- * @see FileChange
+ * @see DBFileChange
  */
-public class FileChangeDao extends AbstractDataDao<FileChange> {
+public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 
 	/**
 	 * The logger
@@ -42,8 +42,8 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 
 	@SuppressWarnings("unchecked")
 	public FileChangeDao() throws SQLException {
-		super((Dao<FileChange, Long>) DBManager.getInstance().getNativeDao(
-				FileChange.class));
+		super((Dao<DBFileChange, Long>) DBManager.getInstance().getNativeDao(
+				DBFileChange.class));
 		this.sourceFileDao = null;
 		this.versionDao = null;
 	}
@@ -74,7 +74,7 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	}
 
 	@Override
-	public FileChange refresh(FileChange element) throws SQLException {
+	public DBFileChange refresh(DBFileChange element) throws SQLException {
 		if (element.getOldSourceFile() != null) {
 			element.setOldSourceFile(sourceFileDao.get(element
 					.getOldSourceFile().getId()));
@@ -98,10 +98,10 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<FileChange> getWithOldSourceFile(final SourceFile oldSourceFile)
+	public List<DBFileChange> getWithOldSourceFile(final DBSourceFile oldSourceFile)
 			throws SQLException {
 		return refreshAll(originalDao.queryForEq(
-				FileChange.OLD_SOURCE_FILE_COLUMN_NAME, oldSourceFile));
+				DBFileChange.OLD_SOURCE_FILE_COLUMN_NAME, oldSourceFile));
 	}
 
 	/**
@@ -114,10 +114,10 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<FileChange> getWithNewSourceFile(final SourceFile newSourceFile)
+	public List<DBFileChange> getWithNewSourceFile(final DBSourceFile newSourceFile)
 			throws SQLException {
 		return refreshAll(originalDao.queryForEq(
-				FileChange.NEW_SOURCE_FILE_COLUMN_NAME, newSourceFile));
+				DBFileChange.NEW_SOURCE_FILE_COLUMN_NAME, newSourceFile));
 	}
 
 	/**
@@ -129,10 +129,10 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<FileChange> getWithVersion(final Version version)
+	public List<DBFileChange> getWithVersion(final DBVersion version)
 			throws SQLException {
 		return refreshAll(originalDao.queryForEq(
-				FileChange.VERSION_COLUMN_NAME, version));
+				DBFileChange.VERSION_COLUMN_NAME, version));
 	}
 
 	/**
@@ -144,8 +144,8 @@ public class FileChangeDao extends AbstractDataDao<FileChange> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<FileChange> getWithType(final Type type) throws SQLException {
-		return refreshAll(originalDao.queryForEq(FileChange.TYPE_COLUMN_NAME,
+	public List<DBFileChange> getWithType(final Type type) throws SQLException {
+		return refreshAll(originalDao.queryForEq(DBFileChange.TYPE_COLUMN_NAME,
 				type));
 	}
 

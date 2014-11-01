@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,13 +15,13 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link RawCloneClass}.
+ * The DAO for {@link DBRawCloneClass}.
  * 
  * @author k-hotta
  * 
- * @see RawCloneClass
+ * @see DBRawCloneClass
  */
-public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
+public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
 
 	/**
 	 * The logger
@@ -43,8 +43,8 @@ public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
 
 	@SuppressWarnings("unchecked")
 	public RawCloneClassDao() throws SQLException {
-		super((Dao<RawCloneClass, Long>) DBManager.getInstance().getNativeDao(
-				RawCloneClass.class));
+		super((Dao<DBRawCloneClass, Long>) DBManager.getInstance().getNativeDao(
+				DBRawCloneClass.class));
 		this.versionDao = null;
 		this.rawClonedFragmentDao = null;
 	}
@@ -75,10 +75,10 @@ public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
 	}
 
 	@Override
-	public RawCloneClass refresh(RawCloneClass element) throws SQLException {
+	public DBRawCloneClass refresh(DBRawCloneClass element) throws SQLException {
 		element.setVersion(versionDao.get(element.getVersion().getId()));
-		final Collection<RawClonedFragment> rawClonedFragments = new ArrayList<RawClonedFragment>();
-		for (final RawClonedFragment rawClonedFragment : element.getElements()) {
+		final Collection<DBRawClonedFragment> rawClonedFragments = new ArrayList<DBRawClonedFragment>();
+		for (final DBRawClonedFragment rawClonedFragment : element.getElements()) {
 			rawClonedFragments.add(rawClonedFragmentDao.get(rawClonedFragment
 					.getId()));
 		}
@@ -96,10 +96,10 @@ public class RawCloneClassDao extends AbstractDataDao<RawCloneClass> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<RawCloneClass> getWithVersion(final Version version)
+	public List<DBRawCloneClass> getWithVersion(final DBVersion version)
 			throws SQLException {
 		return refreshAll(originalDao.queryForEq(
-				RawCloneClass.VERSION_COLUMN_NAME, version));
+				DBRawCloneClass.VERSION_COLUMN_NAME, version));
 	}
 
 }

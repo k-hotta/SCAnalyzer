@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
  * @param <E>
  *            the type of elements (e.g. Token)
  * 
- * @see Segment
+ * @see DBSegment
  * @see IProgramElement
  */
 public class SegmentWithContent<E extends IProgramElement> {
@@ -27,7 +27,7 @@ public class SegmentWithContent<E extends IProgramElement> {
 	/**
 	 * The segment
 	 */
-	private Segment segment;
+	private DBSegment segment;
 
 	/**
 	 * The contents as a map. The key is the position of each content and the
@@ -44,7 +44,7 @@ public class SegmentWithContent<E extends IProgramElement> {
 	 * @param contentsOfFile
 	 *            the contents of source file
 	 */
-	public SegmentWithContent(final Segment segment,
+	public SegmentWithContent(final DBSegment segment,
 			final SourceFileWithContent<E> contentsOfFile) {
 		if (segment == null) {
 			eLogger.fatal("segment is null");
@@ -93,7 +93,7 @@ public class SegmentWithContent<E extends IProgramElement> {
 	 * 
 	 * @return the segment
 	 */
-	public final Segment getSegment() {
+	public final DBSegment getSegment() {
 		return segment;
 	}
 
@@ -125,7 +125,7 @@ public class SegmentWithContent<E extends IProgramElement> {
 	}
 
 	/**
-	 * Return a hash value, which equals to the hash code of {@link Segment}.
+	 * Return a hash value, which equals to the hash code of {@link DBSegment}.
 	 */
 	@Override
 	public int hashCode() {
