@@ -40,7 +40,7 @@ public class Segment<E extends IProgramElement> implements
 	/**
 	 * The owner code fragment of this segment
 	 */
-	private CodeFragment codeFragment;
+	private CodeFragment<E> codeFragment;
 
 	/**
 	 * The constructor with core
@@ -154,7 +154,7 @@ public class Segment<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if the code fragment has not been set
 	 */
-	public CodeFragment getCodeFragment() {
+	public CodeFragment<E> getCodeFragment() {
 		if (codeFragment == null) {
 			throw new IllegalStateException(
 					"the code fragment has not been set");
@@ -175,7 +175,7 @@ public class Segment<E extends IProgramElement> implements
 	 *             of this segment, or the given code fragment is
 	 *             <code>null</code>
 	 */
-	public void setCodeFragment(final CodeFragment codeFragment) {
+	public void setCodeFragment(final CodeFragment<E> codeFragment) {
 		if (codeFragment == null) {
 			throw new IllegalArgumentException(
 					"the given code fragment is null");
