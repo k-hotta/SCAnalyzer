@@ -1,18 +1,24 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import javax.sound.midi.Patch;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IAtomicElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
@@ -522,13 +528,39 @@ public class VersionProvider {
 	private void detectClones(final Version nextVersion) {
 		final Collection<RawCloneClass> rawCloneClasses = cloneDetector
 				.detectClones(nextVersion);
-		for (final RawCloneClass rawCloneClass : rawCloneClasses) {
-			nextVersion.getRawCloneClasses().add(rawCloneClass);
-			rawCloneClass.setVersion(nextVersion);
-			
-			
+
+		final ConcurrentMap<Long, SourceFileContent<? extends IAtomicElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileContent<? extends IAtomicElement>>();
+		concurrentContents.putAll(nextVersion.getSourceFileContents());
+
+		ExecutorService pool = Executors.newCachedThreadPool();
+		final List<Future<CloneClass>> futures = new ArrayList<Future<CloneClass>>();
+
+		try {
+			for (final RawCloneClass rawCloneClass : rawCloneClasses) {
+				nextVersion.getRawCloneClasses().add(rawCloneClass);
+				rawCloneClass.setVersion(nextVersion);
+
+				final CloneClassBuildTask task = new CloneClassBuildTask(
+						concurrentContents, rawCloneClass, nextVersion);
+				futures.add(pool.submit(task));
+			}
+
+			final List<CloneClass> results = new ArrayList<CloneClass>();
+			for (final Future<CloneClass> future : futures) {
+				try {
+					results.add(future.get());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			for (final CloneClass result : results) {
+				nextVersion.getCloneClasses().add(result);
+				result.setVersion(nextVersion);
+			}
+		} finally {
+			pool.shutdown();
 		}
-		
 	}
 
 }
