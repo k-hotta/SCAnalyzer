@@ -14,17 +14,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

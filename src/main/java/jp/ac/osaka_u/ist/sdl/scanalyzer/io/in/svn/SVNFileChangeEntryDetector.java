@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.FileChangeEntry;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileChangeEntryDetector;
 

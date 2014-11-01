@@ -3,7 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 
 /**
  * This interface describes how to parse each source file. <br>

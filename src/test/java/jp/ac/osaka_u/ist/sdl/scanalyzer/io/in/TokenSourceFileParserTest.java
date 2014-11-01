@@ -4,10 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;

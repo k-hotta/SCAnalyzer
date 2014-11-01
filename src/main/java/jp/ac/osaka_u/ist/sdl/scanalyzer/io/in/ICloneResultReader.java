@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 /**

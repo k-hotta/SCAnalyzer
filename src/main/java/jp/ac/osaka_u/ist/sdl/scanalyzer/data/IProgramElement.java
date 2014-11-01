@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+
 /**
  * This interface describes the atomic element of source code which is of
  * interest in the investigation. <br>

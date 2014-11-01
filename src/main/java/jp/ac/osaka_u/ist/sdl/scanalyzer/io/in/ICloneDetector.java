@@ -2,8 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 
 /**
  * This interface represents the protocol of how to find clones in a specified

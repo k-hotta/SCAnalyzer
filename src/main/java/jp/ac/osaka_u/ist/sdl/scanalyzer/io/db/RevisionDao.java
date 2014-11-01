@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

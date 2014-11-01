@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
 /**
  * This interface represents any elements that should be stored in DB. <br>

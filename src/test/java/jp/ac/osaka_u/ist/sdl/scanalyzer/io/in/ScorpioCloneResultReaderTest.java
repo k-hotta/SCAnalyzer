@@ -20,11 +20,11 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.TreeSet;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.junit.After;

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 
 import org.junit.After;
 import org.junit.AfterClass;

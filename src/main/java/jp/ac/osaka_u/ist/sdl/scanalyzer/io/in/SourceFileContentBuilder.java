@@ -3,8 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 import java.util.SortedMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 
 /**
  * This class is for parsing source file and making instances of

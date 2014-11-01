@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+
 /**
  * This class maps each source file and its contents.
  * 

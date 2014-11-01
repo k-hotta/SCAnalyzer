@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRevisionProvider;
 
 import org.apache.logging.log4j.LogManager;

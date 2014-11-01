@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.util.StringUtil;
 

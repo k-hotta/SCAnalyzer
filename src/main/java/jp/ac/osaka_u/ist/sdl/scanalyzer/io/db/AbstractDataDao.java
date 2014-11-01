@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDBElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

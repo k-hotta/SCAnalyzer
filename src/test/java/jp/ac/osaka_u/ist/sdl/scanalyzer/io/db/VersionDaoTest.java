@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersion;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBVersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersionSourceFile;
 
 import org.junit.After;
 import org.junit.AfterClass;

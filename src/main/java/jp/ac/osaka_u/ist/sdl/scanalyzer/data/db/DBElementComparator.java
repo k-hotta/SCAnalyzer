@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
 import java.util.Comparator;
 

@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+
 import org.conqat.lib.scanner.ETokenType;
 import org.conqat.lib.scanner.IToken;
 

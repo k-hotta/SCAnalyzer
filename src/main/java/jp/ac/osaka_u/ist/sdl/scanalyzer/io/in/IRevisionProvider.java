@@ -1,6 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 
 /**
  * This class represents how to provide the next revision of for each given

@@ -3,6 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 import java.util.Map;
 import java.util.TreeMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

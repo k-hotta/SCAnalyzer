@@ -2,7 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 
 /**
  * This interface describes how to detect the entries of

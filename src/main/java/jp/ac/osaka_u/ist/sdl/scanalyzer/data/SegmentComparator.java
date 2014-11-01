@@ -2,6 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
 import java.util.Comparator;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
+
 public class SegmentComparator implements Comparator<DBSegment> {
 
 	@Override
