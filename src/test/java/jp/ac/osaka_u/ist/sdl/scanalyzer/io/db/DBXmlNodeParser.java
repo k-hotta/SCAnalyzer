@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange.Type;
@@ -67,7 +67,7 @@ public class DBXmlNodeParser {
 
 	private SortedMap<Long, DBSegment> segments;
 
-	private SortedMap<Long, CodeFragment> codeFragments;
+	private SortedMap<Long, DBCodeFragment> codeFragments;
 
 	private SortedMap<Long, DBCloneClass> cloneClasses;
 
@@ -95,7 +95,7 @@ public class DBXmlNodeParser {
 			final SortedMap<Long, DBSourceFile> sourceFiles,
 			final SortedMap<Long, DBFileChange> fileChanges,
 			final SortedMap<Long, DBSegment> segments,
-			final SortedMap<Long, CodeFragment> codeFragments,
+			final SortedMap<Long, DBCodeFragment> codeFragments,
 			final SortedMap<Long, DBCloneClass> cloneClasses,
 			final SortedMap<Long, DBRawCloneClass> rawCloneClasses,
 			final SortedMap<Long, DBRawClonedFragment> rawClonedFragments,
@@ -144,7 +144,7 @@ public class DBXmlNodeParser {
 		return segments;
 	}
 
-	public final Map<Long, CodeFragment> getCodeFragments() {
+	public final Map<Long, DBCodeFragment> getCodeFragments() {
 		return codeFragments;
 	}
 
@@ -241,7 +241,7 @@ public class DBXmlNodeParser {
 		final DBXmlNodeParser another = new DBXmlNodeParser(this.versions,
 				new TreeMap<Long, DBRevision>(), new TreeMap<Long, DBSourceFile>(),
 				new TreeMap<Long, DBFileChange>(), new TreeMap<Long, DBSegment>(),
-				new TreeMap<Long, CodeFragment>(),
+				new TreeMap<Long, DBCodeFragment>(),
 				new TreeMap<Long, DBCloneClass>(),
 				new TreeMap<Long, DBRawCloneClass>(),
 				new TreeMap<Long, DBRawClonedFragment>(),
@@ -537,7 +537,7 @@ public class DBXmlNodeParser {
 		final DBXmlNodeParser another = new DBXmlNodeParser(this.versions,
 				this.revisions, this.sourceFiles, this.fileChanges,
 				new TreeMap<Long, DBSegment>(),
-				new TreeMap<Long, CodeFragment>(),
+				new TreeMap<Long, DBCodeFragment>(),
 				new TreeMap<Long, DBCloneClass>(),
 				new TreeMap<Long, DBRawCloneClass>(),
 				new TreeMap<Long, DBRawClonedFragment>(),
@@ -589,7 +589,7 @@ public class DBXmlNodeParser {
 		final DBCloneClass cloneClass = new DBCloneClass(id, null, this
 				.getCodeFragments().values());
 
-		for (final CodeFragment codeFragment : cloneClass.getCodeFragments()) {
+		for (final DBCodeFragment codeFragment : cloneClass.getCodeFragments()) {
 			codeFragment.setCloneClass(cloneClass);
 		}
 
@@ -650,7 +650,7 @@ public class DBXmlNodeParser {
 
 		final DBSegment segment = new DBSegment(id, sourceFile, startLine,
 				startLine + length - 1, null);
-		final CodeFragment codeFragment = new CodeFragment(id,
+		final DBCodeFragment codeFragment = new DBCodeFragment(id,
 				new TreeSet<DBSegment>(new DBElementComparator()), null);
 		segment.setCodeFragment(codeFragment);
 		codeFragment.getSegments().add(segment);

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBElementComparator;
 
 import org.apache.logging.log4j.LogManager;
@@ -72,9 +72,9 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 
 	@Override
 	public DBCloneClass refresh(DBCloneClass element) throws SQLException {
-		final Collection<CodeFragment> codeFragments = new TreeSet<CodeFragment>(
+		final Collection<DBCodeFragment> codeFragments = new TreeSet<DBCodeFragment>(
 				new DBElementComparator());
-		for (final CodeFragment codeFragment : element.getCodeFragments()) {
+		for (final DBCodeFragment codeFragment : element.getCodeFragments()) {
 			codeFragments.add(codeFragmentDao.get(codeFragment.getId()));
 		}
 		element.setCodeFragments(codeFragments);

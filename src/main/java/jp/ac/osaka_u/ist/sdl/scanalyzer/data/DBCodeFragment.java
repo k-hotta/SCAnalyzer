@@ -13,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  */
 @DatabaseTable(tableName = "CODE_FRAGMENTS")
-public class CodeFragment implements IDBElement {
+public class DBCodeFragment implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -51,7 +51,7 @@ public class CodeFragment implements IDBElement {
 	/**
 	 * The default constructor
 	 */
-	public CodeFragment() {
+	public DBCodeFragment() {
 
 	}
 
@@ -65,7 +65,7 @@ public class CodeFragment implements IDBElement {
 	 * @param cloneClass
 	 *            the owner clone class of this fragment
 	 */
-	public CodeFragment(final long id, final Collection<DBSegment> segments,
+	public DBCodeFragment(final long id, final Collection<DBSegment> segments,
 			final DBCloneClass cloneClass) {
 		this.id = id;
 		this.segments = segments;
@@ -135,16 +135,16 @@ public class CodeFragment implements IDBElement {
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link CodeFragment} and the id values of the two objects are the
+	 *         {@link DBCodeFragment} and the id values of the two objects are the
 	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof CodeFragment)) {
+		if (!(obj instanceof DBCodeFragment)) {
 			return false;
 		}
 
-		final CodeFragment another = (CodeFragment) obj;
+		final DBCodeFragment another = (DBCodeFragment) obj;
 
 		return this.id == another.getId();
 	}

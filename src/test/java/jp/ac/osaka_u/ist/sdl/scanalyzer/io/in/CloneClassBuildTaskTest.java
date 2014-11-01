@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
@@ -332,8 +332,8 @@ public class CloneClassBuildTaskTest {
 	}
 
 	private boolean compareFragments(
-			final CodeFragment frag1,
-			final CodeFragment frag2,
+			final DBCodeFragment frag1,
+			final DBCodeFragment frag2,
 			final Map<Long, SourceFileWithContent<? extends IProgramElement>> fileContents) {
 		final List<DBSegment> segments1 = new ArrayList<DBSegment>();
 		segments1.addAll(frag1.getSegments());
@@ -372,8 +372,8 @@ public class CloneClassBuildTaskTest {
 				rawCloneClassMock1, version419Mock);
 		final DBCloneClass result = task.call();
 
-		for (final CodeFragment frag1 : result.getCodeFragments()) {
-			for (final CodeFragment frag2 : result.getCodeFragments()) {
+		for (final DBCodeFragment frag1 : result.getCodeFragments()) {
+			for (final DBCodeFragment frag2 : result.getCodeFragments()) {
 				assertTrue(compareFragments(frag1, frag2, contents));
 			}
 		}
@@ -388,8 +388,8 @@ public class CloneClassBuildTaskTest {
 				rawCloneClassMock2, version419Mock);
 		final DBCloneClass result = task.call();
 
-		for (final CodeFragment frag1 : result.getCodeFragments()) {
-			for (final CodeFragment frag2 : result.getCodeFragments()) {
+		for (final DBCodeFragment frag1 : result.getCodeFragments()) {
+			for (final DBCodeFragment frag2 : result.getCodeFragments()) {
 				assertTrue(compareFragments(frag1, frag2, contents));
 			}
 		}
@@ -404,8 +404,8 @@ public class CloneClassBuildTaskTest {
 				rawCloneClassMock3, version419Mock);
 		final DBCloneClass result = task.call();
 
-		for (final CodeFragment frag1 : result.getCodeFragments()) {
-			for (final CodeFragment frag2 : result.getCodeFragments()) {
+		for (final DBCodeFragment frag1 : result.getCodeFragments()) {
+			for (final DBCodeFragment frag2 : result.getCodeFragments()) {
 				assertTrue(compareFragments(frag1, frag2, contents));
 			}
 		}
@@ -442,8 +442,8 @@ public class CloneClassBuildTaskTest {
 			}
 
 			for (final DBCloneClass result : results) {
-				for (final CodeFragment frag1 : result.getCodeFragments()) {
-					for (final CodeFragment frag2 : result.getCodeFragments()) {
+				for (final DBCodeFragment frag1 : result.getCodeFragments()) {
+					for (final DBCodeFragment frag2 : result.getCodeFragments()) {
 						assertTrue(compareFragments(frag1, frag2, contents));
 					}
 				}

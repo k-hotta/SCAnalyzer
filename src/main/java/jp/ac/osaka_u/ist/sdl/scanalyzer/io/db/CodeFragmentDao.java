@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBSegment;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,13 +13,13 @@ import org.apache.logging.log4j.Logger;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * The DAO for {@link CodeFragment}.
+ * The DAO for {@link DBCodeFragment}.
  * 
  * @author k-hotta
  * 
- * @see CodeFragment
+ * @see DBCodeFragment
  */
-public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
+public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 
 	/**
 	 * The logger
@@ -41,8 +41,8 @@ public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
 
 	@SuppressWarnings("unchecked")
 	public CodeFragmentDao() throws SQLException {
-		super((Dao<CodeFragment, Long>) DBManager.getInstance().getNativeDao(
-				CodeFragment.class));
+		super((Dao<DBCodeFragment, Long>) DBManager.getInstance().getNativeDao(
+				DBCodeFragment.class));
 		segmentDao = null;
 		cloneClassDao = null;
 	}
@@ -73,7 +73,7 @@ public class CodeFragmentDao extends AbstractDataDao<CodeFragment> {
 	}
 
 	@Override
-	public CodeFragment refresh(CodeFragment element) throws SQLException {
+	public DBCodeFragment refresh(DBCodeFragment element) throws SQLException {
 		final Collection<DBSegment> segments = new ArrayList<DBSegment>();
 		for (final DBSegment segment : element.getSegments()) {
 			segments.add(segmentDao.get(segment.getId()));

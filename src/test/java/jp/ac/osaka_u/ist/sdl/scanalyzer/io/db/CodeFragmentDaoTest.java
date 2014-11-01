@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,8 +42,8 @@ public class CodeFragmentDaoTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connection.initializeTable(CodeFragment.class);
-		for (final CodeFragment segment : parser.getCodeFragments().values()) {
+		connection.initializeTable(DBCodeFragment.class);
+		for (final DBCodeFragment segment : parser.getCodeFragments().values()) {
 			connection.storeCodeFragmentWithNativeWay(segment);
 		}
 	}
@@ -53,8 +53,8 @@ public class CodeFragmentDaoTest {
 		DBManager.getInstance().clearDaos();
 	}
 
-	private boolean check(final CodeFragment result,
-			final CodeFragment reference) {
+	private boolean check(final DBCodeFragment result,
+			final DBCodeFragment reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -79,8 +79,8 @@ public class CodeFragmentDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final CodeFragment reference = parser.getCodeFragments().get(id);
-		final CodeFragment result = dao.get(id);
+		final DBCodeFragment reference = parser.getCodeFragments().get(id);
+		final DBCodeFragment result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -88,8 +88,8 @@ public class CodeFragmentDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final CodeFragment reference = parser.getCodeFragments().get(id);
-		final CodeFragment result = dao.get(id);
+		final DBCodeFragment reference = parser.getCodeFragments().get(id);
+		final DBCodeFragment result = dao.get(id);
 
 		assertTrue(check(result, reference));
 	}
@@ -98,11 +98,11 @@ public class CodeFragmentDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<CodeFragment> results = dao.get(id1, id2);
+		final List<DBCodeFragment> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 2);
-		for (final CodeFragment result : results) {
-			final CodeFragment reference = parser.getCodeFragments().get(
+		for (final DBCodeFragment result : results) {
+			final DBCodeFragment reference = parser.getCodeFragments().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -112,11 +112,11 @@ public class CodeFragmentDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<CodeFragment> results = dao.get(id1, id2);
+		final List<DBCodeFragment> results = dao.get(id1, id2);
 
 		assertTrue(results.size() == 1);
-		for (final CodeFragment result : results) {
-			final CodeFragment reference = parser.getCodeFragments().get(
+		for (final DBCodeFragment result : results) {
+			final DBCodeFragment reference = parser.getCodeFragments().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -129,11 +129,11 @@ public class CodeFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<CodeFragment> results = dao.get(ids);
+		final List<DBCodeFragment> results = dao.get(ids);
 
 		assertTrue(results.size() == 2);
-		for (final CodeFragment result : results) {
-			final CodeFragment reference = parser.getCodeFragments().get(
+		for (final DBCodeFragment result : results) {
+			final DBCodeFragment reference = parser.getCodeFragments().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -146,11 +146,11 @@ public class CodeFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<CodeFragment> results = dao.get(ids);
+		final List<DBCodeFragment> results = dao.get(ids);
 
 		assertTrue(results.size() == 1);
-		for (final CodeFragment result : results) {
-			final CodeFragment reference = parser.getCodeFragments().get(
+		for (final DBCodeFragment result : results) {
+			final DBCodeFragment reference = parser.getCodeFragments().get(
 					result.getId());
 			assertTrue(check(result, reference));
 		}
@@ -158,12 +158,12 @@ public class CodeFragmentDaoTest {
 
 	@Test
 	public void testGetAll() throws Exception {
-		final Map<Long, CodeFragment> references = parser.getCodeFragments();
-		final Collection<CodeFragment> results = dao.getAll();
+		final Map<Long, DBCodeFragment> references = parser.getCodeFragments();
+		final Collection<DBCodeFragment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final CodeFragment result : results) {
-			final CodeFragment reference = references.get(result.getId());
+		for (final DBCodeFragment result : results) {
+			final DBCodeFragment reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -183,30 +183,30 @@ public class CodeFragmentDaoTest {
 
 	@Test
 	public void testRegister2() throws Exception {
-		connection.initializeTable(CodeFragment.class); // clear tables
+		connection.initializeTable(DBCodeFragment.class); // clear tables
 
-		final Map<Long, CodeFragment> references = parser.getCodeFragments();
-		final CodeFragment sg1 = references.get((long) 1);
+		final Map<Long, DBCodeFragment> references = parser.getCodeFragments();
+		final DBCodeFragment sg1 = references.get((long) 1);
 
 		dao.register(sg1);
-		final CodeFragment result = dao.get((long) 1);
+		final DBCodeFragment result = dao.get((long) 1);
 
 		assertTrue(check(result, sg1));
 	}
 
 	@Test
 	public void testRegister3() throws Exception {
-		connection.initializeTable(CodeFragment.class); // clear tables
+		connection.initializeTable(DBCodeFragment.class); // clear tables
 
-		final Map<Long, CodeFragment> references = parser.getCodeFragments();
+		final Map<Long, DBCodeFragment> references = parser.getCodeFragments();
 
 		dao.registerAll(references.values());
 
-		List<CodeFragment> results = dao.getAll();
+		List<DBCodeFragment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
-		for (final CodeFragment result : results) {
-			final CodeFragment reference = references.get(result.getId());
+		for (final DBCodeFragment result : results) {
+			final DBCodeFragment reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

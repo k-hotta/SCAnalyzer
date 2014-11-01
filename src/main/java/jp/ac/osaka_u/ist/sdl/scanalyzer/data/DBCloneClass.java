@@ -7,7 +7,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
- * This class represents a clone class, which is a set of {@link CodeFragment}.
+ * This class represents a clone class, which is a set of {@link DBCodeFragment}.
  * 
  * @author k-hotta
  * 
@@ -43,7 +43,7 @@ public class DBCloneClass implements IDBElement {
 	 * The code fragments
 	 */
 	@ForeignCollectionField(eager = true, columnName = CODE_FRAGMENTS_COLUMN_NAME)
-	private Collection<CodeFragment> codeFragments;
+	private Collection<DBCodeFragment> codeFragments;
 
 	/**
 	 * The default constructor
@@ -63,7 +63,7 @@ public class DBCloneClass implements IDBElement {
 	 *            the code fragments in this clone class
 	 */
 	public DBCloneClass(final long id, final DBVersion version,
-			final Collection<CodeFragment> codeFragments) {
+			final Collection<DBCodeFragment> codeFragments) {
 		this.id = id;
 		this.version = version;
 		this.codeFragments = codeFragments;
@@ -114,7 +114,7 @@ public class DBCloneClass implements IDBElement {
 	 * 
 	 * @return the code fragments in this clone class
 	 */
-	public Collection<CodeFragment> getCodeFragments() {
+	public Collection<DBCodeFragment> getCodeFragments() {
 		return codeFragments;
 	}
 
@@ -124,7 +124,7 @@ public class DBCloneClass implements IDBElement {
 	 * @param codeFragments
 	 *            the code fragments to be set
 	 */
-	public void setCodeFragments(final Collection<CodeFragment> codeFragments) {
+	public void setCodeFragments(final Collection<DBCodeFragment> codeFragments) {
 		this.codeFragments = codeFragments;
 	}
 
@@ -163,7 +163,7 @@ public class DBCloneClass implements IDBElement {
 
 		builder.append(id + " {");
 
-		for (final CodeFragment fragment : codeFragments) {
+		for (final DBCodeFragment fragment : codeFragments) {
 			builder.append(fragment.toString() + ", ");
 		}
 		if (codeFragments.size() > 0) {

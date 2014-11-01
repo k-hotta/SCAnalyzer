@@ -68,7 +68,7 @@ public class DBSegment implements IDBElement {
 	 * The owner code fragment of this segment
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = CODE_FRAGMENT_COLUMN_NAME)
-	private CodeFragment codeFragment;
+	private DBCodeFragment codeFragment;
 
 	/**
 	 * The default constructor
@@ -93,7 +93,7 @@ public class DBSegment implements IDBElement {
 	 */
 	public DBSegment(final long id, final DBSourceFile sourceFile,
 			final int startPosition, final int endPosition,
-			final CodeFragment codeFragment) {
+			final DBCodeFragment codeFragment) {
 		this.id = id;
 		this.sourceFile = sourceFile;
 		this.startPosition = startPosition;
@@ -184,7 +184,7 @@ public class DBSegment implements IDBElement {
 	 * 
 	 * @return the owner code fragment
 	 */
-	public final CodeFragment getCodeFragment() {
+	public final DBCodeFragment getCodeFragment() {
 		return codeFragment;
 	}
 
@@ -194,7 +194,7 @@ public class DBSegment implements IDBElement {
 	 * @param codeFragment
 	 *            the owner code fragment to be set
 	 */
-	public final void setCodeFragment(final CodeFragment codeFragment) {
+	public final void setCodeFragment(final DBCodeFragment codeFragment) {
 		this.codeFragment = codeFragment;
 	}
 

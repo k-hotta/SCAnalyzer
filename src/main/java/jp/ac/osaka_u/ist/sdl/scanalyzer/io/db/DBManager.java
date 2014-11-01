@@ -310,10 +310,10 @@ public class DBManager {
 
 	/**
 	 * Get the DAO for
-	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment}.
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment}.
 	 * 
 	 * @return the DAO for
-	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment}
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment}
 	 */
 	public final CodeFragmentDao getCodeFragmentDao() {
 		return codeFragmentDao;

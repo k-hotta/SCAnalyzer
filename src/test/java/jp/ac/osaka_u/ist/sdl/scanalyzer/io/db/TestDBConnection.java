@@ -3,7 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
@@ -42,7 +42,7 @@ public class TestDBConnection {
 
 	private Dao<DBSegment, Long> nativeSegmentDao;
 
-	private Dao<CodeFragment, Long> nativeCodeFragmentDao;
+	private Dao<DBCodeFragment, Long> nativeCodeFragmentDao;
 
 	private Dao<DBCloneClass, Long> nativeCloneClassDao;
 
@@ -73,7 +73,7 @@ public class TestDBConnection {
 		manager.initializeTable(DBSourceFile.class);
 		manager.initializeTable(DBFileChange.class);
 		manager.initializeTable(DBSegment.class);
-		manager.initializeTable(CodeFragment.class);
+		manager.initializeTable(DBCodeFragment.class);
 		manager.initializeTable(DBCloneClass.class);
 		manager.initializeTable(DBRawCloneClass.class);
 		manager.initializeTable(DBRawClonedFragment.class);
@@ -90,7 +90,7 @@ public class TestDBConnection {
 		nativeSourceFileDao = manager.getNativeDao(DBSourceFile.class);
 		nativeFileChangeDao = manager.getNativeDao(DBFileChange.class);
 		nativeSegmentDao = manager.getNativeDao(DBSegment.class);
-		nativeCodeFragmentDao = manager.getNativeDao(CodeFragment.class);
+		nativeCodeFragmentDao = manager.getNativeDao(DBCodeFragment.class);
 		nativeCloneClassDao = manager.getNativeDao(DBCloneClass.class);
 		nativeRawCloneClassDao = manager.getNativeDao(DBRawCloneClass.class);
 		nativeRawClonedFragmentDao = manager
@@ -130,7 +130,7 @@ public class TestDBConnection {
 			storeSegmentWithNativeWay(segment);
 		}
 		
-		for (final CodeFragment codeFragment : parser.getCodeFragments().values()) {
+		for (final DBCodeFragment codeFragment : parser.getCodeFragments().values()) {
 			storeCodeFragmentWithNativeWay(codeFragment);
 		}
 		
@@ -179,7 +179,7 @@ public class TestDBConnection {
 		nativeSegmentDao.create(segment);
 	}
 
-	public void storeCodeFragmentWithNativeWay(final CodeFragment codeFragment)
+	public void storeCodeFragmentWithNativeWay(final DBCodeFragment codeFragment)
 			throws Exception {
 		nativeCodeFragmentDao.create(codeFragment);
 	}

@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
@@ -67,9 +67,9 @@ public class CloneClassBuildTask implements Callable<DBCloneClass> {
 			SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment) {
 		final DBCloneClass result = new DBCloneClass(
 				IDGenerator.generate(DBCloneClass.class), version,
-				new ArrayList<CodeFragment>());
+				new ArrayList<DBCodeFragment>());
 		for (int i = 0; i < targetFragments.size(); i++) {
-			final CodeFragment fragment = constructFragment(
+			final DBCodeFragment fragment = constructFragment(
 					targetFragments.get(i), lcsElementsInEachFragment.get(i),
 					targetFragmentsSourceFiles.get(i));
 			result.getCodeFragments().add(fragment);
@@ -208,10 +208,10 @@ public class CloneClassBuildTask implements Callable<DBCloneClass> {
 		}
 	}
 
-	private CodeFragment constructFragment(final List<IProgramElement> elements,
+	private DBCodeFragment constructFragment(final List<IProgramElement> elements,
 			final SortedSet<Integer> indexInLcs, final DBSourceFile sourceFile) {
-		final CodeFragment result = new CodeFragment(
-				IDGenerator.generate(CodeFragment.class),
+		final DBCodeFragment result = new DBCodeFragment(
+				IDGenerator.generate(DBCodeFragment.class),
 				new ArrayList<DBSegment>(), null);
 
 		final List<Integer> indexesInSegment = new ArrayList<Integer>();

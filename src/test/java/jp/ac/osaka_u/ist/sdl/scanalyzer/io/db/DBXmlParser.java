@@ -9,7 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.DBRawClonedFragment;
@@ -51,7 +51,7 @@ public class DBXmlParser {
 
 	private SortedMap<Long, DBSegment> segments;
 
-	private SortedMap<Long, CodeFragment> codeFragments;
+	private SortedMap<Long, DBCodeFragment> codeFragments;
 
 	private SortedMap<Long, DBCloneClass> cloneClasses;
 
@@ -79,7 +79,7 @@ public class DBXmlParser {
 		this.sourceFiles = new TreeMap<Long, DBSourceFile>();
 		this.fileChanges = new TreeMap<Long, DBFileChange>();
 		this.segments = new TreeMap<Long, DBSegment>();
-		this.codeFragments = new TreeMap<Long, CodeFragment>();
+		this.codeFragments = new TreeMap<Long, DBCodeFragment>();
 		this.cloneClasses = new TreeMap<Long, DBCloneClass>();
 		this.rawCloneClasses = new TreeMap<Long, DBRawCloneClass>();
 		this.rawClonedFragments = new TreeMap<Long, DBRawClonedFragment>();
@@ -116,7 +116,7 @@ public class DBXmlParser {
 		return segments;
 	}
 
-	public final Map<Long, CodeFragment> getCodeFragments() {
+	public final Map<Long, DBCodeFragment> getCodeFragments() {
 		return codeFragments;
 	}
 
