@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -35,7 +37,7 @@ public class Segment<E extends IProgramElement> implements
 	/**
 	 * The owner source file of this segment
 	 */
-	private SourceFile sourceFile;
+	private SourceFile<E> sourceFile;
 
 	/**
 	 * The owner code fragment of this segment
@@ -97,13 +99,52 @@ public class Segment<E extends IProgramElement> implements
 	}
 
 	/**
-	 * Get the contents of this segment.
+	 * Get the contents of this segment as an unmodifiable map.
 	 * 
 	 * @return the map that represents the contents, each of whose keys is a
 	 *         position in owner file, each of whose value is an element
 	 */
 	public SortedMap<Integer, E> getContents() {
-		return contents;
+		return Collections.unmodifiableSortedMap(contents);
+	}
+
+	/**
+	 * Set the contents of this segment.
+	 * 
+	 * @param contents
+	 *            the contents to be set
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if one or more of the following four statements hold: (1) the
+	 *             given collection of contents is null, (2) the given
+	 *             collection has a content that is not in the owner source file
+	 *             of this segment, (3) the given collection has a content that
+	 *             doesn't locate in the range of this segment, (4) the given
+	 *             collection has some elements that locate at the same position
+	 */
+	public void setContents(final Collection<E> contents) {
+		if (contents == null) {
+			throw new IllegalArgumentException(
+					"the specified collection of contents is null");
+		}
+
+		this.contents.clear();
+		for (final E content : contents) {
+			if (!this.core.getSourceFile().equals(content.getOwnerSourceFile())) {
+				throw new IllegalArgumentException(
+						"the content is not in the source file");
+			}
+			final int position = content.getPosition();
+			if (position < this.core.getStartPosition()
+					|| this.core.getEndPosition() < position) {
+				throw new IllegalArgumentException(
+						"the given content is out of the range");
+			}
+			if (this.contents.containsKey(content.getPosition())) {
+				throw new IllegalArgumentException("duplicate position");
+			}
+			this.contents.put(content.getPosition(), content);
+		}
 	}
 
 	/**
@@ -114,7 +155,7 @@ public class Segment<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if the source file has not been set
 	 */
-	public SourceFile getSourceFile() {
+	public SourceFile<E> getSourceFile() {
 		if (sourceFile == null) {
 			throw new IllegalStateException("the source file has not been set");
 		}
@@ -133,7 +174,7 @@ public class Segment<E extends IProgramElement> implements
 	 *             if the given source file doesn't match to that in the core of
 	 *             this segment, or the given source file is <code>null</code>
 	 */
-	public void setSourceFile(final SourceFile sourceFile) {
+	public void setSourceFile(final SourceFile<E> sourceFile) {
 		if (sourceFile == null) {
 			throw new IllegalArgumentException("the given source file is null");
 		}
