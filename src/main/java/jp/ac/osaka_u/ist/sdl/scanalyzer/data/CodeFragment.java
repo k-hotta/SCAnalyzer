@@ -35,7 +35,7 @@ public class CodeFragment<E extends IProgramElement> implements
 	/**
 	 * The owner clone class of this fragment
 	 */
-	private CloneClass cloneClass;
+	private CloneClass<E> cloneClass;
 
 	/**
 	 * The constructor with core
@@ -126,7 +126,7 @@ public class CodeFragment<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if the clone class has not been set
 	 */
-	public CloneClass getCloneClass() {
+	public CloneClass<E> getCloneClass() {
 		if (cloneClass == null) {
 			throw new IllegalStateException("the clone class has not been set");
 		}
@@ -145,7 +145,7 @@ public class CodeFragment<E extends IProgramElement> implements
 	 *             if the given clone class doesn't match to that in the core of
 	 *             this fragment, or the given clone class is <code>null</code>
 	 */
-	public void setCloneClass(final CloneClass cloneClass) {
+	public void setCloneClass(final CloneClass<E> cloneClass) {
 		if (cloneClass == null) {
 			throw new IllegalArgumentException("the given clone class is null");
 		}
