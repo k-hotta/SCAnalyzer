@@ -5,8 +5,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * A class that represents source files. <br>
- * Note that this class has just surface-level information. The contents of the
- * file would be stored in {@link SourceFileWithContent}.
+ * Note that this class has just surface-level information.
  * 
  * @author k-hotta
  * 

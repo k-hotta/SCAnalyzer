@@ -20,6 +20,9 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.TreeSet;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
@@ -34,7 +37,7 @@ import org.junit.Test;
 
 public class ScorpioCloneResultReaderTest {
 
-	private static ScorpioCloneResultReader reader;
+	private static ScorpioCloneResultReader<Token> reader;
 
 	/*
 	 * file name is "clonetracker-scorpio-rev***.txt"
@@ -53,7 +56,7 @@ public class ScorpioCloneResultReaderTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		reader = new ScorpioCloneResultReader(FORMAT);
+		reader = new ScorpioCloneResultReader<Token>(FORMAT);
 		final Collection<String> fileList = makeFileList(
 				"src/test/resources/clonetracker-latest-src/",
 				"/c20r_main/src/");
@@ -150,7 +153,8 @@ public class ScorpioCloneResultReaderTest {
 
 	@Test
 	public void testDetectClones1() throws Exception {
-		Collection<DBRawCloneClass> result = reader.detectClones(dummyVersion);
+		Collection<RawCloneClass<Token>> result = reader
+				.detectClones(new Version<Token>(dummyVersion));
 
 		assertTrue(result.size() == 1059);
 	}

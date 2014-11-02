@@ -12,10 +12,13 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
@@ -23,12 +26,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersionSourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.SourceFileContentBuilder;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.TokenSourceFileParser;
 
 import org.w3c.dom.Node;
@@ -77,15 +75,12 @@ public class DBXmlNodeParser {
 
 	private SortedMap<Long, DBVersionSourceFile> versionSourceFiles;
 
-	private SortedMap<Long, SourceFileWithContent<Token>> fileContents;
-
 	private SortedMap<Long, String> fileContentsStr;
+
+	private SortedMap<Long, Map<Integer, Token>> fileContents;
 
 	private TokenSourceFileParser parser = new TokenSourceFileParser(
 			Language.JAVA);
-
-	private SourceFileContentBuilder<Token> builder = new SourceFileContentBuilder<>(
-			parser);
 
 	private static final DateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm");
@@ -100,8 +95,8 @@ public class DBXmlNodeParser {
 			final SortedMap<Long, DBRawCloneClass> rawCloneClasses,
 			final SortedMap<Long, DBRawClonedFragment> rawClonedFragments,
 			final SortedMap<Long, DBVersionSourceFile> versionSourceFiles,
-			final SortedMap<Long, SourceFileWithContent<Token>> fileContents,
-			final SortedMap<Long, String> fileContentsStr) {
+			final SortedMap<Long, String> fileContentsStr,
+			final SortedMap<Long, Map<Integer, Token>> fileContents) {
 		this.versions = versions;
 		this.revisions = revisions;
 		this.sourceFiles = sourceFiles;
@@ -112,8 +107,8 @@ public class DBXmlNodeParser {
 		this.rawCloneClasses = rawCloneClasses;
 		this.rawClonedFragments = rawClonedFragments;
 		this.versionSourceFiles = versionSourceFiles;
-		this.fileContents = fileContents;
 		this.fileContentsStr = fileContentsStr;
+		this.fileContents = fileContents;
 	}
 
 	public final DBMS getDbms() {
@@ -164,12 +159,12 @@ public class DBXmlNodeParser {
 		return versionSourceFiles;
 	}
 
-	public final Map<Long, SourceFileWithContent<Token>> getFileContents() {
-		return fileContents;
-	}
-
 	public final Map<Long, String> getFileContentsStr() {
 		return fileContentsStr;
+	}
+
+	public final Map<Long, Map<Integer, Token>> getFileContents() {
+		return fileContents;
 	}
 
 	public void processRootNode(final Node node) throws Exception {
@@ -239,15 +234,17 @@ public class DBXmlNodeParser {
 
 	public void processVersionNode(final Node node) throws Exception {
 		final DBXmlNodeParser another = new DBXmlNodeParser(this.versions,
-				new TreeMap<Long, DBRevision>(), new TreeMap<Long, DBSourceFile>(),
-				new TreeMap<Long, DBFileChange>(), new TreeMap<Long, DBSegment>(),
+				new TreeMap<Long, DBRevision>(),
+				new TreeMap<Long, DBSourceFile>(),
+				new TreeMap<Long, DBFileChange>(),
+				new TreeMap<Long, DBSegment>(),
 				new TreeMap<Long, DBCodeFragment>(),
 				new TreeMap<Long, DBCloneClass>(),
 				new TreeMap<Long, DBRawCloneClass>(),
 				new TreeMap<Long, DBRawClonedFragment>(),
 				new TreeMap<Long, DBVersionSourceFile>(),
-				new TreeMap<Long, SourceFileWithContent<Token>>(),
-				new TreeMap<Long, String>());
+				new TreeMap<Long, String>(),
+				new TreeMap<Long, Map<Integer, Token>>());
 		another.visitVersionNode(node);
 		// this.versions.putAll(another.getVersions());
 		this.revisions.putAll(another.getRevisions());
@@ -258,16 +255,12 @@ public class DBXmlNodeParser {
 			if (this.sourceFiles.containsKey(anotherSourceFile.getId())) {
 				final DBSourceFile currentSourceFile = this.sourceFiles
 						.get(anotherSourceFile.getId());
-				final SourceFileWithContent<Token> currentContent = this.fileContents
+				final Map<Integer, Token> currentContent = this.fileContents
 						.get(anotherSourceFile.getId());
 				final String currentContentStr = this.fileContentsStr
 						.get(anotherSourceFile.getId());
 				justProcessedVersion.getSourceFiles().remove(anotherSourceFile);
 				justProcessedVersion.getSourceFiles().add(currentSourceFile);
-				justProcessedVersion.getSourceFileContents().remove(
-						anotherSourceFile.getId());
-				justProcessedVersion.getSourceFileContents().put(
-						currentSourceFile.getId(), currentContent);
 				this.sourceFiles.remove(anotherSourceFile.getId());
 				this.sourceFiles.put(currentSourceFile.getId(),
 						currentSourceFile);
@@ -331,12 +324,12 @@ public class DBXmlNodeParser {
 		final Collection<DBSourceFile> currentSourceFiles = new ArrayList<DBSourceFile>();
 		currentSourceFiles.addAll(sourceFiles.values());
 
-		final Map<Long, SourceFileWithContent<? extends IProgramElement>> currentContents = new HashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
+		final Map<Long, Map<Integer, Token>> currentContents = new HashMap<Long, Map<Integer, Token>>();
 		currentContents.putAll(fileContents);
 
-		final DBVersion version = new DBVersion(id, revision, fileChanges.values(),
-				rawCloneClasses.values(), cloneClasses.values(),
-				currentSourceFiles, currentContents);
+		final DBVersion version = new DBVersion(id, revision,
+				fileChanges.values(), rawCloneClasses.values(),
+				cloneClasses.values(), currentSourceFiles);
 		this.versions.put(id, version);
 
 		for (final DBSourceFile sourceFile : this.sourceFiles.values()) {
@@ -436,7 +429,9 @@ public class DBXmlNodeParser {
 			final DBSourceFile sourceFile = new DBSourceFile(id, path);
 			sourceFiles.put(id, sourceFile);
 			fileContentsStr.put(id, contentStr);
-			fileContents.put(id, builder.build(sourceFile, contentStr));
+			fileContents
+					.put(id, parser.parse(new SourceFile<Token>(sourceFile),
+							contentStr));
 		}
 	}
 
@@ -541,8 +536,8 @@ public class DBXmlNodeParser {
 				new TreeMap<Long, DBCloneClass>(),
 				new TreeMap<Long, DBRawCloneClass>(),
 				new TreeMap<Long, DBRawClonedFragment>(),
-				this.versionSourceFiles, this.fileContents,
-				this.fileContentsStr);
+				this.versionSourceFiles, this.fileContentsStr,
+				this.fileContents);
 		another.visitRawCloneClassNode(node);
 		this.segments.putAll(another.getSegments());
 		this.codeFragments.putAll(another.getCodeFragments());
@@ -644,8 +639,8 @@ public class DBXmlNodeParser {
 
 		final DBSourceFile sourceFile = sourceFiles.get(ownerFileId);
 
-		final DBRawClonedFragment rawClonedFragment = new DBRawClonedFragment(id,
-				null, sourceFile, startLine, length, null);
+		final DBRawClonedFragment rawClonedFragment = new DBRawClonedFragment(
+				id, null, sourceFile, startLine, length, null);
 		this.rawClonedFragments.put(id, rawClonedFragment);
 
 		final DBSegment segment = new DBSegment(id, sourceFile, startLine,

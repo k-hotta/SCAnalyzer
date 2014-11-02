@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
@@ -61,7 +60,7 @@ public class DBXmlParser {
 
 	private SortedMap<Long, DBVersionSourceFile> versionSourceFiles;
 
-	private SortedMap<Long, SourceFileWithContent<Token>> fileContents;
+	private SortedMap<Long, Map<Integer, Token>> fileContents;
 
 	private SortedMap<Long, String> fileContentsStr;
 
@@ -84,7 +83,7 @@ public class DBXmlParser {
 		this.rawCloneClasses = new TreeMap<Long, DBRawCloneClass>();
 		this.rawClonedFragments = new TreeMap<Long, DBRawClonedFragment>();
 		this.versionSourceFiles = new TreeMap<Long, DBVersionSourceFile>();
-		this.fileContents = new TreeMap<Long, SourceFileWithContent<Token>>();
+		this.fileContents = new TreeMap<Long, Map<Integer, Token>>();
 		this.fileContentsStr = new TreeMap<Long, String>();
 	}
 
@@ -136,7 +135,7 @@ public class DBXmlParser {
 		return versionSourceFiles;
 	}
 
-	public final Map<Long, SourceFileWithContent<Token>> getFileContents() {
+	public final Map<Long, Map<Integer, Token>> getFileContents() {
 		return fileContents;
 	}
 
@@ -156,7 +155,7 @@ public class DBXmlParser {
 		final DBXmlNodeParser parser = new DBXmlNodeParser(versions, revisions,
 				sourceFiles, fileChanges, segments, codeFragments,
 				cloneClasses, rawCloneClasses, rawClonedFragments,
-				versionSourceFiles, fileContents, fileContentsStr);
+				versionSourceFiles, fileContentsStr, fileContents);
 		parser.processRootNode(root);
 
 		this.dbms = parser.getDbms();

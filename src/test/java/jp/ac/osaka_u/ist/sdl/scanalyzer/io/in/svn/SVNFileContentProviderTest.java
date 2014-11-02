@@ -11,6 +11,9 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
@@ -27,7 +30,7 @@ public class SVNFileContentProviderTest {
 
 	private static SVNRepositoryManager manager;
 
-	private static SVNFileContentProvider provider;
+	private static SVNFileContentProvider<Token> provider;
 
 	private static Method mPrivateGetFileContent;
 
@@ -35,7 +38,7 @@ public class SVNFileContentProviderTest {
 	public static void setUpBeforeClass() throws Exception {
 		manager = new SVNRepositoryManager(PATH_OF_TEST_REPO,
 				RELATIVE_PATH_FOR_TEST, Language.JAVA);
-		provider = new SVNFileContentProvider(manager);
+		provider = new SVNFileContentProvider<Token>(manager);
 
 		mPrivateGetFileContent = SVNFileContentProvider.class
 				.getDeclaredMethod("getFileContent", long.class, String.class);
@@ -47,7 +50,8 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			provider.getFileContent(null, new DBSourceFile());
+			provider.getFileContent(null, new SourceFile<Token>(
+					new DBSourceFile()));
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -60,7 +64,7 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			provider.getFileContent(new DBVersion(), null);
+			provider.getFileContent(new Version<Token>(new DBVersion()), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -73,8 +77,9 @@ public class SVNFileContentProviderTest {
 		boolean caughtException = false;
 
 		try {
-			provider.getFileContent(new DBVersion(), new DBSourceFile());
-		} catch (IllegalArgumentException e) {
+			provider.getFileContent(new Version<Token>(new DBVersion()),
+					new SourceFile<Token>(new DBSourceFile()));
+		} catch (IllegalStateException e) {
 			caughtException = true;
 		}
 
@@ -88,7 +93,8 @@ public class SVNFileContentProviderTest {
 		try {
 			final DBVersion version = new DBVersion();
 			version.setRevision(new DBRevision(0, "-1", null));
-			provider.getFileContent(version, new DBSourceFile());
+			provider.getFileContent(new Version<Token>(version),
+					new SourceFile<Token>(new DBSourceFile()));
 		} catch (IllegalStateException e) {
 			caughtException = true;
 		}

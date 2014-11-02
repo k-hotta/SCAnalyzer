@@ -4,7 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
@@ -23,7 +25,7 @@ public class TokenSourceFileParserTest {
 
 	private static SVNRepositoryManager manager;
 
-	private static SVNFileContentProvider provider;
+	private static SVNFileContentProvider<Token> provider;
 
 	private static final TokenSourceFileParser parser = new TokenSourceFileParser(
 			Language.JAVA);
@@ -32,7 +34,7 @@ public class TokenSourceFileParserTest {
 	public static void setUpBeforeClass() throws Exception {
 		manager = new SVNRepositoryManager(PATH_OF_TEST_REPO,
 				RELATIVE_PATH_FOR_TEST, Language.JAVA);
-		provider = new SVNFileContentProvider(manager);
+		provider = new SVNFileContentProvider<Token>(manager);
 	}
 
 	@Test
@@ -53,7 +55,7 @@ public class TokenSourceFileParserTest {
 		boolean caughtException = false;
 
 		try {
-			parser.parse(new DBSourceFile(), null);
+			parser.parse(new SourceFile<Token>(new DBSourceFile()), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -67,7 +69,7 @@ public class TokenSourceFileParserTest {
 
 		try {
 			DBSourceFile sourceFile = new DBSourceFile(1, "A.java");
-			parser.parse(sourceFile, null);
+			parser.parse(new SourceFile<Token>(sourceFile), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
 		}
@@ -78,8 +80,8 @@ public class TokenSourceFileParserTest {
 	@Test
 	public void testParse4() throws Exception {
 		DBSourceFile sourceFile = new DBSourceFile(1, "A.java");
-		final Map<Integer, Token> result = parser.parse(sourceFile,
-				"int x = 0;");
+		final Map<Integer, Token> result = parser.parse(new SourceFile<Token>(
+				sourceFile), "int x = 0;");
 		assertTrue(result.size() == 5);
 	}
 
@@ -89,9 +91,11 @@ public class TokenSourceFileParserTest {
 		version.setRevision(new DBRevision(0, "419", null));
 		final DBSourceFile sourceFile = new DBSourceFile(1,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java");
-		final String content = provider.getFileContent(version, sourceFile);
+		final String content = provider.getFileContent(new Version<Token>(
+				version), new SourceFile<Token>(sourceFile));
 
-		final Map<Integer, Token> result = parser.parse(sourceFile, content);
+		final Map<Integer, Token> result = parser.parse(new SourceFile<Token>(
+				sourceFile), content);
 
 		assertTrue(result.get(1).getValue().equals("package"));
 	}

@@ -238,7 +238,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 					final Segment<E> segment = new Segment<E>(dbSegment);
 					segment.setSourceFile(sourceFile);
 					segment.setContents(sourceFile.getContents()
-							.subMap(startPosition, endPosition).values());
+							.subMap(startPosition, endPosition + 1).values());
 					segment.setCodeFragment(codeFragment);
 
 					codeFragment.addSegment(segment);

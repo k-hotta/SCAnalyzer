@@ -130,7 +130,8 @@ public class Segment<E extends IProgramElement> implements
 
 		this.contents.clear();
 		for (final E content : contents) {
-			if (!this.core.getSourceFile().equals(content.getOwnerSourceFile())) {
+			if (!this.core.getSourceFile().equals(
+					content.getOwnerSourceFile().getCore())) {
 				throw new IllegalArgumentException(
 						"the content is not in the source file");
 			}

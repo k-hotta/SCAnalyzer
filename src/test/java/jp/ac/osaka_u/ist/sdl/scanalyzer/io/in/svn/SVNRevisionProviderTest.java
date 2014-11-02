@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
@@ -230,7 +231,7 @@ public class SVNRevisionProviderTest {
 
 	@Test
 	public void testGetFirstRevision1() throws Exception {
-		final DBRevision first = providerWithMock.getFirstRevision();
+		final Revision first = providerWithMock.getFirstRevision();
 
 		assertEquals(first.getIdentifier(), "2");
 	}
@@ -238,7 +239,8 @@ public class SVNRevisionProviderTest {
 	@Test
 	public void testGetNextRevision1() throws Exception {
 		final DBRevision current = new DBRevision(-1, "1", null);
-		final DBRevision next = providerWithMock.getNextRevision(current);
+		final Revision next = providerWithMock.getNextRevision(new Revision(
+				current));
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
@@ -249,41 +251,45 @@ public class SVNRevisionProviderTest {
 	@Test
 	public void testGetNextRevision2() throws Exception {
 		final DBRevision current = new DBRevision(-1, "2", null);
-		final DBRevision next = providerWithMock.getNextRevision(current);
+		final Revision next = providerWithMock.getNextRevision(new Revision(
+				current));
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
 		assertTrue(next.getIdentifier().equals("4")
 				&& cal.get(Calendar.HOUR_OF_DAY) == 17);
 	}
-	
+
 	@Test
 	public void testGetNextRevision3() throws Exception {
 		final DBRevision current = new DBRevision(-1, "3", null);
-		final DBRevision next = providerWithMock.getNextRevision(current);
+		final Revision next = providerWithMock.getNextRevision(new Revision(
+				current));
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
 		assertTrue(next.getIdentifier().equals("4")
 				&& cal.get(Calendar.HOUR_OF_DAY) == 17);
 	}
-	
+
 	@Test
 	public void testGetNextRevision4() throws Exception {
 		final DBRevision current = new DBRevision(-1, "4", null);
-		final DBRevision next = providerWithMock.getNextRevision(current);
+		final Revision next = providerWithMock.getNextRevision(new Revision(
+				current));
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(next.getDate());
 
 		assertTrue(next.getIdentifier().equals("5")
 				&& cal.get(Calendar.HOUR_OF_DAY) == 19);
 	}
-	
+
 	@Test
 	public void testGetNextRevision5() throws Exception {
 		final DBRevision current = new DBRevision(-1, "5", null);
-		final DBRevision next = providerWithMock.getNextRevision(current);
+		final Revision next = providerWithMock.getNextRevision(new Revision(
+				current));
 		assertNull(next);
 	}
-	
+
 }
