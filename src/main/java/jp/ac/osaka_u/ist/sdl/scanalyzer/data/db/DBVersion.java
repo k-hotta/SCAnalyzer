@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -88,12 +84,6 @@ public class DBVersion implements IDBElement {
 	private Collection<DBSourceFile> sourceFiles;
 
 	/**
-	 * The map between the id of source file and its content. <br>
-	 * NOTE: this field is not a column of database table.
-	 */
-	private Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents;
-
-	/**
 	 * The default constructor
 	 */
 	public DBVersion() {
@@ -122,21 +112,17 @@ public class DBVersion implements IDBElement {
 	 * @param sourceFileContents
 	 *            the map between source file id and its content
 	 */
-	public DBVersion(
-			final long id,
-			final DBRevision revision,
+	public DBVersion(final long id, final DBRevision revision,
 			final Collection<DBFileChange> fileChanges,
 			final Collection<DBRawCloneClass> rawCloneClasses,
 			final Collection<DBCloneClass> cloneClasses,
-			final Collection<DBSourceFile> sourceFiles,
-			final Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents) {
+			final Collection<DBSourceFile> sourceFiles) {
 		this.id = id;
 		this.revision = revision;
 		this.fileChanges = fileChanges;
 		this.rawCloneClasses = rawCloneClasses;
 		this.cloneClasses = cloneClasses;
 		this.sourceFiles = sourceFiles;
-		this.sourceFileContents = sourceFileContents;
 	}
 
 	/**
@@ -259,31 +245,11 @@ public class DBVersion implements IDBElement {
 	}
 
 	/**
-	 * Get the map between file id and its content
-	 * 
-	 * @return the map between file id and its content
-	 */
-	public Map<Long, SourceFileWithContent<? extends IProgramElement>> getSourceFileContents() {
-		return sourceFileContents;
-	}
-
-	/**
-	 * Set the map between file id and its content with the specified one.
-	 * 
-	 * @param sourceFileContents
-	 *            the map to be set
-	 */
-	public void setSourceFileContents(
-			final Map<Long, SourceFileWithContent<? extends IProgramElement>> sourceFileContents) {
-		this.sourceFileContents = sourceFileContents;
-	}
-
-	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link DBVersion} and the id values of the two objects are the same
-	 *         to each other, <code>false</code> otherwise.
+	 *         {@link DBVersion} and the id values of the two objects are the
+	 *         same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {

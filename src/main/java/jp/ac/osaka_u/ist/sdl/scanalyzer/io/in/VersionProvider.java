@@ -6,25 +6,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.SortedMap;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +37,10 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author k-hotta
  * 
+ * @param <E>
+ *            the type of program element
  */
-public class VersionProvider {
+public class VersionProvider<E extends IProgramElement> {
 
 	/**
 	 * the logger
@@ -68,17 +73,17 @@ public class VersionProvider {
 	/**
 	 * how to detect clones
 	 */
-	private ICloneDetector cloneDetector;
+	private ICloneDetector<E> cloneDetector;
 
 	/**
 	 * how to provide the contents of source files
 	 */
-	private IFileContentProvider contentProvider;
+	private IFileContentProvider<E> contentProvider;
 
 	/**
-	 * how to parser the contents of source files
+	 * The parser of source files
 	 */
-	private SourceFileContentBuilder<?> contentBuilder;
+	private ISourceFileParser<E> parser;
 
 	/**
 	 * Get the revision provider
@@ -163,7 +168,7 @@ public class VersionProvider {
 	 * 
 	 * @return the clone detector
 	 */
-	public ICloneDetector getCloneDetector() {
+	public ICloneDetector<E> getCloneDetector() {
 		return cloneDetector;
 	}
 
@@ -173,7 +178,7 @@ public class VersionProvider {
 	 * @param cloneDetector
 	 *            the clone detector to be set
 	 */
-	public void setCloneDetector(final ICloneDetector cloneDetector) {
+	public void setCloneDetector(final ICloneDetector<E> cloneDetector) {
 		if (cloneDetector == null) {
 			eLogger.fatal("null is specified for cloneDetector");
 			throw new IllegalArgumentException("cloneDetector must not be null");
@@ -188,7 +193,7 @@ public class VersionProvider {
 	 * 
 	 * @return the content provider
 	 */
-	public IFileContentProvider getContentProvider() {
+	public IFileContentProvider<E> getContentProvider() {
 		return contentProvider;
 	}
 
@@ -198,7 +203,7 @@ public class VersionProvider {
 	 * @param contentProvider
 	 *            the content provider to be set
 	 */
-	public void setContentProvider(final IFileContentProvider contentProvider) {
+	public void setContentProvider(final IFileContentProvider<E> contentProvider) {
 		if (contentProvider == null) {
 			eLogger.fatal("null is specified for contentProvider");
 			throw new IllegalArgumentException(
@@ -210,30 +215,29 @@ public class VersionProvider {
 	}
 
 	/**
-	 * Get the content builder.
+	 * Get the file parser.
 	 * 
-	 * @return the content builder
+	 * @return the file parser
 	 */
-	public SourceFileContentBuilder<?> getContentBuilder() {
-		return contentBuilder;
+	public ISourceFileParser<E> getFileParser() {
+		return parser;
 	}
 
 	/**
-	 * Set the content builder with the specified one.
+	 * Set the file parser with the specified one.
 	 * 
-	 * @param contentBuilder
-	 *            the content builder to be set
+	 * @param parser
+	 *            the parser to be set
 	 */
-	public void setContentBuilder(
-			final SourceFileContentBuilder<?> contentBuilder) {
-		if (contentBuilder == null) {
+	public void setContentBuilder(final ISourceFileParser<E> parser) {
+		if (parser == null) {
 			eLogger.fatal("null is specified for contentBuilder");
 			throw new IllegalArgumentException(
 					"contentBuilder must not be null");
 		}
-		this.contentBuilder = contentBuilder;
+		this.parser = parser;
 		logger.trace("the content builder has been set:"
-				+ contentBuilder.getClass().getName());
+				+ parser.getClass().getName());
 	}
 
 	/**
@@ -246,7 +250,7 @@ public class VersionProvider {
 	 * @throws Exception
 	 *             If any error occurred
 	 */
-	public DBVersion getNextVersion(final DBVersion currentVersion)
+	public Version<E> getNextVersion(final Version<E> currentVersion)
 			throws Exception {
 		// ready?
 		if (!ready()) {
@@ -260,7 +264,7 @@ public class VersionProvider {
 		}
 
 		// detect the next revision
-		DBRevision nextRevision = detectNextRevision(currentVersion);
+		Revision nextRevision = detectNextRevision(currentVersion);
 
 		// check if nextRevision is null
 		if (nextRevision == null) {
@@ -270,21 +274,22 @@ public class VersionProvider {
 		}
 
 		// the instance of the next version which is under construction
-		final DBVersion nextVersion = new DBVersion(
+		final DBVersion nextDBVersion = new DBVersion(
 				IDGenerator.generate(DBVersion.class), null,
 				new TreeSet<DBFileChange>(new DBElementComparator()),
 				new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 				new TreeSet<DBCloneClass>(new DBElementComparator()),
-				new TreeSet<DBSourceFile>(new DBElementComparator()),
-				new TreeMap<Long, SourceFileWithContent<?>>());
+				new TreeSet<DBSourceFile>(new DBElementComparator()));
+		final Version<E> nextVersion = new Version<E>(nextDBVersion);
 
 		// set the next revision to the next version
 		logger.trace("create a new revision " + nextRevision.toString());
+		nextDBVersion.setRevision(nextRevision.getCore());
 		nextVersion.setRevision(nextRevision);
 
 		// detect file changes
 		Collection<FileChangeEntry> fileChangeEntries = fileChangeDetector
-				.detectFileChangeEntriesToRevision(nextVersion.getRevision());
+				.detectFileChangeEntriesToRevision(nextDBVersion.getRevision());
 		if (relocationFinder != null) {
 			fileChangeEntries = relocationFinder
 					.fildRelocations(fileChangeEntries);
@@ -329,8 +334,8 @@ public class VersionProvider {
 			ready = false;
 		}
 
-		if (contentBuilder == null) {
-			eLogger.fatal("content builder has not been specified");
+		if (parser == null) {
+			eLogger.fatal("file parser has not been specified");
 			ready = false;
 		}
 
@@ -342,14 +347,16 @@ public class VersionProvider {
 	 * 
 	 * @return pseudo initial version
 	 */
-	private final DBVersion providePseudoInitialVersion() {
+	private final Version<E> providePseudoInitialVersion() {
 		logger.trace("the initial version will be provided");
-		return new DBVersion(IDGenerator.generate(DBVersion.class), new DBRevision(
-				IDGenerator.generate(DBRevision.class),
-				"pseudo-initial-revision", null), new HashSet<DBFileChange>(),
-				new HashSet<DBRawCloneClass>(), new HashSet<DBCloneClass>(),
-				new HashSet<DBSourceFile>(),
-				new TreeMap<Long, SourceFileWithContent<?>>());
+		final DBVersion pseudoInitialDBVersion = new DBVersion(
+				IDGenerator.generate(DBVersion.class), new DBRevision(
+						IDGenerator.generate(DBRevision.class),
+						"pseudo-initial-revision", null),
+				new HashSet<DBFileChange>(), new HashSet<DBRawCloneClass>(),
+				new HashSet<DBCloneClass>(), new HashSet<DBSourceFile>());
+
+		return new Version<E>(pseudoInitialDBVersion);
 	}
 
 	/**
@@ -359,11 +366,11 @@ public class VersionProvider {
 	 *            current version
 	 * @return the next revision if detected, <code>null</code> otherwise
 	 */
-	private DBRevision detectNextRevision(final DBVersion currentVersion) {
-		final DBRevision currentRevision = currentVersion.getRevision();
+	private Revision detectNextRevision(final Version<E> currentVersion) {
+		final Revision currentRevision = currentVersion.getRevision();
 
 		// the next revision
-		DBRevision nextRevision = null;
+		Revision nextRevision = null;
 		if (currentRevision.getDate() == null) {
 			// the current revision is pseudo initial revision
 			nextRevision = revisionProvider.getFirstRevision();
@@ -386,8 +393,8 @@ public class VersionProvider {
 	 *            file change entries between the current version and the next
 	 *            version
 	 */
-	private void processFileChanges(final DBVersion currentVersion,
-			final DBVersion nextVersion,
+	private void processFileChanges(final Version<E> currentVersion,
+			final Version<E> nextVersion,
 			Collection<FileChangeEntry> fileChangeEntries) {
 		/*
 		 * Source files under consideration, which will be initialized with the
@@ -396,12 +403,8 @@ public class VersionProvider {
 		 * source files in the NEXT version after all the file changes
 		 * processed.
 		 */
-		final Map<String, DBSourceFile> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
-				.getSourceFiles());
-
-		// the contents of each source file in current revision
-		final Map<Long, SourceFileWithContent<?>> sourceFileContentsUnderConsideration = new TreeMap<Long, SourceFileWithContent<?>>(
-				currentVersion.getSourceFileContents());
+		final Map<String, SourceFile<E>> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
+				.getSourceFiles().values());
 
 		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
 			final String oldPath = fileChangeEntry.getBeforePath();
@@ -414,7 +417,7 @@ public class VersionProvider {
 						+ " is not a valid type of file change");
 			}
 
-			DBSourceFile oldSourceFile = null;
+			SourceFile<E> oldSourceFile = null;
 			if (oldPath != null) {
 				if (type == Type.ADD) {
 					// this is a copy
@@ -433,20 +436,19 @@ public class VersionProvider {
 				}
 			}
 
-			DBSourceFile newSourceFile = null;
+			SourceFile<E> newSourceFile = null;
 			if (newPath != null) {
 				// create new instance of source file
-				newSourceFile = new DBSourceFile(
+				final DBSourceFile newDBSourceFile = new DBSourceFile(
 						IDGenerator.generate(DBSourceFile.class), newPath);
+				newSourceFile = new SourceFile<E>(newDBSourceFile);
+
 				logger.trace("create a new source file "
 						+ newSourceFile.toString());
 
-				SourceFileWithContent<?> content = parseFile(nextVersion,
-						newSourceFile);
+				parseFile(nextVersion, newSourceFile);
 
 				sourceFilesUnderConsideration.put(newPath, newSourceFile);
-				sourceFileContentsUnderConsideration.put(newSourceFile.getId(),
-						content);
 			}
 
 			if (oldSourceFile == null && newSourceFile == null) {
@@ -456,22 +458,28 @@ public class VersionProvider {
 						"both of the two source files in a file change are null");
 			}
 
-			final DBFileChange fileChange = new DBFileChange(
-					IDGenerator.generate(DBFileChange.class), oldSourceFile,
-					newSourceFile, type, nextVersion);
+			final DBSourceFile oldDBSourceFile = (oldSourceFile == null) ? null
+					: oldSourceFile.getCore();
+			final DBSourceFile newDBSourceFile = (newSourceFile == null) ? null
+					: newSourceFile.getCore();
+
+			final DBFileChange dbFileChange = new DBFileChange(
+					IDGenerator.generate(DBFileChange.class), oldDBSourceFile,
+					newDBSourceFile, type, nextVersion.getCore());
+			final FileChange<E> fileChange = new FileChange<E>(dbFileChange);
+			fileChange.setVersion(nextVersion);
+
 			logger.trace("create a new file change " + fileChange.toString());
-			nextVersion.getFileChanges().add(fileChange);
+			nextVersion.getCore().getFileChanges().add(fileChange.getCore());
+			nextVersion.addFileChange(fileChange);
 		}
 
-		for (final DBSourceFile sourceFile : sourceFilesUnderConsideration
+		for (final SourceFile<E> sourceFile : sourceFilesUnderConsideration
 				.values()) {
 			logger.trace("add " + sourceFile.getPath() + " into version "
 					+ nextVersion.getId());
-			nextVersion.getSourceFiles().add(sourceFile);
-			nextVersion.getSourceFileContents()
-					.put(sourceFile.getId(),
-							sourceFileContentsUnderConsideration.get(sourceFile
-									.getId()));
+			nextVersion.getCore().getSourceFiles().add(sourceFile.getCore());
+			nextVersion.addSourceFile(sourceFile);
 		}
 	}
 
@@ -483,11 +491,11 @@ public class VersionProvider {
 	 *            a collection of source files
 	 * @return a map generated from the given collection
 	 */
-	private final Map<String, DBSourceFile> getSourceFilesAsMap(
-			final Collection<DBSourceFile> sourceFiles) {
-		final Map<String, DBSourceFile> result = new HashMap<String, DBSourceFile>();
+	private final Map<String, SourceFile<E>> getSourceFilesAsMap(
+			final Collection<SourceFile<E>> sourceFiles) {
+		final Map<String, SourceFile<E>> result = new HashMap<String, SourceFile<E>>();
 
-		for (final DBSourceFile sourceFile : sourceFiles) {
+		for (final SourceFile<E> sourceFile : sourceFiles) {
 			result.put(sourceFile.getPath(), sourceFile);
 		}
 
@@ -503,8 +511,8 @@ public class VersionProvider {
 	 *            the target source file
 	 * @return the contents of the source file
 	 */
-	private final SourceFileWithContent<?> parseFile(final DBVersion version,
-			final DBSourceFile sourceFile) {
+	private final void parseFile(final Version<E> version,
+			final SourceFile<E> sourceFile) {
 		final String contentsStr = contentProvider.getFileContent(version,
 				sourceFile);
 
@@ -516,7 +524,9 @@ public class VersionProvider {
 					+ " is null");
 		}
 
-		return contentBuilder.build(sourceFile, contentsStr);
+		final SortedMap<Integer, E> contents = parser.parse(sourceFile,
+				contentsStr);
+		sourceFile.setContents(contents.values());
 	}
 
 	/**
@@ -525,28 +535,22 @@ public class VersionProvider {
 	 * @param nextVersion
 	 *            the next version where clones are to be detected
 	 */
-	private void detectClones(final DBVersion nextVersion) {
-		final Collection<DBRawCloneClass> rawCloneClasses = cloneDetector
+	private void detectClones(final Version<E> nextVersion) {
+		final Collection<RawCloneClass<E>> rawCloneClasses = cloneDetector
 				.detectClones(nextVersion);
 
-		final ConcurrentMap<Long, SourceFileWithContent<? extends IProgramElement>> concurrentContents = new ConcurrentHashMap<Long, SourceFileWithContent<? extends IProgramElement>>();
-		concurrentContents.putAll(nextVersion.getSourceFileContents());
-
 		ExecutorService pool = Executors.newCachedThreadPool();
-		final List<Future<DBCloneClass>> futures = new ArrayList<Future<DBCloneClass>>();
+		final List<Future<CloneClass<E>>> futures = new ArrayList<Future<CloneClass<E>>>();
 
 		try {
-			for (final DBRawCloneClass rawCloneClass : rawCloneClasses) {
-				nextVersion.getRawCloneClasses().add(rawCloneClass);
-				rawCloneClass.setVersion(nextVersion);
-
-				final CloneClassBuildTask task = new CloneClassBuildTask(
-						concurrentContents, rawCloneClass, nextVersion);
+			for (final RawCloneClass<E> rawCloneClass : rawCloneClasses) {
+				final CloneClassBuildTask<E> task = new CloneClassBuildTask<E>(
+						rawCloneClass, nextVersion);
 				futures.add(pool.submit(task));
 			}
 
-			final List<DBCloneClass> results = new ArrayList<DBCloneClass>();
-			for (final Future<DBCloneClass> future : futures) {
+			final List<CloneClass<E>> results = new ArrayList<CloneClass<E>>();
+			for (final Future<CloneClass<E>> future : futures) {
 				try {
 					results.add(future.get());
 				} catch (Exception e) {
@@ -554,9 +558,9 @@ public class VersionProvider {
 				}
 			}
 
-			for (final DBCloneClass result : results) {
-				nextVersion.getCloneClasses().add(result);
-				result.setVersion(nextVersion);
+			for (final CloneClass<E> result : results) {
+				nextVersion.getCore().getCloneClasses().add(result.getCore());
+				nextVersion.addCloneClass(result);
 			}
 		} finally {
 			pool.shutdown();

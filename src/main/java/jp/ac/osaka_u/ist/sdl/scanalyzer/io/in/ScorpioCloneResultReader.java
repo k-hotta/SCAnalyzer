@@ -13,11 +13,14 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,8 +31,11 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author k-hotta
  * 
+ * @param <E>
+ *            the type of program element
  */
-public class ScorpioCloneResultReader implements ICloneResultReader {
+public class ScorpioCloneResultReader<E extends IProgramElement> implements
+		ICloneResultReader<E> {
 
 	/**
 	 * The logger for errors
@@ -55,7 +61,7 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 	}
 
 	@Override
-	public Collection<DBRawCloneClass> detectClones(DBVersion version) {
+	public Collection<RawCloneClass<E>> detectClones(Version<E> version) {
 		try {
 			final String targetPath = String.format(format, version
 					.getRevision().getIdentifier());
@@ -69,10 +75,10 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 	}
 
 	@Override
-	public Collection<DBRawCloneClass> read(File file, DBVersion version)
+	public Collection<RawCloneClass<E>> read(File file, Version<E> version)
 			throws IOException, IllegalCloneResultFileFormatException {
 		BufferedReader br = null;
-		Collection<DBRawCloneClass> result = null;
+		Collection<RawCloneClass<E>> result = null;
 
 		try {
 			br = new BufferedReader(new FileReader(file));
@@ -99,12 +105,12 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 		return result;
 	}
 
-	private Collection<DBRawCloneClass> read(final BufferedReader br,
-			final DBVersion version) throws IOException,
+	private Collection<RawCloneClass<E>> read(final BufferedReader br,
+			final Version<E> version) throws IOException,
 			IllegalCloneResultFileFormatException {
-		final Collection<DBRawCloneClass> result = new HashSet<DBRawCloneClass>();
-		final Map<String, DBSourceFile> sourceFiles = getSourceFilesAsMapWithPath(version
-				.getSourceFiles());
+		final Collection<RawCloneClass<E>> result = new HashSet<RawCloneClass<E>>();
+		final Map<String, SourceFile<E>> sourceFiles = getSourceFilesAsMapWithPath(version
+				.getSourceFiles().values());
 
 		String line;
 		try {
@@ -118,37 +124,53 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 				final int startLine2 = Integer.parseInt(splitLine[4]);
 				final int endLine2 = Integer.parseInt(splitLine[5]);
 
-				final DBSourceFile sourceFile1 = sourceFiles.get(path1);
+				final SourceFile<E> sourceFile1 = sourceFiles.get(path1);
 				if (sourceFile1 == null) {
 					eLogger.fatal("cannot find " + path1 + " in this version");
 					throw new IllegalStateException(path1
 							+ " doesn't exist in the version");
 				}
-				final DBSourceFile sourceFile2 = sourceFiles.get(path2);
+				final SourceFile<E> sourceFile2 = sourceFiles.get(path2);
 				if (sourceFile2 == null) {
 					eLogger.fatal("cannot find " + path2 + " in this version");
 					throw new IllegalStateException(path2
 							+ " doesn't exist in the version");
 				}
 
-				final DBRawClonedFragment fragment1 = new DBRawClonedFragment(
-						IDGenerator.generate(DBRawClonedFragment.class), version,
-						sourceFile1, startLine1, endLine1 - startLine1 + 1,
-						null);
-				final DBRawClonedFragment fragment2 = new DBRawClonedFragment(
-						IDGenerator.generate(DBRawClonedFragment.class), version,
-						sourceFile2, startLine2, endLine2 - startLine2 + 1,
-						null);
+				final DBRawClonedFragment dbFragment1 = new DBRawClonedFragment(
+						IDGenerator.generate(DBRawClonedFragment.class),
+						version.getCore(), sourceFile1.getCore(), startLine1,
+						endLine1 - startLine1 + 1, null);
+				final RawClonedFragment<E> fragment1 = new RawClonedFragment<E>(
+						dbFragment1);
+				fragment1.setSourceFile(sourceFile1);
 
-				final DBRawCloneClass cloneClass = new DBRawCloneClass(
-						IDGenerator.generate(DBRawCloneClass.class), version,
-						new TreeSet<DBRawClonedFragment>(
+				final DBRawClonedFragment dbFragment2 = new DBRawClonedFragment(
+						IDGenerator.generate(DBRawClonedFragment.class),
+						version.getCore(), sourceFile2.getCore(), startLine2,
+						endLine2 - startLine2 + 1, null);
+				final RawClonedFragment<E> fragment2 = new RawClonedFragment<E>(
+						dbFragment2);
+				fragment2.setSourceFile(sourceFile2);
+
+				final DBRawCloneClass dbCloneClass = new DBRawCloneClass(
+						IDGenerator.generate(DBRawCloneClass.class),
+						version.getCore(), new TreeSet<DBRawClonedFragment>(
 								new DBElementComparator()));
-				cloneClass.getElements().add(fragment1);
-				cloneClass.getElements().add(fragment2);
+				dbCloneClass.getElements().add(dbFragment1);
+				dbCloneClass.getElements().add(dbFragment2);
 
-				fragment1.setCloneClass(cloneClass);
-				fragment2.setCloneClass(cloneClass);
+				dbFragment1.setCloneClass(dbCloneClass);
+				dbFragment2.setCloneClass(dbCloneClass);
+
+				final RawCloneClass<E> cloneClass = new RawCloneClass<E>(
+						dbCloneClass);
+				cloneClass.addRawClonedFragment(fragment1);
+				cloneClass.addRawClonedFragment(fragment2);
+				fragment1.setRawCloneClass(cloneClass);
+				fragment2.setRawCloneClass(cloneClass);
+				
+				cloneClass.setVersion(version);
 
 				result.add(cloneClass);
 			}
@@ -165,11 +187,11 @@ public class ScorpioCloneResultReader implements ICloneResultReader {
 		return Collections.unmodifiableCollection(result);
 	}
 
-	private static Map<String, DBSourceFile> getSourceFilesAsMapWithPath(
-			final Collection<DBSourceFile> sourceFiles) {
-		final Map<String, DBSourceFile> result = new TreeMap<String, DBSourceFile>();
+	private static <E extends IProgramElement> Map<String, SourceFile<E>> getSourceFilesAsMapWithPath(
+			final Collection<SourceFile<E>> sourceFiles) {
+		final Map<String, SourceFile<E>> result = new TreeMap<String, SourceFile<E>>();
 
-		for (final DBSourceFile sourceFile : sourceFiles) {
+		for (final SourceFile<E> sourceFile : sourceFiles) {
 			result.put(sourceFile.getPath(), sourceFile);
 		}
 

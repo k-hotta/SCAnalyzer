@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.util.StringUtil;
 
@@ -25,7 +26,7 @@ import org.tmatesoft.svn.core.wc.SVNWCClient;
  * @author k-hotta
  * 
  */
-public class SVNFileContentProvider implements IFileContentProvider {
+public class SVNFileContentProvider<E extends IProgramElement> implements IFileContentProvider<E> {
 
 	/**
 	 * The logger for errors
@@ -48,8 +49,8 @@ public class SVNFileContentProvider implements IFileContentProvider {
 	}
 
 	@Override
-	public String getFileContent(final DBVersion version,
-			final DBSourceFile sourceFile) {
+	public String getFileContent(final Version<E> version,
+			final SourceFile<E> sourceFile) {
 		if (version == null) {
 			eLogger.fatal("cannot get file content: version must not be null");
 			throw new IllegalArgumentException("version is null");
@@ -59,7 +60,7 @@ public class SVNFileContentProvider implements IFileContentProvider {
 			throw new IllegalArgumentException("sourceFile is null");
 		}
 
-		final DBRevision revision = version.getRevision();
+		final Revision revision = version.getRevision();
 		if (revision == null) {
 			eLogger.fatal("the given version has no valid revision");
 			throw new IllegalArgumentException("revision in the version "

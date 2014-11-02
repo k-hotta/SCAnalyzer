@@ -39,12 +39,18 @@ public class FileChange<E extends IProgramElement> implements
 	 */
 	private final DBFileChange.Type type;
 
+	/**
+	 * The version of this file change
+	 */
+	private Version<E> version;
+
 	public FileChange(final DBFileChange core) {
 		this.id = core.getId();
 		this.core = core;
 		this.oldSourceFile = null;
 		this.newSourceFile = null;
 		this.type = core.getType();
+		this.version = null;
 	}
 
 	@Override
@@ -208,4 +214,41 @@ public class FileChange<E extends IProgramElement> implements
 		return type;
 	}
 
+	/**
+	 * Get the version of this file change
+	 * 
+	 * @return the version of this file change
+	 * 
+	 * @throws IllegalStateException
+	 *             if the version has not been set
+	 */
+	public Version<E> getVersion() {
+		if (version == null) {
+			throw new IllegalStateException("the version has not been set");
+		}
+		return version;
+	}
+
+	/**
+	 * Set the version of this file change with the specified one.
+	 * 
+	 * @param version
+	 *            the version to be set
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given version does not match to the version in the
+	 *             core, or the given version is <code>null</code>
+	 */
+	public void setVersion(final Version<E> version) {
+		if (version == null) {
+			throw new IllegalArgumentException("the given version is null");
+		}
+
+		if (!this.core.getVersion().equals(version.getCore())) {
+			throw new IllegalArgumentException(
+					"the given version doesn't match to that in the core");
+		}
+
+		this.version = version;
+	}
 }

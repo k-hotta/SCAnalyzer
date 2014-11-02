@@ -2,8 +2,9 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
 /**
  * This interface represents the protocol of how to find clones in a specified
@@ -11,8 +12,10 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
  * 
  * @author k-hotta
  * 
+ * @param <E>
+ *            the type of program element
  */
-public interface ICloneDetector {
+public interface ICloneDetector<E extends IProgramElement> {
 
 	/**
 	 * Detect all the clones in the specified version. <br>
@@ -24,6 +27,6 @@ public interface ICloneDetector {
 	 * @return a collection having all the clone classes in the specified
 	 *         version
 	 */
-	public Collection<DBRawCloneClass> detectClones(final DBVersion version);
+	public Collection<RawCloneClass<E>> detectClones(final Version<E> version);
 
 }

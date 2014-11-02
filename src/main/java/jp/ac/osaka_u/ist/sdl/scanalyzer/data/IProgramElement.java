@@ -1,7 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
-
 /**
  * This interface describes the atomic element of source code which is of
  * interest in the investigation. <br>
@@ -17,7 +15,7 @@ public interface IProgramElement {
 	 * 
 	 * @return the owner source file
 	 */
-	public DBSourceFile getOwnerSourceFile();
+	public SourceFile<? extends IProgramElement> getOwnerSourceFile();
 
 	/**
 	 * Get the position of this element within the owner source file.

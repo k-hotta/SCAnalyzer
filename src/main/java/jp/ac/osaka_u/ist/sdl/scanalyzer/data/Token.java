@@ -1,7 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
-
 import org.conqat.lib.scanner.ETokenType;
 import org.conqat.lib.scanner.IToken;
 
@@ -21,7 +19,7 @@ public class Token implements IProgramElement {
 	/**
 	 * The source file
 	 */
-	private DBSourceFile sourceFile;
+	private SourceFile<Token> sourceFile;
 
 	/**
 	 * The line within the source file
@@ -53,7 +51,7 @@ public class Token implements IProgramElement {
 	 * @param position
 	 *            the position
 	 */
-	public Token(final IToken token, final DBSourceFile sourceFile,
+	public Token(final IToken token, final SourceFile<Token> sourceFile,
 			final int position) {
 		this.type = token.getType();
 		this.sourceFile = sourceFile;
@@ -71,7 +69,7 @@ public class Token implements IProgramElement {
 	 * Get the source file
 	 */
 	@Override
-	public DBSourceFile getOwnerSourceFile() {
+	public SourceFile<Token> getOwnerSourceFile() {
 		return sourceFile;
 	}
 

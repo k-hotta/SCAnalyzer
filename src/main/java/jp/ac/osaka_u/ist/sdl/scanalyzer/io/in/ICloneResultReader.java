@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatException;
 
 /**
@@ -14,8 +15,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.exception.IllegalCloneResultFileFormatEx
  * 
  * @author k-hotta
  * 
+ * @param <E>
+ *            the type of program element
+ * 
  */
-public interface ICloneResultReader extends ICloneDetector {
+public interface ICloneResultReader<E extends IProgramElement> extends
+		ICloneDetector<E> {
 
 	/**
 	 * Read the given file to get raw clone classes.
@@ -31,7 +36,8 @@ public interface ICloneResultReader extends ICloneDetector {
 	 * @throws IllegalCloneResultFileFormatException
 	 *             If the format of the given file is invalid
 	 */
-	public Collection<DBRawCloneClass> read(final File file, final DBVersion version)
-			throws IOException, IllegalCloneResultFileFormatException;
+	public Collection<RawCloneClass<E>> read(final File file,
+			final Version<E> version) throws IOException,
+			IllegalCloneResultFileFormatException;
 
 }

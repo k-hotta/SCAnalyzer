@@ -1,6 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 
 /**
  * This class represents how to provide the next revision of for each given
@@ -19,7 +19,7 @@ public interface IRevisionProvider {
 	 * @return the next revision if detected, <code>null</code> if failed to
 	 *         detect
 	 */
-	public DBRevision getNextRevision(DBRevision currentRevision);
+	public Revision getNextRevision(Revision currentRevision);
 
 	/**
 	 * Provide the first revision to be analyzed.
@@ -27,6 +27,6 @@ public interface IRevisionProvider {
 	 * @return the first revision to be analyzed if detected, <code>null</code>
 	 *         if failed to detect
 	 */
-	public DBRevision getFirstRevision();
+	public Revision getFirstRevision();
 
 }
