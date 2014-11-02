@@ -1,7 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFileWithContent;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
