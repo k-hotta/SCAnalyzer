@@ -132,7 +132,8 @@ public class Token implements IProgramElement {
 
 		final Token another = (Token) obj;
 
-		return this.value.equals(another.getValue());
+		return this.sourceFile.equals(another.getOwnerSourceFile())
+				&& this.position == another.getPosition();
 	}
 
 	/**
