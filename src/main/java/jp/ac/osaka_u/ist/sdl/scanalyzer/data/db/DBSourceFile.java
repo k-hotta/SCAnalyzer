@@ -9,7 +9,6 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  * @author k-hotta
  * 
- * @see SourceFileWithContent
  */
 @DatabaseTable(tableName = "SOURCE_FILES")
 public class DBSourceFile implements IDBElement {

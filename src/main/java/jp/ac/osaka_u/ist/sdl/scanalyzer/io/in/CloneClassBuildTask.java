@@ -315,7 +315,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 			lcsIndexRight.add(counterForRight++);
 		}
 
-		assert (lcsIndexLeft == lcsIndexRight);
+		assert (lcsIndexLeft.size() == lcsIndexRight.size());
 
 		for (int i = 0; i < lcsIndexLeft.size(); i++) {
 			result.put(lcsIndexLeft.get(i), lcsIndexRight.get(i));

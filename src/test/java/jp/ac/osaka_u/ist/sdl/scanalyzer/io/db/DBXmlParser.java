@@ -8,7 +8,16 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
@@ -64,6 +73,24 @@ public class DBXmlParser {
 
 	private SortedMap<Long, String> fileContentsStr;
 
+	private SortedMap<Long, Version<Token>> volatileVersions;
+
+	private SortedMap<Long, Revision> volatileRevisions;
+
+	private SortedMap<Long, SourceFile<Token>> volatileSourceFiles;
+
+	private SortedMap<Long, FileChange<Token>> volatileFileChanges;
+
+	private SortedMap<Long, Segment<Token>> volatileSegments;
+
+	private SortedMap<Long, CodeFragment<Token>> volatileCodeFragments;
+
+	private SortedMap<Long, CloneClass<Token>> volatileCloneClasses;
+
+	private SortedMap<Long, RawCloneClass<Token>> volatileRawCloneClasses;
+
+	private SortedMap<Long, RawClonedFragment<Token>> volatileRawClonedFragments;
+
 	public static void main(String[] args) throws Exception {
 		DBXmlParser parser = new DBXmlParser("src/test/resources/test-db.xml");
 		parser.parse();
@@ -73,18 +100,27 @@ public class DBXmlParser {
 		this.dbms = null;
 		this.path = null;
 		this.xmlPath = xmlPath;
-		this.versions = new TreeMap<Long, DBVersion>();
-		this.revisions = new TreeMap<Long, DBRevision>();
-		this.sourceFiles = new TreeMap<Long, DBSourceFile>();
-		this.fileChanges = new TreeMap<Long, DBFileChange>();
-		this.segments = new TreeMap<Long, DBSegment>();
-		this.codeFragments = new TreeMap<Long, DBCodeFragment>();
-		this.cloneClasses = new TreeMap<Long, DBCloneClass>();
-		this.rawCloneClasses = new TreeMap<Long, DBRawCloneClass>();
-		this.rawClonedFragments = new TreeMap<Long, DBRawClonedFragment>();
-		this.versionSourceFiles = new TreeMap<Long, DBVersionSourceFile>();
-		this.fileContents = new TreeMap<Long, Map<Integer, Token>>();
-		this.fileContentsStr = new TreeMap<Long, String>();
+		this.versions = new TreeMap<>();
+		this.revisions = new TreeMap<>();
+		this.sourceFiles = new TreeMap<>();
+		this.fileChanges = new TreeMap<>();
+		this.segments = new TreeMap<>();
+		this.codeFragments = new TreeMap<>();
+		this.cloneClasses = new TreeMap<>();
+		this.rawCloneClasses = new TreeMap<>();
+		this.rawClonedFragments = new TreeMap<>();
+		this.versionSourceFiles = new TreeMap<>();
+		this.fileContents = new TreeMap<>();
+		this.fileContentsStr = new TreeMap<>();
+		this.volatileVersions = new TreeMap<>();
+		this.volatileRevisions = new TreeMap<>();
+		this.volatileSourceFiles = new TreeMap<>();
+		this.volatileFileChanges = new TreeMap<>();
+		this.volatileSegments = new TreeMap<>();
+		this.volatileCodeFragments = new TreeMap<>();
+		this.volatileCloneClasses = new TreeMap<>();
+		this.volatileRawCloneClasses = new TreeMap<>();
+		this.volatileRawClonedFragments = new TreeMap<>();
 	}
 
 	public final DBMS getDbms() {
@@ -143,6 +179,46 @@ public class DBXmlParser {
 		return fileContentsStr;
 	}
 
+	public final String getXmlPath() {
+		return xmlPath;
+	}
+
+	public final SortedMap<Long, Version<Token>> getVolatileVersions() {
+		return volatileVersions;
+	}
+
+	public final SortedMap<Long, Revision> getVolatileRevisions() {
+		return volatileRevisions;
+	}
+
+	public final SortedMap<Long, SourceFile<Token>> getVolatileSourceFiles() {
+		return volatileSourceFiles;
+	}
+
+	public final SortedMap<Long, FileChange<Token>> getVolatileFileChanges() {
+		return volatileFileChanges;
+	}
+
+	public final SortedMap<Long, Segment<Token>> getVolatileSegments() {
+		return volatileSegments;
+	}
+
+	public final SortedMap<Long, CodeFragment<Token>> getVolatileCodeFragments() {
+		return volatileCodeFragments;
+	}
+
+	public final SortedMap<Long, CloneClass<Token>> getVolatiileCloneClasses() {
+		return volatileCloneClasses;
+	}
+
+	public final SortedMap<Long, RawCloneClass<Token>> getVolatileRawCloneClasses() {
+		return volatileRawCloneClasses;
+	}
+
+	public final SortedMap<Long, RawClonedFragment<Token>> getVolatileRawClonedFragments() {
+		return volatileRawClonedFragments;
+	}
+
 	public void parse() throws Exception {
 		final DocumentBuilder builder = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder();
@@ -160,6 +236,101 @@ public class DBXmlParser {
 
 		this.dbms = parser.getDbms();
 		this.path = parser.getPath();
+
+		for (final DBVersion version : this.versions.values()) {
+			setVolatileData(version);
+		}
+	}
+
+	private void setVolatileData(final DBVersion dbVersion) {
+		final Version<Token> version = new Version<>(dbVersion);
+		this.volatileVersions.put(version.getId(), version);
+
+		final Revision revision = new Revision(dbVersion.getRevision());
+		version.setRevision(revision);
+		this.volatileRevisions.put(revision.getId(), revision);
+
+		for (final DBSourceFile dbSourceFile : dbVersion.getSourceFiles()) {
+			final SourceFile<Token> sourceFile = new SourceFile<>(dbSourceFile);
+			final Map<Integer, Token> contents = fileContents.get(dbSourceFile
+					.getId());
+			sourceFile.setContents(contents.values());
+			this.volatileSourceFiles.put(sourceFile.getId(), sourceFile);
+
+			version.addSourceFile(sourceFile);
+		}
+
+		for (final DBFileChange dbFileChange : dbVersion.getFileChanges()) {
+			final FileChange<Token> fileChange = new FileChange<>(dbFileChange);
+			final SourceFile<Token> oldSourceFile = (dbFileChange
+					.getOldSourceFile() == null) ? null
+					: this.volatileSourceFiles.get(dbFileChange
+							.getOldSourceFile().getId());
+			final SourceFile<Token> newSourceFile = (dbFileChange
+					.getNewSourceFile() == null) ? null
+					: this.volatileSourceFiles.get(dbFileChange
+							.getNewSourceFile().getId());
+
+			fileChange.setOldSourceFile(oldSourceFile);
+			fileChange.setNewSourceFile(newSourceFile);
+			fileChange.setVersion(version);
+
+			this.volatileFileChanges.put(fileChange.getId(), fileChange);
+
+			version.addFileChange(fileChange);
+		}
+
+		for (final DBCloneClass dbCloneClass : dbVersion.getCloneClasses()) {
+			final CloneClass<Token> cloneClass = new CloneClass<>(dbCloneClass);
+			this.volatileCloneClasses.put(cloneClass.getId(), cloneClass);
+			cloneClass.setVersion(version);
+			version.addCloneClass(cloneClass);
+
+			for (final DBCodeFragment dbCodeFragment : dbCloneClass
+					.getCodeFragments()) {
+				final CodeFragment<Token> codeFragment = new CodeFragment<>(
+						dbCodeFragment);
+				this.volatileCodeFragments.put(codeFragment.getId(),
+						codeFragment);
+
+				cloneClass.addCodeFragment(codeFragment);
+				codeFragment.setCloneClass(cloneClass);
+
+				for (final DBSegment dbSegment : dbCodeFragment.getSegments()) {
+					final Segment<Token> segment = new Segment<>(dbSegment);
+					this.volatileSegments.put(segment.getId(), segment);
+
+					segment.setSourceFile(this.volatileSourceFiles
+							.get(dbSegment.getSourceFile().getId()));
+
+					codeFragment.addSegment(segment);
+					segment.setCodeFragment(codeFragment);
+				}
+			}
+		}
+
+		for (final DBRawCloneClass dbRawCloneClass : dbVersion
+				.getRawCloneClasses()) {
+			final RawCloneClass<Token> rawCloneClass = new RawCloneClass<>(
+					dbRawCloneClass);
+			rawCloneClass.setVersion(version);
+			version.addRawCloneClass(rawCloneClass);
+			this.volatileRawCloneClasses.put(rawCloneClass.getId(),
+					rawCloneClass);
+
+			for (final DBRawClonedFragment dbRawClonedFragment : dbRawCloneClass
+					.getElements()) {
+				final RawClonedFragment<Token> rawClonedFragment = new RawClonedFragment<>(
+						dbRawClonedFragment);
+				this.volatileRawClonedFragments.put(rawClonedFragment.getId(),
+						rawClonedFragment);
+				rawClonedFragment.setSourceFile(this.volatileSourceFiles
+						.get(dbRawClonedFragment.getSourceFile().getId()));
+				rawCloneClass.addRawClonedFragment(rawClonedFragment);
+				rawClonedFragment.setRawCloneClass(rawCloneClass);
+			}
+		}
+
 	}
 
 }

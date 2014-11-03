@@ -356,7 +356,10 @@ public class VersionProvider<E extends IProgramElement> {
 				new HashSet<DBFileChange>(), new HashSet<DBRawCloneClass>(),
 				new HashSet<DBCloneClass>(), new HashSet<DBSourceFile>());
 
-		return new Version<E>(pseudoInitialDBVersion);
+		final Version<E> result = new Version<>(pseudoInitialDBVersion);
+		result.setRevision(new Revision(result.getCore().getRevision()));
+
+		return result;
 	}
 
 	/**
@@ -538,6 +541,14 @@ public class VersionProvider<E extends IProgramElement> {
 	private void detectClones(final Version<E> nextVersion) {
 		final Collection<RawCloneClass<E>> rawCloneClasses = cloneDetector
 				.detectClones(nextVersion);
+
+		for (final RawCloneClass<E> rawCloneClass : rawCloneClasses) {
+			nextVersion.getCore().getRawCloneClasses()
+					.add(rawCloneClass.getCore());
+			rawCloneClass.getCore().setVersion(nextVersion.getCore());
+			rawCloneClass.setVersion(nextVersion);
+			nextVersion.addRawCloneClass(rawCloneClass);
+		}
 
 		ExecutorService pool = Executors.newCachedThreadPool();
 		final List<Future<CloneClass<E>>> futures = new ArrayList<Future<CloneClass<E>>>();

@@ -145,7 +145,7 @@ public class RawCloneClass<E extends IProgramElement> implements
 	/**
 	 * Add the given raw code fragment to this raw clone class.
 	 * 
-	 * @param rawCodeFragment
+	 * @param rawClonedFragment
 	 *            the raw code fragment to be added
 	 * @throws IllegalArgumentException
 	 *             if the given raw code fragment is not included in the raw

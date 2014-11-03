@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
@@ -91,13 +92,14 @@ public class TokenSourceFileParserTest {
 		version.setRevision(new DBRevision(0, "419", null));
 		final DBSourceFile sourceFile = new DBSourceFile(1,
 				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java");
-		final String content = provider.getFileContent(new Version<Token>(
-				version), new SourceFile<Token>(sourceFile));
+		final Version<Token> volatileVersion = new Version<Token>(version);
+		volatileVersion.setRevision(new Revision(version.getRevision()));
+		final String content = provider.getFileContent(volatileVersion,
+				new SourceFile<Token>(sourceFile));
 
 		final Map<Integer, Token> result = parser.parse(new SourceFile<Token>(
 				sourceFile), content);
 
 		assertTrue(result.get(1).getValue().equals("package"));
 	}
-
 }

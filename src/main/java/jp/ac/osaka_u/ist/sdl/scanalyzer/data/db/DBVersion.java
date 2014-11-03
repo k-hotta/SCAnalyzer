@@ -109,8 +109,6 @@ public class DBVersion implements IDBElement {
 	 * @param sourceFiles
 	 *            the collection that contains all the source files in this
 	 *            version
-	 * @param sourceFileContents
-	 *            the map between source file id and its content
 	 */
 	public DBVersion(final long id, final DBRevision revision,
 			final Collection<DBFileChange> fileChanges,

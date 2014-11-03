@@ -9,7 +9,6 @@ import com.j256.ormlite.table.DatabaseTable;
  * 
  * @author k-hotta
  * 
- * @see SegmentWithContent
  */
 @DatabaseTable(tableName = "SEGMENTS")
 public class DBSegment implements IDBElement {
