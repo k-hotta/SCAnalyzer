@@ -229,7 +229,7 @@ public class VersionProvider<E extends IProgramElement> {
 	 * @param parser
 	 *            the parser to be set
 	 */
-	public void setContentBuilder(final ISourceFileParser<E> parser) {
+	public void setFileParser(final ISourceFileParser<E> parser) {
 		if (parser == null) {
 			eLogger.fatal("null is specified for contentBuilder");
 			throw new IllegalArgumentException(

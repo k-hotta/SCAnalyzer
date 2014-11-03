@@ -251,7 +251,7 @@ public class VersionProviderTest {
 		// provider.setRelocationFinder(relocationFinderMock);
 		provider.setCloneDetector(cloneDetectorMock);
 		provider.setContentProvider(contentProviderMock);
-		provider.setContentBuilder(fileParser);
+		provider.setFileParser(fileParser);
 
 		INITIAL_VERSION.setRevision(new Revision(INITIAL_VERSION.getCore()
 				.getRevision()));
@@ -314,7 +314,7 @@ public class VersionProviderTest {
 		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
 		provider.setCloneDetector(cloneDetectorMock);
 		provider.setContentProvider(contentProviderMock);
-		provider.setContentBuilder(fileParser);
+		provider.setFileParser(fileParser);
 		assertTrue((Boolean) mReady.invoke(provider));
 	}
 
@@ -325,7 +325,7 @@ public class VersionProviderTest {
 		provider.setFileChangeDetector(fileChangeEntryDetectorMock);
 		provider.setCloneDetector(cloneDetectorMock);
 		provider.setContentProvider(contentProviderMock);
-		provider.setContentBuilder(fileParser);
+		provider.setFileParser(fileParser);
 		provider.setRelocationFinder(relocationFinderMock);
 		assertTrue((Boolean) mReady.invoke(provider));
 	}
