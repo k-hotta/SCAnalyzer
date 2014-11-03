@@ -137,15 +137,17 @@ public class Token implements IProgramElement {
 	}
 
 	/**
-	 * Return a hash code value of this object, which is just the result of
-	 * {@link java.lang.String#hashCode() hashCode()} on the value of this
-	 * token.
+	 * Return a hash code value of this object, which is calculated based on
+	 * hash value of source file and thte position.
 	 * 
-	 * @return the hash value, which is calculated with the value of this token
+	 * @return the hash value
 	 */
 	@Override
 	public int hashCode() {
-		return this.value.hashCode();
+		final int sourceFileHash = 31 * this.sourceFile.hashCode();
+		final int positionHash = 23 * this.position;
+
+		return sourceFileHash + positionHash;
 	}
 
 	@Override
