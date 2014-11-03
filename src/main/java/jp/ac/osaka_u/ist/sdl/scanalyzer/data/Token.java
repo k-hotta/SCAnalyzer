@@ -138,13 +138,13 @@ public class Token implements IProgramElement {
 
 	/**
 	 * Return a hash code value of this object, which is calculated based on
-	 * hash value of source file and thte position.
+	 * hash value of source file and the position.
 	 * 
 	 * @return the hash value
 	 */
 	@Override
 	public int hashCode() {
-		final int sourceFileHash = 31 * this.sourceFile.hashCode();
+		final int sourceFileHash = 31 * (this.sourceFile.hashCode() + 13);
 		final int positionHash = 23 * this.position;
 
 		return sourceFileHash + positionHash;

@@ -1,7 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.PositionTokenComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
@@ -46,7 +46,8 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 	 * The constructor
 	 */
 	public TraditionalDiffTokenMapper(final Equalizer<Token> equalizer) {
-		this.mapping = new ConcurrentSkipListMap<>();
+		this.mapping = new ConcurrentSkipListMap<>(
+				new PositionTokenComparator());
 		this.equalizer = equalizer;
 	}
 
@@ -265,14 +266,14 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 
 		@Override
 		public Map<Token, Token> call() throws Exception {
-			final Map<Token, Token> mapping = new HashMap<Token, Token>();
+			final Map<Token, Token> mapping = new TreeMap<Token, Token>(
+					new PositionTokenComparator());
 
 			switch (type) {
 			case ADD:
 				break; // do nothing for file addition
 			case DELETE:
-				mappingDeletedFiles(mapping);
-				break;
+				break; // do nothing for file deletion
 			case MODIFY:
 				mappingModifiedFiles(mapping);
 				break;
@@ -282,19 +283,6 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 			}
 
 			return mapping;
-		}
-
-		/**
-		 * Mapping for deleted files. All the tokens in old source file will be
-		 * mapped to <code>null</code> through this operation.
-		 * 
-		 * @param mapping
-		 *            the mapping where the results stored
-		 */
-		private void mappingDeletedFiles(final Map<Token, Token> mapping) {
-			for (final Token token : this.oldSourceFile.getContents().values()) {
-				mapping.put(token, null);
-			}
 		}
 
 		/**
