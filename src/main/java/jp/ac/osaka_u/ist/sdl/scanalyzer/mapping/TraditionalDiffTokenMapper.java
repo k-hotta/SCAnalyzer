@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -46,7 +46,7 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 	 * The constructor
 	 */
 	public TraditionalDiffTokenMapper(final Equalizer<Token> equalizer) {
-		this.mapping = new ConcurrentHashMap<>();
+		this.mapping = new ConcurrentSkipListMap<>();
 		this.equalizer = equalizer;
 	}
 
