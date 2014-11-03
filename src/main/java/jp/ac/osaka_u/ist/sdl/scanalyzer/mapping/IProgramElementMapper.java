@@ -1,14 +1,16 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
 /**
  * This interface provides the protocol of how to map program elements between
  * two consecutive versions. This interface provides two methods,
  * {@link IProgramElementMapper#getNext(IProgramElement)} and
- * {@link IProgramElementMapper#clear()}. The mapping of program elements is
- * flexible for code move between files. That is, it is allowed for the mapping
- * algorithm to map two program elements that are in different source files.
+ * {@link IProgramElementMapper#prepare(Version, Version)}. The mapping of
+ * program elements is flexible for code move between files. That is, it is
+ * allowed for the mapping algorithm to map two program elements that are in
+ * different source files.
  * 
  * @author k-hotta
  * 
@@ -32,11 +34,17 @@ public interface IProgramElementMapper<E extends IProgramElement> {
 	public E getNext(final E previous);
 
 	/**
-	 * Clear the mapper. This method is used to make the mapper reusable in
-	 * processing another pair of consecutive versions. It is expected that this
-	 * method clears all the internal data in the mapper, which is used in
-	 * processing a pair of consecutive versions.
+	 * Set up the mapper to provide mapping of program elements between the two
+	 * given versions.
+	 * 
+	 * @param previousVersion
+	 *            the previous version
+	 * @param nextVersion
+	 *            the next version
+	 * @return <code>true</code> if the mapper has been successfully prepared,
+	 *         <code>false</code> otherwise.
 	 */
-	public void clear();
+	public boolean prepare(final Version<E> previousVersion,
+			final Version<E> nextVersion);
 
 }
