@@ -72,7 +72,8 @@ public class TraditionalDiffTokenMapperTest {
 
 			assertEquals(result.size(), 0);
 
-			for (final Token token : result.keySet()) {
+			for (final Token token : parser.getVolatileSourceFiles()
+					.get((long) 4).getContents().values()) {
 				assertNull(result.get(token));
 			}
 		} finally {
@@ -144,7 +145,7 @@ public class TraditionalDiffTokenMapperTest {
 				.getVolatileVersions().get((long) 1), parser
 				.getVolatileVersions().get((long) 2));
 
-		assertTrue(tasks.size() == 2);
+		assertTrue(tasks.size() == 1);
 	}
 
 	@Test
@@ -155,7 +156,7 @@ public class TraditionalDiffTokenMapperTest {
 				.getVolatileVersions().get((long) 2), parser
 				.getVolatileVersions().get((long) 3));
 
-		assertTrue(tasks.size() == 3);
+		assertTrue(tasks.size() == 2);
 	}
 
 	@Test

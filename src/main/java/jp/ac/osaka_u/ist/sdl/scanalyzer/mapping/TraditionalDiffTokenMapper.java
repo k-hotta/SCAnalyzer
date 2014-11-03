@@ -33,9 +33,11 @@ import difflib.myers.Equalizer;
 public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> {
 
 	/**
-	 * This map contains the mapping of tokens
+	 * This map contains the mapping of tokens. The key of this map is an ID of
+	 * a file, which belongs to the previous version. The value of this map is
+	 * the mapping of tokens in the file.
 	 */
-	private final ConcurrentMap<Token, Token> mapping;
+	private final ConcurrentMap<Long, Map<Token, Token>> mapping;
 
 	/**
 	 * The equalizer for tokens
@@ -46,8 +48,7 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 	 * The constructor
 	 */
 	public TraditionalDiffTokenMapper(final Equalizer<Token> equalizer) {
-		this.mapping = new ConcurrentSkipListMap<>(
-				new PositionTokenComparator());
+		this.mapping = new ConcurrentSkipListMap<>();
 		this.equalizer = equalizer;
 	}
 
@@ -57,7 +58,7 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 			throw new IllegalArgumentException("the given token is null");
 		}
 
-		return mapping.get(previous);
+		return mapping.get(previous.getOwnerSourceFile().getId()).get(previous);
 	}
 
 	@Override
@@ -81,15 +82,19 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 		ExecutorService pool = Executors.newCachedThreadPool();
 
 		try {
-			final List<Future<Map<Token, Token>>> futures = new ArrayList<>();
+			final Map<Long, Future<Map<Token, Token>>> futures = new TreeMap<>();
 
 			for (final TraditionalDiffTokenMappingTask task : tasks) {
-				futures.add(pool.submit(task));
+				futures.put(task.getOldSourceFile().getId(), pool.submit(task));
 			}
 
-			for (final Future<Map<Token, Token>> future : futures) {
+			for (final Map.Entry<Long, Future<Map<Token, Token>>> future : futures
+					.entrySet()) {
+				final long oldFileId = future.getKey();
 				try {
-					this.mapping.putAll(future.get());
+					final Map<Token, Token> mappingInFile = future.getValue()
+							.get();
+					this.mapping.put(oldFileId, mappingInFile);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return false;
@@ -136,7 +141,8 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 							+ nextVersion.getId());
 				}
 
-				tasks.add(constructTask(null, newSourceFile, Type.ADD));
+				// no task is prepared here
+				// because addition of file does not require any treats
 
 				break;
 			}
@@ -264,6 +270,10 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 			this.type = type;
 		}
 
+		private SourceFile<Token> getOldSourceFile() {
+			return oldSourceFile;
+		}
+
 		@Override
 		public Map<Token, Token> call() throws Exception {
 			final Map<Token, Token> mapping = new TreeMap<Token, Token>(
@@ -271,7 +281,9 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 
 			switch (type) {
 			case ADD:
-				break; // do nothing for file addition
+				// here shouldn't be reached
+				assert false;
+				break;
 			case DELETE:
 				break; // do nothing for file deletion
 			case MODIFY:
