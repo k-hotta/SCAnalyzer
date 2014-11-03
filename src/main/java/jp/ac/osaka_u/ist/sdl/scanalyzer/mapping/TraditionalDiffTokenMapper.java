@@ -19,6 +19,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
+import difflib.myers.Equalizer;
 
 /**
  * This class provides mapping of tokens between two consecutive versions with
@@ -37,10 +38,16 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 	private final ConcurrentMap<Token, Token> mapping;
 
 	/**
+	 * The equalizer for tokens
+	 */
+	private final Equalizer<Token> equalizer;
+
+	/**
 	 * The constructor
 	 */
-	public TraditionalDiffTokenMapper() {
+	public TraditionalDiffTokenMapper(final Equalizer<Token> equalizer) {
 		this.mapping = new ConcurrentHashMap<>();
+		this.equalizer = equalizer;
 	}
 
 	@Override
@@ -305,7 +312,8 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 			final List<Token> newTokens = new ArrayList<Token>();
 			newTokens.addAll(newSourceFile.getContents().values());
 
-			final Patch<Token> patch = DiffUtils.diff(oldTokens, newTokens);
+			final Patch<Token> patch = DiffUtils.diff(oldTokens, newTokens,
+					equalizer);
 			for (final Delta<Token> delta : patch.getDeltas()) {
 				final List<Token> deletedTokens = delta.getOriginal()
 						.getLines();
