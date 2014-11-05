@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -28,18 +29,21 @@ public class IClonesCodeFragmentMappingHelper {
 	 *            the code fragment the next state of which should be expected
 	 * @param elementMapper
 	 *            the information of mapping of elements
-	 * @return a collection has all the expected segments
+	 * @return a list has all the expected segments
 	 */
-	public static <E extends IProgramElement> Collection<ExpectedSegment> expect(
+	public static <E extends IProgramElement> List<ExpectedSegment> expect(
 			final CodeFragment<E> codeFragment,
 			final IProgramElementMapper<E> elementMapper) {
-		final Collection<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
+		final SortedSet<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
 
 		for (final Segment<E> segment : codeFragment.getSegments().values()) {
 			result.addAll(expect(segment, elementMapper));
 		}
 
-		return result;
+		final List<ExpectedSegment> list = new ArrayList<ExpectedSegment>();
+		list.addAll(result);
+
+		return list;
 	}
 
 	/**
@@ -50,12 +54,12 @@ public class IClonesCodeFragmentMappingHelper {
 	 *            the segment the next state of which should be expected
 	 * @param elementMapper
 	 *            the information of the mapping of elements
-	 * @return a collection has all the expected segments
+	 * @return a list has all the expected segments
 	 */
-	public static <E extends IProgramElement> Collection<ExpectedSegment> expect(
+	public static <E extends IProgramElement> List<ExpectedSegment> expect(
 			final Segment<E> segment,
 			final IProgramElementMapper<E> elementMapper) {
-		final Collection<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
+		final SortedSet<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
 
 		final Map<String, SortedSet<E>> updatedElements = new TreeMap<String, SortedSet<E>>();
 		for (final E beforeElement : segment.getContents().values()) {
@@ -77,7 +81,8 @@ public class IClonesCodeFragmentMappingHelper {
 		}
 
 		for (Map.Entry<String, SortedSet<E>> entry : updatedElements.entrySet()) {
-			final SortedSet<E> elementsInCurrentSegment = new TreeSet<E>();
+			final SortedSet<E> elementsInCurrentSegment = new TreeSet<E>(
+					new PositionElementComparator<>());
 
 			E previous = null;
 			for (final E element : entry.getValue()) {
@@ -103,7 +108,10 @@ public class IClonesCodeFragmentMappingHelper {
 			}
 		}
 
-		return result;
+		final List<ExpectedSegment> list = new ArrayList<ExpectedSegment>();
+		list.addAll(result);
+
+		return list;
 	}
 
 	/**
