@@ -28,6 +28,7 @@ import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
+import difflib.myers.Equalizer;
 
 public class CloneClassBuildTask<E extends IProgramElement> implements
 		Callable<CloneClass<E>> {
@@ -36,10 +37,13 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 
 	private final Version<E> version;
 
+	private final Equalizer<E> equalizer;
+
 	public CloneClassBuildTask(final RawCloneClass<E> rawCloineClass,
-			final Version<E> version) {
+			final Version<E> version, final Equalizer<E> equalizer) {
 		this.rawCloneClass = rawCloineClass;
 		this.version = version;
+		this.equalizer = equalizer;
 	}
 
 	@Override
@@ -110,7 +114,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 		for (int i = 1; i < targetFragments.size(); i++) {
 			final List<E> target = targetFragments.get(i);
 
-			final Patch<E> patch = DiffUtils.diff(lcs, target);
+			final Patch<E> patch = DiffUtils.diff(lcs, target, equalizer);
 			final SortedMap<Integer, Integer> mapping = detectMapping(patch,
 					lcs, target);
 

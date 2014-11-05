@@ -337,7 +337,6 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 			}
 
 			for (int index = 0; index < oldTokens.size(); index++) {
-				assert oldTokens.get(index).equals(newTokens.get(index));
 				mapping.put(oldTokens.get(index), newTokens.get(index));
 			}
 		}

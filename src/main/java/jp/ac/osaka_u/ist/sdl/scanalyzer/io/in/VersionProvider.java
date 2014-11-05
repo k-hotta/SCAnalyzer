@@ -32,6 +32,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import difflib.myers.Equalizer;
+
 /**
  * This class provides the next version for a given version.
  * 
@@ -84,6 +86,12 @@ public class VersionProvider<E extends IProgramElement> {
 	 * The parser of source files
 	 */
 	private ISourceFileParser<E> parser;
+
+	/**
+	 * The equalizer of program element, which is used to detect LCS. If null,
+	 * the default equalizer is used which compares elements with equals method
+	 */
+	private Equalizer<E> equalizer;
 
 	/**
 	 * Get the revision provider
@@ -238,6 +246,31 @@ public class VersionProvider<E extends IProgramElement> {
 		this.parser = parser;
 		logger.trace("the content builder has been set:"
 				+ parser.getClass().getName());
+	}
+
+	/**
+	 * Get the equalizer.
+	 * 
+	 * @return the equalizer
+	 */
+	public Equalizer<E> getEqualizer() {
+		return equalizer;
+	}
+
+	/**
+	 * Set the equalizer with the specified one.
+	 * 
+	 * @param equalizer
+	 *            the equalizer to be set
+	 */
+	public void setEqualizer(final Equalizer<E> equalizer) {
+		this.equalizer = equalizer;
+		if (equalizer == null) {
+			logger.trace("the empty equalizer has been set");
+		} else {
+			logger.trace("the equalizer has been set: "
+					+ equalizer.getClass().getName());
+		}
 	}
 
 	/**
@@ -556,7 +589,7 @@ public class VersionProvider<E extends IProgramElement> {
 		try {
 			for (final RawCloneClass<E> rawCloneClass : rawCloneClasses) {
 				final CloneClassBuildTask<E> task = new CloneClassBuildTask<E>(
-						rawCloneClass, nextVersion);
+						rawCloneClass, nextVersion, equalizer);
 				futures.add(pool.submit(task));
 			}
 
