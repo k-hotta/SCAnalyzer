@@ -129,4 +129,45 @@ public class DBCodeFragmentMapping implements IDBElement {
 		this.newCodeFragment = newCodeFragment;
 	}
 
+	/**
+	 * Judge whether the given object equals to this object. <br>
+	 * 
+	 * @return <code>true</code> if the given object is an instance of
+	 *         {@link DBCodeFragmentMapping} and the id values of the two objects
+	 *         are the same to each other, <code>false</code> otherwise.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof DBCodeFragmentMapping)) {
+			return false;
+		}
+
+		final DBCodeFragmentMapping another = (DBCodeFragmentMapping) obj;
+
+		return this.id == another.getId();
+	}
+
+	/**
+	 * Return a hash code value of this object. <br>
+	 * The hash value of this object is just the value of the id. <br>
+	 * 
+	 * @return the hash value, which equals to the value of id of this object
+	 */
+	@Override
+	public int hashCode() {
+		return (int) this.id;
+	}
+
+	@Override
+	public String toString() {
+		if (oldCodeFragment == null) {
+			return "\t-\t" + newCodeFragment.toString();
+		} else if (newCodeFragment == null) {
+			return oldCodeFragment.toString() + "\t-\t";
+		} else {
+			return oldCodeFragment.toString() + "\t-\t"
+					+ newCodeFragment.toString();
+		}
+	}
+	
 }
