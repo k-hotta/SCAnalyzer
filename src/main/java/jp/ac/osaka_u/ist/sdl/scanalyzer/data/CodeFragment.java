@@ -123,7 +123,7 @@ public class CodeFragment<E extends IProgramElement> implements
 	}
 
 	/**
-	 * Get the segments in this fragment as an unmodifiable map.
+	 * Get the segments in this fragment as an unmodifiable list.
 	 * 
 	 * @return the list having the segments in this fragment, which is sorted
 	 *         based on the positions of segments
@@ -142,6 +142,24 @@ public class CodeFragment<E extends IProgramElement> implements
 			result.addAll(segmentsInFile);
 		}
 		return Collections.unmodifiableList(result);
+	}
+
+	/**
+	 * Get the segments in this fragments as an unmodifiable map.
+	 * 
+	 * @return the map having all the segments in this fragment, whose keys are
+	 *         paths of files, and whose values are segments in a file.
+	 * 
+	 * @throws IllegalStateException
+	 *             if segments are empty
+	 */
+	public Map<String, SortedSet<Segment<E>>> getSegmentsAsMap() {
+		if (segments.isEmpty()) {
+			// segments must not be empty
+			throw new IllegalStateException("there are no segments");
+		}
+
+		return Collections.unmodifiableSortedMap(this.segments);
 	}
 
 	/**

@@ -44,62 +44,6 @@ public class IClonesCodeFragmentMappingHelperTest {
 	}
 
 	@Test
-	public void testExpectSegment1() throws Exception {
-		final Set<CloneClass<Token>> firstJudge = retrieveCloneClass(
-				beforeVersion,
-				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/data/RetrievedFileInfo.java",
-				15);
-		final Set<CloneClass<Token>> secondJudge = retrieveCloneClass(
-				firstJudge,
-				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/data/block/UnitInfo.java",
-				97);
-
-		CloneClass<Token> target = null;
-		for (CloneClass<Token> tmp : secondJudge) {
-			target = tmp;
-			break;
-		}
-
-		final CodeFragment<Token> targetFragment = target.getCodeFragments()
-				.get(target.getCodeFragments().firstKey());
-		final Segment<Token> targetSegment = targetFragment.getSegments()
-				.get(0);
-
-		final Collection<ExpectedSegment> expected = IClonesCodeFragmentMappingHelper
-				.expect(targetSegment, mapper);
-
-		assertTrue(expected.size() == 1);
-	}
-
-	@Test
-	public void testExpectSegment2() throws Exception {
-		final Set<CloneClass<Token>> firstJudge = retrieveCloneClass(
-				beforeVersion,
-				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/TraceThread.java",
-				28);
-		final Set<CloneClass<Token>> secondJudge = retrieveCloneClass(
-				firstJudge,
-				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/genealogy/clonepairdetector/ClonePairDetectThread.java",
-				36);
-
-		CloneClass<Token> target = null;
-		for (CloneClass<Token> tmp : secondJudge) {
-			target = tmp;
-			break;
-		}
-
-		final CodeFragment<Token> targetFragment = target.getCodeFragments()
-				.get(target.getCodeFragments().firstKey());
-		final Segment<Token> targetSegment = targetFragment.getSegments()
-				.get(0);
-
-		final Collection<ExpectedSegment> expected = IClonesCodeFragmentMappingHelper
-				.expect(targetSegment, mapper);
-
-		assertTrue(expected.size() == 1);
-	}
-
-	@Test
 	public void testExpectFragment1() throws Exception {
 		final Set<CloneClass<Token>> firstJudge = retrieveCloneClass(
 				beforeVersion,
@@ -119,12 +63,12 @@ public class IClonesCodeFragmentMappingHelperTest {
 		final CodeFragment<Token> targetFragment = target.getCodeFragments()
 				.get(target.getCodeFragments().firstKey());
 
-		final List<ExpectedSegment> expected = IClonesCodeFragmentMappingHelper
+		final Map<String, ExpectedSegment> expected = IClonesCodeFragmentMappingHelper
 				.expect(targetFragment, mapper);
 
-		assertTrue(expected.size() == 2);
-		ExpectedSegment expected1 = expected.get(0);
-		ExpectedSegment expected2 = expected.get(1);
+		assertTrue(expected.size() == 1);
+		ExpectedSegment expectedSeg = expected
+				.get("/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/clone_tracer/TraceThread.java");
 
 		final Set<CloneClass<Token>> referenceFirstJudge = retrieveCloneClass(
 				afterVersion,
@@ -148,9 +92,9 @@ public class IClonesCodeFragmentMappingHelperTest {
 		final Segment<Token> last = referenceFragment.getSegments().get(
 				referenceFragment.getSegments().size() - 1);
 
-		assertTrue(first.getFirstElement().getPosition() == expected1
+		assertTrue(first.getFirstElement().getPosition() == expectedSeg
 				.getStartPosition());
-		assertTrue(last.getLastElement().getPosition() == expected2
+		assertTrue(last.getLastElement().getPosition() == expectedSeg
 				.getEndPosition());
 	}
 

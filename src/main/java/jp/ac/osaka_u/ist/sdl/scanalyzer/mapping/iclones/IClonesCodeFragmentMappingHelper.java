@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -11,6 +12,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.PositionElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
 /**
@@ -31,41 +33,46 @@ public class IClonesCodeFragmentMappingHelper {
 	 *            the information of mapping of elements
 	 * @return a list has all the expected segments
 	 */
-	public static <E extends IProgramElement> List<ExpectedSegment> expect(
+	public static <E extends IProgramElement> SortedMap<String, ExpectedSegment> expect(
 			final CodeFragment<E> codeFragment,
 			final IProgramElementMapper<E> elementMapper) {
-		final SortedSet<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
+		final SortedMap<String, ExpectedSegment> result = new TreeMap<String, ExpectedSegment>();
 
-		for (final Segment<E> segment : codeFragment.getSegments()) {
-			result.addAll(expect(segment, elementMapper));
+		for (final Map.Entry<String, SortedSet<Segment<E>>> entry : codeFragment
+				.getSegmentsAsMap().entrySet()) {
+			final Segment<E> firstElement = entry.getValue().first();
+			final Segment<E> lastElement = entry.getValue().last();
+			final SourceFile<E> sourceFile = firstElement.getSourceFile();
+			final SortedMap<String, ExpectedSegment> expectedSegments = expect(
+					sourceFile, firstElement.getFirstElement().getPosition(),
+					lastElement.getLastElement().getPosition(), elementMapper);
+
+			for (final Map.Entry<String, ExpectedSegment> expectedEntry : expectedSegments
+					.entrySet()) {
+				if (result.containsKey(expectedEntry.getKey())) {
+					final ExpectedSegment alreadyRegistered = result
+							.get(expectedEntry.getKey());
+					result.put(expectedEntry.getKey(),
+							merge(alreadyRegistered, expectedEntry.getValue()));
+				} else {
+					result.put(expectedEntry.getKey(), expectedEntry.getValue());
+				}
+			}
 		}
 
-		final List<ExpectedSegment> list = new ArrayList<ExpectedSegment>();
-		list.addAll(result);
-
-		return list;
+		return result;
 	}
 
-	/**
-	 * Expect the state of the given segment in the next version with the
-	 * information of the element mapping.
-	 * 
-	 * @param segment
-	 *            the segment the next state of which should be expected
-	 * @param elementMapper
-	 *            the information of the mapping of elements
-	 * @return a list has all the expected segments
-	 */
-	public static <E extends IProgramElement> List<ExpectedSegment> expect(
-			final Segment<E> segment,
-			final IProgramElementMapper<E> elementMapper) {
-		final SortedSet<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
+	private static <E extends IProgramElement> SortedMap<String, ExpectedSegment> expect(
+			final SourceFile<E> sourceFile, final int startPosition,
+			final int endPosition, final IProgramElementMapper<E> elementMapper) {
+		final SortedMap<String, ExpectedSegment> result = new TreeMap<String, ExpectedSegment>();
 
-		final Map<String, SortedSet<E>> updatedElements = new TreeMap<String, SortedSet<E>>();
-		for (final E beforeElement : segment.getContents()) {
-			final E updatedElement = elementMapper.getNext(beforeElement);
+		final Map<Integer, E> contents = sourceFile.getContents();
 
-			// if null the element was removed
+		final SortedMap<String, SortedSet<E>> updatedElements = new TreeMap<String, SortedSet<E>>();
+		for (int index = startPosition; index <= endPosition; index++) {
+			final E updatedElement = elementMapper.getNext(contents.get(index));
 			if (updatedElement != null) {
 				final String path = updatedElement.getOwnerSourceFile()
 						.getPath();
@@ -73,7 +80,7 @@ public class IClonesCodeFragmentMappingHelper {
 					updatedElements.get(path).add(updatedElement);
 				} else {
 					final SortedSet<E> newSet = new TreeSet<E>(
-							new PositionElementComparator<E>());
+							new PositionElementComparator<>());
 					newSet.add(updatedElement);
 					updatedElements.put(path, newSet);
 				}
@@ -81,53 +88,30 @@ public class IClonesCodeFragmentMappingHelper {
 		}
 
 		for (Map.Entry<String, SortedSet<E>> entry : updatedElements.entrySet()) {
-			final SortedSet<E> elementsInCurrentSegment = new TreeSet<E>(
-					new PositionElementComparator<>());
+			final String path = entry.getKey();
+			final E firstElement = entry.getValue().first();
+			final E lastElement = entry.getValue().last();
 
-			E previous = null;
-			for (final E element : entry.getValue()) {
-				if (previous == null) {
-					elementsInCurrentSegment.add(element);
-				} else {
-					if (element.getPosition() == previous.getPosition() + 1) {
-						// the elements are continuous
-						elementsInCurrentSegment.add(element);
-					} else {
-						// the elements are not continuous
-						result.add(makeExpectedSegment(elementsInCurrentSegment));
-						elementsInCurrentSegment.clear();
-						elementsInCurrentSegment.add(element);
-					}
-				}
-
-				previous = element;
-			}
-
-			if (!elementsInCurrentSegment.isEmpty()) {
-				result.add(makeExpectedSegment(elementsInCurrentSegment));
-			}
+			result.put(path,
+					new ExpectedSegment(path, firstElement.getPosition(),
+							lastElement.getPosition()));
 		}
 
-		final List<ExpectedSegment> list = new ArrayList<ExpectedSegment>();
-		list.addAll(result);
-
-		return list;
+		return result;
 	}
 
-	/**
-	 * Make an instance of ExpectedSegment with the specified elements.
-	 * 
-	 * @param elements
-	 *            the elements that should be included in the expected segment
-	 * @return an instance of expected segment
-	 */
-	private static ExpectedSegment makeExpectedSegment(
-			final SortedSet<? extends IProgramElement> elements) {
-		final String path = elements.first().getOwnerSourceFile().getPath();
-		final int startPosition = elements.first().getPosition();
-		final int endPosition = elements.last().getPosition();
+	private static ExpectedSegment merge(final ExpectedSegment es1,
+			final ExpectedSegment es2) {
+		if (!es1.getPath().equals(es2.getPath())) {
+			throw new IllegalStateException(
+					"the given expected segments are not in the same file");
+		}
 
-		return new ExpectedSegment(path, startPosition, endPosition);
+		final int minStart = Math.min(es1.getStartPosition(),
+				es2.getStartPosition());
+		final int maxEnd = Math.max(es1.getEndPosition(), es2.getEndPosition());
+
+		return new ExpectedSegment(es1.getPath(), minStart, maxEnd);
 	}
 
 }

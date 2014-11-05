@@ -88,4 +88,9 @@ public class ExpectedSegment implements Comparable<ExpectedSegment> {
 		return Integer.compare(this.startPosition, o.getStartPosition());
 	}
 
+	@Override
+	public String toString() {
+		return this.path + " " + this.startPosition + "-" + this.endPosition;
+	}
+
 }
