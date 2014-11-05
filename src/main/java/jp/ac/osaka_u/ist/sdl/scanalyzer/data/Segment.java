@@ -92,7 +92,7 @@ public class Segment<E extends IProgramElement> implements
 		final StringBuilder builder = new StringBuilder();
 
 		for (final E content : this.contents.values()) {
-			builder.append(content);
+			builder.append(content + " ");
 		}
 
 		return builder.toString();
