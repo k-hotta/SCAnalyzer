@@ -9,7 +9,7 @@ import difflib.myers.Equalizer;
  * @author k-hotta
  *
  */
-public class Type2TokenEqualizer implements Equalizer<Token> {
+public class NearMissTokenEqualizer implements Equalizer<Token> {
 
 	/**
 	 * Compare tokens based on their types. If the types of both tokens equal to

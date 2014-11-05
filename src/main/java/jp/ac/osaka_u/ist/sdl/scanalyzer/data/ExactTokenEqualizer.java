@@ -8,7 +8,7 @@ import difflib.myers.Equalizer;
  * @author k-hotta
  *
  */
-public class Type1TokenEqualizer implements Equalizer<Token> {
+public class ExactTokenEqualizer implements Equalizer<Token> {
 
 	/**
 	 * This will be true iff the two tokens have the same value.

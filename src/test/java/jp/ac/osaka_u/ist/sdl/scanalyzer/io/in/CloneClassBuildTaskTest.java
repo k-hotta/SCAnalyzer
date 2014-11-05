@@ -21,7 +21,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Type1TokenEqualizer;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.ExactTokenEqualizer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
@@ -278,7 +278,7 @@ public class CloneClassBuildTaskTest {
 		frag3_3.setRawCloneClass(rawCloneClassMock3);
 		frag3_4.setRawCloneClass(rawCloneClassMock3);
 
-		equalizer = new Type1TokenEqualizer();
+		equalizer = new ExactTokenEqualizer();
 	}
 
 	@Test

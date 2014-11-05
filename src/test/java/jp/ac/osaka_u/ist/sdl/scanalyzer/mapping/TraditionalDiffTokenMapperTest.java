@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Type1TokenEqualizer;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.ExactTokenEqualizer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBXmlParser;
 
@@ -59,7 +59,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testMappingDeletedFiles1() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final Callable<Map<Token, Token>> task = (Callable<Map<Token, Token>>) taskConstructor
 				.newInstance(mapper,
 						parser.getVolatileSourceFiles().get((long) 4), null,
@@ -85,7 +85,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testMappingStableFiles1() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final Callable<Map<Token, Token>> task = (Callable<Map<Token, Token>>) taskConstructor
 				.newInstance(mapper,
 						parser.getVolatileSourceFiles().get((long) 1), parser
@@ -113,7 +113,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testMappingModifiedFiles1() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final Callable<Map<Token, Token>> task = (Callable<Map<Token, Token>>) taskConstructor
 				.newInstance(mapper,
 						parser.getVolatileSourceFiles().get((long) 1), parser
@@ -140,7 +140,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testPrepareTasks1() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final List<?> tasks = (List<?>) mPrepareTasks.invoke(mapper, parser
 				.getVolatileVersions().get((long) 1), parser
 				.getVolatileVersions().get((long) 2));
@@ -151,7 +151,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testPrepareTasks2() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final List<?> tasks = (List<?>) mPrepareTasks.invoke(mapper, parser
 				.getVolatileVersions().get((long) 2), parser
 				.getVolatileVersions().get((long) 3));
@@ -162,7 +162,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testPrepareTasks3() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final List<?> tasks = (List<?>) mPrepareTasks.invoke(mapper, parser
 				.getVolatileVersions().get((long) 3), parser
 				.getVolatileVersions().get((long) 4));
@@ -173,7 +173,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testPrepare1() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final Version<Token> previous = parser.getVolatileVersions().get(
 				(long) 1);
 		final Version<Token> next = parser.getVolatileVersions().get((long) 2);
@@ -189,7 +189,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testPrepare2() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final Version<Token> previous = parser.getVolatileVersions().get(
 				(long) 2);
 		final Version<Token> next = parser.getVolatileVersions().get((long) 3);
@@ -213,7 +213,7 @@ public class TraditionalDiffTokenMapperTest {
 	@Test
 	public void testPrepare3() throws Exception {
 		final TraditionalDiffTokenMapper mapper = new TraditionalDiffTokenMapper(
-				new Type1TokenEqualizer());
+				new ExactTokenEqualizer());
 		final Version<Token> previous = parser.getVolatileVersions().get(
 				(long) 3);
 		final Version<Token> next = parser.getVolatileVersions().get((long) 4);
