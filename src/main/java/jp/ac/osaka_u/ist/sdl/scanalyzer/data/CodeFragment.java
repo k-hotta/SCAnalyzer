@@ -272,22 +272,6 @@ public class CodeFragment<E extends IProgramElement> implements
 	}
 
 	/**
-	 * Calculate hash value of this fragment based on file path, start position,
-	 * and end position. This hash is used to put fragments into buckets.
-	 * 
-	 * @return a hash value
-	 */
-	public int bucketHash() {
-		int hash = 0;
-		for (final String filePath : this.segments.keySet()) {
-			hash *= 31;
-			hash += ((filePath.hashCode() + this.startPositions.get(filePath)) * 23 + this.endPositions
-					.get(filePath)) * 23;
-		}
-		return hash;
-	}
-
-	/**
 	 * A comparator for segments
 	 * 
 	 * @author k-hotta

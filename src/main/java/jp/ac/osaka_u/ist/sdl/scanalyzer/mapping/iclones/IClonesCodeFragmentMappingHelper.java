@@ -1,7 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -112,6 +110,24 @@ public class IClonesCodeFragmentMappingHelper {
 		final int maxEnd = Math.max(es1.getEndPosition(), es2.getEndPosition());
 
 		return new ExpectedSegment(es1.getPath(), minStart, maxEnd);
+	}
+
+	/**
+	 * Calculate hash value of the given fragment based on file path, start
+	 * position, and end position. This hash is used to put fragments into
+	 * buckets.
+	 * 
+	 * @return a hash value
+	 */
+	public static int calculateBucketHash(final CodeFragment<?> codeFragment) {
+		int hash = 0;
+		for (final String filePath : codeFragment.getSegmentsAsMap().keySet()) {
+			hash *= 31;
+			hash += ((filePath.hashCode() + codeFragment.getStartPositions()
+					.get(filePath)) * 23 + codeFragment.getEndPositions().get(
+					filePath)) * 23;
+		}
+		return hash;
 	}
 
 }
