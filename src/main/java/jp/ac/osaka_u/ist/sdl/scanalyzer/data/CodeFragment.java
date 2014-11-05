@@ -1,10 +1,16 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegmentComparator;
 
 /**
  * This class represents code fragment.
@@ -28,14 +34,31 @@ public class CodeFragment<E extends IProgramElement> implements
 	private final DBCodeFragment core;
 
 	/**
-	 * The segments in this fragment
+	 * The segments in this fragment. The key is the file path, and the value is
+	 * the list of segments in the file. The list must be sorted based on the
+	 * positions of segments.
 	 */
-	private final SortedMap<Long, Segment<E>> segments;
+	private final SortedMap<String, SortedSet<Segment<E>>> segments;
 
 	/**
 	 * The owner clone class of this fragment
 	 */
 	private CloneClass<E> cloneClass;
+
+	/**
+	 * The map has start positions of this fragment. If this fragment is
+	 * separated into multiple files, this map contains the start position
+	 * within each of the files. The segments in a single file will be treated
+	 * as being in a single chunk, so if there are two or more segments in a
+	 * single file, the elements between the segments (which is not included in
+	 * any of the segments) will be treated as a gap within the chunk.
+	 */
+	private final SortedMap<String, Integer> startPositions;
+
+	/**
+	 * The map has end positions of this fragment for each of files.
+	 */
+	private final SortedMap<String, Integer> endPositions;
 
 	/**
 	 * The constructor with core
@@ -46,8 +69,10 @@ public class CodeFragment<E extends IProgramElement> implements
 	public CodeFragment(final DBCodeFragment core) {
 		this.id = core.getId();
 		this.core = core;
-		this.segments = new TreeMap<Long, Segment<E>>();
+		this.segments = new TreeMap<String, SortedSet<Segment<E>>>();
 		this.cloneClass = null;
+		this.startPositions = new TreeMap<String, Integer>();
+		this.endPositions = new TreeMap<String, Integer>();
 	}
 
 	@Override
@@ -84,18 +109,23 @@ public class CodeFragment<E extends IProgramElement> implements
 	/**
 	 * Get the segments in this fragment as an unmodifiable map.
 	 * 
-	 * @return the map having the segments in this fragment, each of whose key
-	 *         is the id of a segment, each of whose value is the segment
+	 * @return the list having the segments in this fragment, which is sorted
+	 *         based on the positions of segments
 	 * 
 	 * @throws IllegalStateException
 	 *             if segments are empty
 	 */
-	public SortedMap<Long, Segment<E>> getSegments() {
+	public List<Segment<E>> getSegments() {
 		if (segments.isEmpty()) {
 			// segments must not be empty
 			throw new IllegalStateException("there are no segments");
 		}
-		return Collections.unmodifiableSortedMap(segments);
+
+		final List<Segment<E>> result = new ArrayList<Segment<E>>();
+		for (SortedSet<Segment<E>> segmentsInFile : segments.values()) {
+			result.addAll(segmentsInFile);
+		}
+		return Collections.unmodifiableList(result);
 	}
 
 	/**
@@ -116,7 +146,24 @@ public class CodeFragment<E extends IProgramElement> implements
 					"the given segment is not included in the segments in the core");
 		}
 
-		this.segments.put(segment.getId(), segment);
+		if (this.segments.containsKey(segment.getSourceFile().getPath())) {
+			final SortedSet<Segment<E>> segmentsInFile = this.segments
+					.get(segment.getSourceFile().getPath());
+			segmentsInFile.add(segment);
+			this.startPositions.put(segment.getSourceFile().getPath(),
+					segmentsInFile.first().getFirstElement().getPosition());
+			this.endPositions.put(segment.getSourceFile().getPath(),
+					segmentsInFile.last().getLastElement().getPosition());
+		} else {
+			final SortedSet<Segment<E>> newSet = new TreeSet<Segment<E>>(
+					new SegmentComaparator());
+			newSet.add(segment);
+			this.segments.put(segment.getSourceFile().getPath(), newSet);
+			this.startPositions.put(segment.getSourceFile().getPath(), segment
+					.getFirstElement().getPosition());
+			this.endPositions.put(segment.getSourceFile().getPath(), segment
+					.getLastElement().getPosition());
+		}
 	}
 
 	/**
@@ -156,6 +203,55 @@ public class CodeFragment<E extends IProgramElement> implements
 		}
 
 		this.cloneClass = cloneClass;
+	}
+
+	/**
+	 * Get the start positions as an unmodifiable sorted map.
+	 * 
+	 * @return the start positions
+	 * 
+	 * @throws IllegalStateException
+	 *             if the segments have not been set
+	 */
+	public SortedMap<String, Integer> getStartPositions() {
+		if (this.startPositions.isEmpty()) {
+			throw new IllegalStateException("the segments have not been set");
+		}
+
+		return Collections.unmodifiableSortedMap(this.startPositions);
+	}
+
+	/**
+	 * Get the end positions as an unmodifiable sorted map.
+	 * 
+	 * @return the end positions
+	 * 
+	 * @throws IllegalStateException
+	 *             if segments have not been set
+	 */
+	public SortedMap<String, Integer> getEndPositions() {
+		if (this.endPositions.isEmpty()) {
+			throw new IllegalStateException("the segments have not been set");
+		}
+
+		return Collections.unmodifiableSortedMap(this.endPositions);
+	}
+
+	/**
+	 * A comparator for segments
+	 * 
+	 * @author k-hotta
+	 *
+	 */
+	private class SegmentComaparator implements Comparator<Segment<E>> {
+
+		private final DBSegmentComparator dbSegmentComparator = new DBSegmentComparator();
+
+		@Override
+		public int compare(Segment<E> o1, Segment<E> o2) {
+			return dbSegmentComparator.compare(o1.getCore(), o2.getCore());
+		}
+
 	}
 
 }

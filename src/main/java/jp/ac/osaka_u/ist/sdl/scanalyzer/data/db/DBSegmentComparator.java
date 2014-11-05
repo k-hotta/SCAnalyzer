@@ -1,10 +1,8 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
 import java.util.Comparator;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
-
-public class SegmentComparator implements Comparator<DBSegment> {
+public class DBSegmentComparator implements Comparator<DBSegment> {
 
 	@Override
 	public int compare(DBSegment o1, DBSegment o2) {

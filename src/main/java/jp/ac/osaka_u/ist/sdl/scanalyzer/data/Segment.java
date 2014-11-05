@@ -2,8 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 
@@ -29,10 +29,10 @@ public class Segment<E extends IProgramElement> implements
 	private final DBSegment core;
 
 	/**
-	 * The contents of this segment. The key is the position in owner file, and
-	 * the value is an element.
+	 * The contents of this segment. The elements must be sorted based on their
+	 * positions.
 	 */
-	private final SortedMap<Integer, E> contents;
+	private final SortedSet<E> contents;
 
 	/**
 	 * The owner source file of this segment
@@ -43,6 +43,16 @@ public class Segment<E extends IProgramElement> implements
 	 * The owner code fragment of this segment
 	 */
 	private CodeFragment<E> codeFragment;
+
+	/**
+	 * The first element of this segment
+	 */
+	private E firstElement;
+
+	/**
+	 * The last element of this segment
+	 */
+	private E lastElement;
 
 	/**
 	 * The constructor with core
@@ -56,9 +66,11 @@ public class Segment<E extends IProgramElement> implements
 		}
 		this.id = core.getId();
 		this.core = core;
-		this.contents = new TreeMap<Integer, E>();
+		this.contents = new TreeSet<E>(new PositionElementComparator<>());
 		this.sourceFile = null;
 		this.codeFragment = null;
+		this.firstElement = null;
+		this.lastElement = null;
 	}
 
 	@Override
@@ -91,7 +103,7 @@ public class Segment<E extends IProgramElement> implements
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 
-		for (final E content : this.contents.values()) {
+		for (final E content : this.contents) {
 			builder.append(content + " ");
 		}
 
@@ -99,13 +111,13 @@ public class Segment<E extends IProgramElement> implements
 	}
 
 	/**
-	 * Get the contents of this segment as an unmodifiable map.
+	 * Get the contents of this segment as an unmodifiable sorted set.
 	 * 
-	 * @return the map that represents the contents, each of whose keys is a
-	 *         position in owner file, each of whose value is an element
+	 * @return the contents as a sorted set, elements in which are sorted based
+	 *         on their positions
 	 */
-	public SortedMap<Integer, E> getContents() {
-		return Collections.unmodifiableSortedMap(contents);
+	public SortedSet<E> getContents() {
+		return Collections.unmodifiableSortedSet(contents);
 	}
 
 	/**
@@ -141,11 +153,14 @@ public class Segment<E extends IProgramElement> implements
 				throw new IllegalArgumentException(
 						"the given content is out of the range");
 			}
-			if (this.contents.containsKey(content.getPosition())) {
+			if (this.contents.contains(content)) {
 				throw new IllegalArgumentException("duplicate position");
 			}
-			this.contents.put(content.getPosition(), content);
+			this.contents.add(content);
 		}
+
+		this.firstElement = this.contents.first();
+		this.lastElement = this.contents.last();
 	}
 
 	/**
@@ -230,4 +245,37 @@ public class Segment<E extends IProgramElement> implements
 
 		this.codeFragment = codeFragment;
 	}
+
+	/**
+	 * Get the first element of this segment.
+	 * 
+	 * @return the first element of this segment
+	 * 
+	 * @throws IllegalStateException
+	 *             if the contents have not been set
+	 */
+	public E getFirstElement() {
+		if (this.firstElement == null) {
+			throw new IllegalStateException("the contents have not been set");
+		}
+
+		return this.firstElement;
+	}
+
+	/**
+	 * Get the last element of this segment.
+	 * 
+	 * @return the last element of this segment
+	 * 
+	 * @throws IllegalStateException
+	 *             if the contents have not been set
+	 */
+	public E getLastElement() {
+		if (this.lastElement == null) {
+			throw new IllegalStateException("the contents have not been set");
+		}
+
+		return this.lastElement;
+	}
+
 }

@@ -36,7 +36,7 @@ public class IClonesCodeFragmentMappingHelper {
 			final IProgramElementMapper<E> elementMapper) {
 		final SortedSet<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
 
-		for (final Segment<E> segment : codeFragment.getSegments().values()) {
+		for (final Segment<E> segment : codeFragment.getSegments()) {
 			result.addAll(expect(segment, elementMapper));
 		}
 
@@ -62,7 +62,7 @@ public class IClonesCodeFragmentMappingHelper {
 		final SortedSet<ExpectedSegment> result = new TreeSet<ExpectedSegment>();
 
 		final Map<String, SortedSet<E>> updatedElements = new TreeMap<String, SortedSet<E>>();
-		for (final E beforeElement : segment.getContents().values()) {
+		for (final E beforeElement : segment.getContents()) {
 			final E updatedElement = elementMapper.getNext(beforeElement);
 
 			// if null the element was removed

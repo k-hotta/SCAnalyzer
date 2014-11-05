@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
@@ -63,8 +62,8 @@ public class IClonesCodeFragmentMappingHelperTest {
 
 		final CodeFragment<Token> targetFragment = target.getCodeFragments()
 				.get(target.getCodeFragments().firstKey());
-		final Segment<Token> targetSegment = targetFragment.getSegments().get(
-				targetFragment.getSegments().firstKey());
+		final Segment<Token> targetSegment = targetFragment.getSegments()
+				.get(0);
 
 		final Collection<ExpectedSegment> expected = IClonesCodeFragmentMappingHelper
 				.expect(targetSegment, mapper);
@@ -91,8 +90,8 @@ public class IClonesCodeFragmentMappingHelperTest {
 
 		final CodeFragment<Token> targetFragment = target.getCodeFragments()
 				.get(target.getCodeFragments().firstKey());
-		final Segment<Token> targetSegment = targetFragment.getSegments().get(
-				targetFragment.getSegments().firstKey());
+		final Segment<Token> targetSegment = targetFragment.getSegments()
+				.get(0);
 
 		final Collection<ExpectedSegment> expected = IClonesCodeFragmentMappingHelper
 				.expect(targetSegment, mapper);
@@ -145,15 +144,14 @@ public class IClonesCodeFragmentMappingHelperTest {
 		final CodeFragment<Token> referenceFragment = reference
 				.getCodeFragments()
 				.get(reference.getCodeFragments().firstKey());
-		final Segment<Token> first = referenceFragment.getSegments().get(
-				referenceFragment.getSegments().firstKey());
+		final Segment<Token> first = referenceFragment.getSegments().get(0);
 		final Segment<Token> last = referenceFragment.getSegments().get(
-				referenceFragment.getSegments().lastKey());
+				referenceFragment.getSegments().size() - 1);
 
-		assertTrue(first.getContents().get(expected1.getStartPosition())
-				.getLine() == 32);
-		assertTrue(last.getContents().get(expected2.getEndPosition())
-				.getLine() == 45);
+		assertTrue(first.getFirstElement().getPosition() == expected1
+				.getStartPosition());
+		assertTrue(last.getLastElement().getPosition() == expected2
+				.getEndPosition());
 	}
 
 	private Set<CloneClass<Token>> retrieveCloneClass(
@@ -162,16 +160,16 @@ public class IClonesCodeFragmentMappingHelperTest {
 		List<Segment<Token>> segments = new ArrayList<Segment<Token>>();
 		for (CloneClass<Token> cc : cloneClasses) {
 			for (CodeFragment<Token> cf : cc.getCodeFragments().values()) {
-				segments.addAll(cf.getSegments().values());
+				segments.addAll(cf.getSegments());
 			}
 		}
 
 		List<Segment<Token>> resultSegments = segments
 				.parallelStream()
-				.filter(sg -> sg.getContents().get(sg.getContents().firstKey())
-						.getOwnerSourceFile().getPath().equals(path))
-				.filter(sg -> sg.getContents().get(sg.getContents().firstKey())
-						.getLine() == startLine).collect(Collectors.toList());
+				.filter(sg -> sg.getContents().first().getOwnerSourceFile()
+						.getPath().equals(path))
+				.filter(sg -> sg.getContents().first().getLine() == startLine)
+				.collect(Collectors.toList());
 
 		final Set<CloneClass<Token>> result = new HashSet<CloneClass<Token>>();
 		for (final Segment<Token> segment : resultSegments) {

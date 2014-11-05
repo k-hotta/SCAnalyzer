@@ -395,15 +395,15 @@ public class CloneClassBuildTaskTest {
 		for (final CodeFragment<Token> frag1 : result.getCodeFragments()
 				.values()) {
 			final List<Token> contents1 = new ArrayList<Token>();
-			for (final Segment<Token> seg1 : frag1.getSegments().values()) {
-				contents1.addAll(seg1.getContents().values());
+			for (final Segment<Token> seg1 : frag1.getSegments()) {
+				contents1.addAll(seg1.getContents());
 			}
 
 			for (final CodeFragment<Token> frag2 : result.getCodeFragments()
 					.values()) {
 				final List<Token> contents2 = new ArrayList<Token>();
-				for (final Segment<Token> seg2 : frag2.getSegments().values()) {
-					contents2.addAll(seg2.getContents().values());
+				for (final Segment<Token> seg2 : frag2.getSegments()) {
+					contents2.addAll(seg2.getContents());
 				}
 
 				assertTrue(contents1.size() == contents2.size());
@@ -420,15 +420,15 @@ public class CloneClassBuildTaskTest {
 		for (final CodeFragment<Token> frag1 : result.getCodeFragments()
 				.values()) {
 			final List<Token> contents1 = new ArrayList<Token>();
-			for (final Segment<Token> seg1 : frag1.getSegments().values()) {
-				contents1.addAll(seg1.getContents().values());
+			for (final Segment<Token> seg1 : frag1.getSegments()) {
+				contents1.addAll(seg1.getContents());
 			}
 
 			for (final CodeFragment<Token> frag2 : result.getCodeFragments()
 					.values()) {
 				final List<Token> contents2 = new ArrayList<Token>();
-				for (final Segment<Token> seg2 : frag2.getSegments().values()) {
-					contents2.addAll(seg2.getContents().values());
+				for (final Segment<Token> seg2 : frag2.getSegments()) {
+					contents2.addAll(seg2.getContents());
 				}
 
 				assertTrue(contents1.size() == contents2.size());
@@ -445,15 +445,15 @@ public class CloneClassBuildTaskTest {
 		for (final CodeFragment<Token> frag1 : result.getCodeFragments()
 				.values()) {
 			final List<Token> contents1 = new ArrayList<Token>();
-			for (final Segment<Token> seg1 : frag1.getSegments().values()) {
-				contents1.addAll(seg1.getContents().values());
+			for (final Segment<Token> seg1 : frag1.getSegments()) {
+				contents1.addAll(seg1.getContents());
 			}
 
 			for (final CodeFragment<Token> frag2 : result.getCodeFragments()
 					.values()) {
 				final List<Token> contents2 = new ArrayList<Token>();
-				for (final Segment<Token> seg2 : frag2.getSegments().values()) {
-					contents2.addAll(seg2.getContents().values());
+				for (final Segment<Token> seg2 : frag2.getSegments()) {
+					contents2.addAll(seg2.getContents());
 				}
 
 				assertTrue(contents1.size() == contents2.size());
@@ -492,17 +492,15 @@ public class CloneClassBuildTaskTest {
 				for (final CodeFragment<Token> frag1 : result
 						.getCodeFragments().values()) {
 					final List<Token> contents1 = new ArrayList<Token>();
-					for (final Segment<Token> seg1 : frag1.getSegments()
-							.values()) {
-						contents1.addAll(seg1.getContents().values());
+					for (final Segment<Token> seg1 : frag1.getSegments()) {
+						contents1.addAll(seg1.getContents());
 					}
 
 					for (final CodeFragment<Token> frag2 : result
 							.getCodeFragments().values()) {
 						final List<Token> contents2 = new ArrayList<Token>();
-						for (final Segment<Token> seg2 : frag2.getSegments()
-								.values()) {
-							contents2.addAll(seg2.getContents().values());
+						for (final Segment<Token> seg2 : frag2.getSegments()) {
+							contents2.addAll(seg2.getContents());
 						}
 
 						assertTrue(contents1.size() == contents2.size());
