@@ -10,6 +10,9 @@ import difflib.myers.Equalizer;
  */
 public class Type1TokenEqualizer implements Equalizer<Token> {
 
+	/**
+	 * This will be true iff the two tokens have the same value.
+	 */
 	@Override
 	public boolean equals(Token original, Token revised) {
 		return original.getValue().equals(revised.getValue());
