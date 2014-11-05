@@ -14,7 +14,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
  * @author k-hotta
  *
  */
-public class ExpectedSegment {
+public class ExpectedSegment implements Comparable<ExpectedSegment> {
 
 	/**
 	 * The path of the owner file of the expected segment
@@ -63,6 +63,29 @@ public class ExpectedSegment {
 	 */
 	public final int getEndPosition() {
 		return endPosition;
+	}
+
+	/**
+	 * Compare two expected segments.
+	 * 
+	 * <p>
+	 * 1. if the two segments are in different files, the comparison will be
+	 * performed by comparing paths of the files
+	 * </p>
+	 * 
+	 * <p>
+	 * 2. if the two segments are in the same file, the comparison will be
+	 * performed based on their start positions
+	 * </p>
+	 */
+	@Override
+	public int compareTo(ExpectedSegment o) {
+		final int comparePath = this.path.compareTo(o.getPath());
+		if (comparePath != 0) {
+			return comparePath;
+		}
+
+		return Integer.compare(this.startPosition, o.getStartPosition());
 	}
 
 }

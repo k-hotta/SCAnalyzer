@@ -8,12 +8,13 @@ import java.util.Comparator;
  * @author k-hotta
  *
  */
-public class PositionTokenComparator implements Comparator<Token> {
+public class PositionElementComparator<E extends IProgramElement> implements
+		Comparator<E> {
 
 	private final PathSourceFileComparator fileComparator = new PathSourceFileComparator();
 
 	@Override
-	public int compare(Token o1, Token o2) {
+	public int compare(E o1, E o2) {
 		final int comparedFile = fileComparator.compare(
 				o1.getOwnerSourceFile(), o2.getOwnerSourceFile());
 		if (comparedFile != 0) {

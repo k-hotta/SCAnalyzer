@@ -20,6 +20,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICodeFragmentMapper;
  * @author k-hotta
  *
  * @param <E>
+ *            the type of program element
  */
 public class IClonesCodeFragmentMapper<E extends IProgramElement> implements
 		ICodeFragmentMapper<E> {

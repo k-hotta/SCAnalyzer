@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.PositionTokenComparator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.PositionElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
@@ -277,7 +277,7 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 		@Override
 		public Map<Token, Token> call() throws Exception {
 			final Map<Token, Token> mapping = new TreeMap<Token, Token>(
-					new PositionTokenComparator());
+					new PositionElementComparator<Token>());
 
 			switch (type) {
 			case ADD:
