@@ -103,10 +103,18 @@ public class Segment<E extends IProgramElement> implements
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 
+		builder.append(this.getSourceFile().getPath() + "\n");
+		builder.append("line:\t" + this.firstElement.getLine() + "-"
+				+ this.lastElement.getLine() + "\n");
+		builder.append("position:\t" + this.firstElement.getPosition() + "-"
+				+ this.lastElement.getPosition() + "\n**\n");
+
 		for (final E content : this.contents) {
 			builder.append(content + " ");
 		}
 
+		builder.append("\n**");
+		
 		return builder.toString();
 	}
 

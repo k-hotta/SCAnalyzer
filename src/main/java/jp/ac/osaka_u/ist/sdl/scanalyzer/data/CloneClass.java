@@ -78,7 +78,16 @@ public class CloneClass<E extends IProgramElement> implements
 
 	@Override
 	public String toString() {
-		return this.core.toString();
+		// return this.core.toString();
+		final StringBuilder builder = new StringBuilder();
+
+		for (final CodeFragment<E> fragment : this.codeFragments.values()) {
+			builder.append("--\n");
+			builder.append(fragment.toString());
+		}
+		builder.append("--\n");
+
+		return builder.toString();
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -103,7 +104,22 @@ public class CodeFragment<E extends IProgramElement> implements
 
 	@Override
 	public String toString() {
-		return this.core.toString();
+		// return this.core.toString();
+		final StringBuilder builder = new StringBuilder();
+
+		for (final Map.Entry<String, SortedSet<Segment<E>>> entry : this.segments
+				.entrySet()) {
+			builder.append(entry.getKey() + " "
+					+ entry.getValue().first().getFirstElement().getLine()
+					+ "-" + entry.getValue().last().getLastElement().getLine()
+					+ " ("
+					+ entry.getValue().first().getFirstElement().getPosition()
+					+ "-"
+					+ entry.getValue().last().getLastElement().getPosition()
+					+ ")\n");
+		}
+
+		return builder.toString();
 	}
 
 	/**
