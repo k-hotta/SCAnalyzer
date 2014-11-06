@@ -123,11 +123,49 @@ public class IClonesCodeFragmentMappingHelper {
 		int hash = 0;
 		for (final String filePath : codeFragment.getSegmentsAsMap().keySet()) {
 			hash *= 31;
-			hash += ((filePath.hashCode() + codeFragment.getStartPositions()
-					.get(filePath)) * 23 + codeFragment.getEndPositions().get(
-					filePath)) * 23;
+			hash += calculateBucketHash(filePath, codeFragment
+					.getStartPositions().get(filePath), codeFragment
+					.getEndPositions().get(filePath));
 		}
 		return hash;
+	}
+
+	/**
+	 * Calculate hash value from the given map of expected segments. The given
+	 * map is expected to be generated from a single code fragment.
+	 * 
+	 * @param expectedSegments
+	 *            a map of expected segments, which is supposed to be created
+	 *            from a single code fragment
+	 * @return a hash value calculated from the given map
+	 */
+	public static int calculateBucketHash(
+			final SortedMap<String, ExpectedSegment> expectedSegments) {
+		int hash = 0;
+		for (final ExpectedSegment expectedSegment : expectedSegments.values()) {
+			hash *= 31;
+			hash += calculateBucketHash(expectedSegment.getPath(),
+					expectedSegment.getStartPosition(),
+					expectedSegment.getEndPosition());
+		}
+		return hash;
+	}
+
+	/**
+	 * Calculate hash value for buckets with given file path, start position,
+	 * and end position.
+	 * 
+	 * @param filePath
+	 *            the file path
+	 * @param startPosition
+	 *            the start position
+	 * @param endPosition
+	 *            the end position
+	 * @return a hash value calculated with given three values
+	 */
+	public static int calculateBucketHash(final String filePath,
+			final int startPosition, final int endPosition) {
+		return ((filePath.hashCode() + startPosition) * 23 + endPosition) * 23;
 	}
 
 }

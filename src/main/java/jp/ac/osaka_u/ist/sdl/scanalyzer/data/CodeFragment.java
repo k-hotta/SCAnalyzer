@@ -153,7 +153,7 @@ public class CodeFragment<E extends IProgramElement> implements
 	 * @throws IllegalStateException
 	 *             if segments are empty
 	 */
-	public Map<String, SortedSet<Segment<E>>> getSegmentsAsMap() {
+	public SortedMap<String, SortedSet<Segment<E>>> getSegmentsAsMap() {
 		if (segments.isEmpty()) {
 			// segments must not be empty
 			throw new IllegalStateException("there are no segments");
