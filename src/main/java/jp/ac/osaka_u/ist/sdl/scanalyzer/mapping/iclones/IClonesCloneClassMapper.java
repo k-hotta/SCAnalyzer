@@ -18,20 +18,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICodeFragmentMapper;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class represents the protocol of detecting code fragment mapping based
- * on the algorithm used in <i>iClones</i>. This class adopts the algorithm for
+ * This class represents the protocol of detecting clone class mapping based on
+ * the algorithm used in <i>iClones</i>. This class adopts the algorithm for
  * Type-3 clones.
  * <p>
  * literature: S. Bazrafshan "Evolution of Near-miss Clones", in Proceedings of
@@ -44,14 +43,14 @@ import org.apache.logging.log4j.Logger;
  * @param <E>
  *            the type of program element
  */
-public class IClonesCodeFragmentMapper<E extends IProgramElement> implements
-		ICodeFragmentMapper<E> {
+public class IClonesCloneClassMapper<E extends IProgramElement> implements
+		ICloneClassMapper<E> {
 
 	/**
 	 * The logger
 	 */
 	private static final Logger logger = LogManager
-			.getLogger(IClonesCodeFragmentMapper.class);
+			.getLogger(IClonesCloneClassMapper.class);
 
 	/**
 	 * The logger for errors
@@ -69,12 +68,12 @@ public class IClonesCodeFragmentMapper<E extends IProgramElement> implements
 	 * @param mapper
 	 *            the mapper of elements.
 	 */
-	public IClonesCodeFragmentMapper(final IProgramElementMapper<E> mapper) {
+	public IClonesCloneClassMapper(final IProgramElementMapper<E> mapper) {
 		this.mapper = mapper;
 	}
 
 	@Override
-	public Collection<CodeFragmentMapping<E>> detectMapping(
+	public Collection<CloneClassMapping<E>> detectMapping(
 			Version<E> previousVersion, Version<E> nextVersion) {
 		check(previousVersion, nextVersion);
 

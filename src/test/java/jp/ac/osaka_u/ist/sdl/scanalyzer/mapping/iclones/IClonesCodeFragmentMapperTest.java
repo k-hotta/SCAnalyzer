@@ -50,19 +50,19 @@ public class IClonesCodeFragmentMapperTest {
 		mapper = new TraditionalDiffTokenMapper(new ExactTokenEqualizer());
 		mapper.prepare(beforeVersion, afterVersion);
 
-		mCollectFragments = IClonesCodeFragmentMapper.class.getDeclaredMethod(
+		mCollectFragments = IClonesCloneClassMapper.class.getDeclaredMethod(
 				"collectFragments", Collection.class);
 		mCollectFragments.setAccessible(true);
 
-		mMakeBucketsBefore = IClonesCodeFragmentMapper.class.getDeclaredMethod(
+		mMakeBucketsBefore = IClonesCloneClassMapper.class.getDeclaredMethod(
 				"makeBuckets", Map.class);
 		mMakeBucketsBefore.setAccessible(true);
 
-		mEstimateNextFragments = IClonesCodeFragmentMapper.class
+		mEstimateNextFragments = IClonesCloneClassMapper.class
 				.getDeclaredMethod("estimateNextFragments", Version.class);
 		mEstimateNextFragments.setAccessible(true);
 
-		mMakeBucketsAfter = IClonesCodeFragmentMapper.class.getDeclaredMethod(
+		mMakeBucketsAfter = IClonesCloneClassMapper.class.getDeclaredMethod(
 				"makeBuckets", Collection.class);
 		mMakeBucketsAfter.setAccessible(true);
 	}
@@ -79,7 +79,7 @@ public class IClonesCodeFragmentMapperTest {
 			}
 		}
 
-		final IClonesCodeFragmentMapper<Token> instance = new IClonesCodeFragmentMapper<>(
+		final IClonesCloneClassMapper<Token> instance = new IClonesCloneClassMapper<>(
 				mapper);
 
 		@SuppressWarnings("unchecked")
@@ -102,7 +102,7 @@ public class IClonesCodeFragmentMapperTest {
 			}
 		}
 
-		final IClonesCodeFragmentMapper<Token> instance = new IClonesCodeFragmentMapper<>(
+		final IClonesCloneClassMapper<Token> instance = new IClonesCloneClassMapper<>(
 				mapper);
 		@SuppressWarnings("unchecked")
 		final Map<Long, SortedMap<String, ExpectedSegment>> result = (Map<Long, SortedMap<String, ExpectedSegment>>) mEstimateNextFragments
@@ -113,7 +113,7 @@ public class IClonesCodeFragmentMapperTest {
 
 	@Test
 	public void testMakeBucketsBefore1() throws Exception {
-		final IClonesCodeFragmentMapper<Token> instance = new IClonesCodeFragmentMapper<>(
+		final IClonesCloneClassMapper<Token> instance = new IClonesCloneClassMapper<>(
 				mapper);
 
 		@SuppressWarnings("unchecked")
@@ -135,7 +135,7 @@ public class IClonesCodeFragmentMapperTest {
 
 	@Test
 	public void testMakeBucketsAfter1() throws Exception {
-		final IClonesCodeFragmentMapper<Token> instance = new IClonesCodeFragmentMapper<>(
+		final IClonesCloneClassMapper<Token> instance = new IClonesCloneClassMapper<>(
 				mapper);
 
 		@SuppressWarnings("unchecked")
