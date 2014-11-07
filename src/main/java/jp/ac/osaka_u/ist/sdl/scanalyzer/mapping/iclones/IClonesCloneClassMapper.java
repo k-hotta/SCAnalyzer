@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -84,9 +85,12 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsAfter = collectFragments(nextVersion
 				.getCloneClasses().values());
 
-		final ConcurrentMap<Integer, List<Long>> bucketsExpected = makeBuckets(estimatedFragments);
+		final ConcurrentMap<Long, Integer> beforeFragmentsToHash = makeBucketHashingMap(estimatedFragments);
 		final ConcurrentMap<Integer, List<Long>> bucketsActual = makeBuckets(codeFragmentsAfter
 				.values());
+
+		createMapping(previousVersion, beforeFragmentsToHash, bucketsActual,
+				codeFragmentsAfter);
 
 		// TODO implement
 		return null;
@@ -181,49 +185,35 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 	}
 
 	/**
-	 * Make buckets of code fragments with expected segments. This method is
-	 * supposed to be used for making buckets of fragments in BEFORE version.
+	 * Make mapping between id of code fragments and its hash value. This method
+	 * is supposed to be used for making buckets of fragments in BEFORE version.
 	 * 
 	 * @param expectedSegments
 	 *            the expected segments
-	 * @return a concurrent map that maps each hash value to a list of long,
-	 *         which list contains IDs of code fragments (NOT expected ones but
-	 *         actual ones in before version)
+	 * @return a concurrent map that maps each id of code fragments to its
+	 *         bucket hash value.
 	 */
-	private ConcurrentMap<Integer, List<Long>> makeBuckets(
+	private ConcurrentMap<Long, Integer> makeBucketHashingMap(
 			final Map<Long, SortedMap<String, ExpectedSegment>> expectedSegments) {
 		final Stream<Long> stream = Collections
 				.synchronizedMap(expectedSegments).keySet().parallelStream();
 
 		// the function to generate keys
-		// the key will be the bucket hash values calculated from each of
-		// expected segments of each of fragments in before version.
-		final Function<Long, Integer> keyMapper = l -> {
+		// the key will be id of the fragment
+		final Function<Long, Long> keyMapper = l -> l;
+
+		// the function to generate values
+		// the value will be bucket hash value
+		final Function<Long, Integer> valueMapper = l -> {
 			final SortedMap<String, ExpectedSegment> expectedFragment = expectedSegments
 					.get(l);
 			return IClonesCodeFragmentMappingHelper
 					.calculateBucketHash(expectedFragment);
 		};
 
-		// the function to generate values
-		// the value will be a list contains the id of the fragment under
-		// consideration
-		final Function<Long, List<Long>> valueMapper = l -> {
-			final List<Long> fragmentIds = new ArrayList<Long>();
-			fragmentIds.add(l);
-			return fragmentIds;
-		};
-
-		// the merge function
-		// provide a list that contains all the elements in the two lists
-		final BinaryOperator<List<Long>> mergeFunction = (v1, v2) -> {
-			v1.addAll(v2);
-			return v1;
-		};
-
 		// return the result as a concurrent map
-		return stream.collect(Collectors.toConcurrentMap(keyMapper,
-				valueMapper, mergeFunction));
+		return stream.collect(Collectors
+				.toConcurrentMap(keyMapper, valueMapper));
 	}
 
 	/**
@@ -299,4 +289,72 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		// .collect(Collectors.toConcurrentMap(cf -> cf.getId(), cf -> cf));
 	}
 
+	private void createMapping(final Version<E> previousVersion,
+			final ConcurrentMap<Long, Integer> beforeFragmentsToHash,
+			final ConcurrentMap<Integer, List<Long>> afterBucket,
+			final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsAfter) {
+		final Map<CloneClass<E>, List<CloneClass<E>>> perfectMatches = new TreeMap<>(
+				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
+		final Map<CloneClass<E>, List<CloneClass<E>>> bestMatches = new TreeMap<>(
+				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
+		final Map<CloneClass<E>, Map<CloneClass<E>, Integer>> likelyMatches = new TreeMap<>(
+				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
+
+		final ExecutorService pool = Executors.newCachedThreadPool();
+
+		try {
+			final Map<CloneClassMappingTask<E>, Future<?>> futures = new HashMap<>();
+			for (final CloneClass<E> cloneClass : previousVersion
+					.getCloneClasses().values()) {
+				final CloneClassMappingTask<E> task = new CloneClassMappingTask<E>(
+						cloneClass, beforeFragmentsToHash, afterBucket,
+						codeFragmentsAfter);
+				futures.put(task, pool.submit(task));
+			}
+
+			for (final Map.Entry<CloneClassMappingTask<E>, Future<?>> entry : futures
+					.entrySet()) {
+				try {
+					if (entry.getValue().get() == null) {
+						logger.trace("finished the task for clone class "
+								+ entry.getKey().getTargetCloneClass().getId());
+
+						final CloneClassMappingTask<E> finishedTask = entry
+								.getKey();
+						final CloneClass<E> targetCloneClass = finishedTask
+								.getTargetCloneClass();
+						final List<CloneClass<E>> currentPerfectMatches = finishedTask
+								.getPerfectMatches();
+						final List<CloneClass<E>> currentBestMatches = finishedTask
+								.getBestMatches();
+						final Map<CloneClass<E>, Integer> currentLikelyMatches = finishedTask
+								.getLikelyMatches();
+
+						if (!currentPerfectMatches.isEmpty()) {
+							perfectMatches.put(targetCloneClass,
+									currentPerfectMatches);
+						}
+
+						if (!currentBestMatches.isEmpty()) {
+							bestMatches.put(targetCloneClass,
+									currentBestMatches);
+						}
+
+						if (!currentLikelyMatches.isEmpty()) {
+							likelyMatches.put(targetCloneClass,
+									currentLikelyMatches);
+						}
+					}
+				} catch (IllegalStateException e) {
+					throw e;
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		} finally {
+			pool.shutdown();
+		}
+		
+		System.out.println("hoge");
+	}
 }

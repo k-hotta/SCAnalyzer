@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -55,7 +56,7 @@ public class IClonesCodeFragmentMapperTest {
 		mCollectFragments.setAccessible(true);
 
 		mMakeBucketsBefore = IClonesCloneClassMapper.class.getDeclaredMethod(
-				"makeBuckets", Map.class);
+				"makeBucketHashingMap", Map.class);
 		mMakeBucketsBefore.setAccessible(true);
 
 		mEstimateNextFragments = IClonesCloneClassMapper.class
@@ -121,16 +122,10 @@ public class IClonesCodeFragmentMapperTest {
 				.invoke(instance, beforeVersion);
 
 		@SuppressWarnings("unchecked")
-		final Map<Integer, List<Long>> result = (Map<Integer, List<Long>>) mMakeBucketsBefore
+		final Map<Long, Integer> result = (Map<Long, Integer>) mMakeBucketsBefore
 				.invoke(instance, expected);
 
-		int count = 0;
-		for (final List<Long> tmp : result.values()) {
-			assertTrue(tmp.size() > 0);
-			count += tmp.size();
-		}
-
-		assertEquals(count, expected.size());
+		assertEquals(result.size(), expected.size());
 	}
 
 	@Test
@@ -191,4 +186,15 @@ public class IClonesCodeFragmentMapperTest {
 
 		assertEquals(count, fragments.size());
 	}
+
+	@Test
+	public void testDetectMapping1() throws Exception {
+		final IClonesCloneClassMapper<Token> instance = new IClonesCloneClassMapper<>(
+				mapper);
+
+		instance.detectMapping(beforeVersion, afterVersion);
+
+		fail("not implemented yet");
+	}
+
 }
