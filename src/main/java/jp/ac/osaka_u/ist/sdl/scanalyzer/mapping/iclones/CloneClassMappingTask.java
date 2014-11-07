@@ -188,17 +188,21 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 			}
 
 			final int bucketHash = beforeBucket.get(codeFragment.getId());
-			final List<Long> similarFragmentIds = afterBucket.get(bucketHash);
+			if (afterBucket.containsKey(bucketHash)) {
+				final List<Long> similarFragmentIds = afterBucket
+						.get(bucketHash);
 
-			if (!afterCodeFragments.keySet().containsAll(similarFragmentIds)) {
-				throw new IllegalStateException(
-						"cannot find some fragments in after fragments");
+				if (!afterCodeFragments.keySet()
+						.containsAll(similarFragmentIds)) {
+					throw new IllegalStateException(
+							"cannot find some fragments in after fragments");
+				}
+
+				final List<CodeFragment<E>> similarFragments = similarFragmentIds
+						.stream().map(l -> afterCodeFragments.get(l))
+						.collect(Collectors.toList());
+				similarFragmentMapping.put(codeFragment, similarFragments);
 			}
-
-			final List<CodeFragment<E>> similarFragments = similarFragmentIds
-					.stream().map(l -> afterCodeFragments.get(l))
-					.collect(Collectors.toList());
-			similarFragmentMapping.put(codeFragment, similarFragments);
 		}
 
 		return similarFragmentMapping;
