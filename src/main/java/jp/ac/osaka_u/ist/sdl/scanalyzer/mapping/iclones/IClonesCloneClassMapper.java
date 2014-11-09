@@ -21,8 +21,10 @@ import java.util.stream.Stream;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
@@ -89,8 +91,9 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		final ConcurrentMap<Integer, List<Long>> bucketsActual = makeBuckets(codeFragmentsAfter
 				.values());
 
-		createMapping(previousVersion, beforeFragmentsToHash, bucketsActual,
-				codeFragmentsAfter);
+		final List<CloneClassMapping<E>> mapping = createMapping(
+				previousVersion, nextVersion, beforeFragmentsToHash,
+				bucketsActual, codeFragmentsAfter);
 
 		// TODO implement
 		return null;
@@ -289,15 +292,16 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		// .collect(Collectors.toConcurrentMap(cf -> cf.getId(), cf -> cf));
 	}
 
-	private void createMapping(final Version<E> previousVersion,
+	private List<CloneClassMapping<E>> createMapping(
+			final Version<E> previousVersion, final Version<E> nextVersion,
 			final ConcurrentMap<Long, Integer> beforeFragmentsToHash,
 			final ConcurrentMap<Integer, List<Long>> afterBucket,
 			final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsAfter) {
 		final Map<CloneClass<E>, List<CloneClass<E>>> perfectMatches = new TreeMap<>(
 				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
-		final Map<CloneClass<E>, List<CloneClass<E>>> bestMatches = new TreeMap<>(
+		final Map<CloneClass<E>, List<CloneClass<E>>> inclusiveMatches = new TreeMap<>(
 				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
-		final Map<CloneClass<E>, Map<CloneClass<E>, Integer>> likelyMatches = new TreeMap<>(
+		final Map<CloneClass<E>, Map<CloneClass<E>, Integer>> bestMatches = new TreeMap<>(
 				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
 
 		final ExecutorService pool = Executors.newCachedThreadPool();
@@ -325,24 +329,24 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 								.getTargetCloneClass();
 						final List<CloneClass<E>> currentPerfectMatches = finishedTask
 								.getPerfectMatches();
-						final List<CloneClass<E>> currentBestMatches = finishedTask
+						final List<CloneClass<E>> currentInclusiveMatches = finishedTask
+								.getInclusiveMatches();
+						final Map<CloneClass<E>, Integer> currentBestMatches = finishedTask
 								.getBestMatches();
-						final Map<CloneClass<E>, Integer> currentLikelyMatches = finishedTask
-								.getLikelyMatches();
 
 						if (!currentPerfectMatches.isEmpty()) {
 							perfectMatches.put(targetCloneClass,
 									currentPerfectMatches);
 						}
 
+						if (!currentInclusiveMatches.isEmpty()) {
+							inclusiveMatches.put(targetCloneClass,
+									currentInclusiveMatches);
+						}
+
 						if (!currentBestMatches.isEmpty()) {
 							bestMatches.put(targetCloneClass,
 									currentBestMatches);
-						}
-
-						if (!currentLikelyMatches.isEmpty()) {
-							likelyMatches.put(targetCloneClass,
-									currentLikelyMatches);
 						}
 					}
 				} catch (IllegalStateException e) {
@@ -354,7 +358,106 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		} finally {
 			pool.shutdown();
 		}
-		
-		System.out.println("hoge");
+
+		return fixMatches(previousVersion, nextVersion, perfectMatches,
+				inclusiveMatches, bestMatches);
 	}
+
+	private List<CloneClassMapping<E>> fixMatches(
+			final Version<E> previousVersion, final Version<E> nextVersion,
+			final Map<CloneClass<E>, List<CloneClass<E>>> perfectMatches,
+			final Map<CloneClass<E>, List<CloneClass<E>>> inclusiveMatches,
+			final Map<CloneClass<E>, Map<CloneClass<E>, Integer>> bestMatches) {
+		final List<CloneClassMapping<E>> result = new ArrayList<CloneClassMapping<E>>();
+
+		final Map<Long, CloneClass<E>> previousClones = new TreeMap<>();
+		final Map<Long, CloneClass<E>> nextClones = new TreeMap<>();
+
+		previousClones.putAll(previousVersion.getCloneClasses());
+		nextClones.putAll(nextVersion.getCloneClasses());
+
+		// process perfect matches first
+		// clone classes that have any perfect matching partner will be ignored
+		// in processing best matches
+		for (final Map.Entry<CloneClass<E>, List<CloneClass<E>>> perfectEntry : perfectMatches
+				.entrySet()) {
+			final CloneClass<E> oldCloneClass = perfectEntry.getKey();
+			for (final CloneClass<E> newCloneClass : perfectEntry.getValue()) {
+				result.add(makeMapping(oldCloneClass, newCloneClass));
+				previousClones.remove(oldCloneClass.getId());
+				nextClones.remove(newCloneClass.getId());
+			}
+		}
+
+		// process inclusive matches second
+		// clone classes that processed in this phase are still of interest in
+		// the further process
+		for (final Map.Entry<CloneClass<E>, List<CloneClass<E>>> inclusiveEntry : inclusiveMatches
+				.entrySet()) {
+			final CloneClass<E> oldCloneClass = inclusiveEntry.getKey();
+			for (final CloneClass<E> newCloneClass : inclusiveEntry.getValue()) {
+				result.add(makeMapping(oldCloneClass, newCloneClass));
+			}
+		}
+
+		// internal data structure to resolve best matches
+		final Map<CloneClass<E>, CloneClass<E>> reversedBestMatches = new TreeMap<>(
+				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
+		final Map<CloneClass<E>, Integer> currentHighest = new TreeMap<>((k1,
+				k2) -> Long.compare(k1.getId(), k2.getId()));
+
+		// resolve best matches
+		for (final Map.Entry<CloneClass<E>, Map<CloneClass<E>, Integer>> bestEntry : bestMatches
+				.entrySet()) {
+			final CloneClass<E> oldCloneClass = bestEntry.getKey();
+			if (!previousClones.containsKey(oldCloneClass.getId())) {
+				// the old clone class has perfect match
+				continue;
+			}
+
+			final Map<CloneClass<E>, Integer> currentBestMatch = bestEntry
+					.getValue();
+			for (final CloneClass<E> newCloneClass : currentBestMatch.keySet()) {
+				if (!nextClones.containsKey(newCloneClass.getId())) {
+					// the new clone class has perfect match
+					continue;
+				}
+
+				// if this predicate is true, the new clone class has not been
+				// mapped or has been mapped to an ancestor whose matching
+				// elements are fewer than this old clone class
+				if (!currentHighest.containsKey(newCloneClass)
+						|| currentHighest.get(newCloneClass) < currentBestMatch
+								.get(newCloneClass)) {
+					currentHighest.put(newCloneClass,
+							currentBestMatch.get(newCloneClass));
+					reversedBestMatches.put(newCloneClass, oldCloneClass);
+				}
+			}
+		}
+
+		// make instances of resolved best matches
+		for (final Map.Entry<CloneClass<E>, CloneClass<E>> reversedBestEntry : reversedBestMatches
+				.entrySet()) {
+			result.add(makeMapping(reversedBestEntry.getValue(),
+					reversedBestEntry.getKey()));
+		}
+
+		return result;
+	}
+
+	private CloneClassMapping<E> makeMapping(final CloneClass<E> oldCloneClass,
+			final CloneClass<E> newCloneClass) {
+		final DBCloneClassMapping mappingCore = new DBCloneClassMapping(
+				IDGenerator.generate(DBCloneClassMapping.class),
+				oldCloneClass.getCore(), newCloneClass.getCore());
+		final CloneClassMapping<E> mapping = new CloneClassMapping<>(
+				mappingCore);
+
+		mapping.setOldCloneClass(oldCloneClass);
+		mapping.setNewCloneClass(newCloneClass);
+
+		return mapping;
+	}
+
 }

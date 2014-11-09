@@ -26,16 +26,21 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 	private final List<CloneClass<E>> perfectMatches;
 
 	/**
-	 * This list contains best matches.
+	 * This list contains specials cases of best matches. That is, all the
+	 * elements of the target clone class OR all the elements in a clone class
+	 * of this list completely matched those in the other clone class, but there
+	 * exist some other unmatched fragments in the other clone class. This will
+	 * happen when a new fragment is introduced or a fragment is deleted.
+	 * According to the literature, such a match will be included even though
+	 * there exist other best matches.
 	 */
-	private final List<CloneClass<E>> bestMatches;
+	private final List<CloneClass<E>> inclusiveMatches;
 
 	/**
-	 * This list contains likely matches, which is introduced to distinguish
-	 * special cases of best matches. The value stores how many code fragments
+	 * This map contains best matches. The value stores how many code fragments
 	 * are mapped between the target and the key clone class.
 	 */
-	private final Map<CloneClass<E>, Integer> likelyMatches;
+	private final Map<CloneClass<E>, Integer> bestMatches;
 
 	/**
 	 * The clone class of which the task attempts to find matches.
@@ -63,8 +68,8 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 			final ConcurrentMap<Integer, List<Long>> afterBucket,
 			final ConcurrentMap<Long, CodeFragment<E>> afterCodeFragments) {
 		this.perfectMatches = new ArrayList<CloneClass<E>>();
-		this.bestMatches = new ArrayList<CloneClass<E>>();
-		this.likelyMatches = new TreeMap<>((k1, k2) -> Long.compare(k1.getId(),
+		this.inclusiveMatches = new ArrayList<CloneClass<E>>();
+		this.bestMatches = new TreeMap<>((k1, k2) -> Long.compare(k1.getId(),
 				k2.getId()));
 		this.targetCloneClass = targetCloneClass;
 		this.beforeBucket = beforeBucket;
@@ -80,12 +85,12 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 		return perfectMatches;
 	}
 
-	final Map<CloneClass<E>, Integer> getLikelyMatches() {
-		return likelyMatches;
+	final Map<CloneClass<E>, Integer> getBestMatches() {
+		return bestMatches;
 	}
 
-	final List<CloneClass<E>> getBestMatches() {
-		return bestMatches;
+	final List<CloneClass<E>> getInclusiveMatches() {
+		return inclusiveMatches;
 	}
 
 	@Override
@@ -143,7 +148,7 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 				// was added/deleted. This case should be treated in a special
 				// way, which is stated in the paper of Saman Bazrafshan.
 
-				this.bestMatches.add(mostMatchedCloneClass);
+				this.inclusiveMatches.add(mostMatchedCloneClass);
 				bestMatchFound = true;
 			}
 
@@ -151,7 +156,7 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 				// In this case, the most matched clone class is keeped as a
 				// likely match
 
-				this.likelyMatches.put(mostMatchedCloneClass, max);
+				this.bestMatches.put(mostMatchedCloneClass, max);
 			}
 		}
 
@@ -160,10 +165,10 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 		// Similarly, if no perfect match but any best match found, the likely
 		// matches should be ignored.
 		if (perfectMatchFound) {
+			this.inclusiveMatches.clear();
 			this.bestMatches.clear();
-			this.likelyMatches.clear();
 		} else if (bestMatchFound) {
-			this.likelyMatches.clear();
+			this.bestMatches.clear();
 		}
 
 	}

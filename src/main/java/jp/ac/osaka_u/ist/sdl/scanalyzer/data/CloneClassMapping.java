@@ -173,6 +173,9 @@ public class CloneClassMapping<E extends IProgramElement> implements
 			throw new IllegalArgumentException(
 					"the given new clone class is null, but that in the core is not");
 		}
+		
+		
+		this.newCloneClass = newCloneClass;
 	}
 
 }
