@@ -23,14 +23,14 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
  * @param <E>
  *            the type of program element
  */
-public class CodeFragmentMappingTask<E extends IProgramElement> implements
+public class CloneClassMappingPostProcessTask<E extends IProgramElement> implements
 		Runnable {
 
 	private final CloneClassMapping<E> cloneClassMapping;
 
 	private final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments;
 
-	public CodeFragmentMappingTask(
+	public CloneClassMappingPostProcessTask(
 			final CloneClassMapping<E> cloneClassMapping,
 			final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments) {
 		this.cloneClassMapping = cloneClassMapping;

@@ -421,9 +421,9 @@ public class IClonesCloneClassMappingHelper {
 	public static <E extends IProgramElement> void setCodeFragmentMapping(
 			final Collection<CloneClassMapping<E>> cloneClassMapping,
 			final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments) {
-		final List<CodeFragmentMappingTask<E>> tasks = new ArrayList<>();
+		final List<CloneClassMappingPostProcessTask<E>> tasks = new ArrayList<>();
 		for (final CloneClassMapping<E> tmp : cloneClassMapping) {
-			tasks.add(new CodeFragmentMappingTask<>(tmp, estimatedFragments));
+			tasks.add(new CloneClassMappingPostProcessTask<>(tmp, estimatedFragments));
 		}
 
 		final ExecutorService pool = Executors.newCachedThreadPool();
@@ -431,7 +431,7 @@ public class IClonesCloneClassMappingHelper {
 		try {
 
 			final List<Future<?>> futures = new ArrayList<>();
-			for (final CodeFragmentMappingTask<E> task : tasks) {
+			for (final CloneClassMappingPostProcessTask<E> task : tasks) {
 				futures.add(pool.submit(task));
 			}
 
