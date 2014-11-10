@@ -80,7 +80,7 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 			Version<E> previousVersion, Version<E> nextVersion) {
 		check(previousVersion, nextVersion);
 
-		final Map<Long, SortedMap<String, ExpectedSegment>> estimatedFragments = estimateNextFragments(previousVersion);
+		final Map<Long, CodeFragment<E>> estimatedFragments = estimateNextFragments(previousVersion);
 
 		final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsBefore = collectFragments(previousVersion
 				.getCloneClasses().values());
@@ -134,12 +134,11 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 	 * @param previousVersion
 	 *            the previous version
 	 * @return a map, which maps the IDs of code fragments in the previous
-	 *         version to another map between file path and expected segments in
-	 *         the file.
+	 *         version to instances of code fragments after updated
 	 */
-	private Map<Long, SortedMap<String, ExpectedSegment>> estimateNextFragments(
+	private Map<Long, CodeFragment<E>> estimateNextFragments(
 			final Version<E> previousVersion) {
-		final Map<Long, SortedMap<String, ExpectedSegment>> result = new TreeMap<Long, SortedMap<String, ExpectedSegment>>();
+		final Map<Long, CodeFragment<E>> result = new TreeMap<>();
 
 		final List<NextFragmentsEstimateTask<E>> tasks = new ArrayList<NextFragmentsEstimateTask<E>>();
 
@@ -151,26 +150,23 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		final ExecutorService pool = Executors.newCachedThreadPool();
 
 		try {
-			final List<Future<SortedMap<Long, SortedMap<String, ExpectedSegment>>>> futures = new ArrayList<>();
+			final List<Future<SortedMap<Long, CodeFragment<E>>>> futures = new ArrayList<>();
 
 			for (final NextFragmentsEstimateTask<E> task : tasks) {
 				futures.add(pool.submit(task));
 			}
 
-			for (Future<SortedMap<Long, SortedMap<String, ExpectedSegment>>> future : futures) {
+			for (Future<SortedMap<Long, CodeFragment<E>>> future : futures) {
 				try {
-					final SortedMap<Long, SortedMap<String, ExpectedSegment>> taskResult = future
+					final SortedMap<Long, CodeFragment<E>> taskResult = future
 							.get();
-					for (final Map.Entry<Long, SortedMap<String, ExpectedSegment>> entry : taskResult
+					for (final Map.Entry<Long, CodeFragment<E>> entry : taskResult
 							.entrySet()) {
 						if (result.containsKey(entry.getKey())) {
 							throw new IllegalStateException(
 									"there are duplicated code fragments in multiple clone classes");
 						} else {
-							// if empty, the fragment was completely removed
-							if (!entry.getValue().isEmpty()) {
-								result.put(entry.getKey(), entry.getValue());
-							}
+							result.put(entry.getKey(), entry.getValue());
 						}
 					}
 				} catch (IllegalStateException e1) {
@@ -191,15 +187,15 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 	 * Make mapping between id of code fragments and its hash value. This method
 	 * is supposed to be used for making buckets of fragments in BEFORE version.
 	 * 
-	 * @param expectedSegments
-	 *            the expected segments
+	 * @param expectedFragments
+	 *            the expected fragments
 	 * @return a concurrent map that maps each id of code fragments to its
 	 *         bucket hash value.
 	 */
 	private ConcurrentMap<Long, Integer> makeBucketHashingMap(
-			final Map<Long, SortedMap<String, ExpectedSegment>> expectedSegments) {
+			final Map<Long, CodeFragment<E>> expectedFragments) {
 		final Stream<Long> stream = Collections
-				.synchronizedMap(expectedSegments).keySet().parallelStream();
+				.synchronizedMap(expectedFragments).keySet().parallelStream();
 
 		// the function to generate keys
 		// the key will be id of the fragment
@@ -208,8 +204,7 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		// the function to generate values
 		// the value will be bucket hash value
 		final Function<Long, Integer> valueMapper = l -> {
-			final SortedMap<String, ExpectedSegment> expectedFragment = expectedSegments
-					.get(l);
+			final CodeFragment<E> expectedFragment = expectedFragments.get(l);
 			return IClonesCodeFragmentMappingHelper
 					.calculateBucketHash(expectedFragment);
 		};

@@ -7,10 +7,15 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.PositionElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SegmentComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegmentComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
 /**
@@ -31,46 +36,85 @@ public class IClonesCodeFragmentMappingHelper {
 	 *            the information of mapping of elements
 	 * @return a list has all the expected segments
 	 */
-	public static <E extends IProgramElement> SortedMap<String, ExpectedSegment> expect(
+	public static <E extends IProgramElement> CodeFragment<E> expect(
 			final CodeFragment<E> codeFragment,
 			final IProgramElementMapper<E> elementMapper) {
-		final SortedMap<String, ExpectedSegment> result = new TreeMap<String, ExpectedSegment>();
+		// the core of updated segment
+		// note that the clone class is set null, because we don't know to which
+		// clone class the updated fragments belongs
+		final DBCodeFragment updatedDBFragment = new DBCodeFragment(
+				codeFragment.getId(), new TreeSet<DBSegment>(
+						new DBSegmentComparator()), null);
 
+		// the instance of updated fragment, which is the result of this method
+		final CodeFragment<E> updatedFragment = new CodeFragment<>(
+				updatedDBFragment);
+
+		// this map contains which segments each source file has after updated
+		final Map<String, SortedSet<Segment<E>>> updatedSegments = new TreeMap<String, SortedSet<Segment<E>>>();
+
+		// update each segment in the code fragment
 		for (final Map.Entry<String, SortedSet<Segment<E>>> entry : codeFragment
 				.getSegmentsAsMap().entrySet()) {
-			final Segment<E> firstElement = entry.getValue().first();
-			final Segment<E> lastElement = entry.getValue().last();
-			final SourceFile<E> sourceFile = firstElement.getSourceFile();
-			final SortedMap<String, ExpectedSegment> expectedSegments = expect(
-					sourceFile, firstElement.getFirstElement().getPosition(),
-					lastElement.getLastElement().getPosition(), elementMapper);
+			for (final Segment<E> segment : entry.getValue()) {
+				// perform updating
+				final Map<String, Segment<E>> currentUpdatedSegments = update(
+						segment, elementMapper);
 
-			for (final Map.Entry<String, ExpectedSegment> expectedEntry : expectedSegments
-					.entrySet()) {
-				if (result.containsKey(expectedEntry.getKey())) {
-					final ExpectedSegment alreadyRegistered = result
-							.get(expectedEntry.getKey());
-					result.put(expectedEntry.getKey(),
-							merge(alreadyRegistered, expectedEntry.getValue()));
-				} else {
-					result.put(expectedEntry.getKey(), expectedEntry.getValue());
+				// check if any location overlapping exists
+				for (final Map.Entry<String, Segment<E>> updatedSegmentEntry : currentUpdatedSegments
+						.entrySet()) {
+					final String path = updatedSegmentEntry.getKey();
+
+					if (updatedSegments.containsKey(path)) {
+						updatedSegments.put(
+								path,
+								merge(updatedSegmentEntry.getValue(),
+										updatedSegments.get(path)));
+					} else {
+						final SortedSet<Segment<E>> newSet = new TreeSet<>(
+								new SegmentComparator<>());
+						newSet.add(updatedSegmentEntry.getValue());
+						updatedSegments.put(path, newSet);
+					}
 				}
 			}
 		}
 
-		return result;
+		if (updatedSegments.isEmpty()) {
+			// the fragment was completely removed
+			return null;
+		}
+
+		// fix relationship between updated segments and updated fragment
+		for (final Map.Entry<String, SortedSet<Segment<E>>> updatedEntry : updatedSegments
+				.entrySet()) {
+			for (final Segment<E> updatedSegment : updatedEntry.getValue()) {
+				updatedDBFragment.getSegments().add(updatedSegment.getCore());
+				updatedSegment.getCore().setCodeFragment(updatedDBFragment);
+				updatedFragment.addSegment(updatedSegment);
+				updatedSegment.setCodeFragment(updatedFragment);
+			}
+		}
+
+		return updatedFragment;
 	}
 
-	private static <E extends IProgramElement> SortedMap<String, ExpectedSegment> expect(
-			final SourceFile<E> sourceFile, final int startPosition,
-			final int endPosition, final IProgramElementMapper<E> elementMapper) {
-		final SortedMap<String, ExpectedSegment> result = new TreeMap<String, ExpectedSegment>();
+	private static <E extends IProgramElement> Map<String, Segment<E>> update(
+			final Segment<E> segment,
+			final IProgramElementMapper<E> elementMapper) {
+		final String ownerFilePath = segment.getSourceFile().getPath();
 
-		final Map<Integer, E> contents = sourceFile.getContents();
-
+		// this map contains the estimated elements in the next version
+		// note, an element in a segment can move into another file, so this map
+		// is made capable to handle multiple files even though our interest is
+		// in only a single segment
 		final SortedMap<String, SortedSet<E>> updatedElements = new TreeMap<String, SortedSet<E>>();
-		for (int index = startPosition; index <= endPosition; index++) {
-			final E updatedElement = elementMapper.getNext(contents.get(index));
+
+		// for each of elements in the segment,
+		// estimate where they are in the next version
+		for (final E element : segment.getContents()) {
+			final E updatedElement = elementMapper.getNext(element);
 			if (updatedElement != null) {
 				final String path = updatedElement.getOwnerSourceFile()
 						.getPath();
@@ -85,31 +129,124 @@ public class IClonesCodeFragmentMappingHelper {
 			}
 		}
 
-		for (Map.Entry<String, SortedSet<E>> entry : updatedElements.entrySet()) {
-			final String path = entry.getKey();
-			final E firstElement = entry.getValue().first();
-			final E lastElement = entry.getValue().last();
+		final Map<String, Segment<E>> result = new TreeMap<String, Segment<E>>();
 
-			result.put(path,
-					new ExpectedSegment(path, firstElement.getPosition(),
-							lastElement.getPosition()));
+		if (updatedElements.isEmpty()) {
+			// the segment was completely removed
+			return result;
+		}
+
+		// update the segment
+		// note that two or more updated segments can be generated
+		// if the elements of the segment is divided into multiple files
+		for (final Map.Entry<String, SortedSet<E>> entry : updatedElements
+				.entrySet()) {
+			final String currentPath = entry.getKey();
+			final int updatedStartPosition = entry.getValue().first()
+					.getPosition();
+			final int updatedEndPosition = entry.getValue().last()
+					.getPosition();
+
+			@SuppressWarnings("unchecked")
+			final SourceFile<E> sourceFileInAfterVersion = (SourceFile<E>) entry
+					.getValue().first().getOwnerSourceFile();
+
+			final DBSegment updatedDBSegment = new DBSegment();
+			updatedDBSegment.setStartPosition(updatedStartPosition);
+			updatedDBSegment.setEndPosition(updatedEndPosition);
+			updatedDBSegment.setSourceFile(sourceFileInAfterVersion.getCore());
+
+			// inherit the id of the original segment if the owner file of the
+			// updated segment is the same as the original one,
+			// otherwise, a new id will be set
+			if (currentPath.equals(ownerFilePath)) {
+				updatedDBSegment.setId(segment.getId());
+			} else {
+				updatedDBSegment.setId(IDGenerator.generate(DBSegment.class));
+			}
+
+			final Segment<E> updatedSegment = new Segment<>(updatedDBSegment);
+			updatedSegment.setSourceFile(sourceFileInAfterVersion);
+
+			final Map<Integer, E> updatedContents = sourceFileInAfterVersion
+					.getContents().subMap(updatedStartPosition,
+							updatedEndPosition + 1);
+			updatedSegment.setContents(updatedContents.values());
+			result.put(currentPath, updatedSegment);
 		}
 
 		return result;
 	}
 
-	private static ExpectedSegment merge(final ExpectedSegment es1,
-			final ExpectedSegment es2) {
-		if (!es1.getPath().equals(es2.getPath())) {
-			throw new IllegalStateException(
-					"the given expected segments are not in the same file");
+	/**
+	 * Merge segments in the same file if their locations are overlapping.
+	 * 
+	 * @param segment
+	 *            the segment that is about to be newly added
+	 * @param alreadyRegisteredSegments
+	 *            a set of already registered segments
+	 * @return a set of segments after overlapping is revolved
+	 */
+	private static <E extends IProgramElement> SortedSet<Segment<E>> merge(
+			final Segment<E> segment,
+			final SortedSet<Segment<E>> alreadyRegisteredSegments) {
+		final int startPosition = segment.getFirstElement().getPosition();
+		final int endPosition = segment.getLastElement().getPosition();
+
+		final SortedSet<Segment<E>> toBeMerged = new TreeSet<>(
+				new SegmentComparator<>());
+		toBeMerged.add(segment);
+
+		boolean mergeRequired = false;
+		for (final Segment<E> alreadyRegisteredSegment : alreadyRegisteredSegments) {
+			if (alreadyRegisteredSegment.getFirstElement().getPosition() <= startPosition
+					&& startPosition <= alreadyRegisteredSegment
+							.getLastElement().getPosition()) {
+				toBeMerged.add(alreadyRegisteredSegment);
+				mergeRequired = true;
+			} else if (alreadyRegisteredSegment.getFirstElement().getPosition() <= endPosition
+					&& endPosition <= alreadyRegisteredSegment.getLastElement()
+							.getPosition()) {
+				toBeMerged.add(alreadyRegisteredSegment);
+				mergeRequired = true;
+			}
 		}
 
-		final int minStart = Math.min(es1.getStartPosition(),
-				es2.getStartPosition());
-		final int maxEnd = Math.max(es1.getEndPosition(), es2.getEndPosition());
+		alreadyRegisteredSegments.add(segment);
 
-		return new ExpectedSegment(es1.getPath(), minStart, maxEnd);
+		if (mergeRequired) {
+			int mergedStartPosition = Integer.MAX_VALUE;
+			int mergedEndPosition = -1;
+			for (final Segment<E> toBeMergedSegment : toBeMerged) {
+				alreadyRegisteredSegments.remove(toBeMergedSegment);
+
+				if (mergedStartPosition > toBeMergedSegment.getFirstElement()
+						.getPosition()) {
+					mergedStartPosition = toBeMergedSegment.getFirstElement()
+							.getPosition();
+				}
+				if (mergedEndPosition < toBeMergedSegment.getLastElement()
+						.getPosition()) {
+					mergedEndPosition = toBeMergedSegment.getLastElement()
+							.getPosition();
+				}
+			}
+
+			final DBSegment mergedDBSegment = new DBSegment(segment.getId(),
+					segment.getCore().getSourceFile(), mergedStartPosition,
+					mergedEndPosition, null);
+
+			final Segment<E> mergedSegment = new Segment<>(mergedDBSegment);
+			mergedSegment.setSourceFile(segment.getSourceFile());
+			final Map<Integer, E> contents = segment.getSourceFile()
+					.getContents()
+					.subMap(mergedStartPosition, mergedEndPosition + 1);
+			mergedSegment.setContents(contents.values());
+
+			alreadyRegisteredSegments.add(mergedSegment);
+		}
+
+		return alreadyRegisteredSegments;
 	}
 
 	/**
@@ -126,27 +263,6 @@ public class IClonesCodeFragmentMappingHelper {
 			hash += calculateBucketHash(filePath, codeFragment
 					.getStartPositions().get(filePath), codeFragment
 					.getEndPositions().get(filePath));
-		}
-		return hash;
-	}
-
-	/**
-	 * Calculate hash value from the given map of expected segments. The given
-	 * map is expected to be generated from a single code fragment.
-	 * 
-	 * @param expectedSegments
-	 *            a map of expected segments, which is supposed to be created
-	 *            from a single code fragment
-	 * @return a hash value calculated from the given map
-	 */
-	public static int calculateBucketHash(
-			final SortedMap<String, ExpectedSegment> expectedSegments) {
-		int hash = 0;
-		for (final ExpectedSegment expectedSegment : expectedSegments.values()) {
-			hash *= 31;
-			hash += calculateBucketHash(expectedSegment.getPath(),
-					expectedSegment.getStartPosition(),
-					expectedSegment.getEndPosition());
 		}
 		return hash;
 	}

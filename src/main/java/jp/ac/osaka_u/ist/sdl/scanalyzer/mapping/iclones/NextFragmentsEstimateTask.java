@@ -18,7 +18,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
  *            the type of program elements
  */
 public class NextFragmentsEstimateTask<E extends IProgramElement> implements
-		Callable<SortedMap<Long, SortedMap<String, ExpectedSegment>>> {
+		Callable<SortedMap<Long, CodeFragment<E>>> {
 
 	/**
 	 * The target clone class
@@ -46,23 +46,32 @@ public class NextFragmentsEstimateTask<E extends IProgramElement> implements
 
 	/**
 	 * Estimates the next states of every code fragment in the clone class. The
-	 * result provided by this method maps each ID of code fragments to a
-	 * mapping between file paths and expected segments.
+	 * result maps each of ids of before fragments to its its corresponding
+	 * estimated fragment. If a fragment was removed, it will not appear in the
+	 * result.
 	 */
 	@Override
-	public SortedMap<Long, SortedMap<String, ExpectedSegment>> call()
-			throws Exception {
-		final SortedMap<Long, SortedMap<String, ExpectedSegment>> result = new TreeMap<Long, SortedMap<String, ExpectedSegment>>();
+	public SortedMap<Long, CodeFragment<E>> call() throws Exception {
+		final SortedMap<Long, CodeFragment<E>> result = new TreeMap<>();
+
 		for (final CodeFragment<E> codeFragment : cloneClass.getCodeFragments()
 				.values()) {
-			result.put(codeFragment.getId(), IClonesCodeFragmentMappingHelper
-					.expect(codeFragment, mapper));
+			final CodeFragment<E> estimated = IClonesCodeFragmentMappingHelper
+					.expect(codeFragment, mapper);
+			if (estimated != null) {
+				result.put(codeFragment.getId(), estimated);
+			}
 		}
+
 		for (final CodeFragment<E> ghostFragment : cloneClass
 				.getGhostFragments().values()) {
-			result.put(ghostFragment.getId(), IClonesCodeFragmentMappingHelper
-					.expect(ghostFragment, mapper));
+			final CodeFragment<E> estimated = IClonesCodeFragmentMappingHelper
+					.expect(ghostFragment, mapper);
+			if (estimated != null) {
+				result.put(ghostFragment.getId(), estimated);
+			}
 		}
+
 		return result;
 	}
 

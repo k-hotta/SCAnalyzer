@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
@@ -106,7 +105,7 @@ public class IClonesCodeFragmentMapperTest {
 		final IClonesCloneClassMapper<Token> instance = new IClonesCloneClassMapper<>(
 				mapper);
 		@SuppressWarnings("unchecked")
-		final Map<Long, SortedMap<String, ExpectedSegment>> result = (Map<Long, SortedMap<String, ExpectedSegment>>) mEstimateNextFragments
+		final Map<Long, CodeFragment<Token>> result = (Map<Long, CodeFragment<Token>>) mEstimateNextFragments
 				.invoke(instance, beforeVersion);
 
 		assertTrue(fragments.size() == result.size());
@@ -118,7 +117,7 @@ public class IClonesCodeFragmentMapperTest {
 				mapper);
 
 		@SuppressWarnings("unchecked")
-		final Map<Long, SortedMap<String, ExpectedSegment>> expected = (Map<Long, SortedMap<String, ExpectedSegment>>) mEstimateNextFragments
+		final Map<Long, CodeFragment<Token>> expected = (Map<Long, CodeFragment<Token>>) mEstimateNextFragments
 				.invoke(instance, beforeVersion);
 
 		@SuppressWarnings("unchecked")
