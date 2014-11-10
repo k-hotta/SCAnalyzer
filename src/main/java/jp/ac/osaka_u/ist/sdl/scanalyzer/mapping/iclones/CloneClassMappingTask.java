@@ -184,12 +184,16 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 	private Map<CodeFragment<E>, List<CodeFragment<E>>> findSimliarFragmentMapping() {
 		final Map<CodeFragment<E>, List<CodeFragment<E>>> similarFragmentMapping = new TreeMap<>(
 				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
+		
+		final List<CodeFragment<E>> codeFragmentsOfInterest = new ArrayList<CodeFragment<E>>();
+		codeFragmentsOfInterest.addAll(targetCloneClass.getCodeFragments().values());
+		codeFragmentsOfInterest.addAll(targetCloneClass.getGhostFragments().values());
 
-		for (final CodeFragment<E> codeFragment : targetCloneClass
-				.getCodeFragments().values()) {
+		for (final CodeFragment<E> codeFragment : codeFragmentsOfInterest) {
 			if (!beforeBucket.containsKey(codeFragment.getId())) {
-				throw new IllegalStateException("cannot find code fragment "
-						+ codeFragment.getId() + " in before version");
+				// the fragment was removed and so no further process is
+				// required
+				continue;
 			}
 
 			final int bucketHash = beforeBucket.get(codeFragment.getId());
