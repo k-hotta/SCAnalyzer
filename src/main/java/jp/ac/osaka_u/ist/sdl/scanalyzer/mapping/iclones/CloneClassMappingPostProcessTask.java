@@ -118,31 +118,12 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 
 				// make code fragment mapping between the old fragment and the
 				// ghost one
-				makeInstance(remainingOldFragment, instanciatedFragment);
+				IClonesCodeFragmentMappingHelper.makeInstance(
+						remainingOldFragment, instanciatedFragment,
+						cloneClassMapping);
 			}
 		}
 
-	}
-
-	private CodeFragmentMapping<E> makeInstance(
-			final CodeFragment<E> oldFragment, final CodeFragment<E> newFragment) {
-		final DBCodeFragmentMapping dbMapping = new DBCodeFragmentMapping(
-				IDGenerator.generate(DBCodeFragmentMapping.class),
-				oldFragment.getCore(), newFragment.getCore(),
-				cloneClassMapping.getCore());
-		final CodeFragmentMapping<E> mapping = new CodeFragmentMapping<>(
-				dbMapping);
-
-		cloneClassMapping.getCore().getCodeFragmentMappings().add(dbMapping);
-
-		mapping.setCloneClassMapping(cloneClassMapping);
-
-		cloneClassMapping.addCodeFragmentMappings(mapping);
-
-		mapping.setOldCodeFragment(oldFragment);
-		mapping.setNewCodeFragment(newFragment);
-
-		return mapping;
 	}
 
 }

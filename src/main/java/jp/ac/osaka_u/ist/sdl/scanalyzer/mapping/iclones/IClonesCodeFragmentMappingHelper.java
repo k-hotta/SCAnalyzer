@@ -6,7 +6,9 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.PositionElementComparator;
@@ -14,6 +16,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SegmentComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegmentComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
@@ -329,6 +332,40 @@ public class IClonesCodeFragmentMappingHelper {
 		}
 
 		return instanciatedFragment;
+	}
+
+	/**
+	 * Make code fragment mapping instance from the given two fragments
+	 * 
+	 * @param oldFragment
+	 *            the old fragment
+	 * @param newFragment
+	 *            the new fragment
+	 * @param cloneClassMapping
+	 *            the owner clone class mapping
+	 * @return a new instance of {@link CodeFragmentMapping}
+	 */
+	public static <E extends IProgramElement> CodeFragmentMapping<E> makeInstance(
+			final CodeFragment<E> oldFragment,
+			final CodeFragment<E> newFragment,
+			final CloneClassMapping<E> cloneClassMapping) {
+		final DBCodeFragmentMapping dbMapping = new DBCodeFragmentMapping(
+				IDGenerator.generate(DBCodeFragmentMapping.class),
+				oldFragment.getCore(), newFragment.getCore(),
+				cloneClassMapping.getCore());
+		final CodeFragmentMapping<E> mapping = new CodeFragmentMapping<>(
+				dbMapping);
+
+		cloneClassMapping.getCore().getCodeFragmentMappings().add(dbMapping);
+
+		mapping.setCloneClassMapping(cloneClassMapping);
+
+		cloneClassMapping.addCodeFragmentMappings(mapping);
+
+		mapping.setOldCodeFragment(oldFragment);
+		mapping.setNewCodeFragment(newFragment);
+
+		return mapping;
 	}
 
 }
