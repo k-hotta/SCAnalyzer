@@ -28,6 +28,11 @@ public class DBCodeFragmentMapping implements IDBElement {
 	public static final String NEW_CODE_FRAGMENT_COLUMN_NAME = "NEW_CODE_FRAGMENT";
 
 	/**
+	 * The column name for cloneClassMapping
+	 */
+	public static final String CLONE_CLASS_MAPPING_COLUMN_NAME = "CLONE_CLASS_MAPPING";
+
+	/**
 	 * The id of this mapping
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -46,6 +51,12 @@ public class DBCodeFragmentMapping implements IDBElement {
 	private DBCodeFragment newCodeFragment;
 
 	/**
+	 * The owner clone class mapping of this mapping
+	 */
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_MAPPING_COLUMN_NAME)
+	private DBCloneClassMapping cloneClassMapping;
+
+	/**
 	 * The default constructor, which does nothing
 	 */
 	public DBCodeFragmentMapping() {
@@ -61,13 +72,17 @@ public class DBCodeFragmentMapping implements IDBElement {
 	 *            the old code fragment of this mapping
 	 * @param newCodeFragment
 	 *            the new code fragment of this mapping
+	 * @param cloneClassMapping
+	 *            the owner clone class mapping of this mapping
 	 */
 	public DBCodeFragmentMapping(final long id,
 			final DBCodeFragment oldCodeFragment,
-			final DBCodeFragment newCodeFragment) {
+			final DBCodeFragment newCodeFragment,
+			final DBCloneClassMapping cloneClassMapping) {
 		this.id = id;
 		this.oldCodeFragment = oldCodeFragment;
 		this.newCodeFragment = newCodeFragment;
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 	/**
@@ -130,11 +145,30 @@ public class DBCodeFragmentMapping implements IDBElement {
 	}
 
 	/**
+	 * Get the owner clone class mapping of this mapping.
+	 * 
+	 * @return the owner clone class mapping of this mapping
+	 */
+	public DBCloneClassMapping getCloneClassMapping() {
+		return cloneClassMapping;
+	}
+
+	/**
+	 * Set the owner clone class mapping of this mapping with the specified one.
+	 * 
+	 * @param cloneClassMapping
+	 *            the owner clone class mapping to be set
+	 */
+	public void setCloneClassMapping(final DBCloneClassMapping cloneClassMapping) {
+		this.cloneClassMapping = cloneClassMapping;
+	}
+
+	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link DBCodeFragmentMapping} and the id values of the two objects
-	 *         are the same to each other, <code>false</code> otherwise.
+	 *         {@link DBCodeFragmentMapping} and the id values of the two
+	 *         objects are the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -169,5 +203,5 @@ public class DBCodeFragmentMapping implements IDBElement {
 					+ newCodeFragment.toString();
 		}
 	}
-	
+
 }

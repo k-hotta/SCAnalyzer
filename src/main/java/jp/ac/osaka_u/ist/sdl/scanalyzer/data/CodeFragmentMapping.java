@@ -33,11 +33,17 @@ public class CodeFragmentMapping<E extends IProgramElement> implements
 	 */
 	private CodeFragment<E> newCodeFragment;
 
+	/**
+	 * The owner clone class mapping of this mapping
+	 */
+	private CloneClassMapping<E> cloneClassMapping;
+
 	public CodeFragmentMapping(final DBCodeFragmentMapping core) {
 		this.id = core.getId();
 		this.core = core;
 		this.oldCodeFragment = null;
 		this.newCodeFragment = null;
+		this.cloneClassMapping = null;
 	}
 
 	@Override
@@ -138,7 +144,7 @@ public class CodeFragmentMapping<E extends IProgramElement> implements
 
 		return this.newCodeFragment;
 	}
-	
+
 	/**
 	 * Set the new code fragment of this mapping with the specified one.
 	 * 
@@ -146,11 +152,11 @@ public class CodeFragmentMapping<E extends IProgramElement> implements
 	 *            the new code fragment to be set
 	 * 
 	 * @throws IllegalArgumentException
-	 *             if any of the following statements hold: (1) the given 
-	 *             code fragment is <code>null</code> but that in the core is
-	 *             not <code>null</code>, (2) the given  code fragment is not
+	 *             if any of the following statements hold: (1) the given code
+	 *             fragment is <code>null</code> but that in the core is not
+	 *             <code>null</code>, (2) the given code fragment is not
 	 *             <code>null</code> but that in the core is <code>null</code>,
-	 *             (3) the given  code fragment does not match to that in the
+	 *             (3) the given code fragment does not match to that in the
 	 *             core
 	 */
 	public void setNewCodeFragment(final CodeFragment<E> newCodeFragment) {
@@ -169,6 +175,50 @@ public class CodeFragmentMapping<E extends IProgramElement> implements
 		}
 
 		this.newCodeFragment = newCodeFragment;
+	}
+
+	/**
+	 * Get the owner clone class mapping of this mapping.
+	 * 
+	 * @return the owner clone class mapping of this mapping
+	 * 
+	 * @throws IllegalStateException
+	 *             if the clone class mapping has not been set
+	 */
+	public CloneClassMapping<E> getCloneClassMapping() {
+		if (cloneClassMapping == null) {
+			throw new IllegalStateException(
+					"the clone class mapping has not been set");
+		}
+
+		return cloneClassMapping;
+	}
+
+	/**
+	 * Set the owner clone class mapping of this mapping with the specified one.
+	 * 
+	 * @param cloneClassMapping
+	 *            the owner clone class mapping to be set
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given clone class mapping does not match to that in
+	 *             the core of this mapping, or the given clone class mapping is
+	 *             <code>null</code>
+	 */
+	public void setCloneClassMapping(
+			final CloneClassMapping<E> cloneClassMapping) {
+		if (cloneClassMapping == null) {
+			throw new IllegalArgumentException(
+					"the given clone class mapping is null");
+		}
+
+		if (!this.core.getCloneClassMapping().equals(
+				cloneClassMapping.getCore())) {
+			throw new IllegalArgumentException(
+					"the given clone class mapping does not match to that in the core");
+		}
+
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 }
