@@ -38,6 +38,11 @@ public class CloneClass<E extends IProgramElement> implements
 	private final SortedMap<Long, CodeFragment<E>> codeFragments;
 
 	/**
+	 * The ghost fragments in this clone class
+	 */
+	private final SortedMap<Long, CodeFragment<E>> ghostFragments;
+
+	/**
 	 * The constructor with core
 	 * 
 	 * @param core
@@ -47,7 +52,8 @@ public class CloneClass<E extends IProgramElement> implements
 		this.id = core.getId();
 		this.core = core;
 		this.version = null;
-		this.codeFragments = new TreeMap<Long, CodeFragment<E>>();
+		this.codeFragments = new TreeMap<>();
+		this.ghostFragments = new TreeMap<>();
 	}
 
 	@Override
@@ -170,6 +176,42 @@ public class CloneClass<E extends IProgramElement> implements
 		}
 
 		this.codeFragments.put(codeFragment.getId(), codeFragment);
+	}
+
+	/**
+	 * Get the ghost fragments of this clone class as an unmodifiable map.
+	 * 
+	 * @return the map having the ghost fragments in this clone class, each of
+	 *         whose key is the id of a ghost fragment, each of whose value is
+	 *         the ghost fragment
+	 * 
+	 */
+	public SortedMap<Long, CodeFragment<E>> getGhostFragments() {
+		return Collections.unmodifiableSortedMap(ghostFragments);
+	}
+
+	/**
+	 * Add the given ghost fragment to this clone class.
+	 * 
+	 * @param ghostFragment
+	 *            the ghost fragment to be added
+	 * @throws IllegalArgumentException
+	 *             if the given ghost fragment is not included in the code
+	 *             fragments in the core, or the given ghost fragment is
+	 *             <code>null</code>
+	 */
+	public void addGhostFragment(final CodeFragment<E> ghostFragment) {
+		if (ghostFragment == null) {
+			throw new IllegalArgumentException(
+					"the given ghost fragment is null");
+		}
+
+		if (!this.core.getGhostFragments().contains(ghostFragment.getCore())) {
+			throw new IllegalArgumentException(
+					"the given ghost fragment is not in the clone class");
+		}
+
+		this.ghostFragments.put(ghostFragment.getId(), ghostFragment);
 	}
 
 }
