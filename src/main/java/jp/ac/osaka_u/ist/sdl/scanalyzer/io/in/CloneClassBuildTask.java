@@ -69,6 +69,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 			SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment) {
 		final DBCloneClass dbCloneClass = new DBCloneClass(
 				IDGenerator.generate(DBCloneClass.class), version.getCore(),
+				new ArrayList<DBCodeFragment>(),
 				new ArrayList<DBCodeFragment>());
 		final CloneClass<E> cloneClass = new CloneClass<E>(dbCloneClass);
 

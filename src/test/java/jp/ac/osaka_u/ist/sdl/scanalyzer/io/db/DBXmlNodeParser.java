@@ -582,7 +582,7 @@ public class DBXmlNodeParser {
 		rawCloneClasses.put(id, rawCloneClass);
 
 		final DBCloneClass cloneClass = new DBCloneClass(id, null, this
-				.getCodeFragments().values());
+				.getCodeFragments().values(), new ArrayList<DBCodeFragment>());
 
 		for (final DBCodeFragment codeFragment : cloneClass.getCodeFragments()) {
 			codeFragment.setCloneClass(cloneClass);

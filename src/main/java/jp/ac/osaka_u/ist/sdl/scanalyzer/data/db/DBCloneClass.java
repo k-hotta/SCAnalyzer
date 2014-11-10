@@ -7,7 +7,8 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
- * This class represents a clone class, which is a set of {@link DBCodeFragment}.
+ * This class represents a clone class, which is a set of {@link DBCodeFragment}
+ * .
  * 
  * @author k-hotta
  * 
@@ -24,11 +25,16 @@ public class DBCloneClass implements IDBElement {
 	 * The column name for version
 	 */
 	public static final String VERSION_COLUMN_NAME = "VERSION";
-	
+
 	/**
 	 * The column name for codeFragments
 	 */
 	public static final String CODE_FRAGMENTS_COLUMN_NAME = "CODE_FRAGMENTS";
+
+	/**
+	 * the column name for ghostFragments
+	 */
+	public static final String GHOST_FRAGMENTS_COLUMN_NAME = "GHOST_FRAGMENTS";
 
 	/**
 	 * The id of this clone class
@@ -46,6 +52,12 @@ public class DBCloneClass implements IDBElement {
 	private Collection<DBCodeFragment> codeFragments;
 
 	/**
+	 * The ghost fragments
+	 */
+	@ForeignCollectionField(eager = true, columnName = GHOST_FRAGMENTS_COLUMN_NAME)
+	private Collection<DBCodeFragment> ghostFragments;
+
+	/**
 	 * The default constructor
 	 */
 	public DBCloneClass() {
@@ -61,12 +73,16 @@ public class DBCloneClass implements IDBElement {
 	 *            the owner version of this clone class
 	 * @param codeFragments
 	 *            the code fragments in this clone class
+	 * @param ghostFragments
+	 *            the ghost fragments in this clone class
 	 */
 	public DBCloneClass(final long id, final DBVersion version,
-			final Collection<DBCodeFragment> codeFragments) {
+			final Collection<DBCodeFragment> codeFragments,
+			final Collection<DBCodeFragment> ghostFragments) {
 		this.id = id;
 		this.version = version;
 		this.codeFragments = codeFragments;
+		this.ghostFragments = ghostFragments;
 	}
 
 	/**
@@ -129,6 +145,26 @@ public class DBCloneClass implements IDBElement {
 	}
 
 	/**
+	 * Get the ghost fragments in this clone class.
+	 * 
+	 * @return the ghost fragments in this clone class
+	 */
+	public Collection<DBCodeFragment> getGhostFragments() {
+		return ghostFragments;
+	}
+
+	/**
+	 * Set the ghost fragments with the specified one.
+	 * 
+	 * @param ghostFragments
+	 *            the ghost fragments to be set
+	 */
+	public void setGhostFragments(
+			final Collection<DBCodeFragment> ghostFragments) {
+		this.ghostFragments = ghostFragments;
+	}
+
+	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
@@ -169,6 +205,16 @@ public class DBCloneClass implements IDBElement {
 		if (codeFragments.size() > 0) {
 			builder.deleteCharAt(builder.length() - 1);
 			builder.deleteCharAt(builder.length() - 1);
+		}
+
+		if (ghostFragments.size() > 0) {
+			builder.append(" (");
+			for (final DBCodeFragment ghost : ghostFragments) {
+				builder.append(ghost.toString() + ", ");
+			}
+			builder.deleteCharAt(builder.length() - 1);
+			builder.deleteCharAt(builder.length() - 1);
+			builder.append(") ");
 		}
 
 		builder.append("}");
