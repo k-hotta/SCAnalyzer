@@ -29,13 +29,10 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 
 	private final Version<E> version;
 
-	private final Equalizer<E> equalizer;
-
 	public CloneClassBuildTask(final RawCloneClass<E> rawCloineClass,
-			final Version<E> version, final Equalizer<E> equalizer) {
+			final Version<E> version) {
 		this.rawCloneClass = rawCloineClass;
 		this.version = version;
-		this.equalizer = equalizer;
 	}
 
 	@Override

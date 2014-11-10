@@ -589,7 +589,7 @@ public class VersionProvider<E extends IProgramElement> {
 		try {
 			for (final RawCloneClass<E> rawCloneClass : rawCloneClasses) {
 				final CloneClassBuildTask<E> task = new CloneClassBuildTask<E>(
-						rawCloneClass, nextVersion, equalizer);
+						rawCloneClass, nextVersion);
 				futures.add(pool.submit(task));
 			}
 
