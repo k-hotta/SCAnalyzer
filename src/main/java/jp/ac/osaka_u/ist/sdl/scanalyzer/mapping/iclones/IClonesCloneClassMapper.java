@@ -1,30 +1,16 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
@@ -56,11 +42,6 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 			.getLogger(IClonesCloneClassMapper.class);
 
 	/**
-	 * The logger for errors
-	 */
-	private static final Logger eLogger = LogManager.getLogger("error");
-
-	/**
 	 * The mapper of elements between two versions
 	 */
 	private IProgramElementMapper<E> mapper;
@@ -78,37 +59,68 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 	@Override
 	public Collection<CloneClassMapping<E>> detectMapping(
 			Version<E> previousVersion, Version<E> nextVersion) {
+		// ready?
 		check(previousVersion, nextVersion);
 
+		// prepare clone classes for both of before/after versions
 		final Map<Long, CloneClass<E>> previousClones = new TreeMap<>();
 		previousClones.putAll(previousVersion.getCloneClasses());
 		final Map<Long, CloneClass<E>> nextClones = new TreeMap<>();
 		nextClones.putAll(nextVersion.getCloneClasses());
 
+		// for each code fragments in before clone classes
+		// estimate their next locations in the next version
+		// if a code fragment was removed between the two version, it will not
+		// appear in this map
 		final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments = IClonesCloneClassMappingHelper
 				.estimateNextFragments(previousVersion, mapper);
 
-		final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsBefore = IClonesCloneClassMappingHelper
-				.collectFragments(previousClones.values());
+		// collect code fragments in next version
+		// the key is id, and the value is the instance
 		final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsAfter = IClonesCloneClassMappingHelper
 				.collectFragments(nextClones.values());
 
+		/*
+		 * make buckets for both of the two versions for the ease of access, the
+		 * buckets for before version and after one have different structure
+		 */
+
+		// the bucket for before version
+		// the key is the id of the fragment, and the value is its hash value
 		final ConcurrentMap<Long, Integer> beforeFragmentsToHash = IClonesCloneClassMappingHelper
 				.makeBucketHashingMap(estimatedFragments);
+
+		// the bucket for after version
+		// the key is the hash value, and the value is a list of ids of
+		// fragments whose hash value is specified in the key
 		final ConcurrentMap<Integer, List<Long>> bucketsActual = IClonesCloneClassMappingHelper
 				.makeBuckets(codeFragmentsAfter.values());
 
+		// detect mapping of clone classes between two versions
+		// the information about fragment mapping will not be stored
+		// ghost fragments in new clone classes will be detected if any mapping
+		// for the clone classes have been found
 		final List<CloneClassMapping<E>> mapping = IClonesCloneClassMappingHelper
 				.createMapping(previousVersion, nextVersion,
 						beforeFragmentsToHash, bucketsActual,
 						codeFragmentsAfter);
-		
-		IClonesCloneClassMappingHelper.setCodeFragmentMapping(mapping, estimatedFragments);
 
+		// detect mapping of code fragments for each clone class mapping
+		IClonesCloneClassMappingHelper.setCodeFragmentMapping(mapping,
+				estimatedFragments);
+
+		// TODO processing for branched/branching clone classes
+
+		// remove already mapped clone classes
 		retainUnmappedClones(previousClones, nextClones, mapping);
 
-		// TODO implement
-		return null;
+		// find ghost clone classes for remaining old clone classes if exists
+		final List<CloneClassMapping<E>> ghostMapping = IClonesCloneClassMappingHelper
+				.processUnmappedCloneClasses(previousClones.values(),
+						estimatedFragments, nextVersion);
+		mapping.addAll(ghostMapping);
+
+		return mapping;
 	}
 
 	/**

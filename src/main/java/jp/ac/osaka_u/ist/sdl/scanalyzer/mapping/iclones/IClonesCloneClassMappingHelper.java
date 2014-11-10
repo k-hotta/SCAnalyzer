@@ -26,7 +26,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
@@ -452,6 +454,101 @@ public class IClonesCloneClassMappingHelper {
 		} finally {
 			pool.shutdown();
 		}
+	}
+
+	/**
+	 * Make ghost clone classes for unmapped old clone classes if there exist at
+	 * least two fragments.
+	 * 
+	 * @param unmappedOldCloneClasses
+	 *            a collection of unmapped clone classes
+	 * @param estimatedFragments
+	 *            estimated fragments
+	 * @param nextVersion
+	 *            the next version
+	 */
+	public static <E extends IProgramElement> List<CloneClassMapping<E>> processUnmappedCloneClasses(
+			final Collection<CloneClass<E>> unmappedOldCloneClasses,
+			final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments,
+			final Version<E> nextVersion) {
+		final List<CloneClassMapping<E>> result = new ArrayList<>();
+
+		for (final CloneClass<E> unmappedOldCloneClass : unmappedOldCloneClasses) {
+			final Map<Long, CodeFragment<E>> oldFragments = new TreeMap<>();
+			oldFragments.putAll(unmappedOldCloneClass.getCodeFragments());
+			oldFragments.putAll(unmappedOldCloneClass.getGhostFragments());
+
+			final Map<Long, CodeFragment<E>> relatedEstimatedFragments = new TreeMap<>();
+
+			for (final Map.Entry<Long, CodeFragment<E>> oldFragmentEntry : oldFragments
+					.entrySet()) {
+				if (estimatedFragments.containsKey(oldFragmentEntry.getKey())) {
+					relatedEstimatedFragments.put(oldFragmentEntry.getKey(),
+							estimatedFragments.get(oldFragmentEntry.getKey()));
+				}
+			}
+
+			if (relatedEstimatedFragments.size() >= 2) {
+				final Map<Long, CodeFragment<E>> instanciatedFragments = new TreeMap<Long, CodeFragment<E>>();
+
+				for (final CodeFragment<E> estimatedFragment : relatedEstimatedFragments
+						.values()) {
+					final CodeFragment<E> instanciatedFragment = IClonesCodeFragmentMappingHelper
+							.instanciateExpectedFragment(estimatedFragment);
+
+					// with the instanciated fragment mapped to OLD fragment id
+					instanciatedFragments.put(estimatedFragment.getId(),
+							instanciatedFragment);
+				}
+
+				final CloneClass<E> ghostCloneClass = makeGhostCloneClass(
+						instanciatedFragments.values(), nextVersion);
+
+				final CloneClassMapping<E> cloneClassMapping = makeMapping(
+						unmappedOldCloneClass, ghostCloneClass);
+				result.add(cloneClassMapping);
+
+				for (final long fragmentId : instanciatedFragments.keySet()) {
+					final CodeFragment<E> oldFragment = oldFragments
+							.get(fragmentId);
+					final CodeFragment<E> newFragment = instanciatedFragments
+							.get(fragmentId);
+
+					IClonesCodeFragmentMappingHelper.makeInstance(oldFragment,
+							newFragment, cloneClassMapping);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	private static <E extends IProgramElement> CloneClass<E> makeGhostCloneClass(
+			final Collection<CodeFragment<E>> instanciatedFragments,
+			final Version<E> nextVersion) {
+		final DBCloneClass ghostDBCloneClass = new DBCloneClass(
+				IDGenerator.generate(DBCloneClass.class),
+				nextVersion.getCore(), new TreeSet<DBCodeFragment>(
+						new DBElementComparator()),
+				new TreeSet<DBCodeFragment>(new DBElementComparator()));
+
+		nextVersion.getCore().getCloneClasses().add(ghostDBCloneClass);
+
+		final CloneClass<E> ghostCloneClass = new CloneClass<>(
+				ghostDBCloneClass);
+
+		nextVersion.addCloneClass(ghostCloneClass);
+		ghostCloneClass.setVersion(nextVersion);
+
+		for (final CodeFragment<E> ghostFragment : instanciatedFragments) {
+			ghostFragment.getCore().setCloneClass(ghostDBCloneClass);
+			ghostDBCloneClass.getGhostFragments().add(ghostFragment.getCore());
+
+			ghostFragment.setCloneClass(ghostCloneClass);
+			ghostCloneClass.addGhostFragment(ghostFragment);
+		}
+
+		return ghostCloneClass;
 	}
 
 }
