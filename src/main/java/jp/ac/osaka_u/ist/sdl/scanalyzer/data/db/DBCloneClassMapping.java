@@ -1,6 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
+import java.util.Collection;
+
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -29,6 +32,11 @@ public class DBCloneClassMapping implements IDBElement {
 	public static final String NEW_CLONE_CLASS_COLUMN_NAME = "NEW_CLONE_CLASS";
 
 	/**
+	 * The column name for codeFragmentMappings
+	 */
+	public static final String CODE_FRAGMENT_MAPPINGS_COLUMN_NAME = "CODE_FRAGMENT_MAPPINGS";
+
+	/**
 	 * The id of this mapping
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -46,6 +54,9 @@ public class DBCloneClassMapping implements IDBElement {
 	@DatabaseField(canBeNull = true, foreign = true, columnName = NEW_CLONE_CLASS_COLUMN_NAME)
 	private DBCloneClass newCloneClass;
 
+	@ForeignCollectionField(eager = true, columnName = CODE_FRAGMENT_MAPPINGS_COLUMN_NAME)
+	private Collection<DBCodeFragmentMapping> codeFragmentMappings;
+
 	/**
 	 * The default constructor, which does nothing
 	 */
@@ -62,12 +73,16 @@ public class DBCloneClassMapping implements IDBElement {
 	 *            the old clone class of this mapping
 	 * @param newCloneClass
 	 *            the new clone class of this mapping
+	 * @param codeFragmentMappings
+	 *            the mapping of code fragments related to this mapping
 	 */
 	public DBCloneClassMapping(final long id, final DBCloneClass oldCloneClass,
-			final DBCloneClass newCloneClass) {
+			final DBCloneClass newCloneClass,
+			final Collection<DBCodeFragmentMapping> codeFragmentMappings) {
 		this.id = id;
 		this.oldCloneClass = oldCloneClass;
 		this.newCloneClass = newCloneClass;
+		this.codeFragmentMappings = codeFragmentMappings;
 	}
 
 	/**
@@ -127,6 +142,27 @@ public class DBCloneClassMapping implements IDBElement {
 	 */
 	public void setNewCloneClass(DBCloneClass newCloneClass) {
 		this.newCloneClass = newCloneClass;
+	}
+
+	/**
+	 * Get the mapping of code fragments related to this mapping.
+	 * 
+	 * @return the mapping of code fragments
+	 */
+	public Collection<DBCodeFragmentMapping> getCodeFragmentMappings() {
+		return codeFragmentMappings;
+	}
+
+	/**
+	 * Set the mapping of code fragments related to this mapping with the
+	 * specified one.
+	 * 
+	 * @param codeFragmentMappings
+	 *            the mapping of code fragments to be set
+	 */
+	public void setCodeFragmentMappings(
+			final Collection<DBCodeFragmentMapping> codeFragmentMappings) {
+		this.codeFragmentMappings = codeFragmentMappings;
 	}
 
 	/**

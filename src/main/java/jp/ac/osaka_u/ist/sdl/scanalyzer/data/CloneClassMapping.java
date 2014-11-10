@@ -1,5 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Collections;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 
 /**
@@ -34,6 +38,11 @@ public class CloneClassMapping<E extends IProgramElement> implements
 	private CloneClass<E> newCloneClass;
 
 	/**
+	 * The mapping of code fragments relating to this clone class mapping
+	 */
+	private final SortedMap<Long, CodeFragmentMapping<E>> codeFragmentMappings;
+
+	/**
 	 * The constructor with core
 	 * 
 	 * @param core
@@ -44,6 +53,7 @@ public class CloneClassMapping<E extends IProgramElement> implements
 		this.core = core;
 		this.oldCloneClass = null;
 		this.newCloneClass = null;
+		this.codeFragmentMappings = new TreeMap<>();
 	}
 
 	@Override
@@ -173,9 +183,45 @@ public class CloneClassMapping<E extends IProgramElement> implements
 			throw new IllegalArgumentException(
 					"the given new clone class is null, but that in the core is not");
 		}
-		
-		
+
 		this.newCloneClass = newCloneClass;
+	}
+
+	/**
+	 * Get the mapping of code fragments as a sorted map.
+	 * 
+	 * @return the mapping of code fragments
+	 */
+	public SortedMap<Long, CodeFragmentMapping<E>> getCodeFragmentMappings() {
+		return Collections.unmodifiableSortedMap(codeFragmentMappings);
+	}
+
+	/**
+	 * Add the given code fragment mapping to this instance.
+	 * 
+	 * @param codeFragmentMapping
+	 *            a code fragment mapping to be added
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given code fragment mapping does not match to that in
+	 *             the core of this instance, or the given code fragment is
+	 *             <code>null</code>
+	 */
+	public void addCodeFragmentMappings(
+			final CodeFragmentMapping<E> codeFragmentMapping) {
+		if (codeFragmentMapping == null) {
+			throw new IllegalArgumentException(
+					"the given code fragment mapping is null");
+		}
+
+		if (!this.core.getCodeFragmentMappings().contains(
+				codeFragmentMapping.getCore())) {
+			throw new IllegalArgumentException(
+					"the given code fragment mapping does not match to that in the core");
+		}
+
+		this.codeFragmentMappings.put(codeFragmentMapping.getId(),
+				codeFragmentMapping);
 	}
 
 }
