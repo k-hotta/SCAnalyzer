@@ -10,9 +10,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
 /**
  * This class performs post processing for each {@link CloneClassMapping}. The
@@ -82,8 +80,8 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 							"the matching fragment is null");
 				}
 
-				fragmentMappings
-						.add(makeInstance(oldFragment, matchingFragment));
+				fragmentMappings.add(IClonesCodeFragmentMappingHelper.makeInstance(oldFragment,
+						matchingFragment, cloneClassMapping));
 			}
 		}
 
