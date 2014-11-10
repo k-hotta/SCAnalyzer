@@ -58,6 +58,11 @@ public class NextFragmentsEstimateTask<E extends IProgramElement> implements
 			result.put(codeFragment.getId(), IClonesCodeFragmentMappingHelper
 					.expect(codeFragment, mapper));
 		}
+		for (final CodeFragment<E> ghostFragment : cloneClass
+				.getGhostFragments().values()) {
+			result.put(ghostFragment.getId(), IClonesCodeFragmentMappingHelper
+					.expect(ghostFragment, mapper));
+		}
 		return result;
 	}
 
