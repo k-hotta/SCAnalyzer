@@ -284,4 +284,51 @@ public class IClonesCodeFragmentMappingHelper {
 		return ((filePath.hashCode() + startPosition) * 23 + endPosition) * 23;
 	}
 
+	/**
+	 * Make instance of the given expected fragment as an actual instance.
+	 * 
+	 * @param expectedFragment
+	 *            the expected fragment
+	 * @return a new instance of {@link CodeFragment} created from the given
+	 *         expected fragment
+	 */
+	public static <E extends IProgramElement> CodeFragment<E> instanciateExpectedFragment(
+			final CodeFragment<E> expectedFragment) {
+		final Map<Long, Segment<E>> instanciatedSegments = new TreeMap<>();
+		for (final Segment<E> expectedSegment : expectedFragment.getSegments()) {
+			final DBSegment instanciatedDBSegment = new DBSegment(
+					IDGenerator.generate(DBSegment.class), expectedSegment
+							.getSourceFile().getCore(), expectedSegment
+							.getFirstElement().getPosition(), expectedSegment
+							.getLastElement().getPosition(), null);
+
+			final Segment<E> instanciatedSegment = new Segment<>(
+					instanciatedDBSegment);
+			instanciatedSegment.setSourceFile(expectedSegment.getSourceFile());
+			instanciatedSegment.setContents(expectedSegment.getContents());
+			instanciatedSegments.put(instanciatedSegment.getId(),
+					instanciatedSegment);
+		}
+
+		final DBCodeFragment instanciatedDBFragment = new DBCodeFragment(
+				IDGenerator.generate(DBCodeFragment.class),
+				new TreeSet<DBSegment>(new DBSegmentComparator()), null);
+
+		final CodeFragment<E> instanciatedFragment = new CodeFragment<>(
+				instanciatedDBFragment);
+
+		for (final Segment<E> instanciatedSegment : instanciatedSegments
+				.values()) {
+			instanciatedDBFragment.getSegments().add(
+					instanciatedSegment.getCore());
+			instanciatedSegment.getCore().setCodeFragment(
+					instanciatedDBFragment);
+
+			instanciatedFragment.addSegment(instanciatedSegment);
+			instanciatedSegment.setCodeFragment(instanciatedFragment);
+		}
+
+		return instanciatedFragment;
+	}
+
 }

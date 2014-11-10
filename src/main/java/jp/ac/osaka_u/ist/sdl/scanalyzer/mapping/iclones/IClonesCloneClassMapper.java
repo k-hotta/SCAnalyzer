@@ -85,7 +85,7 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		final Map<Long, CloneClass<E>> nextClones = new TreeMap<>();
 		nextClones.putAll(nextVersion.getCloneClasses());
 
-		final Map<Long, CodeFragment<E>> estimatedFragments = IClonesCloneClassMappingHelper
+		final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments = IClonesCloneClassMappingHelper
 				.estimateNextFragments(previousVersion, mapper);
 
 		final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsBefore = IClonesCloneClassMappingHelper
@@ -102,6 +102,8 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 				.createMapping(previousVersion, nextVersion,
 						beforeFragmentsToHash, bucketsActual,
 						codeFragmentsAfter);
+		
+		IClonesCloneClassMappingHelper.setCodeFragmentMapping(mapping, estimatedFragments);
 
 		retainUnmappedClones(previousClones, nextClones, mapping);
 

@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,6 +27,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
 import org.apache.logging.log4j.LogManager;
@@ -54,10 +58,10 @@ public class IClonesCloneClassMappingHelper {
 	 * @return a map, which maps the IDs of code fragments in the previous
 	 *         version to instances of code fragments after updated
 	 */
-	public static <E extends IProgramElement> Map<Long, CodeFragment<E>> estimateNextFragments(
+	public static <E extends IProgramElement> ConcurrentMap<Long, CodeFragment<E>> estimateNextFragments(
 			final Version<E> previousVersion,
 			final IProgramElementMapper<E> mapper) {
-		final Map<Long, CodeFragment<E>> result = new TreeMap<>();
+		final ConcurrentMap<Long, CodeFragment<E>> result = new ConcurrentSkipListMap<>();
 
 		final List<NextFragmentsEstimateTask<E>> tasks = new ArrayList<NextFragmentsEstimateTask<E>>();
 
@@ -397,7 +401,8 @@ public class IClonesCloneClassMappingHelper {
 			final CloneClass<E> oldCloneClass, final CloneClass<E> newCloneClass) {
 		final DBCloneClassMapping mappingCore = new DBCloneClassMapping(
 				IDGenerator.generate(DBCloneClassMapping.class),
-				oldCloneClass.getCore(), newCloneClass.getCore());
+				oldCloneClass.getCore(), newCloneClass.getCore(),
+				new TreeSet<DBCodeFragmentMapping>(new DBElementComparator()));
 		final CloneClassMapping<E> mapping = new CloneClassMapping<>(
 				mappingCore);
 
@@ -405,6 +410,47 @@ public class IClonesCloneClassMappingHelper {
 		mapping.setNewCloneClass(newCloneClass);
 
 		return mapping;
+	}
+
+	/**
+	 * Detect mapping of code fragments and set them.
+	 * 
+	 * @param cloneClassMapping
+	 *            a collection of clone class mapping
+	 */
+	public static <E extends IProgramElement> void setCodeFragmentMapping(
+			final Collection<CloneClassMapping<E>> cloneClassMapping,
+			final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments) {
+		final List<CodeFragmentMappingTask<E>> tasks = new ArrayList<>();
+		for (final CloneClassMapping<E> tmp : cloneClassMapping) {
+			tasks.add(new CodeFragmentMappingTask<>(tmp, estimatedFragments));
+		}
+
+		final ExecutorService pool = Executors.newCachedThreadPool();
+
+		try {
+
+			final List<Future<?>> futures = new ArrayList<>();
+			for (final CodeFragmentMappingTask<E> task : tasks) {
+				futures.add(pool.submit(task));
+			}
+
+			for (final Future<?> future : futures) {
+				try {
+					// the task will automatically set the results to the
+					// instance
+					// hence the result of get() is ignored
+					future.get();
+				} catch (IllegalStateException e) {
+					throw e;
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+
+		} finally {
+			pool.shutdown();
+		}
 	}
 
 }
