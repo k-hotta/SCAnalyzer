@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
@@ -20,7 +19,6 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
-import difflib.myers.Equalizer;
 
 public class CloneClassBuildTask<E extends IProgramElement> implements
 		Callable<CloneClass<E>> {
@@ -39,17 +37,13 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 	public CloneClass<E> call() throws Exception {
 		final Map<Integer, List<E>> targetFragments = new TreeMap<Integer, List<E>>();
 		final Map<Integer, SourceFile<E>> targetFragmentsSourceFiles = new TreeMap<Integer, SourceFile<E>>();
-		final SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment = new TreeMap<Integer, SortedSet<Integer>>();
 
 		// detect target fragments from raw cloned fragments
+		// this method call will change the states of both of the arguments
 		extractTargetFragments(targetFragments, targetFragmentsSourceFiles);
 
-		// detect LCS among the target fragments
-		// detectLCS(targetFragments, lcsElementsInEachFragment);
-
 		// construct clone class and return it
-		return constructCloneClass(targetFragments, targetFragmentsSourceFiles,
-				lcsElementsInEachFragment);
+		return constructCloneClass(targetFragments, targetFragmentsSourceFiles);
 	}
 
 	private void extractTargetFragments(
@@ -157,8 +151,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 
 	private CloneClass<E> constructCloneClass(
 			final Map<Integer, List<E>> targetFragments,
-			final Map<Integer, SourceFile<E>> targetFragmentsSourceFiles,
-			SortedMap<Integer, SortedSet<Integer>> lcsElementsInEachFragment) {
+			final Map<Integer, SourceFile<E>> targetFragmentsSourceFiles) {
 		final DBCloneClass dbCloneClass = new DBCloneClass(
 				IDGenerator.generate(DBCloneClass.class), version.getCore(),
 				new ArrayList<DBCodeFragment>(),
@@ -167,8 +160,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 
 		for (int i = 0; i < targetFragments.size(); i++) {
 			final CodeFragment<E> fragment = constructFragment(
-					targetFragments.get(i), lcsElementsInEachFragment.get(i),
-					targetFragmentsSourceFiles.get(i));
+					targetFragments.get(i), targetFragmentsSourceFiles.get(i));
 			dbCloneClass.getCodeFragments().add(fragment.getCore());
 			fragment.getCore().setCloneClass(dbCloneClass);
 
@@ -181,64 +173,27 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 	}
 
 	private CodeFragment<E> constructFragment(final List<E> elements,
-			final SortedSet<Integer> indexInLcs, final SourceFile<E> sourceFile) {
+			final SourceFile<E> sourceFile) {
 		final DBCodeFragment dbCodeFragment = new DBCodeFragment(
 				IDGenerator.generate(DBCodeFragment.class),
 				new ArrayList<DBSegment>(), null);
 		final CodeFragment<E> codeFragment = new CodeFragment<E>(dbCodeFragment);
 
-		final List<Integer> indexesInSegment = new ArrayList<Integer>();
-		for (int i = 0; i < elements.size(); i++) {
-			if (indexInLcs.contains(i)) {
-				indexesInSegment.add(i);
-				continue;
-			} else {
-				if (indexesInSegment.size() > 0) {
-					int startPosition = elements.get(indexesInSegment.get(0))
-							.getPosition();
-					int endPosition = startPosition + indexesInSegment.size()
-							- 1;
-					final DBSegment dbSegment = new DBSegment(
-							IDGenerator.generate(DBSegment.class),
-							sourceFile.getCore(), startPosition, endPosition,
-							dbCodeFragment);
-					dbCodeFragment.getSegments().add(dbSegment);
+		final int startPosition = elements.get(0).getPosition();
+		final int endPosition = elements.get(elements.size() - 1).getPosition();
 
-					final Segment<E> segment = new Segment<E>(dbSegment);
-					segment.setSourceFile(sourceFile);
-					segment.setContents(sourceFile.getContents()
-							.subMap(startPosition, endPosition + 1).values());
-					segment.setCodeFragment(codeFragment);
+		final DBSegment dbSegment = new DBSegment(
+				IDGenerator.generate(DBSegment.class), sourceFile.getCore(),
+				startPosition, endPosition, dbCodeFragment);
+		dbCodeFragment.getSegments().add(dbSegment);
 
-					codeFragment.addSegment(segment);
+		final Segment<E> segment = new Segment<E>(dbSegment);
+		segment.setSourceFile(sourceFile);
+		segment.setContents(sourceFile.getContents()
+				.subMap(startPosition, endPosition + 1).values());
+		segment.setCodeFragment(codeFragment);
 
-					indexesInSegment.clear();
-				}
-			}
-		}
-
-		if (indexesInSegment.size() > 0) {
-			int startPosition = elements.get(indexesInSegment.get(0))
-					.getPosition();
-			int endPosition = startPosition + indexesInSegment.size() - 1;
-			final DBSegment dbSegment = new DBSegment(
-					IDGenerator.generate(DBSegment.class),
-					sourceFile.getCore(), startPosition, endPosition,
-					dbCodeFragment);
-			dbCodeFragment.getSegments().add(dbSegment);
-
-			final Segment<E> segment = new Segment<E>(dbSegment);
-			segment.setSourceFile(sourceFile);
-
-			segment.setContents(sourceFile.getContents()
-					.subMap(startPosition, endPosition + 1).values());
-
-			segment.setCodeFragment(codeFragment);
-
-			codeFragment.addSegment(segment);
-
-			indexesInSegment.clear();
-		}
+		codeFragment.addSegment(segment);
 
 		return codeFragment;
 	}

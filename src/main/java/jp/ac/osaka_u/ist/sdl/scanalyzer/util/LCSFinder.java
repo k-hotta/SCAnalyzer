@@ -28,9 +28,7 @@ public class LCSFinder {
 	 * Detect LCS among all the given lists of program elements.
 	 * 
 	 * @param targetElements
-	 *            a map has all the target lists of program elements, the key
-	 *            must have continuous integer values starting from 0, the value
-	 *            represents each of target list of program elements
+	 *            a map has all the target lists of program elements
 	 * @param equalizer
 	 *            how to compare each program elements, if <code>null</code>
 	 *            default comparator will be used, which compare elements with

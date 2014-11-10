@@ -18,7 +18,6 @@ import java.util.concurrent.Future;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.NearMissTokenEqualizer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.RawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
@@ -346,7 +345,7 @@ public class TestVersionBuilder {
 			for (final RawCloneClass<Token> rawCloneClass : rawCloneClasses
 					.values()) {
 				final CloneClassBuildTask<Token> task = new CloneClassBuildTask<Token>(
-						rawCloneClass, version, new NearMissTokenEqualizer());
+						rawCloneClass, version);
 				futures.add(pool.submit(task));
 			}
 
