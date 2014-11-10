@@ -143,13 +143,13 @@ public class CloneClass<E extends IProgramElement> implements
 	 *         the code fragment
 	 * 
 	 * @throws IllegalStateException
-	 *             if the number of code fragments is less than 2
+	 *             if the number of total code fragments (code fragments + ghost
+	 *             fragments) is less than 2
 	 */
 	public SortedMap<Long, CodeFragment<E>> getCodeFragments() {
-		if (this.codeFragments.size() < 2) {
+		if (this.codeFragments.size() < 2 && this.ghostFragments.size() < 2) {
 			throw new IllegalStateException(
-					"the clone class doesn't have enough number of code fragments:"
-							+ " it should have at least two fragments");
+					"the clone class doesn't have enough number of code fragments");
 		}
 		return Collections.unmodifiableSortedMap(codeFragments);
 	}
@@ -185,8 +185,15 @@ public class CloneClass<E extends IProgramElement> implements
 	 *         whose key is the id of a ghost fragment, each of whose value is
 	 *         the ghost fragment
 	 * 
+	 * @throws IllegalStateException
+	 *             if the number of total code fragments (code fragments + ghost
+	 *             fragments) is less than 2
 	 */
 	public SortedMap<Long, CodeFragment<E>> getGhostFragments() {
+		if (this.codeFragments.size() < 2 && this.ghostFragments.size() < 2) {
+			throw new IllegalStateException(
+					"the clone class doesn't have enough number of code fragments");
+		}
 		return Collections.unmodifiableSortedMap(ghostFragments);
 	}
 
