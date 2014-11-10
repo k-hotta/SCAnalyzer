@@ -164,8 +164,8 @@ public class IClonesCloneClassMappingHelper {
 	 * Make buckets of code fragments in given clone classes. This method is
 	 * supposed to be used for making buckets of fragments in AFTER version.
 	 * 
-	 * @param cloneClasses
-	 *            a collection of clone classes
+	 * @param codeFragments
+	 *            a collection of code fragments
 	 * @return a concurrent map that maps each hash value to a list of long,
 	 *         which list contains IDs of code fragments in after version
 	 */
@@ -423,7 +423,8 @@ public class IClonesCloneClassMappingHelper {
 			final ConcurrentMap<Long, CodeFragment<E>> estimatedFragments) {
 		final List<CloneClassMappingPostProcessTask<E>> tasks = new ArrayList<>();
 		for (final CloneClassMapping<E> tmp : cloneClassMapping) {
-			tasks.add(new CloneClassMappingPostProcessTask<>(tmp, estimatedFragments));
+			tasks.add(new CloneClassMappingPostProcessTask<>(tmp,
+					estimatedFragments));
 		}
 
 		final ExecutorService pool = Executors.newCachedThreadPool();

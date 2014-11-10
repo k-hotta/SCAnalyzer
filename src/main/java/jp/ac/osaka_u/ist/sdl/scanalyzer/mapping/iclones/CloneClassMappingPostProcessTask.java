@@ -15,16 +15,18 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
 /**
- * This class maps code fragments between two clone classes. This class is
- * supposed to be used after clone class mapping detected.
+ * This class performs post processing for each {@link CloneClassMapping}. The
+ * post processing includes, (1) detecting {@link CodeFragmentMapping} in the
+ * clone class mapping, and (2) detecting ghost fragments in the new clone
+ * class.
  * 
  * @author k-hotta
  *
  * @param <E>
  *            the type of program element
  */
-public class CloneClassMappingPostProcessTask<E extends IProgramElement> implements
-		Runnable {
+public class CloneClassMappingPostProcessTask<E extends IProgramElement>
+		implements Runnable {
 
 	private final CloneClassMapping<E> cloneClassMapping;
 
@@ -136,6 +138,9 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement> impleme
 		mapping.setCloneClassMapping(cloneClassMapping);
 
 		cloneClassMapping.addCodeFragmentMappings(mapping);
+
+		mapping.setOldCodeFragment(oldFragment);
+		mapping.setNewCodeFragment(newFragment);
 
 		return mapping;
 	}
