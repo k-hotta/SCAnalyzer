@@ -1,8 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * This enumeration represents the DBMSs that can be used in SCAnalyzer. <br>
  * Currently, it supports only SQLite. <br>
@@ -16,11 +13,6 @@ public enum DBMS {
 	 * This element represents SQLite
 	 */
 	SQLITE("jdbc:sqlite:");
-
-	/**
-	 * The logger for errors
-	 */
-	private static final Logger eLogger = LogManager.getLogger("error");
 
 	/**
 	 * The string of JDBC driver of the DBMS, which is used as a header of URL
@@ -48,31 +40,27 @@ public enum DBMS {
 	}
 
 	/**
-	 * Get the corresponding element of this enum for the given string. <br>
-	 * It first calls {@link DBMS#valueOf(String)} and returns the result if any
-	 * valid result can be obtained. <br>
-	 * Otherwise, it returns {@link DBMS#SQLITE} as a default value. <br>
-	 * Call this method instead of {@link DBMS#valueOf(String)} if you want to
-	 * force SCAnalyzer to use {@link DBMS#SQLITE} as the default in the case
-	 * where the given string is not valid. <br>
+	 * Get the corresponding element of this enum for the given string.
 	 * 
 	 * @param str
-	 *            the query to get DBMS
-	 * @return the corresponding DBMS if found, otherwise {@link DBMS#SQLITE}
+	 *            the query to get DBMS ignoring the case
+	 * @return the corresponding DBMS if found, <code>null</code> if not found
 	 */
 	public static DBMS getCorrespondingDBMS(final String str) {
-		final String upperStr = str.toUpperCase();
-		DBMS value = null;
-		try {
-			value = DBMS.valueOf(upperStr);
-		} catch (Exception e) {
-			eLogger.warn(
-					"cannot find the DBMS correponds to {}, SQLite will be used instead",
-					str);
-			value = SQLITE;
+		if (str == null) {
+			return null;
 		}
 
-		return value;
+		final String upperStr = str.toUpperCase();
+
+		DBMS result = null;
+		try {
+			result = DBMS.valueOf(upperStr);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		return result;
 	}
 
 	/**
