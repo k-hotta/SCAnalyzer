@@ -18,8 +18,8 @@
 	</clone-detection>
 	<mapping>
 		<relocation>null</relocation>
-		<equalizer>near-miss</equalizer>
+		<equalizer>near_miss</equalizer>
 		<clone-mapping>ICLONES</clone-mapping>
-		<element-mapping>Traditional-diff</element-mapping>
+		<element-mapping>Traditional_diff</element-mapping>
 	</mapping>
 </config>
