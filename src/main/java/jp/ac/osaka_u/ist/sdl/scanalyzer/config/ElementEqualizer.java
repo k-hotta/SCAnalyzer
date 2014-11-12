@@ -45,7 +45,7 @@ public enum ElementEqualizer {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("{ ");
 
-		for (final ElementEqualizer value : ElementEqualizer.values()) {
+		for (final ElementEqualizer value : values()) {
 			builder.append(value.toString() + ", ");
 		}
 		builder.deleteCharAt(builder.length() - 1);

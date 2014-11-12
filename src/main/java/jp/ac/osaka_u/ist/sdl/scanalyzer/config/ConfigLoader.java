@@ -181,13 +181,13 @@ public class ConfigLoader implements DefaultConfiguration {
 	 * @param args
 	 *            the command line arguments
 	 * 
-	 * @return <code>true</code> if the loading procedure has successfully
-	 *         finished, <code>false</code> otherwise.
+	 * @return an instance of {@link Config} that has all the specified
+	 *         configuration values, <code>null</code> if any error occurred.
 	 * 
 	 * @throws Exception
 	 *             If any error occurred when loading
 	 */
-	public boolean load(final String[] args) throws Exception {
+	public Config load(final String[] args) throws Exception {
 		final CommandLineParser parser = new PosixParser();
 		final CommandLine cmd = parser.parse(options, args);
 
@@ -219,45 +219,29 @@ public class ConfigLoader implements DefaultConfiguration {
 		// log the cause of the errors
 		// and the usage of configurations for which the errors occurred
 		if (!errors.isEmpty()) {
-			for (final Map.Entry<String, String> errorEntry : errors.entrySet()) {
-				eLogger.fatal(errorEntry.getKey()
-						+ " has not been correctly specified");
-				eLogger.fatal(errorEntry.getValue());
-			}
-
-			for (final Map.Entry<String, String> errorEntry : errors.entrySet()) {
-				uLogger.fatal(usage.get(errorEntry.getKey()));
-			}
+			logErrorAndUsage(errors);
 
 			// cannot continue further processing
-			return false;
+			return null;
 		}
 
 		errors.clear();
 
-		final DBMS dbms = DBMS.getCorrespondingDBMS(configsAsText.get("dbms"));
-		final String dbPath = configsAsText.get("d");
-		final Language language = Language
-				.getCorrespondingLanguage(configsAsText.get("l"));
-		final String repository = configsAsText.get("r");
-		final VersionControlSystem vcs = VersionControlSystem
-				.getCorrespondingVersionControlSystem(configsAsText.get("vcs"));
-		final ElementType elementType = ElementType
-				.getCorrespondingElementType(configsAsText.get("e"));
-		final CloneDetector detector = CloneDetector
-				.getCorrespondingCloneDetector(configsAsText.get("c"));
-		final String cloneResultDirectory = configsAsText.get("cr");
-		final String cloneResultFileFormat = configsAsText.get("ff");
-		// final String relocationFinder = configsAsText.get("rl");
-		final ElementEqualizer elementEqualizer = ElementEqualizer
-				.getCorrespondingElementEqualizer(configsAsText.get("eq"));
-		final CloneClassMappingAlgorithm cloneMappingAlgorithm = CloneClassMappingAlgorithm
-				.getCorrespondingCloneClassMappingAlgorithm(configsAsText
-						.get("cm"));
-		final ElementMappingAlgorithm elementMappingAlgorithm = ElementMappingAlgorithm
-				.getCorrespondingDBMS(configsAsText.get("em"));
+		// setup an instance of Config
+		final Config result = setupConfig(errors, configsAsText);
 
-		return true;
+		// if any error occurred
+		// log the cause of the errors
+		// and the usage of configurations for which the errors occurred
+		if (!errors.isEmpty()) {
+			logErrorAndUsage(errors);
+
+			// cannot continue further processing
+			return null;
+		}
+
+		// Config has been successfully initialized
+		return result;
 	}
 
 	/**
@@ -311,8 +295,6 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "em",
 				"element-mapping", DEFAULT_ELEMENT_MAPPING, false);
 
-		// TODO implement
-
 		return loadedConfigsAsText;
 	}
 
@@ -348,4 +330,130 @@ public class ConfigLoader implements DefaultConfiguration {
 			errors.put(optionName, "the specified value is null");
 		}
 	}
+
+	/**
+	 * Log error messages and usages
+	 * 
+	 * @param errors
+	 *            error messages
+	 */
+	private void logErrorAndUsage(final Map<String, String> errors) {
+		for (final Map.Entry<String, String> errorEntry : errors.entrySet()) {
+			eLogger.fatal(errorEntry.getKey()
+					+ " has not been correctly specified");
+			eLogger.fatal(errorEntry.getValue());
+		}
+
+		for (final Map.Entry<String, String> errorEntry : errors.entrySet()) {
+			uLogger.fatal(usage.get(errorEntry.getKey()));
+		}
+	}
+
+	/**
+	 * Set up an instance of {@link Config}
+	 * 
+	 * @param errors
+	 * @param configsAsText
+	 * @return
+	 */
+	private Config setupConfig(final Map<String, String> errors,
+			final Map<String, String> configsAsText) {
+		final DBMS dbms = DBMS.getCorrespondingDBMS(configsAsText.get("dbms"));
+		final String dbPath = configsAsText.get("d");
+		final Language language = Language
+				.getCorrespondingLanguage(configsAsText.get("l"));
+		final String repository = configsAsText.get("r");
+		final VersionControlSystem vcs = VersionControlSystem
+				.getCorrespondingVersionControlSystem(configsAsText.get("vcs"));
+		final ElementType elementType = ElementType
+				.getCorrespondingElementType(configsAsText.get("e"));
+		final CloneDetector detector = CloneDetector
+				.getCorrespondingCloneDetector(configsAsText.get("c"));
+		final String cloneResultDirectory = configsAsText.get("cr");
+		final String cloneResultFileFormat = configsAsText.get("ff");
+		// final String relocationFinder = configsAsText.get("rl");
+		final ElementEqualizer elementEqualizer = ElementEqualizer
+				.getCorrespondingElementEqualizer(configsAsText.get("eq"));
+		final CloneClassMappingAlgorithm cloneMappingAlgorithm = CloneClassMappingAlgorithm
+				.getCorrespondingCloneClassMappingAlgorithm(configsAsText
+						.get("cm"));
+		final ElementMappingAlgorithm elementMappingAlgorithm = ElementMappingAlgorithm
+				.getCorrespondingDBMS(configsAsText.get("em"));
+
+		final Config result = new Config();
+
+		final String format = "a wrong value or no value is set to %s";
+
+		if (dbms != null) {
+			result.setDbms(dbms);
+		} else {
+			errors.put("dbms", String.format(format, "dbms"));
+		}
+
+		if (dbPath != null) {
+			result.setDbPath(dbPath);
+		} else {
+			errors.put("d", String.format(format, "database path"));
+		}
+
+		if (language != null) {
+			result.setLanguage(language);
+		} else {
+			errors.put("l", String.format(format, "language"));
+		}
+
+		if (repository != null) {
+			result.setRepository(repository);
+		} else {
+			errors.put("r", String.format(format, "repository"));
+		}
+
+		if (vcs != null) {
+			result.setVcs(vcs);
+		} else {
+			errors.put("vcs", String.format(format, "version control system"));
+		}
+
+		if (elementType != null) {
+			result.setElementType(elementType);
+		} else {
+			errors.put("e", String.format(format, "element type"));
+		}
+
+		if (detector != null) {
+			result.setCloneDetector(detector);
+		} else {
+			errors.put("c", String.format(format, "clone detector"));
+		}
+
+		if (cloneResultDirectory != null) {
+			result.setCloneResultDirectory(cloneResultDirectory);
+		}
+
+		if (cloneResultFileFormat != null) {
+			result.setCloneResultFileFormat(cloneResultFileFormat);
+		}
+
+		if (elementEqualizer != null) {
+			result.setElementEqualizer(elementEqualizer);
+		} else {
+			errors.put("eq", String.format(format, "element equalizer"));
+		}
+
+		if (cloneMappingAlgorithm != null) {
+			result.setCloneMappingAlgorithm(cloneMappingAlgorithm);
+		} else {
+			errors.put("cm",
+					String.format(format, "clone class mapping algorithm"));
+		}
+
+		if (elementMappingAlgorithm != null) {
+			result.setElementMappingAlgorithm(elementMappingAlgorithm);
+		} else {
+			errors.put("em", String.format(format, "element mapping algorithm"));
+		}
+
+		return result;
+	}
+
 }
