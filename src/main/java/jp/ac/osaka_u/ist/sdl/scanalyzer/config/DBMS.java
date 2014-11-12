@@ -61,9 +61,10 @@ public enum DBMS {
 	 * @return the corresponding DBMS if found, otherwise {@link DBMS#SQLITE}
 	 */
 	public static DBMS getCorrespondingDBMS(final String str) {
+		final String upperStr = str.toUpperCase();
 		DBMS value = null;
 		try {
-			value = DBMS.valueOf(str);
+			value = DBMS.valueOf(upperStr);
 		} catch (Exception e) {
 			eLogger.warn(
 					"cannot find the DBMS correponds to {}, SQLite will be used instead",
@@ -72,6 +73,26 @@ public enum DBMS {
 		}
 
 		return value;
+	}
+
+	/**
+	 * Provide a string that represents which values can be used as DBMS.
+	 * 
+	 * @return a string representing available values
+	 */
+	public static String canBe() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("{ ");
+
+		for (final DBMS value : DBMS.values()) {
+			builder.append(value.toString() + ", ");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.deleteCharAt(builder.length() - 1);
+
+		builder.append(" }");
+
+		return builder.toString();
 	}
 
 }

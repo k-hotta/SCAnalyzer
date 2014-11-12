@@ -42,13 +42,20 @@ public class ConfigLoader implements DefaultConfiguration {
 	static {
 		final String format = "Please specify the %s as a command line argument with \"-%s\" "
 				+ "or as an xml node \"%s\" in the configuration file";
-		usage.put("dbms", String.format(format, "DBMS", "dbms", "dbms"));
+		final String additional = ", whose values can be %s";
+		usage.put(
+				"dbms",
+				String.format(format + additional, "DBMS", "dbms", "dbms",
+						DBMS.canBe()));
 		usage.put("d", String.format(format, "database", "d", "database"));
-		usage.put("l", String.format(format, "language", "l", "language"));
+		usage.put("l", String.format(format + additional, "language", "l",
+				"language", Language.canBe()));
 		usage.put("r", String.format(format, "repository", "r", "repository"));
-		usage.put("vcs", String.format(format, "version control system", "vcs",
-				"version-control"));
-		usage.put("e", String.format(format, "program element", "e", "element"));
+		usage.put("vcs", String.format(format + additional,
+				"version control system", "vcs", "version-control",
+				VersionControlSystem.canBe()));
+		usage.put("e", String.format(format + additional, "program element",
+				"e", "element", ElementType.canBe()));
 		usage.put("c", String.format(format, "clone detector", "c", "detector"));
 		usage.put("cr", String.format(format, "directory of the clone results",
 				"cr", "result-directory"));
