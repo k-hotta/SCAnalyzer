@@ -25,6 +25,31 @@ public enum ElementType {
 	}
 
 	/**
+	 * Get the corresponding element of this enum for the given string.
+	 * 
+	 * @param str
+	 *            the query to get ElementType ignoring the case
+	 * @return the corresponding ElementType if found, <code>null</code> if not
+	 *         found
+	 */
+	public static ElementType getCorrespondingElementType(final String str) {
+		if (str == null) {
+			return null;
+		}
+
+		final String upperStr = str.toUpperCase();
+
+		ElementType result = null;
+		try {
+			result = ElementType.valueOf(upperStr);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		return result;
+	}
+
+	/**
 	 * Provide a string that represents which values can be used as ElementType.
 	 * 
 	 * @return a string representing available values
