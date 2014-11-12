@@ -19,6 +19,7 @@
 	<mapping>
 		<relocation>null</relocation>
 		<equalizer>near-miss</equalizer>
-		<algorithm>ICLONES</algorithm>
+		<clone-mapping>ICLONES</clone-mapping>
+		<element-mapping>Traditional-diff</element-mapping>
 	</mapping>
 </config>

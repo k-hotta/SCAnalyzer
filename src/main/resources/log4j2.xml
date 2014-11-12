@@ -4,25 +4,37 @@
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout>
 				<Pattern>
-					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level %logger{36} - %msg%n
+					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level
+					%logger{36} - %msg%n
 				</Pattern>
 			</PatternLayout>
 		</Console>
 		<Console name="errconsole" target="SYSTEM_ERR">
 			<PatternLayout>
 				<Pattern>
-					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level - %msg%n
+					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level -
+					%msg%n
+				</Pattern>
+			</PatternLayout>
+		</Console>
+		<Console name="usageconsole" target="SYSTEM_ERR">
+			<PatternLayout>
+				<Pattern>
+					%msg%n
 				</Pattern>
 			</PatternLayout>
 		</Console>
 	</Appenders>
-	
+
 	<Loggers>
 		<Logger name="error" level="warn" additivity="false">
-			<AppenderRef ref="errconsole"/>
+			<AppenderRef ref="errconsole" />
+		</Logger>
+		<Logger name="usage" level="warn" additivity="false">
+			<AppenderRef ref="usageconsole" />
 		</Logger>
 		<Root level="trace">
-			<AppenderRef ref="console"/>
+			<AppenderRef ref="console" />
 		</Root>
 	</Loggers>
 </Configuration>

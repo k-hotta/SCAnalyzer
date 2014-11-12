@@ -9,12 +9,6 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer;
 public class SCAnalyzerMain {
 
 	/**
-	 * This is the path to the default configuration file. If no other file has
-	 * been specified, the default file will be loaded.
-	 */
-	public static final String DEFAULT_CONFIG_FILE = "scanalyzer-config.xml";
-
-	/**
 	 * This is the main method of SCAnalyzer.
 	 * 
 	 * @param args
