@@ -11,64 +11,79 @@ public class Config {
 	/**
 	 * The DBMS
 	 */
-	private DBMS dbms;
+	private DBMS dbms = null;
 
 	/**
 	 * The path of the database
 	 */
-	private String dbPath;
+	private String dbPath = null;
 
 	/**
 	 * The programming language in which the target is written
 	 */
-	private Language language;
+	private Language language = null;
 
 	/**
 	 * The path or URL of the target repository
 	 */
-	private String repository;
+	private String repository = null;
+
+	/**
+	 * The relative path of interest
+	 */
+	private String relativePath = null;
 
 	/**
 	 * The version control system under consideration
 	 */
-	private VersionControlSystem vcs;
+	private VersionControlSystem vcs = null;
 
 	/**
 	 * The type of program element
 	 */
-	private ElementType elementType;
+	private ElementType elementType = null;
 
 	/**
 	 * The clone detector to be used
 	 */
-	private CloneDetector cloneDetector;
+	private CloneDetector cloneDetector = null;
 
 	/**
 	 * The directory having all the clone results (only for clone detectors that
 	 * read result files that have been created before running SCAnalyzer)
 	 */
-	private String cloneResultDirectory;
+	private String cloneResultDirectory = null;
 
 	/**
 	 * The format of file names for clone result files (only for clone detectors
 	 * that read result files that have been created before running SCAnalyzer)
 	 */
-	private String cloneResultFileFormat;
+	private String cloneResultFileFormat = null;
 
 	/**
 	 * The equalizer for program elements
 	 */
-	private ElementEqualizer elementEqualizer;
+	private ElementEqualizer elementEqualizer = null;
 
 	/**
 	 * The algorithm to map clone classes
 	 */
-	private CloneClassMappingAlgorithm cloneMappingAlgorithm;
+	private CloneClassMappingAlgorithm cloneMappingAlgorithm = null;
 
 	/**
 	 * The algorithm to map program elements
 	 */
-	private ElementMappingAlgorithm elementMappingAlgorithm;
+	private ElementMappingAlgorithm elementMappingAlgorithm = null;
+
+	/**
+	 * The identifier of start revision
+	 */
+	private String startRevisionIdentifier = null;
+
+	/**
+	 * The identifier of end revision
+	 */
+	private String endRevisionIdentifier = null;
 
 	/*
 	 * getters and setters follow
@@ -148,6 +163,25 @@ public class Config {
 	 */
 	public final void setRepository(String repository) {
 		this.repository = repository;
+	}
+
+	/**
+	 * Get the relative path.
+	 * 
+	 * @return the relative path
+	 */
+	public final String getRelativePath() {
+		return relativePath;
+	}
+
+	/**
+	 * Set the relative path with the specified one.
+	 * 
+	 * @param relativePath
+	 *            the relative path to be set
+	 */
+	public final void setRelativePath(final String relativePath) {
+		this.relativePath = relativePath;
 	}
 
 	/**
@@ -303,6 +337,44 @@ public class Config {
 	public final void setElementMappingAlgorithm(
 			ElementMappingAlgorithm elementMappingAlgorithm) {
 		this.elementMappingAlgorithm = elementMappingAlgorithm;
+	}
+
+	/**
+	 * Get the identifier of the start revision.
+	 * 
+	 * @return the identifier of start revision
+	 */
+	public final String getStartRevisionIdentifier() {
+		return startRevisionIdentifier;
+	}
+
+	/**
+	 * Set the identifier of the start revision with the specified one.
+	 * 
+	 * @param startRevisionIdentifier
+	 *            the identifier to be set
+	 */
+	public final void setStartRevisionIdentifier(String startRevisionIdentifier) {
+		this.startRevisionIdentifier = startRevisionIdentifier;
+	}
+
+	/**
+	 * Get the identifier of the end revision
+	 * 
+	 * @return the identifier of end revision
+	 */
+	public final String getEndRevisionIdentifier() {
+		return endRevisionIdentifier;
+	}
+
+	/**
+	 * Set the identifier of the end revision with the specified one.
+	 * 
+	 * @param endRevisionIdentifier
+	 *            the identifier to be set
+	 */
+	public final void setEndRevisionIdentifier(String endRevisionIdentifier) {
+		this.endRevisionIdentifier = endRevisionIdentifier;
 	}
 
 }

@@ -1,7 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-
 /**
  * This is an enumeration which describes what kind of elements can be analyzed.
  * Here, a kind of element corresponds to an implementation of

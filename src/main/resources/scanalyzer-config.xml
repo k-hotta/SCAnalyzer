@@ -8,8 +8,11 @@
 		<language>JAVA</language>
 		<element>TOKEN</element>
 		<repository>src/test/resources/repository-clonetracker</repository>
+		<relative>/c20r_main/src</relative>
 		<version-control>SVN</version-control>
 		<database>src/test/resources/test.db</database>
+		<start>1</start>
+		<end>419</end>
 	</target>
 	<clone-detection>
 		<detector>Scorpio</detector>

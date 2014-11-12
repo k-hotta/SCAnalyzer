@@ -121,4 +121,13 @@ public class WorkerManager<E extends IProgramElement> {
 
 	}
 
+	private IRevisionProvider setupRevisionProvider(
+			final VersionControlSystem vcs) {
+		switch (vcs) {
+		case SVN:
+			// TODO implement
+		}
+		return null;
+	}
+
 }

@@ -51,6 +51,8 @@ public class ConfigLoader implements DefaultConfiguration {
 		usage.put("l", String.format(format + additional, "language", "l",
 				"language", Language.canBe()));
 		usage.put("r", String.format(format, "repository", "r", "repository"));
+		usage.put("rp",
+				String.format(format, "relative path", "rp", "relative"));
 		usage.put("vcs", String.format(format + additional,
 				"version control system", "vcs", "version-control",
 				VersionControlSystem.canBe()));
@@ -74,6 +76,10 @@ public class ConfigLoader implements DefaultConfiguration {
 		usage.put("em", String.format(format + additional,
 				"mapping algorithm for elements", "em", "element-mapping",
 				ElementMappingAlgorithm.canBe()));
+		usage.put("start", String.format(format, "start revision identifier",
+				"start", "start"));
+		usage.put("end",
+				String.format(format, "end revision identifier", "end", "end"));
 	}
 
 	/**
@@ -113,6 +119,10 @@ public class ConfigLoader implements DefaultConfiguration {
 		options.addOption(makeOption("r", "repository", true,
 				"path of target repository", 1, false));
 
+		// relative path
+		options.addOption(makeOption("rp", "relative", true, "relative path",
+				1, false));
+
 		// version control system
 		options.addOption(makeOption("vcs", "version-control", true,
 				"version control system", 1, false));
@@ -148,6 +158,14 @@ public class ConfigLoader implements DefaultConfiguration {
 		// mapping algorithm for elements
 		options.addOption(makeOption("em", "element-mapping", true,
 				"mapping algorithm for elements", 1, false));
+
+		// start revision
+		options.addOption(makeOption("start", "start-revision", true,
+				"identifier of start revision", 1, false));
+
+		// end revision
+		options.addOption(makeOption("end", "end-revision", true,
+				"identifier of end revision", 1, false));
 
 		return options;
 	}
@@ -268,6 +286,9 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "r",
 				"repository", null, false);
 
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "rp",
+				"relative", null, true);
+
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "vcs",
 				"version-control", null, false);
 
@@ -294,6 +315,12 @@ public class ConfigLoader implements DefaultConfiguration {
 
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "em",
 				"element-mapping", DEFAULT_ELEMENT_MAPPING, false);
+
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "start",
+				"start", null, true);
+
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "end",
+				"end", null, true);
 
 		return loadedConfigsAsText;
 	}
@@ -363,6 +390,7 @@ public class ConfigLoader implements DefaultConfiguration {
 		final Language language = Language
 				.getCorrespondingLanguage(configsAsText.get("l"));
 		final String repository = configsAsText.get("r");
+		final String relativePath = configsAsText.get("rp");
 		final VersionControlSystem vcs = VersionControlSystem
 				.getCorrespondingVersionControlSystem(configsAsText.get("vcs"));
 		final ElementType elementType = ElementType
@@ -379,6 +407,8 @@ public class ConfigLoader implements DefaultConfiguration {
 						.get("cm"));
 		final ElementMappingAlgorithm elementMappingAlgorithm = ElementMappingAlgorithm
 				.getCorrespondingDBMS(configsAsText.get("em"));
+		final String startRevisionIdentifier = configsAsText.get("start");
+		final String endRevisionIdentifier = configsAsText.get("end");
 
 		final Config result = new Config();
 
@@ -406,6 +436,10 @@ public class ConfigLoader implements DefaultConfiguration {
 			result.setRepository(repository);
 		} else {
 			errors.put("r", String.format(format, "repository"));
+		}
+
+		if (relativePath != null) {
+			result.setRelativePath(relativePath);
 		}
 
 		if (vcs != null) {
@@ -451,6 +485,14 @@ public class ConfigLoader implements DefaultConfiguration {
 			result.setElementMappingAlgorithm(elementMappingAlgorithm);
 		} else {
 			errors.put("em", String.format(format, "element mapping algorithm"));
+		}
+
+		if (startRevisionIdentifier != null) {
+			result.setStartRevisionIdentifier(startRevisionIdentifier);
+		}
+
+		if (endRevisionIdentifier != null) {
+			result.setEndRevisionIdentifier(endRevisionIdentifier);
 		}
 
 		return result;
