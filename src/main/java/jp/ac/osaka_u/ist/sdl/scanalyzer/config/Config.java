@@ -1,14 +1,12 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-
 /**
  * A class that contains configuration values of SCAnalyzer. <br>
  * 
  * @author k-hotta
  * 
  */
-public class Config<E extends IProgramElement> {
+public class Config {
 
 	/**
 	 * The DBMS
@@ -34,6 +32,43 @@ public class Config<E extends IProgramElement> {
 	 * The version control system under consideration
 	 */
 	private VersionControlSystem vcs;
+
+	/**
+	 * The type of program element
+	 */
+	private ElementType elementType;
+
+	/**
+	 * The clone detector to be used
+	 */
+	private CloneDetector cloneDetector;
+
+	/**
+	 * The directory having all the clone results (only for clone detectors that
+	 * read result files that have been created before running SCAnalyzer)
+	 */
+	private String cloneResultDirectory;
+
+	/**
+	 * The format of file names for clone result files (only for clone detectors
+	 * that read result files that have been created before running SCAnalyzer)
+	 */
+	private String cloneResultFileFormat;
+
+	/**
+	 * The equalizer for program elements
+	 */
+	private ElementEqualizer elementEqualizer;
+
+	/**
+	 * The algorithm to map clone classes
+	 */
+	private CloneClassMappingAlgorithm cloneMappingAlgorithm;
+
+	/**
+	 * The algorithm to map program elements
+	 */
+	private ElementMappingAlgorithm elementMappingAlgorithm;
 
 	/*
 	 * getters and setters follow
@@ -132,6 +167,142 @@ public class Config<E extends IProgramElement> {
 	 */
 	public final void setVcs(VersionControlSystem vcs) {
 		this.vcs = vcs;
+	}
+
+	/**
+	 * Get the type of program element.
+	 * 
+	 * @return the type of program element
+	 */
+	public final ElementType getElementType() {
+		return elementType;
+	}
+
+	/**
+	 * Set the type of program element with the specified one.
+	 * 
+	 * @param elementType
+	 *            the type of program element to be set
+	 */
+	public final void setElementType(ElementType elementType) {
+		this.elementType = elementType;
+	}
+
+	/**
+	 * Get the clone detector.
+	 * 
+	 * @return the clone detector
+	 */
+	public final CloneDetector getCloneDetector() {
+		return cloneDetector;
+	}
+
+	/**
+	 * Set the clone detector with the specified one.
+	 * 
+	 * @param cloneDetector
+	 *            the clone detector to be set
+	 */
+	public final void setCloneDetector(CloneDetector cloneDetector) {
+		this.cloneDetector = cloneDetector;
+	}
+
+	/**
+	 * Get the directory of clone result files.
+	 * 
+	 * @return the directory of clone result files
+	 */
+	public final String getCloneResultDirectory() {
+		return cloneResultDirectory;
+	}
+
+	/**
+	 * Set the directory of clone result files with the specified one.
+	 * 
+	 * @param cloneResultDirectory
+	 *            the directory to be set
+	 */
+	public final void setCloneResultDirectory(String cloneResultDirectory) {
+		this.cloneResultDirectory = cloneResultDirectory;
+	}
+
+	/**
+	 * Get the format of file names of clone result files.
+	 * 
+	 * @return the format of file names of clone result files
+	 */
+	public final String getCloneResultFileFormat() {
+		return cloneResultFileFormat;
+	}
+
+	/**
+	 * Set the format of file names of clone result files with the specified
+	 * one.
+	 * 
+	 * @param cloneResultFileFormat
+	 *            the format of file names to be set
+	 */
+	public final void setCloneResultFileFormat(String cloneResultFileFormat) {
+		this.cloneResultFileFormat = cloneResultFileFormat;
+	}
+
+	/**
+	 * Get the equalizer for program elements.
+	 * 
+	 * @return the equalizer for program elements
+	 */
+	public final ElementEqualizer getElementEqualizer() {
+		return elementEqualizer;
+	}
+
+	/**
+	 * Set the equalizer for program elements with the specified one.
+	 * 
+	 * @param elementEqualizer
+	 *            the equalizer to be set
+	 */
+	public final void setElementEqualizer(ElementEqualizer elementEqualizer) {
+		this.elementEqualizer = elementEqualizer;
+	}
+
+	/**
+	 * Get the algorithm for mapping clone classes.
+	 * 
+	 * @return the algorithm for mapping clone classes
+	 */
+	public final CloneClassMappingAlgorithm getCloneMappingAlgorithm() {
+		return cloneMappingAlgorithm;
+	}
+
+	/**
+	 * Set the algorithm for mapping clone classes with the specified one.
+	 * 
+	 * @param cloneMappingAlgorithm
+	 *            the algorithm to be set
+	 */
+	public final void setCloneMappingAlgorithm(
+			CloneClassMappingAlgorithm cloneMappingAlgorithm) {
+		this.cloneMappingAlgorithm = cloneMappingAlgorithm;
+	}
+
+	/**
+	 * Get the algorithm for mapping program elements.
+	 * 
+	 * @return the algorithm for mapping program elements
+	 */
+	public final ElementMappingAlgorithm getElementMappingAlgorithm() {
+		return elementMappingAlgorithm;
+	}
+
+	/**
+	 * Set the algorithm for mapping program elements with the specified one.
+	 * 
+	 * @param elementMappingAlgorithm
+	 *            the algorithm to be set
+	 */
+	public final void setElementMappingAlgorithm(
+			ElementMappingAlgorithm elementMappingAlgorithm) {
+		this.elementMappingAlgorithm = elementMappingAlgorithm;
 	}
 
 }
