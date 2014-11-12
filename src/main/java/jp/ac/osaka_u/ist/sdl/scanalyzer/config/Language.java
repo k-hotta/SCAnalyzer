@@ -84,6 +84,31 @@ public enum Language {
 	}
 
 	/**
+	 * Get the corresponding element of this enum for the given string.
+	 * 
+	 * @param str
+	 *            the query to get Language ignoring the case
+	 * @return the corresponding Language if found, <code>null</code> if not
+	 *         found
+	 */
+	public static Language getCorrespondingLanguage(final String str) {
+		if (str == null) {
+			return null;
+		}
+
+		final String upperStr = str.toUpperCase();
+
+		Language result = null;
+		try {
+			result = Language.valueOf(upperStr);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		return result;
+	}
+
+	/**
 	 * Provide a string that represents which values can be used as Language.
 	 * 
 	 * @return a string representing available values
