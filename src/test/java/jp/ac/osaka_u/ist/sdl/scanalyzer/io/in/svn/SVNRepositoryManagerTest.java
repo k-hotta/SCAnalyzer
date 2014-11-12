@@ -15,6 +15,7 @@ import java.util.Map;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
 
+import org.junit.After;
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
@@ -27,14 +28,19 @@ public class SVNRepositoryManagerTest {
 
 	private static final String RELATIVE_PATH_FOR_TEST2 = "c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/ast/";
 
+	@After
+	public void tearDown() throws Exception {
+		SVNRepositoryManager.dispose();
+	}
+
 	@Test
 	public void test1() {
 		final String path = "src\\test\\resources\\repository-clonetracker";
 		final String relativePath = null;
 
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(path,
-					relativePath, Language.JAVA);
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
+					path, relativePath, Language.JAVA);
 			assertTrue(manager.getUrl().toString().startsWith("file://")
 					&& manager
 							.getUrl()
@@ -52,8 +58,8 @@ public class SVNRepositoryManagerTest {
 		final String relativePath = "trunk";
 
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(path,
-					relativePath, Language.JAVA);
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
+					path, relativePath, Language.JAVA);
 			assertTrue(manager.getUrl().toString().startsWith("file://")
 					&& manager
 							.getUrl()
@@ -71,8 +77,8 @@ public class SVNRepositoryManagerTest {
 		final String relativePath = "/trunk";
 
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(path,
-					relativePath, Language.JAVA);
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
+					path, relativePath, Language.JAVA);
 			assertTrue(manager.getUrl().toString().startsWith("file://")
 					&& manager
 							.getUrl()
@@ -90,8 +96,8 @@ public class SVNRepositoryManagerTest {
 		final String relativePath = "trunk";
 
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(path,
-					relativePath, Language.JAVA);
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
+					path, relativePath, Language.JAVA);
 			assertTrue(manager.getUrl().toString().startsWith("file://")
 					&& manager
 							.getUrl()
@@ -106,7 +112,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetListOfRelevantFiles1() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
 			final List<String> reference = readResultFile("src/test/resources/clonetracker-list-rev200.txt");
 			final List<String> result = manager
@@ -120,7 +126,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetListOfRelevantFiles2() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
 			final List<String> reference = readResultFile("src/test/resources/clonetracker-list-rev300.txt");
 			final List<String> result = manager
@@ -134,7 +140,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetListOfRelevantFiles3() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, null, Language.JAVA);
 			manager.getListOfRelevantFiles((long) 1000);
 			fail(); // here shouldn't be reached
@@ -146,7 +152,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetListOfRelevantFiles4() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
 			final List<String> reference = readResultFile("src/test/resources/clonetracker-list-rev300.txt");
 			final List<String> result = manager
@@ -161,7 +167,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetListOfRelevantFiles5() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST2, Language.JAVA);
 			final List<String> result = manager
 					.getListOfRelevantFiles((long) 300);
@@ -190,7 +196,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetLog1() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
 			final Collection<SVNLogEntry> logEntries = manager.getLog(282);
 			final Map<String, String> reference = readDiffFile("src/test/resources/clonetracker-diff-summarize-rev281-rev282.txt");
@@ -219,7 +225,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetLog2() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
 			final Collection<SVNLogEntry> logEntries = manager.getLog(335);
 			final Map<String, String> reference = readDiffFile("src/test/resources/clonetracker-diff-summarize-rev334-rev335.txt");
@@ -248,7 +254,7 @@ public class SVNRepositoryManagerTest {
 	@Test
 	public void testGetLog3() {
 		try {
-			final SVNRepositoryManager manager = new SVNRepositoryManager(
+			final SVNRepositoryManager manager = SVNRepositoryManager.setup(
 					PATH_OF_TEST_REPO, RELATIVE_PATH_FOR_TEST, Language.JAVA);
 			final Collection<SVNLogEntry> logEntries = manager.getLog(406);
 			final Map<String, String> reference = readDiffFile("src/test/resources/clonetracker-diff-summarize-rev405-rev406.txt");

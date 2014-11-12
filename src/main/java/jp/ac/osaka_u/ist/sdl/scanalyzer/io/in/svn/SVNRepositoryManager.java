@@ -48,6 +48,11 @@ public class SVNRepositoryManager {
 	private static final Logger eLogger = LogManager.getLogger("error");
 
 	/**
+	 * The singleton object
+	 */
+	private static SVNRepositoryManager SINGLETON;
+
+	/**
 	 * The path to a SVN repository <br>
 	 * e.g. C:/repository, http://sdl.ist.osaka-u.ac.jp/svn/ScorpioTM
 	 */
@@ -75,38 +80,14 @@ public class SVNRepositoryManager {
 	private final Language language;
 
 	/**
-	 * The constructor. <br>
-	 * The given path and relative path are checked whether they are valid or
-	 * not. Then this constructor initializes SVNURL and SVNRepository with the
-	 * specified values. <br>
-	 * The supported schemes of URL are file, http, https, and svn. If the
-	 * specified path corresponds to the above schemes, this constructor regards
-	 * the path as a URL of the scheme. This constructor otherwise regards the
-	 * given path as a path to local file and tries to connect to the local file
-	 * with the file: protocol.
-	 * 
-	 * <p>
-	 * Note: the URL of the repository will be initialized with the one for the
-	 * root of the repository even if the relative path is specified
-	 * </p>
+	 * The private constructor for singleton pattern
 	 * 
 	 * @param path
-	 *            the URL to the target repository (e.g. file:///***), or the
-	 *            path of the target local repository (e.g.
-	 *            C:\work\local-repository); in the former case the URL
-	 *            shouldn't end with "/" (if so, the last "/" will be removed)
 	 * @param relativePath
-	 *            the relative path of the position under considered to the SVN
-	 *            root (e.g. /trunk), which should start with "/" otherwise the
-	 *            additional "/" will be inserted in the head of the specified
-	 *            string
 	 * @param language
-	 *            the programming language to be analyzed
 	 * @throws SVNException
-	 *             If any error occurred when connecting and initializing the
-	 *             given repository
 	 */
-	public SVNRepositoryManager(final String path, final String relativePath,
+	private SVNRepositoryManager(final String path, final String relativePath,
 			final Language language) throws SVNException {
 		logger.trace("start initializing the manager of svn repository");
 
@@ -196,6 +177,80 @@ public class SVNRepositoryManager {
 		logger.trace("relative path: " + this.relativePath);
 		logger.trace("language: " + language.toString());
 		logger.trace("URL: " + this.url.toString());
+	}
+
+	/**
+	 * Set up the instance of this class. <br>
+	 * The given path and relative path are checked whether they are valid or
+	 * not. Then this constructor initializes SVNURL and SVNRepository with the
+	 * specified values. <br>
+	 * The supported schemes of URL are file, http, https, and svn. If the
+	 * specified path corresponds to the above schemes, this constructor regards
+	 * the path as a URL of the scheme. This constructor otherwise regards the
+	 * given path as a path to local file and tries to connect to the local file
+	 * with the file: protocol.
+	 * 
+	 * <p>
+	 * Note: the URL of the repository will be initialized with the one for the
+	 * root of the repository even if the relative path is specified
+	 * </p>
+	 * 
+	 * @param path
+	 *            the URL to the target repository (e.g. file:///***), or the
+	 *            path of the target local repository (e.g.
+	 *            C:\work\local-repository); in the former case the URL
+	 *            shouldn't end with "/" (if so, the last "/" will be removed)
+	 * @param relativePath
+	 *            the relative path of the position under considered to the SVN
+	 *            root (e.g. /trunk), which should start with "/" otherwise the
+	 *            additional "/" will be inserted in the head of the specified
+	 *            string
+	 * @param language
+	 *            the programming language to be analyzed
+	 * 
+	 * @return the instance
+	 * 
+	 * @throws SVNException
+	 *             If any error occurred when connecting and initializing the
+	 *             given repository
+	 */
+	public static SVNRepositoryManager setup(final String path,
+			final String relativePath, final Language language)
+			throws SVNException {
+		if (SINGLETON == null) {
+			SINGLETON = new SVNRepositoryManager(path, relativePath, language);
+		} else {
+			logger.trace("the manager has already been initialized");
+		}
+
+		return SINGLETON;
+	}
+
+	/**
+	 * Get the instance of the manager.
+	 * 
+	 * @return the instance of the manager
+	 * 
+	 * @throws IllegalStateException
+	 *             If the instance has not been initialized. It should be
+	 *             initialized via
+	 *             {@link SVNRepositoryManager#setup(String, String, Language)}
+	 *             before calling this method.
+	 */
+	public static SVNRepositoryManager getInstance() {
+		if (SINGLETON == null) {
+			throw new IllegalStateException(
+					"the repository manager has not been initialized");
+		}
+
+		return SINGLETON;
+	}
+
+	/**
+	 * Dispose the instance.
+	 */
+	public static void dispose() {
+		SINGLETON = null;
 	}
 
 	/**

@@ -36,7 +36,7 @@ public class SVNFileContentProviderTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		manager = new SVNRepositoryManager(PATH_OF_TEST_REPO,
+		manager = SVNRepositoryManager.setup(PATH_OF_TEST_REPO,
 				RELATIVE_PATH_FOR_TEST, Language.JAVA);
 		provider = new SVNFileContentProvider<Token>(manager);
 
