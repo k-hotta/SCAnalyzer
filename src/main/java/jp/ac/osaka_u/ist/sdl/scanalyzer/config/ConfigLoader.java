@@ -56,7 +56,8 @@ public class ConfigLoader implements DefaultConfiguration {
 				VersionControlSystem.canBe()));
 		usage.put("e", String.format(format + additional, "program element",
 				"e", "element", ElementType.canBe()));
-		usage.put("c", String.format(format, "clone detector", "c", "detector"));
+		usage.put("c", String.format(format + additional, "clone detector",
+				"c", "detector", CloneDetector.canBe()));
 		usage.put("cr", String.format(format, "directory of the clone results",
 				"cr", "result-directory"));
 		usage.put("ff", String.format(format,
@@ -64,12 +65,15 @@ public class ConfigLoader implements DefaultConfiguration {
 				"filename-format"));
 		usage.put("rl", String.format(format,
 				"additional file relocation finder", "rl", "relocation"));
-		usage.put("eq", String.format(format, "equalizer for program elements",
-				"eq", "equalizer"));
-		usage.put("cm", String.format(format, "mapping algorithm for clones",
-				"cm", "clone-mapping"));
-		usage.put("em", String.format(format, "mapping algorithm for elements",
-				"em", "element-mapping"));
+		usage.put("eq", String.format(format + additional,
+				"equalizer for program elements", "eq", "equalizer",
+				ElementEqualizer.canBe()));
+		usage.put("cm", String.format(format + additional,
+				"mapping algorithm for clones", "cm", "clone-mapping",
+				CloneClassMappingAlgorithm.canBe()));
+		usage.put("em", String.format(format + additional,
+				"mapping algorithm for elements", "em", "element-mapping",
+				ElementMappingAlgorithm.canBe()));
 	}
 
 	/**
@@ -242,8 +246,16 @@ public class ConfigLoader implements DefaultConfiguration {
 				.getCorrespondingElementType(configsAsText.get("e"));
 		final CloneDetector detector = CloneDetector
 				.getCorrespondingCloneDetector(configsAsText.get("c"));
+		final String cloneResultDirectory = configsAsText.get("cr");
+		final String cloneResultFileFormat = configsAsText.get("ff");
+		// final String relocationFinder = configsAsText.get("rl");
 		final ElementEqualizer elementEqualizer = ElementEqualizer
 				.getCorrespondingElementEqualizer(configsAsText.get("eq"));
+		final CloneClassMappingAlgorithm cloneMappingAlgorithm = CloneClassMappingAlgorithm
+				.getCorrespondingCloneClassMappingAlgorithm(configsAsText
+						.get("cm"));
+		final ElementMappingAlgorithm elementMappingAlgorithm = ElementMappingAlgorithm
+				.getCorrespondingDBMS(configsAsText.get("em"));
 
 		return true;
 	}
