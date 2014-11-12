@@ -7,6 +7,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRelocationFinder;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRevisionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRevisionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 import difflib.myers.Equalizer;
@@ -118,14 +120,42 @@ public class WorkerManager<E extends IProgramElement> {
 	 *            the configuration
 	 */
 	public void setup(final Config config) {
-
+		revisionProvider = setupRevisionProvider(config.getVcs(),
+				config.getStartRevisionIdentifier(),
+				config.getEndRevisionIdentifier());
+		if (revisionProvider == null) {
+			throw new IllegalStateException(
+					"cannot initialize revision provider");
+		}
 	}
 
+	/**
+	 * Set up the revision provider
+	 * 
+	 * @param vcs
+	 * @param startRevisionIdentifier
+	 * @param endRevisionIdentifier
+	 * @return
+	 */
 	private IRevisionProvider setupRevisionProvider(
-			final VersionControlSystem vcs) {
+			final VersionControlSystem vcs,
+			final String startRevisionIdentifier,
+			final String endRevisionIdentifier) {
 		switch (vcs) {
 		case SVN:
-			// TODO implement
+			try {
+				final long startRevisionNum = (startRevisionIdentifier == null) ? null
+						: Long.parseLong(startRevisionIdentifier);
+				final long endRevisionNum = (endRevisionIdentifier == null) ? null
+						: Long.parseLong(endRevisionIdentifier);
+
+				return new SVNRevisionProvider(
+						SVNRepositoryManager.getInstance(), startRevisionNum,
+						endRevisionNum);
+			} catch (Exception e) {
+				throw new IllegalStateException(
+						"cannot initialize revision provider", e);
+			}
 		}
 		return null;
 	}
