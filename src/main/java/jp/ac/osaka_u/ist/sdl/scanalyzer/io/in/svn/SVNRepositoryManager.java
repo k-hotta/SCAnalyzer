@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.Language;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

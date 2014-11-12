@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import static org.junit.Assert.*;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.DBMS;
 
 import org.junit.Test;
 

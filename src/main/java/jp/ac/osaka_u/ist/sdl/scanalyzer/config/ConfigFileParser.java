@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.io;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
 import java.io.File;
 import java.util.Map;

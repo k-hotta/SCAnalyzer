@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.io;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
 /**
  * This interface contains default configuration values for non-mandatory

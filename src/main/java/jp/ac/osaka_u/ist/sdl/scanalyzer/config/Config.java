@@ -1,6 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.io;
-
-import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBMS;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io;
 
 import static org.junit.Assert.*;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ConfigFileParser;
 
 import org.junit.After;
 import org.junit.Before;

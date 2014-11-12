@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

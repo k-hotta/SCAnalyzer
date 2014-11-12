@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.Language;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.io.Language;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
