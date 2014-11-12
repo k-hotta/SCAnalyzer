@@ -229,6 +229,22 @@ public class ConfigLoader implements DefaultConfiguration {
 			return false;
 		}
 
+		errors.clear();
+
+		final DBMS dbms = DBMS.getCorrespondingDBMS(configsAsText.get("dbms"));
+		final String dbPath = configsAsText.get("d");
+		final Language language = Language
+				.getCorrespondingLanguage(configsAsText.get("l"));
+		final String repository = configsAsText.get("r");
+		final VersionControlSystem vcs = VersionControlSystem
+				.getCorrespondingVersionControlSystem(configsAsText.get("vcs"));
+		final ElementType elementType = ElementType
+				.getCorrespondingElementType(configsAsText.get("e"));
+		final CloneDetector detector = CloneDetector
+				.getCorrespondingCloneDetector(configsAsText.get("c"));
+		final ElementEqualizer elementEqualizer = ElementEqualizer
+				.getCorrespondingElementEqualizer(configsAsText.get("eq"));
+
 		return true;
 	}
 

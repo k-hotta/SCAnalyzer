@@ -1,7 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 
 /**
  * A class that contains configuration values of SCAnalyzer. <br>
@@ -9,17 +8,7 @@ import org.apache.logging.log4j.Logger;
  * @author k-hotta
  * 
  */
-public class Config {
-
-	/**
-	 * The logger
-	 */
-	private static final Logger logger = LogManager.getLogger(Config.class);
-
-	/**
-	 * The singleton object
-	 */
-	private static Config SINGLETON = null;
+public class Config<E extends IProgramElement> {
 
 	/**
 	 * The DBMS
@@ -45,30 +34,6 @@ public class Config {
 	 * The version control system under consideration
 	 */
 	private VersionControlSystem vcs;
-
-	/**
-	 * The private constructor for adopting the singleton pattern
-	 */
-	private Config() {
-
-	}
-
-	/**
-	 * Get the instance of the configuration. <br>
-	 * It initializes the instance at the first call, and it returns the
-	 * already-initialized instance after the second call or later. <br>
-	 * 
-	 * @return the singleton instance of this class
-	 */
-	public static Config getInstancce() {
-		if (SINGLETON == null) {
-			SINGLETON = new Config();
-			logger.trace("the instance of " + Config.class.getName()
-					+ " has been initialized");
-		}
-
-		return SINGLETON;
-	}
 
 	/*
 	 * getters and setters follow

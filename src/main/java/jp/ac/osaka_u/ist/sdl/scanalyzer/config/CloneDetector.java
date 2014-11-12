@@ -44,7 +44,7 @@ public enum CloneDetector {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("{ ");
 
-		for (final DBMS value : DBMS.values()) {
+		for (final CloneDetector value : values()) {
 			builder.append(value.toString() + ", ");
 		}
 		builder.deleteCharAt(builder.length() - 1);

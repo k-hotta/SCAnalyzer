@@ -58,7 +58,7 @@ public enum ElementType {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("{ ");
 
-		for (final DBMS value : DBMS.values()) {
+		for (final ElementType value : values()) {
 			builder.append(value.toString() + ", ");
 		}
 		builder.deleteCharAt(builder.length() - 1);

@@ -23,7 +23,7 @@ public enum VersionControlSystem {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("{ ");
 
-		for (final DBMS value : DBMS.values()) {
+		for (final VersionControlSystem value : values()) {
 			builder.append(value.toString() + ", ");
 		}
 		builder.deleteCharAt(builder.length() - 1);
@@ -33,15 +33,17 @@ public enum VersionControlSystem {
 
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Get the corresponding element of this enum for the given string.
 	 * 
 	 * @param str
 	 *            the query to get VersionControlSystem ignoring the case
-	 * @return the corresponding VersionControlSystem if found, <code>null</code> if not found
+	 * @return the corresponding VersionControlSystem if found,
+	 *         <code>null</code> if not found
 	 */
-	public static VersionControlSystem getCorrespondingVersionControlSystem(final String str) {
+	public static VersionControlSystem getCorrespondingVersionControlSystem(
+			final String str) {
 		if (str == null) {
 			return null;
 		}
