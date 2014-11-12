@@ -1,6 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 
 /**
@@ -14,15 +13,6 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 public enum ElementType {
 
 	TOKEN;
-
-	public Class<? extends IProgramElement> getElementClass() {
-		switch (this) {
-		case TOKEN:
-			return Token.class;
-		}
-
-		return null;
-	}
 
 	/**
 	 * Get the corresponding element of this enum for the given string.
