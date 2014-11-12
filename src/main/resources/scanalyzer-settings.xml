@@ -6,6 +6,7 @@
 	</general>
 	<target>
 		<language>JAVA</language>
+		<element>TOKEN</element>
 		<repository>src/test/resources/repository-clonetracker</repository>
 		<version-control>SVN</version-control>
 		<database>src/test/resources/test.db</database>
@@ -15,4 +16,9 @@
 		<result-directory>src/test/resources/scorpio/</result-directory>
 		<filename-format>clonetracker-scorpio-rev%s.txt</filename-format>
 	</clone-detection>
+	<mapping>
+		<relocation>null</relocation>
+		<equalizer>near-miss</equalizer>
+		<algorithm>ICLONES</algorithm>
+	</mapping>
 </config>
