@@ -341,8 +341,13 @@ public class SVNFileChangeEntryDetector implements IFileChangeEntryDetector {
 				fileChangeEntry = new FileChangeEntry(relativePath,
 						relativePath, 'M');
 			} else if (type == 'R') {
-				fileChangeEntry = new FileChangeEntry(path.getCopyPath(),
-						relativePath, 'R');
+				if (path.getCopyPath() == null) {
+					fileChangeEntry = new FileChangeEntry(relativePath,
+							relativePath, 'R');
+				} else {
+					fileChangeEntry = new FileChangeEntry(path.getCopyPath(),
+							relativePath, 'R');
+				}
 			}
 
 			if (fileChangeEntry != null) {
