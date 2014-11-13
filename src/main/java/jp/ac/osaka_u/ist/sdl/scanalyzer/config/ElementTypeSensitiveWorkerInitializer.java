@@ -14,7 +14,7 @@ import difflib.myers.Equalizer;
  * @param <E>
  *            the type of program element
  */
-abstract class ElementTypeSensitiveWorkerInitializer<E extends IProgramElement> {
+public abstract class ElementTypeSensitiveWorkerInitializer<E extends IProgramElement> {
 
 	/**
 	 * Set up source file parser

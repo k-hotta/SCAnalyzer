@@ -172,11 +172,11 @@ public class SVNRepositoryManager {
 				+ pathUriWithRelative.toString().substring(
 						pathUriWithoutRelative.toString().length());
 
-		logger.trace("the repository has been successfully initialized");
-		logger.trace("path: " + this.path);
-		logger.trace("relative path: " + this.relativePath);
-		logger.trace("language: " + language.toString());
-		logger.trace("URL: " + this.url.toString());
+		logger.info("the repository has been successfully initialized");
+		logger.info("path: " + this.path);
+		logger.info("relative path: " + this.relativePath);
+		logger.info("language: " + language.toString());
+		logger.info("URL: " + this.url.toString());
 	}
 
 	/**

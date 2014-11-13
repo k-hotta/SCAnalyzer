@@ -31,7 +31,7 @@ public class Config {
 	/**
 	 * The relative path of interest
 	 */
-	private String relativePath = null;
+	private String relativePath = "";
 
 	/**
 	 * The version control system under consideration

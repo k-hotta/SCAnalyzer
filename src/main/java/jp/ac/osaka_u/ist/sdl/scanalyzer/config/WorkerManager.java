@@ -8,6 +8,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRelocationFinder;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRevisionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ScorpioCloneResultReader;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.VersionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileChangeEntryDetector;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
@@ -83,6 +84,11 @@ public class WorkerManager<E extends IProgramElement> {
 	 */
 	private ICloneClassMapper<E> cloneMapper;
 
+	/**
+	 * The version provider
+	 */
+	private VersionProvider<E> versionProvider;
+
 	public final IRevisionProvider getRevisionProvider() {
 		return revisionProvider;
 	}
@@ -119,6 +125,10 @@ public class WorkerManager<E extends IProgramElement> {
 		return cloneMapper;
 	}
 
+	public final VersionProvider<E> getVersionProvider() {
+		return versionProvider;
+	}
+
 	/**
 	 * Set up all the workers with the specified configuration
 	 * 
@@ -143,6 +153,7 @@ public class WorkerManager<E extends IProgramElement> {
 		elementMapper = sensitiveInitializer.setupElementMapper(config
 				.getElementMappingAlgorithm());
 		cloneMapper = setupCloneClassMapper(config.getCloneMappingAlgorithm());
+		versionProvider = setupVersionProvider();
 	}
 
 	/**
@@ -267,6 +278,24 @@ public class WorkerManager<E extends IProgramElement> {
 		}
 
 		throw new IllegalStateException("cannot initialize clone class mapper");
+	}
+
+	/**
+	 * Set up version provider
+	 * 
+	 * @return
+	 */
+	private VersionProvider<E> setupVersionProvider() {
+		final VersionProvider<E> result = new VersionProvider<>();
+
+		result.setRevisionProvider(revisionProvider);
+		result.setFileChangeDetector(fileChangeEntryDetector);
+		result.setRelocationFinder(relocationFinder);
+		result.setCloneDetector(cloneDetector);
+		result.setContentProvider(fileContentProvider);
+		result.setFileParser(fileParser);
+
+		return result;
 	}
 
 }

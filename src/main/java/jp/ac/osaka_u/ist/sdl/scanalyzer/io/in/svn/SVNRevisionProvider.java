@@ -151,7 +151,7 @@ public class SVNRevisionProvider implements IRevisionProvider {
 				}
 			} catch (SVNException e) {
 				eLogger.warn("fail to connect repository when processing "
-						+ rev);
+						+ rev, e);
 				eLogger.warn(rev + " will be ignored");
 			}
 		}
