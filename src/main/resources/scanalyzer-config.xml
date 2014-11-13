@@ -17,8 +17,8 @@
 	</target>
 	<clone-detection>
 		<detector>Scorpio</detector>
-		<result-directory>src/test/resources/scorpio/</result-directory>
-		<filename-format>clonetracker-scorpio-rev%s.txt</filename-format>
+		<result-directory>src/test/resources/scorpio-clonetracker-result/</result-directory>
+		<filename-format>scorpio-%s.txt</filename-format>
 	</clone-detection>
 	<mapping>
 		<relocation>null</relocation>

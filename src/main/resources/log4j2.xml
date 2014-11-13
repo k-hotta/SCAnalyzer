@@ -31,7 +31,7 @@
 		<Logger name="usage" level="warn" additivity="false">
 			<AppenderRef ref="usageconsole" />
 		</Logger>
-		<Root level="trace">
+		<Root level="info">
 			<AppenderRef ref="console" />
 		</Root>
 	</Loggers>
