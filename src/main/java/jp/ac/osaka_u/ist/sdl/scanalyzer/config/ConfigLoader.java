@@ -80,6 +80,10 @@ public class ConfigLoader implements DefaultConfiguration {
 				"start", "start"));
 		usage.put("end",
 				String.format(format, "end revision identifier", "end", "end"));
+		usage.put(
+				"ow",
+				"Please specify whether overwriting database if exists as a command line argument with \"-ow\" "
+						+ "or as an xml node \"overwrite\" in the configuration file");
 	}
 
 	/**
@@ -166,6 +170,10 @@ public class ConfigLoader implements DefaultConfiguration {
 		// end revision
 		options.addOption(makeOption("end", "end-revision", true,
 				"identifier of end revision", 1, false));
+
+		// overwriting database
+		options.addOption(makeOption("ow", "overwrite", true,
+				"whether overwriting database", 1, false));
 
 		return options;
 	}
@@ -322,6 +330,9 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "end",
 				"end", null, true);
 
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "ow",
+				"overwrite", DEFAULT_OVERWRITING_DB.toString(), true);
+
 		return loadedConfigsAsText;
 	}
 
@@ -409,6 +420,7 @@ public class ConfigLoader implements DefaultConfiguration {
 				.getCorrespondingDBMS(configsAsText.get("em"));
 		final String startRevisionIdentifier = configsAsText.get("start");
 		final String endRevisionIdentifier = configsAsText.get("end");
+		final String overwritingDb = configsAsText.get("ow");
 
 		final Config result = new Config();
 
@@ -493,6 +505,10 @@ public class ConfigLoader implements DefaultConfiguration {
 
 		if (endRevisionIdentifier != null) {
 			result.setEndRevisionIdentifier(endRevisionIdentifier);
+		}
+
+		if (overwritingDb != null) {
+			result.setOverwriteDb(Boolean.valueOf(overwritingDb));
 		}
 
 		return result;

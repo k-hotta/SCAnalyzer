@@ -24,4 +24,6 @@ public interface DefaultConfiguration {
 	
 	public static final String DEFAULT_ELEMENT_MAPPING = "Traditional-diff";
 
+	public static final Boolean DEFAULT_OVERWRITING_DB = false;
+	
 }

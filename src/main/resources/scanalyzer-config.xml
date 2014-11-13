@@ -3,6 +3,7 @@
 <config>
 	<general>
 		<dbms>SQLITE</dbms>
+		<overwrite>true</overwrite>
 	</general>
 	<target>
 		<language>JAVA</language>

@@ -85,6 +85,11 @@ public class Config {
 	 */
 	private String endRevisionIdentifier = null;
 
+	/**
+	 * Whether overwriting database if it already exists
+	 */
+	private boolean overwriteDb = false;
+
 	/*
 	 * getters and setters follow
 	 */
@@ -375,6 +380,25 @@ public class Config {
 	 */
 	public final void setEndRevisionIdentifier(String endRevisionIdentifier) {
 		this.endRevisionIdentifier = endRevisionIdentifier;
+	}
+
+	/**
+	 * Get whether overwriting database or not.
+	 * 
+	 * @return whether overwriting database or not
+	 */
+	public final boolean isOverwriteDb() {
+		return overwriteDb;
+	}
+
+	/**
+	 * Set whether overwriting database or not.
+	 * 
+	 * @param overwriteDb
+	 *            the boolean value to be set
+	 */
+	public final void setOverwriteDb(boolean overwriteDb) {
+		this.overwriteDb = overwriteDb;
 	}
 
 }
