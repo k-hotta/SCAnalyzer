@@ -93,6 +93,16 @@ public class DBManager {
 	private CloneClassDao cloneClassDao;
 
 	/**
+	 * The DAO for CodeFragmentMapping
+	 */
+	private CodeFragmentMappingDao codeFragmentMappingDao;
+
+	/**
+	 * The DAO for CloneClassMapping
+	 */
+	private CloneClassMappingDao cloneClassMappingDao;
+
+	/**
 	 * The DAO for Revision
 	 */
 	private RevisionDao revisionDao;
@@ -189,6 +199,8 @@ public class DBManager {
 		final SegmentDao segmentDao = new SegmentDao();
 		final CodeFragmentDao codeFragmentDao = new CodeFragmentDao();
 		final CloneClassDao cloneClassDao = new CloneClassDao();
+		final CodeFragmentMappingDao codeFragmentMappingDao = new CodeFragmentMappingDao();
+		final CloneClassMappingDao cloneClassMappingDao = new CloneClassMappingDao();
 		final RevisionDao revisionDao = new RevisionDao();
 		final SourceFileDao sourceFileDao = new SourceFileDao();
 		final VersionDao versionDao = new VersionDao();
@@ -211,6 +223,12 @@ public class DBManager {
 		cloneClassDao.setCodeFragmentDao(codeFragmentDao);
 		cloneClassDao.setVersionDao(versionDao);
 
+		codeFragmentMappingDao.setCodeFragmentDao(codeFragmentDao);
+		codeFragmentMappingDao.setCloneClassMappingDao(cloneClassMappingDao);
+
+		cloneClassMappingDao.setCloneClassDao(cloneClassDao);
+		cloneClassMappingDao.setCodeFragmentMappingDao(codeFragmentMappingDao);
+
 		versionDao.setRevidionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);
 		versionDao.setRawCloneClassDao(rawCloneClassDao);
@@ -223,6 +241,8 @@ public class DBManager {
 		instance.setSegmentDao(segmentDao);
 		instance.setCodeFragmentDao(codeFragmentDao);
 		instance.setCloneClassDao(cloneClassDao);
+		instance.setCodeFragmentMappingDao(codeFragmentMappingDao);
+		instance.setCloneClassMappingDao(cloneClassMappingDao);
 		instance.setRevisionDao(revisionDao);
 		instance.setSourceFileDao(sourceFileDao);
 		instance.setVersionDao(versionDao);
@@ -253,6 +273,16 @@ public class DBManager {
 		this.cloneClassDao = cloneClassDao;
 	}
 
+	private void setCodeFragmentMappingDao(
+			final CodeFragmentMappingDao codeFragmentMappingDao) {
+		this.codeFragmentMappingDao = codeFragmentMappingDao;
+	}
+
+	private void setCloneClassMappingDao(
+			final CloneClassMappingDao cloneClassMappingDao) {
+		this.cloneClassMappingDao = cloneClassMappingDao;
+	}
+
 	private void setRevisionDao(final RevisionDao revisionDao) {
 		this.revisionDao = revisionDao;
 	}
@@ -275,6 +305,8 @@ public class DBManager {
 		segmentDao.clear();
 		codeFragmentDao.clear();
 		cloneClassDao.clear();
+		codeFragmentMappingDao.clear();
+		cloneClassMappingDao.clear();
 		revisionDao.clear();
 		sourceFileDao.clear();
 		versionDao.clear();
@@ -344,6 +376,28 @@ public class DBManager {
 	 */
 	public final CloneClassDao getCloneClassDao() {
 		return cloneClassDao;
+	}
+
+	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping}
+	 */
+	public CodeFragmentMappingDao getCodeFragmentMappingDao() {
+		return codeFragmentMappingDao;
+	}
+
+	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping}
+	 */
+	public CloneClassMappingDao getCloneClassMappingDao() {
+		return cloneClassMappingDao;
 	}
 
 	/**
