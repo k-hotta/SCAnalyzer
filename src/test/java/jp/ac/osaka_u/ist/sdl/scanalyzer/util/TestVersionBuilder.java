@@ -321,7 +321,7 @@ public class TestVersionBuilder {
 		final Map<Long, RawCloneClass<Token>> result = new TreeMap<Long, RawCloneClass<Token>>();
 
 		final ScorpioCloneResultReader<Token> reader = new ScorpioCloneResultReader<>(
-				null);
+				null, null);
 		@SuppressWarnings("unchecked")
 		final Collection<RawCloneClass<Token>> rawCloneClasses = (Collection<RawCloneClass<Token>>) mRead
 				.invoke(reader, new File(cloneFile), version);

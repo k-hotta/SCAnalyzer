@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,9 +46,19 @@ public class ScorpioCloneResultReader<E extends IProgramElement> implements
 	private static final Logger eLogger = LogManager.getLogger("error");
 
 	/**
+	 * The directory that contains the clone result files
+	 */
+	private final String dir;
+
+	/**
 	 * The format of the files of clones in each revision
 	 */
 	private final String format;
+
+	/**
+	 * The file system
+	 */
+	private final FileSystem fs;
 
 	/**
 	 * The constructor with the format of files of clones in each revision. <br>
@@ -56,16 +69,19 @@ public class ScorpioCloneResultReader<E extends IProgramElement> implements
 	 *            the format to specify a file having clone result for each of
 	 *            revisions
 	 */
-	public ScorpioCloneResultReader(final String format) {
+	public ScorpioCloneResultReader(final String dir, final String format) {
+		this.dir = dir;
 		this.format = format;
+		this.fs = FileSystems.getDefault();
 	}
 
 	@Override
 	public Collection<RawCloneClass<E>> detectClones(Version<E> version) {
 		try {
-			final String targetPath = String.format(format, version
+			final String targetFileName = String.format(format, version
 					.getRevision().getIdentifier());
-			final File targetFile = new File(targetPath);
+			final Path targetPath = fs.getPath(dir, targetFileName);
+			final File targetFile = new File(targetPath.toString());
 
 			return read(targetFile, version);
 		} catch (Exception e) {
@@ -169,7 +185,7 @@ public class ScorpioCloneResultReader<E extends IProgramElement> implements
 				cloneClass.addRawClonedFragment(fragment2);
 				fragment1.setRawCloneClass(cloneClass);
 				fragment2.setRawCloneClass(cloneClass);
-				
+
 				cloneClass.setVersion(version);
 
 				result.add(cloneClass);
