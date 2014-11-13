@@ -4,16 +4,14 @@
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout>
 				<Pattern>
-					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level
-					%logger{36} - %msg%n
+					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level %logger{36} - %msg%n
 				</Pattern>
 			</PatternLayout>
 		</Console>
 		<Console name="errconsole" target="SYSTEM_ERR">
 			<PatternLayout>
 				<Pattern>
-					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level -
-					%msg%n
+					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level - %msg%n
 				</Pattern>
 			</PatternLayout>
 		</Console>
