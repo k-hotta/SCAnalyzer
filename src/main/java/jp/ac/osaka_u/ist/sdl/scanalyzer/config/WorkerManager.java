@@ -7,10 +7,14 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRelocationFinder;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IRevisionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ScorpioCloneResultReader;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileChangeEntryDetector;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRevisionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones.IClonesCloneClassMapper;
 import difflib.myers.Equalizer;
 
 /**
@@ -29,6 +33,8 @@ import difflib.myers.Equalizer;
  * @see ICloneDetector
  * @see IFileContentProvider
  * @see ISourceFileParser
+ * @see IProgramElementMapper
+ * @see ICloneClassMapper
  */
 public class WorkerManager<E extends IProgramElement> {
 
@@ -119,14 +125,24 @@ public class WorkerManager<E extends IProgramElement> {
 	 * @param config
 	 *            the configuration
 	 */
-	public void setup(final Config config) {
+	public void setup(final Config config,
+			ElementTypeSensitiveWorkerInitializer<E> sensitiveInitializer) {
 		revisionProvider = setupRevisionProvider(config.getVcs(),
 				config.getStartRevisionIdentifier(),
 				config.getEndRevisionIdentifier());
-		if (revisionProvider == null) {
-			throw new IllegalStateException(
-					"cannot initialize revision provider");
-		}
+		fileChangeEntryDetector = setupFileChangeEntryDetector(config.getVcs());
+		relocationFinder = setupRelocationFinder();
+		cloneDetector = setupCloneDetector(config.getCloneDetector(),
+				config.getCloneResultDirectory(),
+				config.getCloneResultFileFormat());
+		fileContentProvider = setupFileContentProvider(config.getVcs());
+		fileParser = sensitiveInitializer.setupSourceFileParser(config
+				.getLanguage());
+		equalizer = sensitiveInitializer.setupEqualizer(config
+				.getElementEqualizer());
+		elementMapper = sensitiveInitializer.setupElementMapper(config
+				.getElementMappingAlgorithm());
+		cloneMapper = setupCloneClassMapper(config.getCloneMappingAlgorithm());
 	}
 
 	/**
@@ -157,7 +173,100 @@ public class WorkerManager<E extends IProgramElement> {
 						"cannot initialize revision provider", e);
 			}
 		}
+
+		throw new IllegalStateException("cannot initialize revision provider");
+	}
+
+	/**
+	 * Set up file change entry detector
+	 * 
+	 * @param vcs
+	 * @return
+	 */
+	private IFileChangeEntryDetector setupFileChangeEntryDetector(
+			final VersionControlSystem vcs) {
+		switch (vcs) {
+		case SVN:
+			return new SVNFileChangeEntryDetector(
+					SVNRepositoryManager.getInstance());
+		}
+
+		throw new IllegalStateException(
+				"cannot initialize file change entry detector");
+	}
+
+	/**
+	 * Set up relocation finder
+	 * 
+	 * @return
+	 */
+	private IRelocationFinder setupRelocationFinder() {
+		// currently, no additional relocation finder is provided
 		return null;
+	}
+
+	/**
+	 * Set up clone detector
+	 * 
+	 * @param cdt
+	 * @param cloneResultDir
+	 * @param fileNameFormat
+	 * @return
+	 */
+	private ICloneDetector<E> setupCloneDetector(final CloneDetector cdt,
+			final String cloneResultDir, final String fileNameFormat) {
+		switch (cdt) {
+		case SCORPIO:
+			if (cloneResultDir == null) {
+				throw new IllegalStateException(
+						"the directory of clone result files is null");
+			}
+			if (fileNameFormat == null) {
+				throw new IllegalStateException("the file name format is null");
+			}
+			return new ScorpioCloneResultReader<>(cloneResultDir,
+					fileNameFormat);
+		}
+		throw new IllegalStateException("cannot initialize cloine detector");
+	}
+
+	/**
+	 * Set up file content provider
+	 * 
+	 * @param vcs
+	 * @return
+	 */
+	private IFileContentProvider<E> setupFileContentProvider(
+			final VersionControlSystem vcs) {
+		switch (vcs) {
+		case SVN:
+			return new SVNFileContentProvider<E>(
+					SVNRepositoryManager.getInstance());
+		}
+
+		throw new IllegalStateException(
+				"cannot initialize file content provider");
+	}
+
+	/**
+	 * Set up clone class mapper
+	 * 
+	 * @param algorithm
+	 * @return
+	 */
+	private ICloneClassMapper<E> setupCloneClassMapper(
+			final CloneClassMappingAlgorithm algorithm) {
+		if (elementMapper == null) {
+			throw new IllegalStateException(
+					"element mapper has not been initialized");
+		}
+
+		switch (algorithm) {
+		case ICLONES:
+			return new IClonesCloneClassMapper<E>(elementMapper);
+		}
+
+		throw new IllegalStateException("cannot initialize clone class mapper");
 	}
 
 }
