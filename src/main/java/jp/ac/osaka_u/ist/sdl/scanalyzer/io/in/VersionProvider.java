@@ -471,6 +471,8 @@ public class VersionProvider<E extends IProgramElement> {
 					newDBSourceFile, type, nextVersion.getCore());
 			final FileChange<E> fileChange = new FileChange<E>(dbFileChange);
 			fileChange.setVersion(nextVersion);
+			fileChange.setOldSourceFile(oldSourceFile);
+			fileChange.setNewSourceFile(newSourceFile);
 
 			logger.trace("create a new file change " + fileChange.toString());
 			nextVersion.getCore().getFileChanges().add(fileChange.getCore());
