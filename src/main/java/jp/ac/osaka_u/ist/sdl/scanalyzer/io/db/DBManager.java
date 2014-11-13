@@ -2,6 +2,19 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersionSourceFile;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -268,7 +281,8 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange}.
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange}.
 	 * 
 	 * @return the DAO for
 	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange}
@@ -300,9 +314,11 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment}.
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment}.
 	 * 
-	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment}
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment}
 	 */
 	public final SegmentDao getSegmentDao() {
 		return segmentDao;
@@ -320,7 +336,8 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass}.
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass}.
 	 * 
 	 * @return the DAO for
 	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass}
@@ -330,7 +347,8 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision}.
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision}.
 	 * 
 	 * @return the DAO for
 	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision}
@@ -340,7 +358,8 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile}.
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile}.
 	 * 
 	 * @return the DAO for
 	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile}
@@ -350,9 +369,11 @@ public class DBManager {
 	}
 
 	/**
-	 * Get the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion}.
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion}.
 	 * 
-	 * @return the DAO for {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion}
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion}
 	 */
 	public final VersionDao getVersionDao() {
 		return versionDao;
@@ -364,9 +385,12 @@ public class DBManager {
 	 * @throws SQLException
 	 *             If failed to close the connection
 	 */
-	public void closeConnection() throws SQLException {
-		this.connectionSource.close();
-		logger.trace("the database connection is closed");
+	public static void closeConnection() throws SQLException {
+		if (SINGLETON != null) {
+			SINGLETON.connectionSource.close();
+			logger.trace("the database connection is closed");
+		}
+
 	}
 
 	/**
@@ -411,6 +435,29 @@ public class DBManager {
 			eLogger.fatal("cannot initialize the table for " + clazz.getName());
 			throw e;
 		}
+	}
+
+	/**
+	 * Initialize all the database tables. For each data class, this method
+	 * delegates table creation procedure to
+	 * {@link DBManager#initializeTable(Class)}.
+	 * 
+	 * @throws SQLException
+	 *             If failed to create any of new tables or clear it.
+	 */
+	public void initializeAllTables() throws SQLException {
+		initializeTable(DBVersion.class);
+		initializeTable(DBRevision.class);
+		initializeTable(DBSourceFile.class);
+		initializeTable(DBFileChange.class);
+		initializeTable(DBVersionSourceFile.class);
+		initializeTable(DBRawCloneClass.class);
+		initializeTable(DBRawClonedFragment.class);
+		initializeTable(DBCloneClass.class);
+		initializeTable(DBCodeFragment.class);
+		initializeTable(DBSegment.class);
+		initializeTable(DBCloneClassMapping.class);
+		initializeTable(DBCodeFragmentMapping.class);
 	}
 
 	/**
