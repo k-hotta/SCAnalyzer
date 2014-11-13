@@ -9,7 +9,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
  */
 public interface DefaultConfiguration {
 
-	public static final String DEFAULT_CONFIGURATION_FILE = "scanalyzer-config.xml";
+	//public static final String DEFAULT_CONFIGURATION_FILE = "/scanalyzer-config.xml";
+	public static final String DEFAULT_CONFIGURATION_FILE = DefaultConfiguration.class.getClassLoader().getResource("scanalyzer-config.xml").getPath();
 
 	public static final String DEFAULT_DBMS = "SQLITE";
 
