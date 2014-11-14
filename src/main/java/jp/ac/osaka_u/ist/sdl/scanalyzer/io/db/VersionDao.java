@@ -116,7 +116,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	 * @param revisionDao
 	 *            the DAO to be set
 	 */
-	void setRevidionDao(final RevisionDao revisionDao) {
+	void setRevisionDao(final RevisionDao revisionDao) {
 		this.revisionDao = revisionDao;
 	}
 
