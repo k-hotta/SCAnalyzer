@@ -3,10 +3,10 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.in;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +25,6 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 
@@ -258,11 +257,6 @@ public class VersionProvider<E extends IProgramElement> {
 					"the provider has not been ready to work");
 		}
 
-		if (currentVersion == null) {
-			// this is the first call of this method
-			return providePseudoInitialVersion();
-		}
-
 		// detect the next revision
 		Revision nextRevision = detectNextRevision(currentVersion);
 
@@ -343,26 +337,6 @@ public class VersionProvider<E extends IProgramElement> {
 	}
 
 	/**
-	 * Provide the pseudo initial version
-	 * 
-	 * @return pseudo initial version
-	 */
-	private final Version<E> providePseudoInitialVersion() {
-		logger.trace("the initial version will be provided");
-		final DBVersion pseudoInitialDBVersion = new DBVersion(
-				IDGenerator.generate(DBVersion.class), new DBRevision(
-						IDGenerator.generate(DBRevision.class),
-						"pseudo-initial-revision", null),
-				new HashSet<DBFileChange>(), new HashSet<DBRawCloneClass>(),
-				new HashSet<DBCloneClass>(), new HashSet<DBSourceFile>());
-
-		final Version<E> result = new Version<>(pseudoInitialDBVersion);
-		result.setRevision(new Revision(result.getCore().getRevision()));
-
-		return result;
-	}
-
-	/**
 	 * Detect next revision of the given current version
 	 * 
 	 * @param currentVersion
@@ -370,14 +344,14 @@ public class VersionProvider<E extends IProgramElement> {
 	 * @return the next revision if detected, <code>null</code> otherwise
 	 */
 	private Revision detectNextRevision(final Version<E> currentVersion) {
-		final Revision currentRevision = currentVersion.getRevision();
-
 		// the next revision
 		Revision nextRevision = null;
-		if (currentRevision.getDate() == null) {
-			// the current revision is pseudo initial revision
+
+		if (currentVersion == null) {
+			// this is the first revision
 			nextRevision = revisionProvider.getFirstRevision();
 		} else {
+			final Revision currentRevision = currentVersion.getRevision();
 			nextRevision = revisionProvider.getNextRevision(currentRevision);
 		}
 
@@ -406,8 +380,8 @@ public class VersionProvider<E extends IProgramElement> {
 		 * source files in the NEXT version after all the file changes
 		 * processed.
 		 */
-		final Map<String, SourceFile<E>> sourceFilesUnderConsideration = getSourceFilesAsMap(currentVersion
-				.getSourceFiles().values());
+		final Map<String, SourceFile<E>> sourceFilesUnderConsideration = (currentVersion == null) ? new TreeMap<>()
+				: getSourceFilesAsMap(currentVersion.getSourceFiles().values());
 
 		for (FileChangeEntry fileChangeEntry : fileChangeEntries) {
 			final String oldPath = fileChangeEntry.getBeforePath();
