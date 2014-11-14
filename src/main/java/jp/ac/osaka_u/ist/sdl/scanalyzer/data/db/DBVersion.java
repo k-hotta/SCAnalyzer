@@ -45,6 +45,11 @@ public class DBVersion implements IDBElement {
 	public static final String CLONE_CLASSES_COLUMN_NAME = "CLONE_CLASSES";
 
 	/**
+	 * The column name for cloneClassMappings
+	 */
+	private static final String CLONE_CLASS_MAPPINGS_COLUMN_NAME = "CLONE_CLASS_MAPPINGS";
+
+	/**
 	 * The id of the version
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -74,6 +79,12 @@ public class DBVersion implements IDBElement {
 	 */
 	@ForeignCollectionField(eager = true, columnName = CLONE_CLASSES_COLUMN_NAME)
 	private Collection<DBCloneClass> cloneClasses;
+
+	/**
+	 * The collection of clone class mappings in this version
+	 */
+	@ForeignCollectionField(eager = true, columnName = CLONE_CLASS_MAPPINGS_COLUMN_NAME)
+	private Collection<DBCloneClassMapping> cloneClassMappings;
 
 	/**
 	 * The collection of source files in this version. <br>
@@ -109,18 +120,23 @@ public class DBVersion implements IDBElement {
 	 * @param sourceFiles
 	 *            the collection that contains all the source files in this
 	 *            version
+	 * @param cloneClassMappings
+	 *            the collection that contains all the clone class mappings in
+	 *            this version
 	 */
 	public DBVersion(final long id, final DBRevision revision,
 			final Collection<DBFileChange> fileChanges,
 			final Collection<DBRawCloneClass> rawCloneClasses,
 			final Collection<DBCloneClass> cloneClasses,
-			final Collection<DBSourceFile> sourceFiles) {
+			final Collection<DBSourceFile> sourceFiles,
+			final Collection<DBCloneClassMapping> cloneClassMappings) {
 		this.id = id;
 		this.revision = revision;
 		this.fileChanges = fileChanges;
 		this.rawCloneClasses = rawCloneClasses;
 		this.cloneClasses = cloneClasses;
 		this.sourceFiles = sourceFiles;
+		this.cloneClassMappings = cloneClassMappings;
 	}
 
 	/**
@@ -240,6 +256,26 @@ public class DBVersion implements IDBElement {
 	 */
 	public void setSourceFiles(Collection<DBSourceFile> sourceFiles) {
 		this.sourceFiles = sourceFiles;
+	}
+
+	/**
+	 * Get the collection of all the clone class mappings in this version.
+	 * 
+	 * @return the collection of all the clone class mappings in this version
+	 */
+	public Collection<DBCloneClassMapping> getCloneClassMappings() {
+		return cloneClassMappings;
+	}
+
+	/**
+	 * Set a collection that has all the clone class mappings in this version
+	 * 
+	 * @param cloneClassMappings
+	 *            the collection to be set
+	 */
+	public void setCloneClassMappings(
+			final Collection<DBCloneClassMapping> cloneClassMappings) {
+		this.cloneClassMappings = cloneClassMappings;
 	}
 
 	/**

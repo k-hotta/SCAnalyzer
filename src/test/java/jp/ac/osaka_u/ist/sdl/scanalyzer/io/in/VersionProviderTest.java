@@ -20,6 +20,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
@@ -68,7 +69,8 @@ public class VersionProviderTest {
 					"pseudo-initial-revision", null),
 					new HashSet<DBFileChange>(),
 					new HashSet<DBRawCloneClass>(),
-					new HashSet<DBCloneClass>(), new HashSet<DBSourceFile>()));
+					new HashSet<DBCloneClass>(), new HashSet<DBSourceFile>(),
+					new HashSet<DBCloneClassMapping>()));
 
 	private static class TempFileContentProvider implements
 			IFileContentProvider<Token> {
@@ -418,8 +420,8 @@ public class VersionProviderTest {
 
 	@Test
 	public void testGetSourceFilesAsMap() throws Exception {
-		final Collection<SourceFile<Token>> references = parser.getVolatileVersions()
-				.get((long) 2).getSourceFiles().values();
+		final Collection<SourceFile<Token>> references = parser
+				.getVolatileVersions().get((long) 2).getSourceFiles().values();
 		@SuppressWarnings("unchecked")
 		final Map<String, SourceFile<Token>> result = (Map<String, SourceFile<Token>>) mGetSourceFilesAsMap
 				.invoke(provider, references);
@@ -446,7 +448,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		mProcessFileChanges.invoke(provider, ver0, versionUnderConstructed,
 				fileChangeEntries);
@@ -473,7 +477,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		mProcessFileChanges.invoke(provider, ver1, versionUnderConstructed,
 				fileChangeEntries);
@@ -500,7 +506,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		mProcessFileChanges.invoke(provider, ver2, versionUnderConstructed,
 				fileChangeEntries);
@@ -527,7 +535,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		mProcessFileChanges.invoke(provider, ver3, versionUnderConstructed,
 				fileChangeEntries);
@@ -557,7 +567,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		boolean caughtException = false;
 		try {
@@ -590,7 +602,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		boolean caughtException = false;
 		try {
@@ -624,7 +638,9 @@ public class VersionProviderTest {
 						new TreeSet<DBFileChange>(new DBElementComparator()),
 						new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 						new TreeSet<DBCloneClass>(new DBElementComparator()),
-						new TreeSet<DBSourceFile>(new DBElementComparator())));
+						new TreeSet<DBSourceFile>(new DBElementComparator()),
+						new TreeSet<DBCloneClassMapping>(
+								new DBElementComparator())));
 
 		boolean caughtException = false;
 		try {

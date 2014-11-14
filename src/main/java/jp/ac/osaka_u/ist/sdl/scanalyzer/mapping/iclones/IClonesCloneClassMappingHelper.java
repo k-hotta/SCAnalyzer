@@ -327,7 +327,9 @@ public class IClonesCloneClassMappingHelper {
 				.entrySet()) {
 			final CloneClass<E> oldCloneClass = perfectEntry.getKey();
 			for (final CloneClass<E> newCloneClass : perfectEntry.getValue()) {
-				result.add(makeMapping(oldCloneClass, newCloneClass));
+				final CloneClassMapping<E> mapping = makeMapping(oldCloneClass,
+						newCloneClass);
+				result.add(mapping);
 				previousClones.remove(oldCloneClass.getId());
 				nextClones.remove(newCloneClass.getId());
 			}
@@ -404,7 +406,8 @@ public class IClonesCloneClassMappingHelper {
 		final DBCloneClassMapping mappingCore = new DBCloneClassMapping(
 				IDGenerator.generate(DBCloneClassMapping.class),
 				oldCloneClass.getCore(), newCloneClass.getCore(),
-				new TreeSet<DBCodeFragmentMapping>(new DBElementComparator()));
+				new TreeSet<DBCodeFragmentMapping>(new DBElementComparator()),
+				null);
 		final CloneClassMapping<E> mapping = new CloneClassMapping<>(
 				mappingCore);
 

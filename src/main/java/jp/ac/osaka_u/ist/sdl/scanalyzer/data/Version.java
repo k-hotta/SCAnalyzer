@@ -54,6 +54,11 @@ public class Version<E extends IProgramElement> implements
 	private final SortedMap<Long, SourceFile<E>> sourceFiles;
 
 	/**
+	 * The mappings of clone classes in this version
+	 */
+	private final SortedMap<Long, CloneClassMapping<E>> cloneClassMappings;
+
+	/**
 	 * The constructor with core
 	 * 
 	 * @param core
@@ -67,6 +72,7 @@ public class Version<E extends IProgramElement> implements
 		this.rawCloneClasses = new TreeMap<>();
 		this.cloneClasses = new TreeMap<>();
 		this.sourceFiles = new TreeMap<>();
+		this.cloneClassMappings = new TreeMap<>();
 	}
 
 	@Override
@@ -269,6 +275,44 @@ public class Version<E extends IProgramElement> implements
 		}
 
 		this.sourceFiles.put(sourceFile.getId(), sourceFile);
+	}
+
+	/**
+	 * Get the mappings of clone classes in this version as an unmodifiable map.
+	 * 
+	 * @return the map of clone class mappings, each of whose key is the id of a
+	 *         mapping, each of whose value is the mapping
+	 */
+	public SortedMap<Long, CloneClassMapping<E>> getCloneClassMappings() {
+		return Collections.unmodifiableSortedMap(cloneClassMappings);
+	}
+
+	/**
+	 * Add the given clone class mapping to this version.
+	 * 
+	 * @param cloneClassMapping
+	 *            the clone class mapping to be set
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given clone class mapping is not included in the clone
+	 *             class mappings in the core, or the given clone class mapping
+	 *             is <code>null</code>
+	 */
+	public void addCloneClassMapping(
+			final CloneClassMapping<E> cloneClassMapping) {
+		if (cloneClassMapping == null) {
+			throw new IllegalArgumentException(
+					"the given clone class mapping is null");
+		}
+
+		if (!this.core.getCloneClassMappings().contains(
+				cloneClassMapping.getCore())) {
+			throw new IllegalArgumentException(
+					"the given clone class mapping is not included in those in the core");
+		}
+
+		this.cloneClassMappings.put(cloneClassMapping.getId(),
+				cloneClassMapping);
 	}
 
 }

@@ -28,6 +28,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
@@ -131,7 +132,8 @@ public class TestVersionBuilder {
 				new TreeSet<DBFileChange>(new DBElementComparator()),
 				new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 				new TreeSet<DBCloneClass>(new DBElementComparator()),
-				new TreeSet<DBSourceFile>(new DBElementComparator()));
+				new TreeSet<DBSourceFile>(new DBElementComparator()),
+				new TreeSet<DBCloneClassMapping>(new DBElementComparator()));
 		final Version<Token> version = new Version<>(dbVersion);
 		version.setRevision(revision);
 

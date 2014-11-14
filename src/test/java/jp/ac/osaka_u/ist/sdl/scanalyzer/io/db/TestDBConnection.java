@@ -100,7 +100,7 @@ public class TestDBConnection {
 	}
 
 	public void close() throws SQLException {
-		manager.closeConnection();
+		DBManager.closeConnection();
 	}
 
 	/**

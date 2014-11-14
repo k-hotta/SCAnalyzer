@@ -38,12 +38,18 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 	 */
 	private CodeFragmentMappingDao codeFragmentMappingDao;
 
+	/**
+	 * The DAO for version
+	 */
+	private VersionDao versionDao;
+
 	@SuppressWarnings("unchecked")
 	public CloneClassMappingDao() throws SQLException {
 		super((Dao<DBCloneClassMapping, Long>) DBManager.getInstance()
 				.getNativeDao(DBCloneClassMapping.class));
 		cloneClassDao = null;
 		codeFragmentMappingDao = null;
+		versionDao = null;
 	}
 
 	/**
@@ -65,6 +71,16 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 	void setCodeFragmentMappingDao(
 			final CodeFragmentMappingDao codeFragmentMappingDao) {
 		this.codeFragmentMappingDao = codeFragmentMappingDao;
+	}
+
+	/**
+	 * Set the DAO for Version with the specified one.
+	 * 
+	 * @param versionDao
+	 *            the DAO to be set
+	 */
+	void setVersionDao(final VersionDao versionDao) {
+		this.versionDao = versionDao;
 	}
 
 	@Override
@@ -93,6 +109,8 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 					.get(codeFragmentMapping.getId()));
 		}
 		element.setCodeFragmentMappings(codeFragmentMappings);
+
+		element.setVersion(versionDao.get(element.getVersion().getId()));
 
 		return element;
 	}

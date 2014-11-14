@@ -37,6 +37,11 @@ public class DBCloneClassMapping implements IDBElement {
 	public static final String CODE_FRAGMENT_MAPPINGS_COLUMN_NAME = "CODE_FRAGMENT_MAPPINGS";
 
 	/**
+	 * The column name for version
+	 */
+	public static final String VERSION_COLUMN_NAME = "VERSION";
+
+	/**
 	 * The id of this mapping
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -58,6 +63,12 @@ public class DBCloneClassMapping implements IDBElement {
 	private Collection<DBCodeFragmentMapping> codeFragmentMappings;
 
 	/**
+	 * The owner version of this mapping
+	 */
+	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
+	private DBVersion version;
+
+	/**
 	 * The default constructor, which does nothing
 	 */
 	public DBCloneClassMapping() {
@@ -75,14 +86,18 @@ public class DBCloneClassMapping implements IDBElement {
 	 *            the new clone class of this mapping
 	 * @param codeFragmentMappings
 	 *            the mapping of code fragments related to this mapping
+	 * @param version
+	 *            the owner version of this mapping
 	 */
 	public DBCloneClassMapping(final long id, final DBCloneClass oldCloneClass,
 			final DBCloneClass newCloneClass,
-			final Collection<DBCodeFragmentMapping> codeFragmentMappings) {
+			final Collection<DBCodeFragmentMapping> codeFragmentMappings,
+			final DBVersion version) {
 		this.id = id;
 		this.oldCloneClass = oldCloneClass;
 		this.newCloneClass = newCloneClass;
 		this.codeFragmentMappings = codeFragmentMappings;
+		this.version = version;
 	}
 
 	/**
@@ -163,6 +178,25 @@ public class DBCloneClassMapping implements IDBElement {
 	public void setCodeFragmentMappings(
 			final Collection<DBCodeFragmentMapping> codeFragmentMappings) {
 		this.codeFragmentMappings = codeFragmentMappings;
+	}
+
+	/**
+	 * Get the owner version of this mapping.
+	 * 
+	 * @return the owner version of this mapping
+	 */
+	public DBVersion getVersion() {
+		return version;
+	}
+
+	/**
+	 * Set the owner version of this mapping with the specified one.
+	 * 
+	 * @param version
+	 *            the version to be set
+	 */
+	public void setVersion(final DBVersion version) {
+		this.version = version;
 	}
 
 	/**

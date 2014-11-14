@@ -29,6 +29,10 @@ public class StringUtil {
 		String encoding = detector.getDetectedCharset();
 		detector.reset();
 
+		if (encoding == null) {
+			return StandardCharsets.UTF_8;
+		}
+
 		Charset result = null;
 		try {
 			result = Charset.forName(encoding);

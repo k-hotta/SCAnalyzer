@@ -43,6 +43,11 @@ public class CloneClassMapping<E extends IProgramElement> implements
 	private final SortedMap<Long, CodeFragmentMapping<E>> codeFragmentMappings;
 
 	/**
+	 * The owner version of this mapping
+	 */
+	private Version<E> version;
+
+	/**
 	 * The constructor with core
 	 * 
 	 * @param core
@@ -54,6 +59,7 @@ public class CloneClassMapping<E extends IProgramElement> implements
 		this.oldCloneClass = null;
 		this.newCloneClass = null;
 		this.codeFragmentMappings = new TreeMap<>();
+		this.version = null;
 	}
 
 	@Override
@@ -222,6 +228,45 @@ public class CloneClassMapping<E extends IProgramElement> implements
 
 		this.codeFragmentMappings.put(codeFragmentMapping.getId(),
 				codeFragmentMapping);
+	}
+
+	/**
+	 * Get the owner version of this mapping.
+	 * 
+	 * @return the owner version of this mapping
+	 * 
+	 * @throws IllegalStateException
+	 *             if the version has not been set
+	 */
+	public Version<E> getVersion() {
+		if (version == null) {
+			throw new IllegalStateException("the version has not been set");
+		}
+
+		return version;
+	}
+
+	/**
+	 * Set the owner version of this mapping with the specified one.
+	 * 
+	 * @param version
+	 *            the version to be set
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given version does not match to that in the core, or
+	 *             the given version is <code>null</code>
+	 */
+	public void setVersion(final Version<E> version) {
+		if (version == null) {
+			throw new IllegalArgumentException("the given version is null");
+		}
+
+		if (!this.core.getVersion().equals(version.getCore())) {
+			throw new IllegalArgumentException(
+					"the given version does not match to that in the core");
+		}
+
+		this.version = version;
 	}
 
 }

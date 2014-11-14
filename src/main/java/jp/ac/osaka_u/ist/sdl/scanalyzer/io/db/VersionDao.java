@@ -9,6 +9,7 @@ import java.util.concurrent.Callable;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
@@ -71,6 +72,12 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	private CloneClassDao cloneClassDao;
 
 	/**
+	 * The DAO for CloneClassMapping. <br>
+	 * This is for refreshing.
+	 */
+	private CloneClassMappingDao cloneClassMappingDao;
+
+	/**
 	 * The DAO for VersionSourceFile. <br>
 	 * This is for retrieving corresponding source files to each version.
 	 */
@@ -96,6 +103,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 		this.nativeSourceFileDao = this.manager
 				.getNativeDao(DBSourceFile.class);
 		this.cloneClassDao = null;
+		this.cloneClassMappingDao = null;
 		this.nativeVersionSourceFileDao = this.manager
 				.getNativeDao(DBVersionSourceFile.class);
 		this.sourceFileDao = null;
@@ -143,6 +151,16 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	}
 
 	/**
+	 * Set the DAO for CloneClassMapping with the specified one.
+	 * 
+	 * @param cloneClassMappingDao
+	 *            the DAO to be set
+	 */
+	void setCloneClassMappingDao(final CloneClassMappingDao cloneClassMappingDao) {
+		this.cloneClassMappingDao = cloneClassMappingDao;
+	}
+
+	/**
 	 * Set the DAO for SourceFile with the specified one.
 	 * 
 	 * @param sourceFileDao
@@ -181,6 +199,15 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 			cloneClasses.add(cloneClassDao.get(cloneClass.getId()));
 		}
 		element.setCloneClasses(cloneClasses);
+
+		final Collection<DBCloneClassMapping> cloneClassMappings = new TreeSet<DBCloneClassMapping>(
+				new DBElementComparator());
+		for (final DBCloneClassMapping cloneClassMapping : element
+				.getCloneClassMappings()) {
+			cloneClassMappings.add(cloneClassMappingDao.get(cloneClassMapping
+					.getId()));
+		}
+		element.setCloneClassMappings(cloneClassMappings);
 
 		element.setSourceFiles(getCorrespondingSourceFiles(element));
 
@@ -251,7 +278,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 					sourceFile);
 			vsfs.add(vsf);
 		}
-		
+
 		nativeVersionSourceFileDao.callBatchTasks(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {

@@ -330,7 +330,7 @@ public class DBXmlNodeParser {
 
 		final DBVersion version = new DBVersion(id, revision,
 				fileChanges.values(), rawCloneClasses.values(),
-				cloneClasses.values(), currentSourceFiles);
+				cloneClasses.values(), currentSourceFiles, null);
 		this.versions.put(id, version);
 
 		for (final DBSourceFile sourceFile : this.sourceFiles.values()) {

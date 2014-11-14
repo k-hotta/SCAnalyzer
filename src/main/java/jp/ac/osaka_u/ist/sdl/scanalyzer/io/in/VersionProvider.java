@@ -21,6 +21,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
@@ -273,7 +274,8 @@ public class VersionProvider<E extends IProgramElement> {
 				new TreeSet<DBFileChange>(new DBElementComparator()),
 				new TreeSet<DBRawCloneClass>(new DBElementComparator()),
 				new TreeSet<DBCloneClass>(new DBElementComparator()),
-				new TreeSet<DBSourceFile>(new DBElementComparator()));
+				new TreeSet<DBSourceFile>(new DBElementComparator()),
+				new TreeSet<DBCloneClassMapping>(new DBElementComparator()));
 		final Version<E> nextVersion = new Version<E>(nextDBVersion);
 
 		// set the next revision to the next version

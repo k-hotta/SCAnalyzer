@@ -228,11 +228,13 @@ public class DBManager {
 
 		cloneClassMappingDao.setCloneClassDao(cloneClassDao);
 		cloneClassMappingDao.setCodeFragmentMappingDao(codeFragmentMappingDao);
+		cloneClassMappingDao.setVersionDao(versionDao);
 
 		versionDao.setRevidionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);
 		versionDao.setRawCloneClassDao(rawCloneClassDao);
 		versionDao.setCloneClassDao(cloneClassDao);
+		versionDao.setCloneClassMappingDao(cloneClassMappingDao);
 		versionDao.setSourceFileDao(sourceFileDao);
 
 		instance.setFileChangeDao(fileChangeDao);
