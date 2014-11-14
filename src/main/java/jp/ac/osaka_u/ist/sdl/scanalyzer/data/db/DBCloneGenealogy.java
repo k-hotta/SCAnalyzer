@@ -48,14 +48,6 @@ public class DBCloneGenealogy implements IDBElement {
 	private DBVersion endVersion;
 
 	/**
-	 * The clone classes. <br>
-	 * NOTE: this field is NOT a column of database table. The relationship
-	 * between genealogies and clone classes will be stored via
-	 * {@link DBCloneGenealogyCloneClass} since it is many-to-many.
-	 */
-	private Collection<DBCloneClass> cloneClasses;
-
-	/**
 	 * The mappings of clone classes. <br>
 	 * NOTE: this field is NOT a column of database table. The relationship
 	 * between genealogies and clone class mappings will be stored via
@@ -79,19 +71,15 @@ public class DBCloneGenealogy implements IDBElement {
 	 *            the start version of this genealogy
 	 * @param endVersion
 	 *            the end version of this genealogy
-	 * @param cloneClasses
-	 *            the clone classes included in this genealogy
 	 * @param cloneClassMappings
 	 *            the clone class mappings related to this genealogy
 	 */
 	public DBCloneGenealogy(final long id, final DBVersion startVersion,
 			final DBVersion endVersion,
-			final Collection<DBCloneClass> cloneClasses,
 			final Collection<DBCloneClassMapping> cloneClassMappings) {
 		this.id = id;
 		this.startVersion = startVersion;
 		this.endVersion = endVersion;
-		this.cloneClasses = cloneClasses;
 		this.cloneClassMappings = cloneClassMappings;
 	}
 
@@ -155,25 +143,6 @@ public class DBCloneGenealogy implements IDBElement {
 	}
 
 	/**
-	 * Get the clone classes in this genealogy.
-	 * 
-	 * @return the clone classes in this genealogy
-	 */
-	public Collection<DBCloneClass> getCloneClasses() {
-		return cloneClasses;
-	}
-
-	/**
-	 * Set the clone classes in this genealogy.
-	 * 
-	 * @param cloneClasses
-	 *            the clone classes to be set
-	 */
-	public void setCloneClasses(final Collection<DBCloneClass> cloneClasses) {
-		this.cloneClasses = cloneClasses;
-	}
-
-	/**
 	 * Get the clone class mappings in this genealogy.
 	 * 
 	 * @return the clone class mappings in this genealogy
@@ -230,8 +199,10 @@ public class DBCloneGenealogy implements IDBElement {
 		builder.append("from ver. " + this.startVersion.getId() + " to ver. "
 				+ this.endVersion.getId());
 		builder.append("clones:\n");
-		for (final DBCloneClass cloneClass : this.cloneClasses) {
-			builder.append(cloneClass.getId() + ", ");
+		for (final DBCloneClassMapping cloneClassMapping : this.cloneClassMappings) {
+			builder.append(cloneClassMapping.getOldCloneClass().getId()
+					+ " => " + cloneClassMapping.getNewCloneClass().getId()
+					+ ", ");
 		}
 		builder.deleteCharAt(builder.length() - 1);
 		builder.deleteCharAt(builder.length() - 1);

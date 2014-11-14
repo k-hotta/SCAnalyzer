@@ -5,17 +5,17 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * This class is just for realizing many-to-many relationship between
- * {@link DBCloneGenealogy} and {@link DBCloneClass}. An instance of this class
- * represents a relationship between an instance of {@link DBCloneGenealogy} and
- * that of {@link DBCloneClass}.
+ * {@link DBCloneGenealogy} and {@link DBCloneClassMapping}. An instance of this
+ * class represents a relationship between an instance of
+ * {@link DBCloneGenealogy} and that of {@link DBCloneClassMapping}.
  * 
  * @author k-hotta
  *
  * @see DBCloneGenealogy
- * @see DBCloneClass
+ * @see DBCloneClassMapping
  */
 @DatabaseTable(tableName = "CLONE_GENEALOGY_CLONE_CLASS")
-public class DBCloneGenealogyCloneClass implements IDBElement {
+public class DBCloneGenealogyCloneClassMapping implements IDBElement {
 
 	/**
 	 * The column name for id
@@ -30,7 +30,7 @@ public class DBCloneGenealogyCloneClass implements IDBElement {
 	/**
 	 * The column name for cloneClass
 	 */
-	public static final String CLONE_CLASS_COLUMN_NAME = "CLONE_CLASS";
+	public static final String CLONE_CLASS_MAPPING_COLUMN_NAME = "CLONE_CLASS_MAPPING";
 
 	/**
 	 * The id of this relationship
@@ -45,15 +45,15 @@ public class DBCloneGenealogyCloneClass implements IDBElement {
 	private DBCloneGenealogy cloneGenealogy;
 
 	/**
-	 * The corresponding clone class
+	 * The corresponding clone class mapping
 	 */
-	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_COLUMN_NAME)
-	private DBCloneClass cloneClass;
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_MAPPING_COLUMN_NAME)
+	private DBCloneClassMapping cloneClassMapping;
 
 	/**
 	 * The default constructor
 	 */
-	public DBCloneGenealogyCloneClass() {
+	public DBCloneGenealogyCloneClassMapping() {
 
 	}
 
@@ -64,14 +64,15 @@ public class DBCloneGenealogyCloneClass implements IDBElement {
 	 *            the id of this relationship
 	 * @param cloneGenealogy
 	 *            the corresponding clone genealogy
-	 * @param cloneClass
-	 *            the corresponding clone class
+	 * @param cloneClassMapping
+	 *            the corresponding clone class mapping
 	 */
-	public DBCloneGenealogyCloneClass(final long id,
-			final DBCloneGenealogy cloneGenealogy, final DBCloneClass cloneClass) {
+	public DBCloneGenealogyCloneClassMapping(final long id,
+			final DBCloneGenealogy cloneGenealogy,
+			final DBCloneClassMapping cloneClassMapping) {
 		this.id = id;
 		this.cloneGenealogy = cloneGenealogy;
-		this.cloneClass = cloneClass;
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 	/**
@@ -113,37 +114,38 @@ public class DBCloneGenealogyCloneClass implements IDBElement {
 	}
 
 	/**
-	 * Get the corresponding clone class.
+	 * Get the corresponding clone class mapping.
 	 * 
-	 * @return the corresponding clone class
+	 * @return the corresponding clone class mapping
 	 */
-	public DBCloneClass getCloneClass() {
-		return cloneClass;
+	public DBCloneClassMapping getCloneClassMapping() {
+		return cloneClassMapping;
 	}
 
 	/**
-	 * Set the corresponding clone class with the specified one.
+	 * Set the corresponding clone class mapping with the specified one.
 	 * 
-	 * @param cloneClass
+	 * @param cloneClassMapping
 	 *            the clone class to be set
 	 */
-	public void setCloneClass(DBCloneClass cloneClass) {
-		this.cloneClass = cloneClass;
+	public void setCloneClassMapping(DBCloneClassMapping cloneClassMapping) {
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link DBCloneGenealogyCloneClass} and the id values of the two
-	 *         objects are the same to each other, <code>false</code> otherwise.
+	 *         {@link DBCloneGenealogyCloneClassMapping} and the id values of
+	 *         the two objects are the same to each other, <code>false</code>
+	 *         otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof DBCloneGenealogyCloneClass)) {
+		if (!(obj instanceof DBCloneGenealogyCloneClassMapping)) {
 			return false;
 		}
-		final DBCloneGenealogyCloneClass another = (DBCloneGenealogyCloneClass) obj;
+		final DBCloneGenealogyCloneClassMapping another = (DBCloneGenealogyCloneClassMapping) obj;
 
 		return this.id == another.getId();
 	}
