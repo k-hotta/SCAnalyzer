@@ -177,7 +177,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 
 	@Override
 	public DBVersion refresh(DBVersion element) throws SQLException {
-		element.setRevision(revisionDao.get(element.getId()));
+		element.setRevision(revisionDao.get(element.getRevision().getId()));
 
 		final Collection<DBFileChange> fileChanges = new TreeSet<DBFileChange>(
 				new DBElementComparator());
