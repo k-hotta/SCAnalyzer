@@ -200,10 +200,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * 
 	 * @param element
 	 *            the element to be stored
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public void register(final D element) throws SQLException {
+	public void register(final D element) throws Exception {
 		if (element == null) {
 			eLogger.fatal("null is specified as an argument of register method");
 			throw new IllegalStateException("null is attemptted to be register");

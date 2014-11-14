@@ -1,9 +1,11 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
@@ -91,7 +93,8 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 		this.revisionDao = null;
 		this.fileChangeDao = null;
 		this.rawCloneClassDao = null;
-		this.nativeSourceFileDao = this.manager.getNativeDao(DBSourceFile.class);
+		this.nativeSourceFileDao = this.manager
+				.getNativeDao(DBSourceFile.class);
 		this.cloneClassDao = null;
 		this.nativeVersionSourceFileDao = this.manager
 				.getNativeDao(DBVersionSourceFile.class);
@@ -195,8 +198,8 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	 */
 	public List<DBVersion> getWithRevision(final DBRevision revision)
 			throws SQLException {
-		return refreshAll(originalDao.queryForEq(DBVersion.REVISION_COLUMN_NAME,
-				revision));
+		return refreshAll(originalDao.queryForEq(
+				DBVersion.REVISION_COLUMN_NAME, revision));
 	}
 
 	/**
@@ -208,8 +211,8 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBSourceFile> getCorrespondingSourceFiles(final DBVersion version)
-			throws SQLException {
+	public List<DBSourceFile> getCorrespondingSourceFiles(
+			final DBVersion version) throws SQLException {
 		if (sourceFilesForVersionQuery == null) {
 			sourceFilesForVersionQuery = makeSourceFilesForVersionQuery();
 		}
@@ -231,20 +234,32 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 
 		QueryBuilder<DBSourceFile, Long> sourceFileQb = nativeSourceFileDao
 				.queryBuilder();
-		sourceFileQb.where().in(DBSourceFile.ID_COLUMN_NAME, versionSourceFileQb);
+		sourceFileQb.where().in(DBSourceFile.ID_COLUMN_NAME,
+				versionSourceFileQb);
 
 		return sourceFileQb.prepare();
 	}
 
 	@Override
-	public void register(final DBVersion element) throws SQLException {
+	public void register(final DBVersion element) throws Exception {
 		super.register(element); // register Version itself
 
+		final List<DBVersionSourceFile> vsfs = new ArrayList<>();
 		for (final DBSourceFile sourceFile : element.getSourceFiles()) {
 			final DBVersionSourceFile vsf = new DBVersionSourceFile(
 					IDGenerator.generate(DBVersionSourceFile.class), element,
 					sourceFile);
-			nativeVersionSourceFileDao.create(vsf);
+			vsfs.add(vsf);
 		}
+		
+		nativeVersionSourceFileDao.callBatchTasks(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				for (final DBVersionSourceFile vsf : vsfs) {
+					nativeVersionSourceFileDao.create(vsf);
+				}
+				return null;
+			}
+		});
 	}
 }
