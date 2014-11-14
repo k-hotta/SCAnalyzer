@@ -80,8 +80,10 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 		}
 		element.setSegments(segments);
 
-		element.setCloneClass(cloneClassDao
-				.get(element.getCloneClass().getId()));
+		if (deepRefresh) {
+			element.setCloneClass(cloneClassDao.get(element.getCloneClass()
+					.getId()));
+		}
 
 		return element;
 	}

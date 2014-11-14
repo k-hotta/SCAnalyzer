@@ -110,7 +110,9 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 		}
 		element.setCodeFragmentMappings(codeFragmentMappings);
 
-		element.setVersion(versionDao.get(element.getVersion().getId()));
+		if (deepRefresh) {
+			element.setVersion(versionDao.get(element.getVersion().getId()));
+		}
 
 		return element;
 	}

@@ -83,7 +83,10 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 			element.setNewSourceFile(sourceFileDao.get(element
 					.getNewSourceFile().getId()));
 		}
-		element.setVersion(versionDao.get(element.getVersion().getId()));
+
+		if (deepRefresh) {
+			element.setVersion(versionDao.get(element.getVersion().getId()));
+		}
 
 		return element;
 	}
@@ -98,8 +101,8 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBFileChange> getWithOldSourceFile(final DBSourceFile oldSourceFile)
-			throws SQLException {
+	public List<DBFileChange> getWithOldSourceFile(
+			final DBSourceFile oldSourceFile) throws SQLException {
 		return refreshAll(originalDao.queryForEq(
 				DBFileChange.OLD_SOURCE_FILE_COLUMN_NAME, oldSourceFile));
 	}
@@ -114,8 +117,8 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBFileChange> getWithNewSourceFile(final DBSourceFile newSourceFile)
-			throws SQLException {
+	public List<DBFileChange> getWithNewSourceFile(
+			final DBSourceFile newSourceFile) throws SQLException {
 		return refreshAll(originalDao.queryForEq(
 				DBFileChange.NEW_SOURCE_FILE_COLUMN_NAME, newSourceFile));
 	}

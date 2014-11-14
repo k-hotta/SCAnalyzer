@@ -40,6 +40,18 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	protected static boolean autoRefresh = false;
 
 	/**
+	 * If this field is true, ALL the related elements to a given db element
+	 * will be refreshed. If false, only the child elements of the db element
+	 * will be refreshed. <br>
+	 * For instance, suppose that you are about to refresh a clone class. A
+	 * clone class has code fragments as its children, and a version as its
+	 * parent. If deep refresh is false, only the code fragments will be
+	 * refreshed. On the other hand, if true, not only the code fragments but
+	 * also the version will be refreshed.
+	 */
+	protected static boolean deepRefresh = false;
+
+	/**
 	 * The DB manager
 	 */
 	protected final DBManager manager;
@@ -77,6 +89,16 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	public static void setAutoRefresh(final boolean autoRefresh) {
 		AbstractDataDao.autoRefresh = autoRefresh;
+	}
+
+	/**
+	 * Set the value of deep refresh.
+	 * 
+	 * @param deepRefresh
+	 *            the boolean value to be set
+	 */
+	public static void setDeepRefresh(final boolean deepRefresh) {
+		AbstractDataDao.deepRefresh = deepRefresh;
 	}
 
 	/**

@@ -47,8 +47,7 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	private RawCloneClassDao rawCloneClassDao;
 
 	@SuppressWarnings("unchecked")
-	public RawClonedFragmentDao()
-			throws SQLException {
+	public RawClonedFragmentDao() throws SQLException {
 		super((Dao<DBRawClonedFragment, Long>) DBManager.getInstance()
 				.getNativeDao(DBRawClonedFragment.class));
 		versionDao = null;
@@ -94,11 +93,13 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	@Override
 	public DBRawClonedFragment refresh(DBRawClonedFragment element)
 			throws SQLException {
-		element.setVersion(versionDao.get(element.getVersion().getId()));
-		element.setSourceFile(sourceFileDao
-				.get(element.getSourceFile().getId()));
-		element.setCloneClass(rawCloneClassDao.get(element.getCloneClass()
-				.getId()));
+		if (deepRefresh) {
+			element.setVersion(versionDao.get(element.getVersion().getId()));
+			element.setSourceFile(sourceFileDao.get(element.getSourceFile()
+					.getId()));
+			element.setCloneClass(rawCloneClassDao.get(element.getCloneClass()
+					.getId()));
+		}
 
 		return element;
 	}
@@ -127,8 +128,8 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawClonedFragment> getWithSourceFile(final DBSourceFile sourceFile)
-			throws SQLException {
+	public List<DBRawClonedFragment> getWithSourceFile(
+			final DBSourceFile sourceFile) throws SQLException {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.SOURCE_FILE_COLUMN_NAME, sourceFile));
 	}

@@ -37,7 +37,7 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 				DBSegment.class));
 		this.sourceFileDao = null;
 	}
-	
+
 	/**
 	 * Set the DAO for SourceFile with the specified one
 	 * 
@@ -55,8 +55,10 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 
 	@Override
 	public DBSegment refresh(DBSegment element) throws SQLException {
-		element.setSourceFile(sourceFileDao
-				.get(element.getSourceFile().getId()));
+		if (deepRefresh) {
+			element.setSourceFile(sourceFileDao.get(element.getSourceFile()
+					.getId()));
+		}
 		return element;
 	}
 

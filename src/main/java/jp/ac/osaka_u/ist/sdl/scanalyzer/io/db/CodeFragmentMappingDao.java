@@ -74,8 +74,10 @@ public class CodeFragmentMappingDao extends
 					.getNewCodeFragment().getId()));
 		}
 
-		element.setCloneClassMapping(cloneClassMappingDao.get(element
-				.getCloneClassMapping().getId()));
+		if (deepRefresh) {
+			element.setCloneClassMapping(cloneClassMappingDao.get(element
+					.getCloneClassMapping().getId()));
+		}
 
 		return element;
 	}
