@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * This class represents mapping between two code fragments, one of which is in
@@ -10,6 +11,7 @@ import com.j256.ormlite.field.DatabaseField;
  *
  * @see DBCodeFragment
  */
+@DatabaseTable(tableName = "CODE_FRAGMENT_MAPPING")
 public class DBCodeFragmentMapping implements IDBElement {
 
 	/**
