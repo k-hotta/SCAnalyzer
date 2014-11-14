@@ -60,8 +60,7 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 	private PreparedQuery<DBCloneClassMapping> cloneClassMappingsForCloneGenealogyQuery;
 
 	@SuppressWarnings("unchecked")
-	public CloneGenealogyDao(Dao<DBCloneGenealogy, Long> originalDao)
-			throws Exception {
+	public CloneGenealogyDao() throws SQLException {
 		super((Dao<DBCloneGenealogy, Long>) DBManager.getInstance()
 				.getNativeDao(DBCloneGenealogy.class));
 		this.nativeCloneClassMappingDao = DBManager.getInstance().getNativeDao(

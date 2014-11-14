@@ -4,6 +4,8 @@ import java.sql.SQLException;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogyCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
@@ -118,6 +120,11 @@ public class DBManager {
 	private VersionDao versionDao;
 
 	/**
+	 * The DAO for CloneGenealogy
+	 */
+	private CloneGenealogyDao cloneGenealogyDao;
+
+	/**
 	 * The private default constructor to use singleton pattern
 	 * 
 	 * @param url
@@ -204,6 +211,7 @@ public class DBManager {
 		final RevisionDao revisionDao = new RevisionDao();
 		final SourceFileDao sourceFileDao = new SourceFileDao();
 		final VersionDao versionDao = new VersionDao();
+		final CloneGenealogyDao cloneGenealogyDao = new CloneGenealogyDao();
 
 		fileChangeDao.setSourceFileDao(sourceFileDao);
 		fileChangeDao.setVersionDao(versionDao);
@@ -237,6 +245,9 @@ public class DBManager {
 		versionDao.setCloneClassMappingDao(cloneClassMappingDao);
 		versionDao.setSourceFileDao(sourceFileDao);
 
+		cloneGenealogyDao.setCloneClassMappingDao(cloneClassMappingDao);
+		cloneGenealogyDao.setVersionDao(versionDao);
+
 		instance.setFileChangeDao(fileChangeDao);
 		instance.setRawCloneClassDao(rawCloneClassDao);
 		instance.setRawClonedFragmentDao(rawClonedFragmentDao);
@@ -248,6 +259,7 @@ public class DBManager {
 		instance.setRevisionDao(revisionDao);
 		instance.setSourceFileDao(sourceFileDao);
 		instance.setVersionDao(versionDao);
+		instance.setCloneGenealogyDao(cloneGenealogyDao);
 	}
 
 	private void setFileChangeDao(final FileChangeDao fileChangeDao) {
@@ -297,6 +309,10 @@ public class DBManager {
 		this.versionDao = versionDao;
 	}
 
+	private void setCloneGenealogyDao(final CloneGenealogyDao cloneGenealogyDao) {
+		this.cloneGenealogyDao = cloneGenealogyDao;
+	}
+
 	/**
 	 * Clear all the DAOs.
 	 */
@@ -312,6 +328,7 @@ public class DBManager {
 		revisionDao.clear();
 		sourceFileDao.clear();
 		versionDao.clear();
+		cloneGenealogyDao.clear();
 	}
 
 	/**
@@ -436,6 +453,17 @@ public class DBManager {
 	}
 
 	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy}
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy}
+	 */
+	public final CloneGenealogyDao getCloneGenealogyDao() {
+		return cloneGenealogyDao;
+	}
+
+	/**
 	 * Close the connection
 	 * 
 	 * @throws SQLException
@@ -514,6 +542,8 @@ public class DBManager {
 		initializeTable(DBSegment.class);
 		initializeTable(DBCloneClassMapping.class);
 		initializeTable(DBCodeFragmentMapping.class);
+		initializeTable(DBCloneGenealogy.class);
+		initializeTable(DBCloneGenealogyCloneClassMapping.class);
 	}
 
 	/**
