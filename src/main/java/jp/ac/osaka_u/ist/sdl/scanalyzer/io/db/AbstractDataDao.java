@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -217,13 +218,18 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * 
 	 * @param elements
 	 *            the elements to be stored
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public void registerAll(final Collection<D> elements) throws SQLException {
-		for (final D element : elements) {
-			register(element);
-		}
+	public void registerAll(final Collection<D> elements) throws Exception {
+		originalDao.callBatchTasks(new Callable<Void>() {
+			public Void call() throws Exception {
+				for (D element : elements) {
+					originalDao.create(element);
+				}
+				return null;
+			}
+		});
 	}
 
 	/**
