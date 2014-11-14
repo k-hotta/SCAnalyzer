@@ -447,10 +447,8 @@ public class IClonesCloneClassMappingHelper {
 					// instance
 					// hence the result of get() is ignored
 					future.get();
-				} catch (IllegalStateException e) {
-					throw e;
-				} catch (Exception e2) {
-					e2.printStackTrace();
+				} catch (Exception e) {
+					throw new IllegalStateException(e);
 				}
 			}
 
