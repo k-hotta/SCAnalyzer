@@ -193,4 +193,50 @@ public class DBCloneGenealogy implements IDBElement {
 		this.cloneClassMappings = cloneClassMappings;
 	}
 
+	/**
+	 * Judge whether the given object equals to this object. <br>
+	 * 
+	 * <code>true</code> if the given object is an instance of
+	 * {@link DBCloneGenealogy} and the id values of the two objects are the
+	 * same to each other, <code>false</code> otherwise.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (!(obj instanceof DBCloneGenealogy)) {
+			return false;
+		}
+
+		final DBCloneGenealogy another = (DBCloneGenealogy) obj;
+
+		return this.id == another.getId();
+	}
+
+	/**
+	 * Return a hash code value of this object. <br>
+	 * The hash value of this object is just the value of the id. <br>
+	 * 
+	 * @return the hash value, which equals to the value of id of this object
+	 */
+	@Override
+	public int hashCode() {
+		return (int) this.id;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+
+		builder.append("Genealogy " + this.id + "\n");
+		builder.append("from ver. " + this.startVersion.getId() + " to ver. "
+				+ this.endVersion.getId());
+		builder.append("clones:\n");
+		for (final DBCloneClass cloneClass : this.cloneClasses) {
+			builder.append(cloneClass.getId() + ", ");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.deleteCharAt(builder.length() - 1);
+
+		return builder.toString();
+	}
+
 }
