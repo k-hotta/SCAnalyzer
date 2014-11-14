@@ -34,6 +34,12 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	private static final Logger eLogger = LogManager.getLogger("error");
 
 	/**
+	 * If this field is true, the related elements to a given db element will be
+	 * refreshed automatically.
+	 */
+	protected static boolean autoRefresh = false;
+
+	/**
 	 * The DB manager
 	 */
 	protected final DBManager manager;
@@ -61,6 +67,16 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		this.manager = DBManager.getInstance();
 		this.originalDao = originalDao;
 		this.retrievedElements = new ConcurrentSkipListMap<Long, D>();
+	}
+
+	/**
+	 * Set the value of auto refresh.
+	 * 
+	 * @param autoRefresh
+	 *            the boolean value to be set
+	 */
+	public static void setAutoRefresh(final boolean autoRefresh) {
+		AbstractDataDao.autoRefresh = autoRefresh;
 	}
 
 	/**
@@ -259,6 +275,12 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	private D checkAndRefresh(final D element) throws SQLException {
 		if (element == null) {
 			return null;
+		}
+
+		if (!autoRefresh) {
+			// if auto refresh is OFF,
+			// returns the element as it is
+			return element;
 		}
 
 		if (this.retrievedElements.containsKey(element.getId())) {
