@@ -124,30 +124,25 @@ public class Analyzer<E extends IProgramElement> {
 			logger.info("analyzing the new version, version " + next.getId()
 					+ " ... ");
 
-			// if previous == null, the next version is the first one
-			// there is no need to detect mapping in this case
-			if (previous != null) {
-				// mapping elements between two versions
-				logger.info("mapping elements between two versions ... ");
-				elementMapper.prepare(previous, next);
-				logger.info("complete mapping elements");
+			// mapping elements between two versions
+			logger.info("mapping elements between two versions ... ");
+			elementMapper.prepare(previous, next);
+			logger.info("complete mapping elements");
 
-				// mapping clones between two versions
-				logger.info("mapping clone classes between two versions ...");
-				final Collection<CloneClassMapping<E>> cloneClassMappings = cloneMapper
-						.detectMapping(previous, next);
-				for (final CloneClassMapping<E> cloneClassMapping : cloneClassMappings) {
-					cloneClassMapping.getCore().setVersion(next.getCore());
-					next.getCore().getCloneClassMappings()
-							.add(cloneClassMapping.getCore());
-					cloneClassMapping.setVersion(next);
-					next.addCloneClassMapping(cloneClassMapping);
-				}
-
-				logger.info("complete mapping clone classes: "
-						+ cloneClassMappings.size()
-						+ " mappings have been found");
+			// mapping clones between two versions
+			logger.info("mapping clone classes between two versions ...");
+			final Collection<CloneClassMapping<E>> cloneClassMappings = cloneMapper
+					.detectMapping(previous, next);
+			for (final CloneClassMapping<E> cloneClassMapping : cloneClassMappings) {
+				cloneClassMapping.getCore().setVersion(next.getCore());
+				next.getCore().getCloneClassMappings()
+						.add(cloneClassMapping.getCore());
+				cloneClassMapping.setVersion(next);
+				next.addCloneClassMapping(cloneClassMapping);
 			}
+
+			logger.info("complete mapping clone classes: "
+					+ cloneClassMappings.size() + " mappings have been found");
 
 			// concatenate clone genealogies
 			logger.info("concatenating genealogies ...");

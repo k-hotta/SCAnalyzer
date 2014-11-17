@@ -65,8 +65,9 @@ public class TraditionalDiffTokenMapper implements IProgramElementMapper<Token> 
 	public boolean prepare(Version<Token> previousVersion,
 			Version<Token> nextVersion) {
 		if (previousVersion == null) {
-			throw new IllegalArgumentException(
-					"the given previous version is null");
+			// special treat for the initial version
+			// do nothing
+			return true;
 		}
 
 		if (nextVersion == null) {

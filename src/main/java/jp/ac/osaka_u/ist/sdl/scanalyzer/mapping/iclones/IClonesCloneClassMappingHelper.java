@@ -65,6 +65,11 @@ public class IClonesCloneClassMappingHelper {
 			final IProgramElementMapper<E> mapper) {
 		final ConcurrentMap<Long, CodeFragment<E>> result = new ConcurrentSkipListMap<>();
 
+		if (previousVersion == null) {
+			// special treat for the initial version
+			return result;
+		}
+
 		final List<NextFragmentsEstimateTask<E>> tasks = new ArrayList<NextFragmentsEstimateTask<E>>();
 
 		for (final CloneClass<E> cloneClass : previousVersion.getCloneClasses()
@@ -224,6 +229,11 @@ public class IClonesCloneClassMappingHelper {
 			final ConcurrentMap<Long, Integer> beforeFragmentsToHash,
 			final ConcurrentMap<Integer, List<Long>> afterBucket,
 			final ConcurrentMap<Long, CodeFragment<E>> codeFragmentsAfter) {
+		// special treat for the initial version
+		if (previousVersion == null) {
+			return createMappingForFirstVersion(nextVersion);
+		}
+
 		final Map<CloneClass<E>, List<CloneClass<E>>> perfectMatches = new TreeMap<>(
 				(k1, k2) -> Long.compare(k1.getId(), k2.getId()));
 		final Map<CloneClass<E>, List<CloneClass<E>>> inclusiveMatches = new TreeMap<>(
@@ -288,6 +298,26 @@ public class IClonesCloneClassMappingHelper {
 
 		return fixMatches(previousVersion, nextVersion, perfectMatches,
 				inclusiveMatches, bestMatches);
+	}
+
+	/**
+	 * Special treat for the initial version.
+	 * 
+	 * @param nextVersion
+	 *            the initial version
+	 * @return a list of clone class mapping, all of whose values will be
+	 *         addition of a clone class
+	 */
+	public static <E extends IProgramElement> List<CloneClassMapping<E>> createMappingForFirstVersion(
+			final Version<E> nextVersion) {
+		final List<CloneClassMapping<E>> result = new ArrayList<>();
+
+		for (final CloneClass<E> newCloneClass : nextVersion.getCloneClasses()
+				.values()) {
+			result.add(makeMapping(null, newCloneClass));
+		}
+
+		return result;
 	}
 
 	/**
