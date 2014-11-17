@@ -2,8 +2,12 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
@@ -20,54 +24,92 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
  */
 public class CloneGenealogyFinder {
 
-	public Map<DBCloneClass, DBCloneGenealogy> concatinate(
+	public void concatinate(final DBVersion previousVersion,
 			final DBVersion nextVersion,
 			final Collection<DBCloneClassMapping> nextMappings,
-			final Map<DBCloneClass, DBCloneGenealogy> currentGenealogies) {
+			final Map<DBCloneClass, DBCloneGenealogy> currentGenealogies,
+			final Set<DBCloneGenealogy> disappearedGenealogies) {
+		assert (disappearedGenealogies.isEmpty());
+
 		final Map<DBCloneClass, DBCloneGenealogy> result = new TreeMap<>(
 				new DBElementComparator());
 
-		for (final DBCloneClassMapping nextMapping : nextMappings) {
-			final DBCloneClass oldCloneClass = nextMapping.getOldCloneClass();
-			final DBCloneClass newCloneClass = nextMapping.getNewCloneClass();
+		// sort the given mappings based on their old clone classes
+		// if two or more mappings share the same old clone classes
+		// they will be mapped to the same key
+		final Map<DBCloneClass, List<DBCloneClassMapping>> sortedMappings = categorizeWithOldClone(nextMappings);
 
-			if (oldCloneClass == null) {
-				if (newCloneClass == null) {
-					throw new IllegalStateException(
-							"both of new/old clone classes are null");
-				}
+		for (final Map.Entry<DBCloneClass, List<DBCloneClassMapping>> entry : sortedMappings
+				.entrySet()) {
+			final DBCloneClass oldCloneClass = entry.getKey();
 
-				final DBCloneGenealogy newGenealogy = new DBCloneGenealogy(
-						IDGenerator.generate(DBCloneGenealogy.class),
-						nextVersion, null, new ArrayList<DBCloneClassMapping>());
-				newGenealogy.getCloneClassMappings().add(nextMapping);
-
-				result.put(newCloneClass, newGenealogy);
-			} else {
+			if (oldCloneClass != null) {
+				// old clone class must be in a genealogy
 				if (!currentGenealogies.containsKey(oldCloneClass)) {
 					throw new IllegalStateException("the old clone class "
 							+ oldCloneClass.getId()
 							+ " are not in any genealogies");
 				}
 
-				if (newCloneClass == null) {
-					// this is clone removal
-					currentGenealogies.get(oldCloneClass)
-							.getCloneClassMappings().add(nextMapping);
-				} else {
-					final DBCloneGenealogy previousGenealogy = currentGenealogies
-							.get(oldCloneClass);
-					previousGenealogy.getCloneClassMappings().add(nextMapping);
+				// get clone genealogy contains the old clone class
+				final DBCloneGenealogy previousGenealogy = currentGenealogies
+						.remove(oldCloneClass);
 
-					if (result.containsKey(newCloneClass)) {
-						final DBCloneGenealogy alreadyRegisteredGenealogy = result
-								.remove(newCloneClass);
-						result.put(
-								newCloneClass,
-								merge(alreadyRegisteredGenealogy,
-										previousGenealogy));
+				if (previousGenealogy != null) {
+					for (final DBCloneClassMapping mapping : entry.getValue()) {
+						previousGenealogy.getCloneClassMappings().add(mapping);
+
+						if (mapping.getNewCloneClass() == null) {
+							// the genealogy disappeared
+							previousGenealogy.setEndVersion(previousVersion);
+							disappearedGenealogies.add(previousGenealogy);
+						} else {
+							if (result.containsKey(mapping.getNewCloneClass())) {
+								result.put(
+										mapping.getNewCloneClass(),
+										merge(currentGenealogies.get(mapping
+												.getNewCloneClass()),
+												previousGenealogy));
+							} else {
+								result.put(mapping.getNewCloneClass(),
+										previousGenealogy);
+							}
+						}
 					}
+				} else {
+					throw new IllegalStateException(
+							"previous genealogy is null");
 				}
+
+			} else {
+				// old clone class is null
+				// make new genealogies for each of the mappings
+				for (final DBCloneClassMapping mapping : entry.getValue()) {
+					final DBCloneGenealogy newGenealogy = new DBCloneGenealogy(
+							IDGenerator.generate(DBCloneGenealogy.class),
+							nextVersion, null, new TreeSet<>(
+									new DBElementComparator()));
+					newGenealogy.getCloneClassMappings().add(mapping);
+					result.put(mapping.getNewCloneClass(), newGenealogy);
+				}
+			}
+		}
+
+		currentGenealogies.clear();
+		currentGenealogies.putAll(result);
+	}
+
+	private Map<DBCloneClass, List<DBCloneClassMapping>> categorizeWithOldClone(
+			final Collection<DBCloneClassMapping> mappings) {
+		final Map<DBCloneClass, List<DBCloneClassMapping>> result = new HashMap<>();
+
+		for (final DBCloneClassMapping mapping : mappings) {
+			if (result.containsKey(mapping.getOldCloneClass())) {
+				result.get(mapping.getOldCloneClass()).add(mapping);
+			} else {
+				final List<DBCloneClassMapping> newList = new ArrayList<>();
+				newList.add(mapping);
+				result.put(mapping.getOldCloneClass(), newList);
 			}
 		}
 
