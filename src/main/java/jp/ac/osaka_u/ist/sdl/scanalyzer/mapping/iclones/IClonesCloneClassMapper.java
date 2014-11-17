@@ -1,16 +1,22 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
@@ -120,6 +126,11 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 						estimatedFragments, nextVersion);
 		mapping.addAll(ghostMapping);
 
+		// make mapping intances for newly added clones
+		final List<CloneClassMapping<E>> addedMapping = mappingAddition(
+				nextVersion, nextClones.values());
+		mapping.addAll(addedMapping);
+
 		return mapping;
 	}
 
@@ -180,4 +191,23 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		}
 	}
 
+	/**
+	 * Make mappings for newly added clone classes.
+	 * 
+	 * @param newVersion
+	 * @param newClones
+	 * @return
+	 */
+	private List<CloneClassMapping<E>> mappingAddition(
+			final Version<E> newVersion,
+			final Collection<CloneClass<E>> newClones) {
+		final List<CloneClassMapping<E>> result = new ArrayList<>();
+
+		for (final CloneClass<E> newClone : newClones) {
+			result.add(IClonesCloneClassMappingHelper.makeMapping(null,
+					newClone));
+		}
+
+		return result;
+	}
 }

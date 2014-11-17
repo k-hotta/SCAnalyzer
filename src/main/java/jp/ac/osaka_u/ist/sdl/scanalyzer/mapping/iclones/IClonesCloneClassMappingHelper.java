@@ -401,13 +401,17 @@ public class IClonesCloneClassMappingHelper {
 	 *            the new clone class
 	 * @return a clone class mapping between the two clone class
 	 */
-	private static <E extends IProgramElement> CloneClassMapping<E> makeMapping(
+	public static <E extends IProgramElement> CloneClassMapping<E> makeMapping(
 			final CloneClass<E> oldCloneClass, final CloneClass<E> newCloneClass) {
+		final DBCloneClass oldCore = (oldCloneClass == null) ? null
+				: oldCloneClass.getCore();
+		final DBCloneClass newCore = (newCloneClass == null) ? null
+				: newCloneClass.getCore();
+
 		final DBCloneClassMapping mappingCore = new DBCloneClassMapping(
-				IDGenerator.generate(DBCloneClassMapping.class),
-				oldCloneClass.getCore(), newCloneClass.getCore(),
-				new TreeSet<DBCodeFragmentMapping>(new DBElementComparator()),
-				null);
+				IDGenerator.generate(DBCloneClassMapping.class), oldCore,
+				newCore, new TreeSet<DBCodeFragmentMapping>(
+						new DBElementComparator()), null);
 		final CloneClassMapping<E> mapping = new CloneClassMapping<>(
 				mappingCore);
 
@@ -518,6 +522,11 @@ public class IClonesCloneClassMappingHelper {
 					IClonesCodeFragmentMappingHelper.makeInstance(oldFragment,
 							newFragment, cloneClassMapping);
 				}
+			} else {
+				// clone removed
+				final CloneClassMapping<E> deleteMapping = IClonesCloneClassMappingHelper
+						.makeMapping(unmappedOldCloneClass, null);
+				result.add(deleteMapping);
 			}
 		}
 
