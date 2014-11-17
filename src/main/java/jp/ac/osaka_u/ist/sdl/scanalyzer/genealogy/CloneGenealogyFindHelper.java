@@ -24,7 +24,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
  */
 public class CloneGenealogyFindHelper {
 
-	public void concatinate(final DBVersion previousVersion,
+	public static void concatinate(final DBVersion previousVersion,
 			final DBVersion nextVersion,
 			final Collection<DBCloneClassMapping> nextMappings,
 			final Map<DBCloneClass, DBCloneGenealogy> currentGenealogies,
@@ -102,7 +102,7 @@ public class CloneGenealogyFindHelper {
 		currentGenealogies.putAll(result);
 	}
 
-	private Map<DBCloneClass, List<DBCloneClassMapping>> categorizeWithOldClone(
+	private static Map<DBCloneClass, List<DBCloneClassMapping>> categorizeWithOldClone(
 			final Collection<DBCloneClassMapping> mappings) {
 		final Map<DBCloneClass, List<DBCloneClassMapping>> result = new HashMap<>();
 
@@ -119,7 +119,7 @@ public class CloneGenealogyFindHelper {
 		return result;
 	}
 
-	private DBCloneGenealogy merge(final DBCloneGenealogy genealogy1,
+	private static DBCloneGenealogy merge(final DBCloneGenealogy genealogy1,
 			final DBCloneGenealogy genealogy2) {
 		genealogy1.getCloneClassMappings().addAll(
 				genealogy2.getCloneClassMappings());
