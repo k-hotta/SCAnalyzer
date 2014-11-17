@@ -2,6 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -170,4 +171,35 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 					}
 				});
 	}
+
+	@Override
+	public void registerAll(final Collection<DBCloneGenealogy> elements)
+			throws Exception {
+		super.registerAll(elements);
+
+		final List<DBCloneGenealogyCloneClassMapping> gMappings = new ArrayList<>();
+		for (final DBCloneGenealogy element : elements) {
+			for (final DBCloneClassMapping mapping : element
+					.getCloneClassMappings()) {
+				final DBCloneGenealogyCloneClassMapping gMapping = new DBCloneGenealogyCloneClassMapping(
+						IDGenerator
+								.generate(DBCloneGenealogyCloneClassMapping.class),
+						element, mapping);
+				gMappings.add(gMapping);
+			}
+		}
+
+		nativeCloneGenealogyCloneClassMappingDao
+				.callBatchTasks(new Callable<Void>() {
+					@Override
+					public Void call() throws Exception {
+						for (final DBCloneGenealogyCloneClassMapping gMapping : gMappings) {
+							nativeCloneGenealogyCloneClassMappingDao
+									.create(gMapping);
+						}
+						return null;
+					}
+				});
+	}
+
 }

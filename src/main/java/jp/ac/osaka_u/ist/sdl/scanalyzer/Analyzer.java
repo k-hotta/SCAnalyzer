@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
@@ -20,13 +22,17 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy.CloneGenealogyFindHelper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.VersionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
@@ -97,6 +103,18 @@ public class Analyzer<E extends IProgramElement> {
 			return;
 		}
 
+		// this map contains clone genealogies under construction
+		// the key is NEW clone class, and the value is its corresponding
+		// genealogy
+		// a same genealogy can be mapped to multiple keys in case where there
+		// is a branching
+		final Map<DBCloneClass, DBCloneGenealogy> genealogies = new TreeMap<>(
+				new DBElementComparator());
+
+		// this set contains genealogies disappeared by the commit to the next
+		// version
+		final Set<DBCloneGenealogy> disappearedGenealogies = new HashSet<>();
+
 		// if next is null, all the versions have been analyzed
 		// otherwise, continue to analyze the next version
 		while (next != null) {
@@ -131,22 +149,42 @@ public class Analyzer<E extends IProgramElement> {
 						+ " mappings have been found");
 			}
 
+			// concatenate clone genealogies
+			logger.info("concatenating genealogies ...");
+			final Collection<DBCloneClassMapping> nextMappings = new HashSet<DBCloneClassMapping>();
+			for (final CloneClassMapping<E> mapping : next
+					.getCloneClassMappings().values()) {
+				nextMappings.add(mapping.getCore());
+			}
+			CloneGenealogyFindHelper.concatenate(previous.getCore(),
+					next.getCore(), nextMappings, genealogies,
+					disappearedGenealogies);
+			logger.info("complete concatenating genealogies");
+
 			// store the version data
 			logger.info("storing version " + next.getId()
 					+ " into database ...");
 			storeVersionData(next, previous);
+			storeGenealogies(disappearedGenealogies);
 			logger.info("complete storing version " + next.getId() + " (rev. "
 					+ next.getRevision().getIdentifier() + ")");
 
 			// finished analyzing the new version
 			// the followings are for preparing the next version
 			previous = next;
+			disappearedGenealogies.clear();
 
 			logger.info("preparing the next version ... ");
 			next = versionProvider.getNextVersion(previous);
 		}
 
 		logger.info("no other version is found");
+
+		logger.info("processing alive genealogies ...");
+		// note: previous, not next, points the final version
+		processAliveGenealogies(genealogies, previous.getCore());
+		logger.info("complete processing alive genealogies");
+
 		logger.info("all the versions have been analyzed");
 	}
 
@@ -276,6 +314,45 @@ public class Analyzer<E extends IProgramElement> {
 				codeFragmentMappingsToBeStored);
 		logger.info(codeFragmentMappingsToBeStored.size()
 				+ " code fragment mappings have been stored");
+	}
+
+	/**
+	 * Store the given genealogies into database.
+	 * 
+	 * @param genealogies
+	 *            the genealogies to be stored
+	 * @throws Exception
+	 *             if any error occurred
+	 */
+	private void storeGenealogies(final Collection<DBCloneGenealogy> genealogies)
+			throws Exception {
+		DBManager.getInstance().getCloneGenealogyDao().registerAll(genealogies);
+		logger.info(genealogies.size() + " genealogies have been stored");
+	}
+
+	/**
+	 * Post-process alive genealogies
+	 * 
+	 * @param genealogies
+	 *            alive genealogies
+	 * @param version
+	 *            the final version
+	 * @throws Exception
+	 *             if any error occurred
+	 */
+	private void processAliveGenealogies(
+			final Map<DBCloneClass, DBCloneGenealogy> genealogies,
+			final DBVersion version) throws Exception {
+		final Set<DBCloneGenealogy> genealogiesAsSet = new HashSet<>();
+		genealogiesAsSet.addAll(genealogies.values());
+
+		for (final DBCloneGenealogy genealogy : genealogiesAsSet) {
+			genealogy.setEndVersion(version);
+		}
+
+		DBManager.getInstance().getCloneGenealogyDao()
+				.registerAll(genealogiesAsSet);
+		logger.info(genealogiesAsSet.size() + " genealogies have been stored");
 	}
 
 }

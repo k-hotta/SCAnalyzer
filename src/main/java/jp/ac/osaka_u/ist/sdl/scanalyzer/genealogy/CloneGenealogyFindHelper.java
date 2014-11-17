@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +25,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
  */
 public class CloneGenealogyFindHelper {
 
-	public static void concatinate(final DBVersion previousVersion,
+	public static void concatenate(final DBVersion previousVersion,
 			final DBVersion nextVersion,
 			final Collection<DBCloneClassMapping> nextMappings,
 			final Map<DBCloneClass, DBCloneGenealogy> currentGenealogies,
@@ -33,6 +34,9 @@ public class CloneGenealogyFindHelper {
 
 		final Map<DBCloneClass, DBCloneGenealogy> result = new TreeMap<>(
 				new DBElementComparator());
+
+		final Set<DBCloneGenealogy> aliveGenealogies = new HashSet<>();
+		final Set<DBCloneGenealogy> mightDisappearedGenealogies = new HashSet<>();
 
 		// sort the given mappings based on their old clone classes
 		// if two or more mappings share the same old clone classes
@@ -56,29 +60,34 @@ public class CloneGenealogyFindHelper {
 						.remove(oldCloneClass);
 
 				if (previousGenealogy != null) {
+					boolean mightDisappeare = true;
 					for (final DBCloneClassMapping mapping : entry.getValue()) {
 						previousGenealogy.getCloneClassMappings().add(mapping);
 
-						if (mapping.getNewCloneClass() == null) {
-							// the genealogy disappeared
-							previousGenealogy.setEndVersion(previousVersion);
-							disappearedGenealogies.add(previousGenealogy);
-						} else {
+						if (mapping.getNewCloneClass() != null) {
 							// the genealogy is still alive
+							mightDisappeare = false;
 
 							if (result.containsKey(mapping.getNewCloneClass())) {
 								// in case where two genealogies are merged
-								result.put(
-										mapping.getNewCloneClass(),
-										merge(currentGenealogies.get(mapping
-												.getNewCloneClass()),
-												previousGenealogy));
+								final DBCloneGenealogy merged = merge(
+										result.get(mapping.getNewCloneClass()),
+										previousGenealogy);
+								result.put(mapping.getNewCloneClass(), merged);
+								aliveGenealogies.add(merged);
 							} else {
 								result.put(mapping.getNewCloneClass(),
 										previousGenealogy);
+								aliveGenealogies.add(previousGenealogy);
 							}
 						}
 					}
+
+					if (mightDisappeare) {
+						// the genealogy might have disappeared
+						mightDisappearedGenealogies.add(previousGenealogy);
+					}
+
 				} else {
 					throw new IllegalStateException(
 							"previous genealogy is null");
@@ -98,6 +107,13 @@ public class CloneGenealogyFindHelper {
 			}
 		}
 
+		for (final DBCloneGenealogy mightDisappearedGenealogy : mightDisappearedGenealogies) {
+			if (!aliveGenealogies.contains(mightDisappearedGenealogy)) {
+				mightDisappearedGenealogy.setEndVersion(previousVersion);
+				disappearedGenealogies.add(mightDisappearedGenealogy);
+			}
+		}
+
 		currentGenealogies.clear();
 		currentGenealogies.putAll(result);
 	}
@@ -106,13 +122,13 @@ public class CloneGenealogyFindHelper {
 			final Collection<DBCloneClassMapping> mappings) {
 		final Map<DBCloneClass, List<DBCloneClassMapping>> result = new HashMap<>();
 
-		for (final DBCloneClassMapping mapping : mappings) {
-			if (result.containsKey(mapping.getOldCloneClass())) {
-				result.get(mapping.getOldCloneClass()).add(mapping);
+		for (final DBCloneClassMapping mappingCore : mappings) {
+			if (result.containsKey(mappingCore.getOldCloneClass())) {
+				result.get(mappingCore.getOldCloneClass()).add(mappingCore);
 			} else {
 				final List<DBCloneClassMapping> newList = new ArrayList<>();
-				newList.add(mapping);
-				result.put(mapping.getOldCloneClass(), newList);
+				newList.add(mappingCore);
+				result.put(mappingCore.getOldCloneClass(), newList);
 			}
 		}
 
