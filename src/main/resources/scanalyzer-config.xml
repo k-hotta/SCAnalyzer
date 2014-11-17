@@ -12,7 +12,7 @@
 		<relative>/c20r_main/src</relative>
 		<version-control>SVN</version-control>
 		<database>src/test/resources/test.db</database>
-		<start>1</start>
+		<start>300</start>
 		<end>419</end>
 	</target>
 	<clone-detection>

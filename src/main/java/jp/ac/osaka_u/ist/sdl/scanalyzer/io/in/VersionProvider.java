@@ -284,8 +284,17 @@ public class VersionProvider<E extends IProgramElement> {
 		nextVersion.setRevision(nextRevision);
 
 		// detect file changes
-		Collection<FileChangeEntry> fileChangeEntries = fileChangeDetector
-				.detectFileChangeEntriesToRevision(nextDBVersion.getRevision());
+		Collection<FileChangeEntry> fileChangeEntries = null;
+		if (currentVersion == null) {
+			fileChangeEntries = fileChangeDetector
+					.detectFileChangeEntriesToFirstRevision(nextDBVersion
+							.getRevision());
+		} else {
+			fileChangeEntries = fileChangeDetector
+					.detectFileChangeEntriesToRevision(nextDBVersion
+							.getRevision());
+		}
+
 		if (relocationFinder != null) {
 			fileChangeEntries = relocationFinder
 					.fildRelocations(fileChangeEntries);
