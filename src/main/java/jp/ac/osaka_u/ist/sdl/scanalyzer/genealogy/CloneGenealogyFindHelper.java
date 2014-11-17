@@ -22,7 +22,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
  * @author k-hotta
  *
  */
-public class CloneGenealogyFinder {
+public class CloneGenealogyFindHelper {
 
 	public void concatinate(final DBVersion previousVersion,
 			final DBVersion nextVersion,
@@ -64,7 +64,10 @@ public class CloneGenealogyFinder {
 							previousGenealogy.setEndVersion(previousVersion);
 							disappearedGenealogies.add(previousGenealogy);
 						} else {
+							// the genealogy is still alive
+
 							if (result.containsKey(mapping.getNewCloneClass())) {
+								// in case where two genealogies are merged
 								result.put(
 										mapping.getNewCloneClass(),
 										merge(currentGenealogies.get(mapping
