@@ -13,7 +13,7 @@
 		<version-control>SVN</version-control>
 		<database>src/test/resources/test.db</database>
 		<start>300</start>
-		<end>419</end>
+		<end>412</end>
 	</target>
 	<clone-detection>
 		<detector>Scorpio</detector>

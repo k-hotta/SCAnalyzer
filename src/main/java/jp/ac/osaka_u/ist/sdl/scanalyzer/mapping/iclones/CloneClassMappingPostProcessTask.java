@@ -80,8 +80,9 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 							"the matching fragment is null");
 				}
 
-				fragmentMappings.add(IClonesCodeFragmentMappingHelper.makeInstance(oldFragment,
-						matchingFragment, cloneClassMapping));
+				fragmentMappings.add(IClonesCodeFragmentMappingHelper
+						.makeInstance(oldFragment, matchingFragment,
+								cloneClassMapping));
 			}
 		}
 
@@ -106,13 +107,15 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 						.instanciateExpectedFragment(updatedOldFragment);
 
 				// store the ghost fragment into the new clone class
-				newCloneClass.getCore().getGhostFragments()
-						.add(instanciatedFragment.getCore());
-				instanciatedFragment.getCore().setCloneClass(
-						newCloneClass.getCore());
+				synchronized (newCloneClass) {
+					newCloneClass.getCore().getGhostFragments()
+							.add(instanciatedFragment.getCore());
+					instanciatedFragment.getCore().setCloneClass(
+							newCloneClass.getCore());
 
-				newCloneClass.addGhostFragment(instanciatedFragment);
-				instanciatedFragment.setCloneClass(newCloneClass);
+					newCloneClass.addGhostFragment(instanciatedFragment);
+					instanciatedFragment.setCloneClass(newCloneClass);
+				}
 
 				// make code fragment mapping between the old fragment and the
 				// ghost one
