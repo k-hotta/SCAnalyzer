@@ -52,6 +52,21 @@ public class SVNFileChangeEntryDetector implements IFileChangeEntryDetector {
 	}
 
 	@Override
+	public Collection<FileChangeEntry> detectFileChangeEntriesToFirstRevision(
+			DBRevision revision) throws Exception {
+		final List<String> sourceFiles = this.repositoryManager
+				.getListOfRelevantFiles(Long.valueOf(revision.getIdentifier()));
+
+		final List<FileChangeEntry> result = new ArrayList<>();
+
+		for (final String sourceFile : sourceFiles) {
+			result.add(new FileChangeEntry(null, sourceFile, 'A'));
+		}
+
+		return result;
+	}
+
+	@Override
 	public Collection<FileChangeEntry> detectFileChangeEntriesToRevision(
 			DBRevision revision) throws Exception {
 		final Collection<SVNLogEntry> logEntriesToRevision = this.repositoryManager
