@@ -151,9 +151,11 @@ public class Analyzer<E extends IProgramElement> {
 					.getCloneClassMappings().values()) {
 				nextMappings.add(mapping.getCore());
 			}
-			CloneGenealogyFindHelper.concatenate(previous.getCore(),
-					next.getCore(), nextMappings, genealogies,
-					disappearedGenealogies);
+
+			final DBVersion previousCore = (previous == null) ? null : previous
+					.getCore();
+			CloneGenealogyFindHelper.concatenate(previousCore, next.getCore(),
+					nextMappings, genealogies, disappearedGenealogies);
 			logger.info("complete concatenating genealogies");
 
 			// store the version data

@@ -5,18 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 
@@ -70,7 +65,9 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 
 		// prepare clone classes for both of before/after versions
 		final Map<Long, CloneClass<E>> previousClones = new TreeMap<>();
-		previousClones.putAll(previousVersion.getCloneClasses());
+		if (previousVersion != null) {
+			previousClones.putAll(previousVersion.getCloneClasses());
+		}
 		final Map<Long, CloneClass<E>> nextClones = new TreeMap<>();
 		nextClones.putAll(nextVersion.getCloneClasses());
 
@@ -148,11 +145,6 @@ public class IClonesCloneClassMapper<E extends IProgramElement> implements
 		if (mapper == null) {
 			throw new IllegalStateException(
 					"the mapper of elements has not been set");
-		}
-
-		if (previousVersion == null) {
-			throw new IllegalArgumentException(
-					"the given previous version is null");
 		}
 
 		if (nextVersion == null) {
