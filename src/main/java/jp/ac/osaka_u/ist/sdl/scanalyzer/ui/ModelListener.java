@@ -8,7 +8,7 @@ import java.util.EventListener;
  * @author k-hotta
  *
  */
-public interface ModelListener extends EventListener {
+public interface ModelListener<V extends ModelEvent> extends EventListener {
 
 	/**
 	 * This method is expected to process the given model event. This method is
@@ -18,6 +18,6 @@ public interface ModelListener extends EventListener {
 	 * @param e
 	 *            the model event
 	 */
-	public void modelChanged(final ModelEvent e);
+	public void modelChanged(final V e);
 
 }
