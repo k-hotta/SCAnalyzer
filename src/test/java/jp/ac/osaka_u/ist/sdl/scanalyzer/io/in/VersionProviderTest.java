@@ -87,6 +87,12 @@ public class VersionProviderTest {
 			return stringProvider.provide(version, sourceFile.getPath());
 		}
 
+		@Override
+		public String getFileContent(DBVersion dbVersion,
+				DBSourceFile dbSourceFile) {
+			return null;
+		}
+
 	}
 
 	private interface TempStringProvider {

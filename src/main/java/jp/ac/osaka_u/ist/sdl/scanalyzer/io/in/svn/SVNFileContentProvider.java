@@ -6,9 +6,11 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.util.StringUtil;
 
@@ -26,7 +28,8 @@ import org.tmatesoft.svn.core.wc.SVNWCClient;
  * @author k-hotta
  * 
  */
-public class SVNFileContentProvider<E extends IProgramElement> implements IFileContentProvider<E> {
+public class SVNFileContentProvider<E extends IProgramElement> implements
+		IFileContentProvider<E> {
 
 	/**
 	 * The logger for errors
@@ -60,18 +63,33 @@ public class SVNFileContentProvider<E extends IProgramElement> implements IFileC
 			throw new IllegalArgumentException("sourceFile is null");
 		}
 
-		final Revision revision = version.getRevision();
+		return getFileContent(version.getCore(), sourceFile.getCore());
+	}
+
+	@Override
+	public String getFileContent(final DBVersion dbVersion,
+			final DBSourceFile dbSourceFile) {
+		if (dbVersion == null) {
+			eLogger.fatal("cannot get file content: version must not be null");
+			throw new IllegalArgumentException("version is null");
+		}
+		if (dbSourceFile == null) {
+			eLogger.fatal("cannot get file content: sourceFile must not be null");
+			throw new IllegalArgumentException("sourceFile is null");
+		}
+
+		final DBRevision revision = dbVersion.getRevision();
 		if (revision == null) {
 			eLogger.fatal("the given version has no valid revision");
 			throw new IllegalArgumentException("revision in the version "
-					+ version.getId() + " is null");
+					+ dbVersion.getId() + " is null");
 		}
 
 		try {
 			return getFileContent(Long.valueOf(revision.getIdentifier()),
-					sourceFile.getPath());
+					dbSourceFile.getPath());
 		} catch (SVNException e) {
-			eLogger.fatal("cannot get the content of " + sourceFile.getPath()
+			eLogger.fatal("cannot get the content of " + dbSourceFile.getPath()
 					+ " in revision " + revision.getIdentifier());
 			throw new IllegalStateException("cannot get the file content");
 		}
