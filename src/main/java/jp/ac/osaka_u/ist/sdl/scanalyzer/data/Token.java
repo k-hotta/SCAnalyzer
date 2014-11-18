@@ -113,6 +113,7 @@ public class Token implements IProgramElement {
 	 * 
 	 * @return the offset
 	 */
+	@Override
 	public int getOffset() {
 		return offset;
 	}

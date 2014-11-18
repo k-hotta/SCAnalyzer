@@ -18,7 +18,8 @@ public interface IProgramElement {
 	public SourceFile<? extends IProgramElement> getOwnerSourceFile();
 
 	/**
-	 * Get the position of this element within the owner source file.
+	 * Get the position of this element within the owner source file, which is
+	 * in terms of the elements.
 	 * 
 	 * @return the position
 	 */
@@ -37,5 +38,13 @@ public interface IProgramElement {
 	 * @return the value
 	 */
 	public String getValue();
+
+	/**
+	 * Get the offset of this element within the owner source file, which is in
+	 * terms of characters.
+	 * 
+	 * @return the offset
+	 */
+	public int getOffset();
 
 }
