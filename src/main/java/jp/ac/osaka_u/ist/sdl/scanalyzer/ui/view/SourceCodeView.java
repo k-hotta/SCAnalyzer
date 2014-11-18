@@ -30,6 +30,7 @@ import javax.swing.text.StyleContext;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelEvent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.UIConstants;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.SourceCodeViewController;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.SourceCodeViewModel;
 
 /**
@@ -50,6 +51,11 @@ public class SourceCodeView extends JPanel implements ModelListener {
 	 */
 	private SourceCodeViewModel model;
 
+	/**
+	 * The controller
+	 */
+	private final SourceCodeViewController controller;
+
 	private JTextArea textArea;
 	private JLabel pathLabel;
 	private JScrollPane scrollPane;
@@ -57,7 +63,9 @@ public class SourceCodeView extends JPanel implements ModelListener {
 	/**
 	 * Create the panel.
 	 */
-	public SourceCodeView() {
+	public SourceCodeView(final SourceCodeViewController controller) {
+		this.controller = controller;
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 0 };
@@ -95,6 +103,7 @@ public class SourceCodeView extends JPanel implements ModelListener {
 		if (model != null) {
 			this.model = model;
 			model.addListener(this);
+			controller.setModel(model);
 		}
 	}
 
