@@ -8,7 +8,7 @@ import java.util.EventObject;
  * @author k-hotta
  *
  */
-public abstract class ModelEvent extends EventObject {
+public class ModelEvent extends EventObject {
 
 	/**
 	 * 
