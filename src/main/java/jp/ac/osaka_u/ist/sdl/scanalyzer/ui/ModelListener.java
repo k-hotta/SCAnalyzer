@@ -11,13 +11,12 @@ import java.util.EventListener;
 public interface ModelListener extends EventListener {
 
 	/**
-	 * This method is expected to process the given model event. This method is
-	 * expected to be called when any change occurred in the corresponding
+	 * This method is expected to process the given segment change event. 
 	 * model.
 	 * 
 	 * @param e
-	 *            the model event
+	 *            the event
 	 */
-	public void modelChanged(final ModelEvent e);
+	public void modelChanged(final SegmentChangeEvent e);
 
 }
