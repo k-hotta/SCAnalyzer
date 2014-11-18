@@ -27,6 +27,7 @@ import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 import javax.swing.text.StyleContext;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelEvent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.UIConstants;
@@ -54,7 +55,7 @@ public class SourceCodeView extends JPanel implements ModelListener {
 	/**
 	 * The controller
 	 */
-	private final SourceCodeViewController controller;
+	private final SourceCodeViewController controller = new SourceCodeViewController();
 
 	private JTextArea textArea;
 	private JLabel pathLabel;
@@ -63,9 +64,7 @@ public class SourceCodeView extends JPanel implements ModelListener {
 	/**
 	 * Create the panel.
 	 */
-	public SourceCodeView(final SourceCodeViewController controller) {
-		this.controller = controller;
-
+	public SourceCodeView() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 0 };
@@ -105,6 +104,16 @@ public class SourceCodeView extends JPanel implements ModelListener {
 			model.addListener(this);
 			controller.setModel(model);
 		}
+	}
+
+	/**
+	 * Notify the change of segments to the controller.
+	 * 
+	 * @param segment
+	 *            the new segment
+	 */
+	public void segmentChanged(final Segment<?> segment) {
+		controller.segmentChanged(segment);
 	}
 
 	@Override
