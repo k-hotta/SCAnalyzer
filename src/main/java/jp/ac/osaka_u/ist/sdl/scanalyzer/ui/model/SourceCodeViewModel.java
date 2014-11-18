@@ -103,7 +103,7 @@ public class SourceCodeViewModel {
 	 */
 	public int getStartOffset() {
 		if (segment == null) {
-			return 0;
+			return -1;
 		}
 
 		return segment.getFirstElement().getOffset();
@@ -116,10 +116,36 @@ public class SourceCodeViewModel {
 	 */
 	public int getEndOffset() {
 		if (segment == null) {
-			return 0;
+			return -1;
 		}
 
 		return segment.getLastElement().getOffset();
+	}
+
+	/**
+	 * Get the start line of the segment to be shown.
+	 * 
+	 * @return the start line
+	 */
+	public int getStartLine() {
+		if (segment == null) {
+			return -1;
+		}
+
+		return segment.getFirstElement().getLine();
+	}
+
+	/**
+	 * Get the end line of the segment to be shown.
+	 * 
+	 * @return the end line
+	 */
+	public int getEndLine() {
+		if (segment == null) {
+			return -1;
+		}
+
+		return segment.getLastElement().getLine();
 	}
 
 }
