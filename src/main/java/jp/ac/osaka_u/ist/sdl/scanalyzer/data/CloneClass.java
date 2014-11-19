@@ -221,4 +221,22 @@ public class CloneClass<E extends IProgramElement> implements
 		this.ghostFragments.put(ghostFragment.getId(), ghostFragment);
 	}
 
+	/**
+	 * Get whether any ghost fragments are in this clone class.
+	 * 
+	 * @return whether this clone class has a ghost fragment or not
+	 */
+	public boolean containsGhost() {
+		return !this.ghostFragments.isEmpty();
+	}
+
+	/**
+	 * Get whether this clone class has only ghost fragments.
+	 * 
+	 * @return whether this clone class has only ghost fragments
+	 */
+	public boolean isCompletelyGhost() {
+		return this.codeFragments.isEmpty();
+	}
+
 }
