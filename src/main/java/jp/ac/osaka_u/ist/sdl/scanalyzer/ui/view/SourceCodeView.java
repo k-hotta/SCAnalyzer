@@ -28,8 +28,8 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.StyleContext;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.UIConstants;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.SourceCodeViewController;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.SourceCodeViewModel;
@@ -40,7 +40,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.SourceCodeViewModel;
  * @author k-hotta
  *
  */
-public class SourceCodeView extends JPanel implements ModelListener {
+public class SourceCodeView extends JPanel implements
+		SegmentChangeEventListener {
 
 	/**
 	 * 
@@ -115,9 +116,9 @@ public class SourceCodeView extends JPanel implements ModelListener {
 	public void segmentChanged(final Segment<?> segment) {
 		controller.segmentChanged(segment);
 	}
-
+	
 	@Override
-	public void modelChanged(ModelEvent e) {
+	public void segmentChanged(SegmentChangeEvent e) {
 		if (!(e.getSource() instanceof SourceCodeViewModel)) {
 			return;
 		}

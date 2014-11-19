@@ -3,8 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model;
 import javax.swing.event.EventListenerList;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.ModelListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper.FileContentProvideHelper;
 
 /**
@@ -32,8 +32,8 @@ public class SourceCodeViewModel {
 	 * @param listener
 	 *            a listener to be added
 	 */
-	public void addListener(final ModelListener listener) {
-		listeners.add(ModelListener.class, listener);
+	public void addListener(final SegmentChangeEventListener listener) {
+		listeners.add(SegmentChangeEventListener.class, listener);
 	}
 
 	/**
@@ -42,19 +42,19 @@ public class SourceCodeViewModel {
 	 * @param listener
 	 *            a listener to be removed
 	 */
-	public void removeListener(final ModelListener listener) {
-		listeners.remove(ModelListener.class, listener);
+	public void removeListener(final SegmentChangeEventListener listener) {
+		listeners.remove(SegmentChangeEventListener.class, listener);
 	}
 
 	/**
 	 * Notify the listeners that this model has been updated
 	 */
 	protected void fireModelChanged() {
-		ModelListener[] listenersArray = listeners
-				.getListeners(ModelListener.class);
-		final ModelEvent event = new ModelEvent(this);
-		for (final ModelListener l : listenersArray) {
-			l.modelChanged(event);
+		SegmentChangeEventListener[] listenersArray = listeners
+				.getListeners(SegmentChangeEventListener.class);
+		final SegmentChangeEvent event = new SegmentChangeEvent(this);
+		for (final SegmentChangeEventListener l : listenersArray) {
+			l.segmentChanged(event);
 		}
 	}
 
