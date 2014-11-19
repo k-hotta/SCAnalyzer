@@ -52,7 +52,7 @@ public class SourceCodeViewModel {
 	protected void fireModelChanged() {
 		SegmentChangeEventListener[] listenersArray = listeners
 				.getListeners(SegmentChangeEventListener.class);
-		final SegmentChangeEvent event = new SegmentChangeEvent(this);
+		final SegmentChangeEvent event = new SegmentChangeEvent(this, segment);
 		for (final SegmentChangeEventListener l : listenersArray) {
 			l.segmentChanged(event);
 		}

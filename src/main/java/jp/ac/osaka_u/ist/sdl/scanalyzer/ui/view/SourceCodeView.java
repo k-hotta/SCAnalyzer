@@ -116,14 +116,9 @@ public class SourceCodeView extends JPanel implements
 	public void notifySegmentChange(final Segment<?> segment) {
 		controller.segmentChanged(segment);
 	}
-	
+
 	@Override
 	public void segmentChanged(SegmentChangeEvent e) {
-		if (!(e.getSource() instanceof SourceCodeViewModel)) {
-			return;
-		}
-
-		final SourceCodeViewModel model = (SourceCodeViewModel) e.getSource();
 		setSourceCode(model.getFileContent(), model.getStartOffset(),
 				model.getEndOffset(), model.getStartLine());
 		setPath(model.getPath());

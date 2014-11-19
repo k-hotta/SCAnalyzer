@@ -154,13 +154,7 @@ public class CodeFragmentView extends JPanel implements
 
 	@Override
 	public void segmentChanged(SegmentChangeEvent e) {
-		if (!(e.getSource() instanceof CodeFragmentViewModel)) {
-			return;
-		}
-
-		final CodeFragmentViewModel model = (CodeFragmentViewModel) e
-				.getSource();
-		final Segment<?> segment = model.getSegment();
+		final Segment<?> segment = e.getNewSegment();
 
 		sourceCodeView.notifySegmentChange(segment);
 	}

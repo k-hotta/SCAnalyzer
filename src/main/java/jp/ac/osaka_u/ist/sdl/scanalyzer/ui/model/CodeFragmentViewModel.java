@@ -56,7 +56,7 @@ public class CodeFragmentViewModel {
 	protected void fireSegmentChanged() {
 		SegmentChangeEventListener[] listenersArray = listeners
 				.getListeners(SegmentChangeEventListener.class);
-		final SegmentChangeEvent event = new SegmentChangeEvent(this);
+		final SegmentChangeEvent event = new SegmentChangeEvent(this, segment);
 		for (final SegmentChangeEventListener l : listenersArray) {
 			l.segmentChanged(event);
 		}
@@ -79,7 +79,7 @@ public class CodeFragmentViewModel {
 				}
 			}
 		}
-		
+
 		fireSegmentChanged();
 	}
 
