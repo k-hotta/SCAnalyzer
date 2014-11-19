@@ -113,7 +113,7 @@ public class SourceCodeView extends JPanel implements
 	 * @param segment
 	 *            the new segment
 	 */
-	public void segmentChanged(final Segment<?> segment) {
+	public void notifySegmentChange(final Segment<?> segment) {
 		controller.segmentChanged(segment);
 	}
 	

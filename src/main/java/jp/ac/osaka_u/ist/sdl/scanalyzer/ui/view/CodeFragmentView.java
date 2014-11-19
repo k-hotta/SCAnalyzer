@@ -1,0 +1,155 @@
+package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Collection;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.CodeFragmentViewController;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CodeFragmentViewModel;
+
+/**
+ * This is the view for code fragment.
+ * 
+ * @author k-hotta
+ *
+ */
+public class CodeFragmentView extends JPanel implements
+		SegmentChangeEventListener {
+
+	private static final long serialVersionUID = -7327964619975311711L;
+
+	private static final String[] COLUMNS = new String[] { "ID", "Path",
+			"Start", "End" };
+
+	/**
+	 * The controller
+	 */
+	private CodeFragmentViewController controller = new CodeFragmentViewController();
+
+	/**
+	 * The table model
+	 */
+	private DefaultTableModel tableModel = new DefaultTableModel(
+			new Object[][] {}, COLUMNS);
+
+	private JTable table;
+	private SourceCodeView sourceCodeView;
+
+	/**
+	 * Create the panel.
+	 */
+	public CodeFragmentView() {
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0, 0 };
+		gridBagLayout.rowHeights = new int[] { 0, 0 };
+		gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+		setLayout(gridBagLayout);
+
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		GridBagConstraints gbc_splitPane = new GridBagConstraints();
+		gbc_splitPane.fill = GridBagConstraints.BOTH;
+		gbc_splitPane.gridx = 0;
+		gbc_splitPane.gridy = 0;
+		add(splitPane, gbc_splitPane);
+
+		JScrollPane scrollPane = new JScrollPane();
+		splitPane.setLeftComponent(scrollPane);
+
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(tableModel);
+
+		sourceCodeView = new SourceCodeView();
+		splitPane.setRightComponent(sourceCodeView);
+
+		table.getSelectionModel().addListSelectionListener(
+				new ListSelectionListener() {
+					@Override
+					public void valueChanged(ListSelectionEvent e) {
+						controller.segmentChanged(e, table);
+					}
+				});
+
+		initializeTable();
+	}
+
+	private void initializeTable() {
+		JTableHeader header = table.getTableHeader();
+		header.setReorderingAllowed(false);
+		TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
+		sorter.setComparator(0, (v1, v2) -> Long.compare((Long) v1, (Long) v2));
+		sorter.setComparator(1,
+				(v1, v2) -> ((String) v1).compareTo((String) v2));
+		sorter.setComparator(2,
+				(v1, v2) -> Integer.compare((Integer) v1, (Integer) v2));
+		sorter.setComparator(3,
+				(v1, v2) -> Integer.compare((Integer) v1, (Integer) v2));
+		table.setRowSorter(sorter);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
+
+	public void makeRows(final Collection<Segment<?>> segments) {
+		for (final Segment<?> segment : segments) {
+			final Long id = segment.getId();
+			final String path = segment.getSourceFile().getPath();
+			final Integer start = segment.getFirstElement().getLine();
+			final Integer end = segment.getLastElement().getLine();
+
+			Object[] row = new Object[] { id, path, start, end };
+			tableModel.addRow(row);
+		}
+	}
+
+	public void removeAll() {
+		tableModel = new DefaultTableModel(new Object[][] {}, COLUMNS);
+		table.setModel(tableModel);
+		initializeTable();
+	}
+
+	public void update(final Collection<Segment<?>> segments) {
+		removeAll();
+		makeRows(segments);
+	}
+
+	@Override
+	public void segmentChanged(SegmentChangeEvent e) {
+		if (!(e.getSource() instanceof CodeFragmentViewModel)) {
+			return;
+		}
+
+		final CodeFragmentViewModel model = (CodeFragmentViewModel) e
+				.getSource();
+		final Segment<?> segment = model.getSegment();
+
+		sourceCodeView.notifySegmentChange(segment);
+	}
+
+	/**
+	 * Notify that the code fragment has been changed
+	 * 
+	 * @param codeFragment
+	 *            the new code fragment
+	 */
+	public void notifyCodeFragmentChange(final CodeFragment<?> codeFragment) {
+		controller.fragmentChanged(codeFragment);
+	}
+
+}
