@@ -38,6 +38,11 @@ public class CodeFragmentView extends JPanel implements
 			"Start", "End" };
 
 	/**
+	 * The model
+	 */
+	private CodeFragmentViewModel model;
+
+	/**
 	 * The controller
 	 */
 	private CodeFragmentViewController controller = new CodeFragmentViewController();
@@ -127,6 +132,24 @@ public class CodeFragmentView extends JPanel implements
 	public void update(final Collection<Segment<?>> segments) {
 		removeAll();
 		makeRows(segments);
+	}
+
+	/**
+	 * Set the model.
+	 * 
+	 * @param model
+	 *            the model to be set
+	 */
+	public void setModel(final CodeFragmentViewModel model) {
+		if (this.model != null) {
+			this.model.removeListener(this);
+		}
+
+		if (model != null) {
+			this.model = model;
+			model.addListener(this);
+			controller.setModel(model);
+		}
 	}
 
 	@Override
