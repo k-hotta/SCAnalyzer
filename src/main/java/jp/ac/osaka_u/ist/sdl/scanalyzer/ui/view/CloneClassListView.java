@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Collection;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -19,6 +18,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.CloneClassListViewController;
@@ -92,8 +92,9 @@ public class CloneClassListView extends JPanel implements MouseListener,
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 
-	private void makeRows(final Collection<CodeFragment<?>> codeFragments) {
-		for (final CodeFragment<?> codeFragment : codeFragments) {
+	private void makeRows(final CloneClass<?> cloneClass) {
+		for (final CodeFragment<?> codeFragment : cloneClass.getCodeFragments()
+				.values()) {
 			final Long id = codeFragment.getId();
 			final Integer numSegments = codeFragment.getSegments().size();
 
@@ -108,9 +109,9 @@ public class CloneClassListView extends JPanel implements MouseListener,
 		initializeTable();
 	}
 
-	public void update(final Collection<CodeFragment<?>> codeFragments) {
+	public void update(final CloneClass<?> cloneClass) {
 		removeAll();
-		makeRows(codeFragments);
+		makeRows(cloneClass);
 	}
 
 	/**
@@ -201,6 +202,17 @@ public class CloneClassListView extends JPanel implements MouseListener,
 	public void removeRightListener(
 			final CodeFragmentChangeEventListener listener) {
 		model.removeRightListener(listener);
+	}
+
+	/**
+	 * Set the clone class.
+	 * 
+	 * @param cloneClass
+	 *            the clone class
+	 */
+	public void setCloneClass(final CloneClass<?> cloneClass) {
+		controller.setCloneClass(cloneClass);
+		update(cloneClass);
 	}
 
 }

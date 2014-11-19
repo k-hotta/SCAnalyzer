@@ -59,4 +59,11 @@ public class CodeFragmentViewController {
 		model.setCodeFragment(codeFragment);
 	}
 
+	/**
+	 * Notify that the clone class has been changed
+	 */
+	public void cloneClassChanged() {
+		model.setCodeFragment(null);
+	}
+
 }

@@ -2,6 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control;
 
 import javax.swing.JTable;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CloneClassListViewModel;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneClassListView;
 
@@ -74,6 +75,16 @@ public class CloneClassListViewController {
 		}
 
 		return (Long) table.getValueAt(selectedRow, 0);
+	}
+
+	/**
+	 * Set clone class to the model.
+	 * 
+	 * @param cloneClass
+	 *            the clone class
+	 */
+	public void setCloneClass(final CloneClass<?> cloneClass) {
+		model.setCloneClass(cloneClass);
 	}
 
 }

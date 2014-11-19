@@ -16,8 +16,11 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CloneClassChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CloneClassChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.CodeFragmentViewController;
@@ -30,7 +33,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CodeFragmentViewModel;
  *
  */
 public class CodeFragmentView extends JPanel implements
-		SegmentChangeEventListener {
+		SegmentChangeEventListener, CodeFragmentChangeEventListener,
+		CloneClassChangeEventListener {
 
 	private static final long serialVersionUID = -7327964619975311711L;
 
@@ -159,14 +163,14 @@ public class CodeFragmentView extends JPanel implements
 		sourceCodeView.notifySegmentChange(segment);
 	}
 
-	/**
-	 * Notify that the code fragment has been changed
-	 * 
-	 * @param codeFragment
-	 *            the new code fragment
-	 */
-	public void notifyCodeFragmentChange(final CodeFragment<?> codeFragment) {
-		controller.fragmentChanged(codeFragment);
+	@Override
+	public void fragmentChanged(CodeFragmentChangeEvent e) {
+		controller.fragmentChanged(e.getNewCodeFragment());
+	}
+
+	@Override
+	public void cloneClassChanged(CloneClassChangeEvent e) {
+		controller.cloneClassChanged();
 	}
 
 }
