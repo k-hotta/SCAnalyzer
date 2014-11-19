@@ -97,7 +97,7 @@ public class SourceCodeView extends JPanel implements
 	 */
 	public void setModel(final SourceCodeViewModel model) {
 		if (this.model != null) {
-			model.removeListener(this);
+			this.model.removeListener(this);
 		}
 
 		if (model != null) {
