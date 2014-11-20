@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.ui;
 
 import java.awt.EventQueue;
 import java.io.File;
