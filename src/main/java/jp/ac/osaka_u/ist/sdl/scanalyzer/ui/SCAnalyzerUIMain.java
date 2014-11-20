@@ -304,7 +304,7 @@ public class SCAnalyzerUIMain {
 			final long idToBeRetrieved = config.getGenealogyId();
 
 			final CloneGenealogy<E> genealogy = retriever
-					.retrieve(idToBeRetrieved);
+					.retrieveCloneGenealogy(idToBeRetrieved);
 
 			if (genealogy == null) {
 				throw new IllegalStateException("cannot find genealogy "
