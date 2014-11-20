@@ -28,6 +28,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This class is for retrieving a clone genealogy with volatile data from
  * database.
@@ -38,6 +41,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
  *            the type of program element
  */
 public class CloneGenealogyRetriever<E extends IProgramElement> {
+
+	private static final Logger logger = LogManager
+			.getLogger(CloneGenealogyRetriever.class);
 
 	private final DBManager dbManager;
 
@@ -142,6 +148,8 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 		// make sure the auto refreshing is ON
 		AbstractDataDao.setAutoRefresh(true);
 
+		logger.info("retrieving genealogy " + id + " from database ...");
+
 		final DBCloneGenealogy core = dbManager.getCloneGenealogyDao().get(id);
 
 		if (core == null) {
@@ -149,7 +157,14 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 			return null;
 		}
 
-		return retrieveCloneGenealogy(core);
+		logger.info("persist information has successfully retrieved");
+		logger.info("setting volatile inforamtion ...");
+
+		CloneGenealogy<E> result = retrieveCloneGenealogy(core);
+
+		logger.info("complete retrieving the genealogy " + id);
+
+		return result;
 	}
 
 	/**
@@ -355,16 +370,36 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	private Segment<E> retrieveSegment(final DBSegment dbSegment) {
 		final Segment<E> segment = new Segment<E>(dbSegment);
 
+		try {
+			dbManager.getNativeDao(DBCodeFragment.class).refresh(
+					dbSegment.getCodeFragment());
+			dbManager.getNativeDao(DBCloneClass.class).refresh(
+					dbSegment.getCodeFragment().getCloneClass());
+			dbManager.getNativeDao(DBSourceFile.class).refresh(
+					dbSegment.getSourceFile());
+		} catch (Exception e) {
+			throw new IllegalStateException("fail to refresh the segment "
+					+ dbSegment.getId(), e);
+		}
+
 		SourceFile<E> sourceFile = sourceFiles.get(dbSegment.getSourceFile()
 				.getId());
 
 		// retrieve source file if it has not been retrieved yet
 		if (sourceFile == null) {
 			final DBSourceFile dbSourceFile = dbSegment.getSourceFile();
-			final DBVersion ownerVersion = dbSegment.getCodeFragment()
+
+			final DBVersion dbOwnerVersion = dbSegment.getCodeFragment()
 					.getCloneClass().getVersion();
 
-			sourceFile = retrieveSourceFile(dbSourceFile, ownerVersion);
+			Version<E> ownerVersion = versions.get(dbOwnerVersion.getId());
+			if (ownerVersion == null) {
+				ownerVersion = retrieveVersionOnlyWithRevision(dbOwnerVersion);
+				versions.put(ownerVersion.getId(), ownerVersion);
+			}
+
+			sourceFile = retrieveSourceFile(dbSourceFile,
+					ownerVersion.getCore());
 			sourceFiles.put(sourceFile.getId(), sourceFile);
 		}
 
@@ -447,6 +482,13 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 */
 	private Version<E> retrieveVersionOnlyWithRevision(final DBVersion dbVersion) {
 		final Version<E> version = new Version<E>(dbVersion);
+
+		try {
+			dbManager.getNativeDao(DBVersion.class).refresh(dbVersion);
+		} catch (Exception e) {
+			throw new IllegalStateException("cannot refresh the version "
+					+ dbVersion.getId(), e);
+		}
 
 		Revision revision = revisions.get(dbVersion.getRevision().getId());
 
