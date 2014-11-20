@@ -20,10 +20,12 @@ public class RevisionChangeEvent extends ModelEvent {
 	/**
 	 * The clone classes updated by the event
 	 */
-	private List<CloneClass<?>> newCloneClasses;
+	private final List<CloneClass<?>> newCloneClasses;
 
-	public RevisionChangeEvent(Object source) {
+	public RevisionChangeEvent(Object source,
+			final List<CloneClass<?>> newCloneClasses) {
 		super(source);
+		this.newCloneClasses = newCloneClasses;
 	}
 
 	/**
