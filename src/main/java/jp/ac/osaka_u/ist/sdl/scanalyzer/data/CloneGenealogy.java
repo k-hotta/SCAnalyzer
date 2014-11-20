@@ -158,7 +158,7 @@ public class CloneGenealogy<E extends IProgramElement> implements
 		if (endVersion == null) {
 			throw new IllegalArgumentException("the given end version is null");
 		}
-		if (!this.core.getStartVersion().equals(endVersion.getCore())) {
+		if (!this.core.getEndVersion().equals(endVersion.getCore())) {
 			throw new IllegalArgumentException(
 					"the given end version does not match to that in the core");
 		}
