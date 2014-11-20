@@ -8,8 +8,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.RevisionChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.RevisionChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.RevisionChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.RevisionChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CloneClassListViewModel;
 
 public class RevisionView extends JPanel implements RevisionChangeEventListener {

@@ -3,8 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model;
 import javax.swing.event.EventListenerList;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper.FileContentProvideHelper;
 
 /**

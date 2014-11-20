@@ -4,8 +4,8 @@ import javax.swing.event.EventListenerList;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CodeFragmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CodeFragmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneClassListView;
 
 /**

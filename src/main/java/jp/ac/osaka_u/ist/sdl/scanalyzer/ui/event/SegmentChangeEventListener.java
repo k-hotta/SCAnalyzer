@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.ui;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event;
 
 import java.util.EventListener;
 

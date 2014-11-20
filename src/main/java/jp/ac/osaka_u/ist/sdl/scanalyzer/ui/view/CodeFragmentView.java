@@ -17,13 +17,13 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CloneClassChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CloneClassChangeEventListener;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.CodeFragmentChangeEventListener;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.CodeFragmentViewController;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CloneClassChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CloneClassChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CodeFragmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CodeFragmentChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CodeFragmentViewModel;
 
 /**

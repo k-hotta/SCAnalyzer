@@ -28,10 +28,10 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.StyleContext;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.UIConstants;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control.SourceCodeViewController;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.SourceCodeViewModel;
 
 /**

@@ -10,8 +10,8 @@ import javax.swing.event.EventListenerList;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.RevisionChangeEvent;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.RevisionChangeEventListener;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.RevisionChangeEvent;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.RevisionChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyElementsView;
 
 /**
