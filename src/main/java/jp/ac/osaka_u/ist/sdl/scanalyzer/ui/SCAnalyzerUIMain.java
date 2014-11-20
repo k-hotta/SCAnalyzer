@@ -16,6 +16,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy.CloneGenealogyRetriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBUrlProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper.FileContentProvideHelper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyView;
 
 import org.apache.logging.log4j.LogManager;
@@ -297,6 +298,10 @@ public class SCAnalyzerUIMain {
 		 * @throws Exception
 		 */
 		private void runMain() throws Exception {
+			// setup the helper for getting file contents
+			FileContentProvideHelper.setProvider(workerManager
+					.getFileContentProvider());
+
 			final CloneGenealogyRetriever<E> retriever = new CloneGenealogyRetriever<>(
 					DBManager.getInstance(),
 					workerManager.getFileContentProvider(),

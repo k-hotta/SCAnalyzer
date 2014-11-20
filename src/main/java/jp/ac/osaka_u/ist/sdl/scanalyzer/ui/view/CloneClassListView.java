@@ -45,8 +45,14 @@ public class CloneClassListView extends JPanel implements MouseListener,
 	/**
 	 * The table model
 	 */
+	@SuppressWarnings("serial")
 	private DefaultTableModel tableModel = new DefaultTableModel(
-			new Object[][] {}, COLUMNS);
+			new Object[][] {}, COLUMNS) {
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
 
 	/**
 	 * Create the panel.
@@ -69,6 +75,7 @@ public class CloneClassListView extends JPanel implements MouseListener,
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(tableModel);
+		table.addMouseListener(this);
 
 		popupMenu = new JPopupMenu();
 		showLeft = new JMenuItem("Show in Left");
@@ -122,6 +129,7 @@ public class CloneClassListView extends JPanel implements MouseListener,
 	 */
 	public void setModel(final CloneClassListViewModel model) {
 		this.model = model;
+		this.controller.setModel(model);
 	}
 
 	@Override

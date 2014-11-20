@@ -11,6 +11,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.RevisionChangeEvent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.RevisionChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CloneClassListViewModel;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CodeFragmentViewModel;
 
 public class RevisionView extends JPanel implements RevisionChangeEventListener {
 
@@ -45,8 +46,14 @@ public class RevisionView extends JPanel implements RevisionChangeEventListener 
 		leftCodeFragmentView = new CodeFragmentView();
 		innerSplitPane.setLeftComponent(leftCodeFragmentView);
 
+		CodeFragmentViewModel leftFragmentViewModel = new CodeFragmentViewModel();
+		leftCodeFragmentView.setModel(leftFragmentViewModel);
+
 		rightCodeFragmentView = new CodeFragmentView();
 		innerSplitPane.setRightComponent(rightCodeFragmentView);
+
+		CodeFragmentViewModel rightFragmentViewModel = new CodeFragmentViewModel();
+		rightCodeFragmentView.setModel(rightFragmentViewModel);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		outerSplitPane.setLeftComponent(tabbedPane);

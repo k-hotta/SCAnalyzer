@@ -5,6 +5,7 @@ import javax.swing.event.ListSelectionEvent;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CodeFragmentViewModel;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CodeFragmentView;
 
 /**
  * This is a controller for the view of code fragments.
@@ -19,6 +20,15 @@ public class CodeFragmentViewController {
 	 * The model
 	 */
 	private CodeFragmentViewModel model;
+
+	/**
+	 * The view
+	 */
+	private final CodeFragmentView view;
+
+	public CodeFragmentViewController(final CodeFragmentView view) {
+		this.view = view;
+	}
 
 	/**
 	 * Set the model.
@@ -57,6 +67,9 @@ public class CodeFragmentViewController {
 	 */
 	public void fragmentChanged(final CodeFragment<?> codeFragment) {
 		model.setCodeFragment(codeFragment);
+		if (codeFragment != null) {
+			view.update(codeFragment.getSegments());
+		}
 	}
 
 	/**

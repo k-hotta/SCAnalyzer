@@ -9,6 +9,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
@@ -32,8 +34,14 @@ public class CloneGenealogyElementsView extends JPanel {
 	/**
 	 * The table model
 	 */
+	@SuppressWarnings("serial")
 	private DefaultTableModel tableModel = new DefaultTableModel(
-			new Object[][] {}, COLUMNS);
+			new Object[][] {}, COLUMNS) {
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
 
 	private CloneGenealogyElementsViewController controller;
 
@@ -62,6 +70,14 @@ public class CloneGenealogyElementsView extends JPanel {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		table.setModel(tableModel);
+		table.getSelectionModel().addListSelectionListener(
+				new ListSelectionListener() {
+					@Override
+					public void valueChanged(ListSelectionEvent e) {
+						controller.revisionChanged(e, table);
+					}
+				});
 
 		revisionView = new RevisionView();
 		splitPane.setRightComponent(revisionView);
@@ -69,6 +85,7 @@ public class CloneGenealogyElementsView extends JPanel {
 		controller = new CloneGenealogyElementsViewController(this);
 
 		model.addListener(revisionView);
+		controller.setModel(model);
 
 		initializeTable();
 	}

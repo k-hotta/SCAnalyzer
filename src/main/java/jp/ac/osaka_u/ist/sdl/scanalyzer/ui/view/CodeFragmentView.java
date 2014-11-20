@@ -25,6 +25,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.CodeFragmentChangeEventListener
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEvent;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.event.SegmentChangeEventListener;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CodeFragmentViewModel;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.SourceCodeViewModel;
 
 /**
  * This is the view for code fragment.
@@ -49,13 +50,20 @@ public class CodeFragmentView extends JPanel implements
 	/**
 	 * The controller
 	 */
-	private CodeFragmentViewController controller = new CodeFragmentViewController();
+	private CodeFragmentViewController controller = new CodeFragmentViewController(
+			this);
 
 	/**
 	 * The table model
 	 */
+	@SuppressWarnings("serial")
 	private DefaultTableModel tableModel = new DefaultTableModel(
-			new Object[][] {}, COLUMNS);
+			new Object[][] {}, COLUMNS) {
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
 
 	private JTable table;
 	private SourceCodeView sourceCodeView;
@@ -89,6 +97,9 @@ public class CodeFragmentView extends JPanel implements
 		sourceCodeView = new SourceCodeView();
 		splitPane.setRightComponent(sourceCodeView);
 
+		SourceCodeViewModel sourceCodeViewModel = new SourceCodeViewModel();
+		sourceCodeView.setModel(sourceCodeViewModel);
+
 		table.getSelectionModel().addListSelectionListener(
 				new ListSelectionListener() {
 					@Override
@@ -115,7 +126,7 @@ public class CodeFragmentView extends JPanel implements
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 
-	public void makeRows(final Collection<Segment<?>> segments) {
+	public void makeRows(final Collection<? extends Segment<?>> segments) {
 		for (final Segment<?> segment : segments) {
 			final Long id = segment.getId();
 			final String path = segment.getSourceFile().getPath();
@@ -133,7 +144,7 @@ public class CodeFragmentView extends JPanel implements
 		initializeTable();
 	}
 
-	public void update(final Collection<Segment<?>> segments) {
+	public void update(final Collection<? extends Segment<?>> segments) {
 		removeAll();
 		makeRows(segments);
 	}

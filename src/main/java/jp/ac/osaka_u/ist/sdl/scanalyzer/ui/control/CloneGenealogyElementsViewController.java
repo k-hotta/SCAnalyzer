@@ -3,10 +3,14 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.control;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.RevisionInternalRepresentation;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.model.CloneGenealogyElementsViewModel;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyElementsView;
 
 /**
@@ -19,15 +23,23 @@ public class CloneGenealogyElementsViewController {
 
 	private CloneGenealogyElementsView view;
 
+	private CloneGenealogyElementsViewModel model;
+
 	public CloneGenealogyElementsViewController(
 			final CloneGenealogyElementsView view) {
 		this.view = view;
+	}
+
+	public void setModel(final CloneGenealogyElementsViewModel model) {
+		this.model = model;
 	}
 
 	public void setCloneGenealogy(final CloneGenealogy<?> genealogy) {
 		final Map<Long, RevisionInternalRepresentation> internalRevisions = detectInternalRevisions(genealogy);
 
 		view.makeRows(internalRevisions.values());
+		
+		model.setCloneGenealogy(genealogy);
 	}
 
 	private Map<Long, RevisionInternalRepresentation> detectInternalRevisions(
@@ -75,8 +87,18 @@ public class CloneGenealogyElementsViewController {
 				internalRevisions.put(revision.getId(), internalRevision);
 			}
 		}
-		
+
 		return internalRevisions;
+	}
+
+	public void revisionChanged(final ListSelectionEvent e, final JTable table) {
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow == -1) {
+			return;
+		}
+
+		Long id = (Long) table.getValueAt(selectedRow, 0);
+		model.setRevisionId(id);
 	}
 
 }
