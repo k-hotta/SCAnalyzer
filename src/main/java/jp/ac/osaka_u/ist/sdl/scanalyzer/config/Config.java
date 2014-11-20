@@ -90,6 +90,11 @@ public class Config {
 	 */
 	private boolean overwriteDb = false;
 
+	/**
+	 * The id of the genealogy to be shown
+	 */
+	private long genealogyId = -1;
+
 	/*
 	 * getters and setters follow
 	 */
@@ -399,6 +404,25 @@ public class Config {
 	 */
 	public final void setOverwriteDb(boolean overwriteDb) {
 		this.overwriteDb = overwriteDb;
+	}
+
+	/**
+	 * Get the genealogy id to be shown.
+	 * 
+	 * @return the id of the genealogy to be shown
+	 */
+	public final long getGenealogyId() {
+		return genealogyId;
+	}
+
+	/**
+	 * Set the genealogy id to be shown with the specified value.
+	 * 
+	 * @param genealogyId
+	 *            the id of the genealogy to be shown
+	 */
+	public final void setGenealogyId(final long genealogyId) {
+		this.genealogyId = genealogyId;
 	}
 
 }

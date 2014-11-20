@@ -84,6 +84,8 @@ public class ConfigLoader implements DefaultConfiguration {
 				"ow",
 				"Please specify whether overwriting database if exists as a command line argument with \"-ow\" "
 						+ "or as an xml node \"overwrite\" in the configuration file");
+		usage.put("id",
+				"Please specify the id of the genealogy to be shown with \"-id\"");
 	}
 
 	/**
@@ -174,6 +176,11 @@ public class ConfigLoader implements DefaultConfiguration {
 		// overwriting database
 		options.addOption(makeOption("ow", "overwrite", true,
 				"whether overwriting database", 1, false));
+
+		// the id of genealogy to be shown
+		// NOTE: this is just for UI mode
+		options.addOption(makeOption("id", "genealogy-id", true,
+				"the id of the genealogy to be shown", 1, false));
 
 		return options;
 	}
@@ -333,6 +340,10 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "ow",
 				"overwrite", DEFAULT_OVERWRITING_DB.toString(), true);
 
+		if (cmd.hasOption("id")) {
+			loadedConfigsAsText.put("id", cmd.getOptionValue("id"));
+		}
+
 		return loadedConfigsAsText;
 	}
 
@@ -421,6 +432,7 @@ public class ConfigLoader implements DefaultConfiguration {
 		final String startRevisionIdentifier = configsAsText.get("start");
 		final String endRevisionIdentifier = configsAsText.get("end");
 		final String overwritingDb = configsAsText.get("ow");
+		final String genealogyIdStr = configsAsText.get("id");
 
 		final Config result = new Config();
 
@@ -509,6 +521,15 @@ public class ConfigLoader implements DefaultConfiguration {
 
 		if (overwritingDb != null) {
 			result.setOverwriteDb(Boolean.valueOf(overwritingDb));
+		}
+
+		if (genealogyIdStr != null) {
+			try {
+				result.setGenealogyId(Long.parseLong(genealogyIdStr));
+			} catch (Exception e) {
+				errors.put("id", "cannot parse the given value "
+						+ genealogyIdStr + " to long");
+			}
 		}
 
 		return result;
