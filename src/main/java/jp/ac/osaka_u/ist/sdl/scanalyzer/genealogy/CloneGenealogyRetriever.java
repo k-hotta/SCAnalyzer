@@ -34,11 +34,19 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
  */
 public class CloneGenealogyRetriever<E extends IProgramElement> {
 
-	private DBManager dbManager;
+	private final DBManager dbManager;
 
-	private IFileContentProvider<E> fileContentProvider;
+	private final IFileContentProvider<E> fileContentProvider;
 
-	private ISourceFileParser<E> parser;
+	private final ISourceFileParser<E> parser;
+
+	public CloneGenealogyRetriever(final DBManager dbManager,
+			final IFileContentProvider<E> fileContentProvider,
+			final ISourceFileParser<E> parser) {
+		this.dbManager = dbManager;
+		this.fileContentProvider = fileContentProvider;
+		this.parser = parser;
+	}
 
 	public CloneGenealogy<E> retrieve(final long id) throws Exception {
 		// make sure the deep refreshing is off

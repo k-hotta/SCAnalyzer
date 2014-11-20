@@ -19,6 +19,8 @@ public class CloneGenealogyView extends JFrame {
 	private static final long serialVersionUID = -657481296943445572L;
 
 	private JPanel contentPane;
+	private CloneGenealogyElementsView upperElementsView;
+	private CloneGenealogyElementsView lowerElementsView;
 
 	/**
 	 * Launch the application.
@@ -71,15 +73,16 @@ public class CloneGenealogyView extends JFrame {
 		gbc_splitPane.gridy = 0;
 		contentPane.add(splitPane, gbc_splitPane);
 
-		CloneGenealogyElementsView upperElementsView = new CloneGenealogyElementsView();
+		upperElementsView = new CloneGenealogyElementsView();
 		splitPane.setLeftComponent(upperElementsView);
 
-		CloneGenealogyElementsView lowerElementsView = new CloneGenealogyElementsView();
+		lowerElementsView = new CloneGenealogyElementsView();
 		splitPane.setRightComponent(lowerElementsView);
 	}
-	
+
 	public void setCloneGenealogy(final CloneGenealogy<?> genealogy) {
-		
+		upperElementsView.setCloneGenealogy(genealogy);
+		lowerElementsView.setCloneGenealogy(genealogy);
 	}
 
 }

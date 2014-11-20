@@ -1,5 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer;
 
+import java.awt.EventQueue;
 import java.io.File;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.Config;
@@ -8,11 +9,14 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.config.DBMS;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ElementTypeSensitiveWorkerInitializer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.TokenSensitiveWorkerInitializer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy.CloneGenealogyRetriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBUrlProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyView;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -293,7 +297,41 @@ public class SCAnalyzerUIMain {
 		 * @throws Exception
 		 */
 		private void runMain() throws Exception {
-			// TODO
+			final CloneGenealogyRetriever<E> retriever = new CloneGenealogyRetriever<>(
+					DBManager.getInstance(),
+					workerManager.getFileContentProvider(),
+					workerManager.getFileParser());
+			final long idToBeRetrieved = config.getGenealogyId();
+
+			final CloneGenealogy<E> genealogy = retriever
+					.retrieve(idToBeRetrieved);
+
+			if (genealogy == null) {
+				throw new IllegalStateException("cannot find genealogy "
+						+ idToBeRetrieved);
+			}
+
+			showFrame(genealogy);
+		}
+
+		/**
+		 * Show the frame.
+		 * 
+		 * @param genealogy
+		 *            the genealogy to be shown
+		 */
+		private void showFrame(final CloneGenealogy<E> genealogy) {
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						CloneGenealogyView frame = new CloneGenealogyView();
+						frame.setCloneGenealogy(genealogy);
+						frame.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
 		}
 
 		/**
