@@ -47,7 +47,7 @@ public class IClonesCodeFragmentMappingHelper {
 		// clone class the updated fragments belongs
 		final DBCodeFragment updatedDBFragment = new DBCodeFragment(
 				codeFragment.getId(), new TreeSet<DBSegment>(
-						new DBSegmentComparator()), null);
+						new DBSegmentComparator()), null, false);
 
 		// the instance of updated fragment, which is the result of this method
 		final CodeFragment<E> updatedFragment = new CodeFragment<>(
@@ -315,7 +315,7 @@ public class IClonesCodeFragmentMappingHelper {
 
 		final DBCodeFragment instanciatedDBFragment = new DBCodeFragment(
 				IDGenerator.generate(DBCodeFragment.class),
-				new TreeSet<DBSegment>(new DBSegmentComparator()), null);
+				new TreeSet<DBSegment>(new DBSegmentComparator()), null, false);
 
 		final CodeFragment<E> instanciatedFragment = new CodeFragment<>(
 				instanciatedDBFragment);
