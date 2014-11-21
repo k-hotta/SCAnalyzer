@@ -51,6 +51,7 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 
 		final Map<Long, CodeFragment<E>> oldFragments = new TreeMap<>();
 		oldFragments.putAll(oldCloneClass.getCodeFragments());
+		oldFragments.putAll(oldCloneClass.getGhostFragments());
 
 		final Map<Long, CodeFragment<E>> newFragments = new TreeMap<>();
 		newFragments.putAll(newCloneClass.getCodeFragments());
@@ -62,7 +63,8 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 
 		for (final CodeFragment<E> oldFragment : oldFragments.values()) {
 			final int hash = IClonesCodeFragmentMappingHelper
-					.calculateBucketHash(oldFragment);
+					.calculateBucketHash(estimatedFragments.get(oldFragment
+							.getId()));
 			final List<Long> matchingFragmentIds = afterBucket.get(hash);
 
 			if (matchingFragmentIds != null) {
