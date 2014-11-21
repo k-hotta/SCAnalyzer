@@ -1,7 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
@@ -56,8 +56,7 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 	@Override
 	public DBSegment refresh(DBSegment element) throws SQLException {
 		if (deepRefresh) {
-			element.setSourceFile(sourceFileDao.get(element.getSourceFile()
-					.getId()));
+			sourceFileDao.refresh(element.getSourceFile());
 		}
 		return element;
 	}
@@ -68,11 +67,11 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 	 * @param sourceFile
 	 *            source file as a key
 	 * @return a list of the elements whose source files are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBSegment> getWithSourceFile(final DBSourceFile sourceFile)
-			throws SQLException {
+	public Collection<DBSegment> getWithSourceFile(final DBSourceFile sourceFile)
+			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBSegment.SOURCE_FILE_COLUMN_NAME, sourceFile));
 	}
