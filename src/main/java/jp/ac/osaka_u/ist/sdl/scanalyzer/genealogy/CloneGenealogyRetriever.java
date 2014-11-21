@@ -290,7 +290,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	private CloneClass<E> retrieveCloneClass(final DBCloneClass dbCloneClass) {
 		final CloneClass<E> cloneClass = new CloneClass<E>(dbCloneClass);
 
-		// set code fragments
+		// set cloned & ghost code fragments
 		for (final DBCodeFragment dbCodeFragment : dbCloneClass
 				.getCodeFragments()) {
 			CodeFragment<E> codeFragment = codeFragments.get(dbCodeFragment
@@ -302,21 +302,6 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 			}
 
 			cloneClass.addCodeFragment(codeFragment);
-			codeFragment.setCloneClass(cloneClass);
-		}
-
-		// set ghost fragments
-		for (final DBCodeFragment dbCodeFragment : dbCloneClass
-				.getGhostFragments()) {
-			CodeFragment<E> codeFragment = codeFragments.get(dbCodeFragment
-					.getId());
-
-			if (codeFragment == null) {
-				codeFragment = retrieveCodeFragment(dbCodeFragment);
-				codeFragments.put(codeFragment.getId(), codeFragment);
-			}
-
-			cloneClass.addGhostFragment(codeFragment);
 			codeFragment.setCloneClass(cloneClass);
 		}
 
