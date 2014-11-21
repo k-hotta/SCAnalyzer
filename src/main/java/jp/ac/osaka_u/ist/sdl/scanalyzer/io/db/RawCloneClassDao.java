@@ -1,12 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 
 import org.apache.logging.log4j.LogManager;
@@ -75,17 +72,11 @@ public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
 	}
 
 	@Override
-	public DBRawCloneClass refresh(DBRawCloneClass element) throws SQLException {
-		final Collection<DBRawClonedFragment> rawClonedFragments = new ArrayList<DBRawClonedFragment>();
-		for (final DBRawClonedFragment rawClonedFragment : element
-				.getElements()) {
-			rawClonedFragments.add(rawClonedFragmentDao.get(rawClonedFragment
-					.getId()));
-		}
-		element.setElements(rawClonedFragments);
+	public DBRawCloneClass refresh(DBRawCloneClass element) throws Exception {
+		rawClonedFragmentDao.refreshAll(element.getElements());
 
 		if (deepRefresh) {
-			element.setVersion(versionDao.get(element.getVersion().getId()));
+			versionDao.refresh(element.getVersion());
 		}
 
 		return element;
@@ -97,11 +88,11 @@ public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
 	 * @param version
 	 *            version as a query
 	 * @return a list of the elements whose versions are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawCloneClass> getWithVersion(final DBVersion version)
-			throws SQLException {
+	public Collection<DBRawCloneClass> getWithVersion(final DBVersion version)
+			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawCloneClass.VERSION_COLUMN_NAME, version));
 	}
