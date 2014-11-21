@@ -54,8 +54,8 @@ public class CloneGenealogyFindHelperTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		for (int i = 1; i < 105; i++) {
-			imitationCloneClasses.put(i, new DBCloneClass((long) i, null, null,
-					null));
+			imitationCloneClasses
+					.put(i, new DBCloneClass((long) i, null, null));
 		}
 
 		long count = 0;

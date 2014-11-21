@@ -583,7 +583,7 @@ public class DBXmlNodeParser {
 		rawCloneClasses.put(id, rawCloneClass);
 
 		final DBCloneClass cloneClass = new DBCloneClass(id, null, this
-				.getCodeFragments().values(), new ArrayList<DBCodeFragment>());
+				.getCodeFragments().values());
 
 		for (final DBCodeFragment codeFragment : cloneClass.getCodeFragments()) {
 			codeFragment.setCloneClass(cloneClass);
@@ -647,7 +647,7 @@ public class DBXmlNodeParser {
 		final DBSegment segment = new DBSegment(id, sourceFile, startLine,
 				startLine + length - 1, null);
 		final DBCodeFragment codeFragment = new DBCodeFragment(id,
-				new TreeSet<DBSegment>(new DBElementComparator()), null);
+				new TreeSet<DBSegment>(new DBElementComparator()), null, false);
 		segment.setCodeFragment(codeFragment);
 		codeFragment.getSegments().add(segment);
 
