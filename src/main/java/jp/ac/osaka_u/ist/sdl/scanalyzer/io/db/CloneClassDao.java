@@ -68,6 +68,13 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 
 	@Override
 	public DBCloneClass refresh(DBCloneClass element) throws Exception {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+		
+		originalDao.refresh(element);
+		put(element);
+		
 		codeFragmentDao.refreshAll(element.getCodeFragments());
 
 		if (deepRefresh) {

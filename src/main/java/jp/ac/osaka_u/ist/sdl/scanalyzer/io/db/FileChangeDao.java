@@ -75,6 +75,13 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 
 	@Override
 	public DBFileChange refresh(DBFileChange element) throws Exception {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+		
+		originalDao.refresh(element);
+		put(element);
+		
 		if (element.getOldSourceFile() != null) {
 			sourceFileDao.refresh(element.getOldSourceFile());
 		}

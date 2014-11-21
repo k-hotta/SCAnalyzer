@@ -1,11 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,11 +71,14 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 
 	@Override
 	public DBCodeFragment refresh(DBCodeFragment element) throws Exception {
-		final Collection<DBSegment> segments = new ArrayList<DBSegment>();
-		for (final DBSegment segment : element.getSegments()) {
-			segmentDao.refresh(segment);
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
 		}
-		element.setSegments(segments);
+
+		originalDao.refresh(element);
+		put(element);
+
+		segmentDao.refreshAll(element.getSegments());
 
 		if (deepRefresh) {
 			cloneClassDao.refresh(element.getCloneClass());

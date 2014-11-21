@@ -36,7 +36,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * If this field is true, the related elements to a given db element will be
 	 * refreshed automatically.
 	 */
-	protected static boolean autoRefresh = false;
+	protected static boolean autoRefresh = true;
 
 	/**
 	 * If this field is true, ALL the related elements to a given db element
@@ -338,8 +338,6 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			return elements;
 		}
 
-		final List<D> result = new ArrayList<D>();
-
 		originalDao.callBatchTasks(new Callable<Void>() {
 			public Void call() throws Exception {
 				for (D element : elements) {
@@ -350,7 +348,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			}
 		});
 
-		return result;
+		return elements;
 	}
 
 	/**

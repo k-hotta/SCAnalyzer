@@ -55,6 +55,13 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 
 	@Override
 	public DBSegment refresh(DBSegment element) throws SQLException {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+
+		originalDao.refresh(element);
+		put(element);
+
 		if (deepRefresh) {
 			sourceFileDao.refresh(element.getSourceFile());
 		}

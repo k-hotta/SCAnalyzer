@@ -93,6 +93,13 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	@Override
 	public DBRawClonedFragment refresh(DBRawClonedFragment element)
 			throws Exception {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+
+		originalDao.refresh(element);
+		put(element);
+
 		if (deepRefresh) {
 			versionDao.refresh(element.getVersion());
 			sourceFileDao.refresh(element.getSourceFile());

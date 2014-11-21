@@ -39,7 +39,14 @@ public class SourceFileDao extends AbstractDataDao<DBSourceFile> {
 
 	@Override
 	public DBSourceFile refresh(DBSourceFile element) throws SQLException {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+		
 		// do nothing because Revision doesn't have any foreign field
+		//originalDao.refresh(element);
+		put(element);	
+		
 		return element;
 	}
 

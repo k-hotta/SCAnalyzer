@@ -64,6 +64,13 @@ public class CodeFragmentMappingDao extends
 	@Override
 	public DBCodeFragmentMapping refresh(DBCodeFragmentMapping element)
 			throws Exception {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+
+		originalDao.refresh(element);
+		put(element);
+
 		if (element.getOldCodeFragment() != null) {
 			codeFragmentDao.refresh(element.getOldCodeFragment());
 		}

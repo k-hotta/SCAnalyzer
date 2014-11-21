@@ -37,7 +37,14 @@ public class RevisionDao extends AbstractDataDao<DBRevision> {
 
 	@Override
 	public DBRevision refresh(DBRevision element) throws SQLException {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+
 		// do nothing because Revision doesn't have any foreign field
+		//originalDao.refresh(element);
+		put(element);
+
 		return element;
 	}
 
