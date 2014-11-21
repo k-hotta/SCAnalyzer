@@ -188,6 +188,18 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	}
 
 	/**
+	 * Put all the given elements into the map.
+	 * 
+	 * @param elements
+	 *            the collection of elements to be added
+	 */
+	protected void putAll(final Collection<D> elements) {
+		for (final D element : elements) {
+			put(element);
+		}
+	}
+
+	/**
 	 * Get a list of the elements in the table whose id is specified as the
 	 * argument.
 	 * 
