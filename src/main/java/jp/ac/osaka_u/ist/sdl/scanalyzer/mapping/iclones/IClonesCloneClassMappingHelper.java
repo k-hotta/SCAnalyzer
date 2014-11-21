@@ -569,8 +569,7 @@ public class IClonesCloneClassMappingHelper {
 		final DBCloneClass ghostDBCloneClass = new DBCloneClass(
 				IDGenerator.generate(DBCloneClass.class),
 				nextVersion.getCore(), new TreeSet<DBCodeFragment>(
-						new DBElementComparator()),
-				new TreeSet<DBCodeFragment>(new DBElementComparator()));
+						new DBElementComparator()));
 
 		nextVersion.getCore().getCloneClasses().add(ghostDBCloneClass);
 
@@ -581,8 +580,9 @@ public class IClonesCloneClassMappingHelper {
 		ghostCloneClass.setVersion(nextVersion);
 
 		for (final CodeFragment<E> ghostFragment : instanciatedFragments) {
+			ghostFragment.getCore().setGhost(true);
 			ghostFragment.getCore().setCloneClass(ghostDBCloneClass);
-			ghostDBCloneClass.getGhostFragments().add(ghostFragment.getCore());
+			ghostDBCloneClass.getCodeFragments().add(ghostFragment.getCore());
 
 			ghostFragment.setCloneClass(ghostCloneClass);
 			ghostCloneClass.addGhostFragment(ghostFragment);
