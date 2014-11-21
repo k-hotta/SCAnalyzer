@@ -73,16 +73,15 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 	}
 
 	@Override
-	public DBCodeFragment refresh(DBCodeFragment element) throws SQLException {
+	public DBCodeFragment refresh(DBCodeFragment element) throws Exception {
 		final Collection<DBSegment> segments = new ArrayList<DBSegment>();
 		for (final DBSegment segment : element.getSegments()) {
-			segments.add(segmentDao.get(segment.getId()));
+			segmentDao.refresh(segment);
 		}
 		element.setSegments(segments);
 
 		if (deepRefresh) {
-			element.setCloneClass(cloneClassDao.get(element.getCloneClass()
-					.getId()));
+			cloneClassDao.refresh(element.getCloneClass());
 		}
 
 		return element;
