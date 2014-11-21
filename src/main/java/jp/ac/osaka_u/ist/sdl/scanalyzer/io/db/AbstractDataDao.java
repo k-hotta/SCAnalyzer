@@ -1,6 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -115,10 +114,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param id
 	 *            the id of the element to be retrieved
 	 * @return the retrieved element if exists, <code>null</code> otherwise
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	private synchronized D retrieve(final long id) throws SQLException {
+	private synchronized D retrieve(final long id) throws Exception {
 		trace("get the element whose id is " + id + " from database");
 		final D result = originalDao.queryForId(id);
 
@@ -133,10 +132,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * Get all the elements in the table as a list.
 	 * 
 	 * @return all the instances
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> getAll() throws SQLException {
+	public List<D> getAll() throws Exception {
 		trace("get all the elements of this table from database");
 		return refreshAll(originalDao.queryForAll());
 	}
@@ -148,10 +147,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *            the id as a query of search
 	 * @return the instance that has the specified id if found,
 	 *         <code>null</code> otherwise
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public D get(final long id) throws SQLException {
+	public D get(final long id) throws Exception {
 		if (retrievedElements.containsKey(id)) {
 			return retrievedElements.get(id);
 		} else {
@@ -206,10 +205,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param ids
 	 *            the values of id to be retrieved
 	 * @return a list of the elements
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> get(final long... ids) throws SQLException {
+	public List<D> get(final long... ids) throws Exception {
 		final List<D> result = new ArrayList<D>();
 
 		for (final long id : ids) {
@@ -229,10 +228,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param ids
 	 *            a collection of the values of id to be retrieved
 	 * @return a list of the elements
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> get(final Collection<Long> ids) throws SQLException {
+	public List<D> get(final Collection<Long> ids) throws Exception {
 		final List<D> result = new ArrayList<D>();
 
 		for (final long id : ids) {
@@ -289,10 +288,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param element
 	 *            the element to be refreshed
 	 * @return the element after refreshed
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public abstract D refresh(final D element) throws SQLException;
+	public abstract D refresh(final D element) throws Exception;
 
 	/**
 	 * Check whether the given element is already stored. If so, this method
@@ -303,10 +302,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *            element to be checked
 	 * @return <code>null</code> in case element is null, the already stored
 	 *         element if exists, otherwise newly stored element.
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	private D checkAndRefresh(final D element) throws SQLException {
+	private D checkAndRefresh(final D element) throws Exception {
 		if (element == null) {
 			return null;
 		}
@@ -321,7 +320,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			return this.retrievedElements.get(element.getId());
 		}
 
-		put(element);
+		// put(element);
 		return refresh(element);
 	}
 
@@ -331,14 +330,24 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param elements
 	 *            the elements to be refreshed
 	 * @return elements after refreshed
-	 * @throws SQLException
+	 * @throws Exception
 	 */
-	public List<D> refreshAll(final List<D> elements) throws SQLException {
+	public List<D> refreshAll(final List<D> elements) throws Exception {
+		if (!autoRefresh) {
+			return elements;
+		}
+
 		final List<D> result = new ArrayList<D>();
 
-		for (final D element : elements) {
-			result.add(checkAndRefresh(element));
-		}
+		originalDao.callBatchTasks(new Callable<Void>() {
+			public Void call() throws Exception {
+				for (D element : elements) {
+					//originalDao.refresh(element);
+					refresh(element);
+				}
+				return null;
+			}
+		});
 
 		return result;
 	}
@@ -349,11 +358,11 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @param preparedQuery
 	 *            the prepared query
 	 * @return the result of the given query
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
 	public List<D> query(final PreparedQuery<D> preparedQuery)
-			throws SQLException {
+			throws Exception {
 		if (preparedQuery == null) {
 			eLogger.warn("the specified prepared query is null, so nothing will be done");
 			return new ArrayList<D>();
