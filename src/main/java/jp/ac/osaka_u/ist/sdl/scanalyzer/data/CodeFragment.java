@@ -123,6 +123,15 @@ public class CodeFragment<E extends IProgramElement> implements
 	}
 
 	/**
+	 * Get whether this code fragment is ghost or not.
+	 * 
+	 * @return whether this code fragment is ghost or not
+	 */
+	public boolean isGhost() {
+		return this.core.isGhost();
+	}
+
+	/**
 	 * Get the segments in this fragment as an unmodifiable list.
 	 * 
 	 * @return the list having the segments in this fragment, which is sorted
