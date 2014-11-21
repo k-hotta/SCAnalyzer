@@ -154,7 +154,6 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 			final Map<Integer, SourceFile<E>> targetFragmentsSourceFiles) {
 		final DBCloneClass dbCloneClass = new DBCloneClass(
 				IDGenerator.generate(DBCloneClass.class), version.getCore(),
-				new ArrayList<DBCodeFragment>(),
 				new ArrayList<DBCodeFragment>());
 		final CloneClass<E> cloneClass = new CloneClass<E>(dbCloneClass);
 
@@ -176,7 +175,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 			final SourceFile<E> sourceFile) {
 		final DBCodeFragment dbCodeFragment = new DBCodeFragment(
 				IDGenerator.generate(DBCodeFragment.class),
-				new ArrayList<DBSegment>(), null);
+				new ArrayList<DBSegment>(), null, false);
 		final CodeFragment<E> codeFragment = new CodeFragment<E>(dbCodeFragment);
 
 		final int startPosition = elements.get(0).getPosition();
