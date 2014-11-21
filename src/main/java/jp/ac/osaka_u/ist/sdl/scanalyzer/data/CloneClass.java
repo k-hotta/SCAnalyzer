@@ -155,7 +155,9 @@ public class CloneClass<E extends IProgramElement> implements
 	}
 
 	/**
-	 * Add the given code fragment to this clone class.
+	 * Add the given code fragment to this clone class. This method checks
+	 * whether the given code fragment is ghost or not, and stores it into the
+	 * corresponding field.
 	 * 
 	 * @param codeFragment
 	 *            the code fragment to be added
@@ -175,7 +177,96 @@ public class CloneClass<E extends IProgramElement> implements
 					"the given code fragment is not in the clone class");
 		}
 
-		this.codeFragments.put(codeFragment.getId(), codeFragment);
+		if (codeFragment.isGhost()) {
+			addGhostFragment(codeFragment, true);
+		} else {
+			addClonedCodeFragment(codeFragment, true);
+		}
+	}
+
+	/**
+	 * Add the given code fragment as a cloned fragment.
+	 * 
+	 * @param clonedCodeFragment
+	 *            the code fragment to be added
+	 */
+	public void addClonedCodeFragment(final CodeFragment<E> clonedCodeFragment) {
+		addClonedCodeFragment(clonedCodeFragment, false);
+	}
+
+	/**
+	 * Add code fragment which is NOT ghost.
+	 * 
+	 * @param clonedCodeFragment
+	 *            the code fragment to be added
+	 * 
+	 * @param isChecked
+	 *            whether the validity of the given code fragment has already
+	 *            been checked or not
+	 */
+	private void addClonedCodeFragment(
+			final CodeFragment<E> clonedCodeFragment, boolean isChecked) {
+		if (!isChecked) {
+			if (clonedCodeFragment == null) {
+				throw new IllegalArgumentException(
+						"the given code fragment is null");
+			}
+
+			if (!this.core.getCodeFragments().contains(
+					clonedCodeFragment.getCore())) {
+				throw new IllegalArgumentException(
+						"the given code fragment is not in the clone class");
+			}
+
+			if (clonedCodeFragment.isGhost()) {
+				throw new IllegalArgumentException(
+						"the given code fragment is ghost");
+			}
+		}
+
+		this.codeFragments.put(clonedCodeFragment.getId(), clonedCodeFragment);
+	}
+
+	/**
+	 * Add the given code fragment as a ghost fragment.
+	 * 
+	 * @param ghostFragment
+	 *            the code fragment to be added
+	 */
+	public void addGhostFragment(final CodeFragment<E> ghostFragment) {
+		addGhostFragment(ghostFragment, false);
+	}
+
+	/**
+	 * Add code fragment which is GHOST.
+	 * 
+	 * @param ghostFragment
+	 *            the code fragment to be added
+	 * 
+	 * @param isChecked
+	 *            whether the validity of the given code fragment has already
+	 *            been checked or not
+	 */
+	private void addGhostFragment(final CodeFragment<E> ghostFragment,
+			boolean isChecked) {
+		if (!isChecked) {
+			if (ghostFragment == null) {
+				throw new IllegalArgumentException(
+						"the given code fragment is null");
+			}
+
+			if (!this.core.getCodeFragments().contains(ghostFragment.getCore())) {
+				throw new IllegalArgumentException(
+						"the given code fragment is not in the clone class");
+			}
+
+			if (!ghostFragment.isGhost()) {
+				throw new IllegalArgumentException(
+						"the given code fragment is not ghost");
+			}
+		}
+
+		this.ghostFragments.put(ghostFragment.getId(), ghostFragment);
 	}
 
 	/**
@@ -195,30 +286,6 @@ public class CloneClass<E extends IProgramElement> implements
 					"the clone class doesn't have enough number of code fragments");
 		}
 		return Collections.unmodifiableSortedMap(ghostFragments);
-	}
-
-	/**
-	 * Add the given ghost fragment to this clone class.
-	 * 
-	 * @param ghostFragment
-	 *            the ghost fragment to be added
-	 * @throws IllegalArgumentException
-	 *             if the given ghost fragment is not included in the code
-	 *             fragments in the core, or the given ghost fragment is
-	 *             <code>null</code>
-	 */
-	public void addGhostFragment(final CodeFragment<E> ghostFragment) {
-		if (ghostFragment == null) {
-			throw new IllegalArgumentException(
-					"the given ghost fragment is null");
-		}
-
-		if (!this.core.getGhostFragments().contains(ghostFragment.getCore())) {
-			throw new IllegalArgumentException(
-					"the given ghost fragment is not in the clone class");
-		}
-
-		this.ghostFragments.put(ghostFragment.getId(), ghostFragment);
 	}
 
 	/**
