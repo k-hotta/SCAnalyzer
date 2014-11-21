@@ -118,7 +118,7 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 		return element;
 	}
 
-	public List<DBCloneClassMapping> getCorrespondingCloneClassMappings(
+	public Collection<DBCloneClassMapping> getCorrespondingCloneClassMappings(
 			final DBCloneGenealogy cloneGenealogy) throws Exception {
 		if (cloneClassMappingsForCloneGenealogyQuery == null) {
 			cloneClassMappingsForCloneGenealogyQuery = makeCloneClassMappingsForCloneGenealogyQuery();
