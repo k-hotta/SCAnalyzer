@@ -1,7 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
@@ -92,13 +92,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 
 	@Override
 	public DBRawClonedFragment refresh(DBRawClonedFragment element)
-			throws SQLException {
+			throws Exception {
 		if (deepRefresh) {
-			element.setVersion(versionDao.get(element.getVersion().getId()));
-			element.setSourceFile(sourceFileDao.get(element.getSourceFile()
-					.getId()));
-			element.setCloneClass(rawCloneClassDao.get(element.getCloneClass()
-					.getId()));
+			versionDao.refresh(element.getVersion());
+			sourceFileDao.refresh(element.getSourceFile());
+			rawCloneClassDao.refresh(element.getCloneClass());
 		}
 
 		return element;
@@ -110,11 +108,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	 * @param version
 	 *            version as a query
 	 * @return a list of elements whose versions are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawClonedFragment> getWithVersion(final DBVersion version)
-			throws SQLException {
+	public Collection<DBRawClonedFragment> getWithVersion(
+			final DBVersion version) throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.VERSION_COLUMN_NAME, version));
 	}
@@ -125,11 +123,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	 * @param sourceFile
 	 *            source file as a query
 	 * @return a list of elements whose source files are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawClonedFragment> getWithSourceFile(
-			final DBSourceFile sourceFile) throws SQLException {
+	public Collection<DBRawClonedFragment> getWithSourceFile(
+			final DBSourceFile sourceFile) throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.SOURCE_FILE_COLUMN_NAME, sourceFile));
 	}
@@ -140,11 +138,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	 * @param rawCloneClass
 	 *            raw clone class as a query
 	 * @return a list of elements whose raw clone classes are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawClonedFragment> getWithRawCloneClass(
-			final DBRawCloneClass rawCloneClass) throws SQLException {
+	public Collection<DBRawClonedFragment> getWithRawCloneClass(
+			final DBRawCloneClass rawCloneClass) throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.CLONE_CLASS_COLUMN_NAME, rawCloneClass));
 	}
@@ -155,11 +153,11 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	 * @param startLine
 	 *            start line as a query
 	 * @return a list of elements whose start lines are the specified value
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawClonedFragment> getWithStartLine(final int startLine)
-			throws SQLException {
+	public Collection<DBRawClonedFragment> getWithStartLine(final int startLine)
+			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.START_LINE_COLUMN_NAME, startLine));
 	}
@@ -173,8 +171,8 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	 * @throws SQLException
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBRawClonedFragment> getWithLength(final int length)
-			throws SQLException {
+	public Collection<DBRawClonedFragment> getWithLength(final int length)
+			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.LENGTH_COLUMN_NAME, length));
 	}
