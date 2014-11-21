@@ -100,12 +100,17 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 
 	@Override
 	public DBCloneGenealogy refresh(DBCloneGenealogy element)
-			throws SQLException {
+			throws Exception {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+		
+		originalDao.refresh(element);
+		put(element);
+
 		if (deepRefresh) {
-			element.setStartVersion(versionDao.get(element.getStartVersion()
-					.getId()));
-			element.setEndVersion(versionDao.get(element.getEndVersion()
-					.getId()));
+			versionDao.refresh(element.getStartVersion());
+			versionDao.refresh(element.getEndVersion());
 		}
 
 		element.setCloneClassMappings(getCorrespondingCloneClassMappings(element));
@@ -114,7 +119,7 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 	}
 
 	public List<DBCloneClassMapping> getCorrespondingCloneClassMappings(
-			final DBCloneGenealogy cloneGenealogy) throws SQLException {
+			final DBCloneGenealogy cloneGenealogy) throws Exception {
 		if (cloneClassMappingsForCloneGenealogyQuery == null) {
 			cloneClassMappingsForCloneGenealogyQuery = makeCloneClassMappingsForCloneGenealogyQuery();
 		}
@@ -126,7 +131,7 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 	}
 
 	private PreparedQuery<DBCloneClassMapping> makeCloneClassMappingsForCloneGenealogyQuery()
-			throws SQLException {
+			throws Exception {
 		QueryBuilder<DBCloneGenealogyCloneClassMapping, Long> cloneGenealogyCloneClassMappingQb = nativeCloneGenealogyCloneClassMappingDao
 				.queryBuilder();
 
