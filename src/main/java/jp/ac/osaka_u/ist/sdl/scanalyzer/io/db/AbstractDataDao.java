@@ -135,7 +135,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> getAll() throws Exception {
+	public Collection<D> getAll() throws Exception {
 		trace("get all the elements of this table from database");
 		return refreshAll(originalDao.queryForAll());
 	}
@@ -332,7 +332,8 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @return elements after refreshed
 	 * @throws Exception
 	 */
-	public List<D> refreshAll(final List<D> elements) throws Exception {
+	public Collection<D> refreshAll(final Collection<D> elements)
+			throws Exception {
 		if (!autoRefresh) {
 			return elements;
 		}
@@ -342,7 +343,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		originalDao.callBatchTasks(new Callable<Void>() {
 			public Void call() throws Exception {
 				for (D element : elements) {
-					//originalDao.refresh(element);
+					// originalDao.refresh(element);
 					refresh(element);
 				}
 				return null;
@@ -361,7 +362,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> query(final PreparedQuery<D> preparedQuery)
+	public Collection<D> query(final PreparedQuery<D> preparedQuery)
 			throws Exception {
 		if (preparedQuery == null) {
 			eLogger.warn("the specified prepared query is null, so nothing will be done");
