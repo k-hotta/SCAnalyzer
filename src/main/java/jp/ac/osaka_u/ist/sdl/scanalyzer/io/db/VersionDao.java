@@ -4,15 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
@@ -176,38 +170,16 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	}
 
 	@Override
-	public DBVersion refresh(DBVersion element) throws SQLException {
-		element.setRevision(revisionDao.get(element.getRevision().getId()));
+	public DBVersion refresh(DBVersion element) throws Exception {
+		revisionDao.refresh(element.getRevision());
 
-		final Collection<DBFileChange> fileChanges = new TreeSet<DBFileChange>(
-				new DBElementComparator());
-		for (final DBFileChange fileChange : element.getFileChanges()) {
-			fileChanges.add(fileChangeDao.get(fileChange.getId()));
-		}
-		element.setFileChanges(fileChanges);
+		fileChangeDao.refreshAll(element.getFileChanges());
 
-		final Collection<DBRawCloneClass> rawCloneClasses = new TreeSet<DBRawCloneClass>(
-				new DBElementComparator());
-		for (final DBRawCloneClass rawCloneClass : element.getRawCloneClasses()) {
-			rawCloneClasses.add(rawCloneClassDao.get(rawCloneClass.getId()));
-		}
-		element.setRawCloneClasses(rawCloneClasses);
+		rawCloneClassDao.refreshAll(element.getRawCloneClasses());
 
-		final Collection<DBCloneClass> cloneClasses = new TreeSet<DBCloneClass>(
-				new DBElementComparator());
-		for (final DBCloneClass cloneClass : element.getCloneClasses()) {
-			cloneClasses.add(cloneClassDao.get(cloneClass.getId()));
-		}
-		element.setCloneClasses(cloneClasses);
+		cloneClassDao.refreshAll(element.getCloneClasses());
 
-		final Collection<DBCloneClassMapping> cloneClassMappings = new TreeSet<DBCloneClassMapping>(
-				new DBElementComparator());
-		for (final DBCloneClassMapping cloneClassMapping : element
-				.getCloneClassMappings()) {
-			cloneClassMappings.add(cloneClassMappingDao.get(cloneClassMapping
-					.getId()));
-		}
-		element.setCloneClassMappings(cloneClassMappings);
+		cloneClassMappingDao.refreshAll(element.getCloneClassMappings());
 
 		element.setSourceFiles(getCorrespondingSourceFiles(element));
 
@@ -220,11 +192,11 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	 * @param revision
 	 *            revision as a query
 	 * @return a list of the elements whose revisions are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBVersion> getWithRevision(final DBRevision revision)
-			throws SQLException {
+	public Collection<DBVersion> getWithRevision(final DBRevision revision)
+			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBVersion.REVISION_COLUMN_NAME, revision));
 	}
@@ -235,11 +207,11 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	 * @param version
 	 *            version as a query
 	 * @return a list of corresponding source files
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBSourceFile> getCorrespondingSourceFiles(
-			final DBVersion version) throws SQLException {
+	public Collection<DBSourceFile> getCorrespondingSourceFiles(
+			final DBVersion version) throws Exception {
 		if (sourceFilesForVersionQuery == null) {
 			sourceFilesForVersionQuery = makeSourceFilesForVersionQuery();
 		}
