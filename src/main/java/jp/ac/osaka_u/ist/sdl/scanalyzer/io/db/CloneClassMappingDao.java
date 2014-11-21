@@ -1,12 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,28 +86,26 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 
 	@Override
 	public DBCloneClassMapping refresh(DBCloneClassMapping element)
-			throws SQLException {
+			throws Exception {
+		if (retrievedElements.containsKey(element.getId())) {
+			return retrievedElements.get(element.getId());
+		}
+
+		originalDao.refresh(element);
+		retrievedElements.put(element.getId(), element);
+
 		if (element.getOldCloneClass() != null) {
-			element.setOldCloneClass(cloneClassDao.get(element
-					.getOldCloneClass().getId()));
+			cloneClassDao.refresh(element.getOldCloneClass());
 		}
 
 		if (element.getNewCloneClass() != null) {
-			element.setNewCloneClass(cloneClassDao.get(element
-					.getNewCloneClass().getId()));
+			cloneClassDao.refresh(element.getNewCloneClass());
 		}
 
-		final Collection<DBCodeFragmentMapping> codeFragmentMappings = new TreeSet<>(
-				new DBElementComparator());
-		for (final DBCodeFragmentMapping codeFragmentMapping : element
-				.getCodeFragmentMappings()) {
-			codeFragmentMappings.add(codeFragmentMappingDao
-					.get(codeFragmentMapping.getId()));
-		}
-		element.setCodeFragmentMappings(codeFragmentMappings);
+		codeFragmentMappingDao.refreshAll(element.getCodeFragmentMappings());
 
 		if (deepRefresh) {
-			element.setVersion(versionDao.get(element.getVersion().getId()));
+			versionDao.refresh(element.getVersion());
 		}
 
 		return element;
