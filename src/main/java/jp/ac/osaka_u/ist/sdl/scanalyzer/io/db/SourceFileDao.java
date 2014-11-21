@@ -1,7 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersionSourceFile;
@@ -49,10 +49,11 @@ public class SourceFileDao extends AbstractDataDao<DBSourceFile> {
 	 * @param path
 	 *            path as a query
 	 * @return a list of elements whose paths are the specified one
-	 * @throws SQLException
+	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<DBSourceFile> getWithPath(final String path) throws SQLException {
+	public Collection<DBSourceFile> getWithPath(final String path)
+			throws Exception {
 		return refreshAll(originalDao.queryForEq(DBSourceFile.PATH_COLUMN_NAME,
 				path));
 	}
