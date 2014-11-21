@@ -124,7 +124,7 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 				.get(max);
 
 		boolean perfectMatchFound = false;
-		boolean bestMatchFound = false;
+		boolean inclusiveMatchFound = false;
 		for (final CloneClass<E> mostMatchedCloneClass : mostMatchedCloneClasses) {
 
 			if (targetCloneClass.getCodeFragments().size() == mostMatchedCloneClass
@@ -149,7 +149,7 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 				// way, which is stated in the paper of Saman Bazrafshan.
 
 				this.inclusiveMatches.add(mostMatchedCloneClass);
-				bestMatchFound = true;
+				inclusiveMatchFound = true;
 			}
 
 			else {
@@ -167,7 +167,7 @@ class CloneClassMappingTask<E extends IProgramElement> implements Runnable {
 		if (perfectMatchFound) {
 			this.inclusiveMatches.clear();
 			this.bestMatches.clear();
-		} else if (bestMatchFound) {
+		} else if (inclusiveMatchFound) {
 			this.bestMatches.clear();
 		}
 
