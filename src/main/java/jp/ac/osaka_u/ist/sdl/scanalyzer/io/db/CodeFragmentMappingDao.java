@@ -63,20 +63,17 @@ public class CodeFragmentMappingDao extends
 
 	@Override
 	public DBCodeFragmentMapping refresh(DBCodeFragmentMapping element)
-			throws SQLException {
+			throws Exception {
 		if (element.getOldCodeFragment() != null) {
-			element.setOldCodeFragment(codeFragmentDao.get(element
-					.getOldCodeFragment().getId()));
+			codeFragmentDao.refresh(element.getOldCodeFragment());
 		}
 
 		if (element.getNewCodeFragment() != null) {
-			element.setNewCodeFragment(codeFragmentDao.get(element
-					.getNewCodeFragment().getId()));
+			codeFragmentDao.refresh(element.getNewCodeFragment());
 		}
 
 		if (deepRefresh) {
-			element.setCloneClassMapping(cloneClassMappingDao.get(element
-					.getCloneClassMapping().getId()));
+			cloneClassMappingDao.refresh(element.getCloneClassMapping());
 		}
 
 		return element;
