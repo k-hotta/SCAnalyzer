@@ -177,12 +177,12 @@ public class CodeFragmentView extends JPanel implements
 	@Override
 	public void fragmentChanged(CodeFragmentChangeEvent e) {
 		controller.fragmentChanged(e.getNewCodeFragment());
-		removeAll();
 	}
 
 	@Override
 	public void cloneClassChanged(CloneClassChangeEvent e) {
 		controller.cloneClassChanged();
+		removeAll();
 	}
 
 }
