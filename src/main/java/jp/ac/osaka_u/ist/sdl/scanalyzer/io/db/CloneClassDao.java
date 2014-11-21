@@ -79,13 +79,6 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 		}
 		element.setCodeFragments(codeFragments);
 
-		final Collection<DBCodeFragment> ghostFragments = new TreeSet<DBCodeFragment>(
-				new DBElementComparator());
-		for (final DBCodeFragment ghostFragment : element.getGhostFragments()) {
-			ghostFragments.add(codeFragmentDao.get(ghostFragment.getId()));
-		}
-		element.setGhostFragments(ghostFragments);
-
 		if (deepRefresh) {
 			element.setVersion(versionDao.get(element.getVersion().getId()));
 		}
