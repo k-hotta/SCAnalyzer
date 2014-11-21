@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 
 /**
@@ -54,4 +55,20 @@ public class FileContentProvideHelper {
 		}
 	}
 
+	/**
+	 * Get the content of the owner file of the given db segment as a string.
+	 * 
+	 * @param dbSegment
+	 *            the db segment under consideration
+	 * 
+	 * @return a string represents the content of the whole of the owner file
+	 */
+	public static String getFileContent(final DBSegment dbSegment) {
+		try {
+			return provider.getFileContent(dbSegment.getCodeFragment()
+					.getCloneClass().getVersion(), dbSegment.getSourceFile());
+		} catch (Exception e) {
+			throw new IllegalStateException("cannot get the file content", e);
+		}
+	}
 }
