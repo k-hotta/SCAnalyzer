@@ -31,6 +31,11 @@ public class DBCodeFragment implements IDBElement {
 	public static final String CLONE_CLASS_COLUMN_NAME = "CLONE_CLASS";
 
 	/**
+	 * The column name for ghost
+	 */
+	public static final String GHOST_NAME = "GHOST";
+
+	/**
 	 * The id of this fragment
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -49,6 +54,12 @@ public class DBCodeFragment implements IDBElement {
 	private DBCloneClass cloneClass;
 
 	/**
+	 * Whether this fragment is ghost or not
+	 */
+	@DatabaseField(canBeNull = false, columnName = GHOST_NAME)
+	private boolean ghost;
+
+	/**
 	 * The default constructor
 	 */
 	public DBCodeFragment() {
@@ -64,12 +75,15 @@ public class DBCodeFragment implements IDBElement {
 	 *            the segments in this fragment
 	 * @param cloneClass
 	 *            the owner clone class of this fragment
+	 * @param ghost
+	 *            whether this fragment is ghost or not
 	 */
 	public DBCodeFragment(final long id, final Collection<DBSegment> segments,
-			final DBCloneClass cloneClass) {
+			final DBCloneClass cloneClass, final boolean ghost) {
 		this.id = id;
 		this.segments = segments;
 		this.cloneClass = cloneClass;
+		this.ghost = ghost;
 	}
 
 	/**
@@ -132,11 +146,31 @@ public class DBCodeFragment implements IDBElement {
 	}
 
 	/**
+	 * Get whether this fragment is ghost or not.
+	 * 
+	 * @return <code>true</code> if this fragment is a ghost fragment,
+	 *         <code>false</code> otherwise
+	 */
+	public boolean isGhost() {
+		return ghost;
+	}
+
+	/**
+	 * Set whether this fragment is ghost or not with the specified value.
+	 * 
+	 * @param ghost
+	 *            the boolean value to be set
+	 */
+	public void setGhost(final boolean ghost) {
+		this.ghost = ghost;
+	}
+
+	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
 	 * @return <code>true</code> if the given object is an instance of
-	 *         {@link DBCodeFragment} and the id values of the two objects are the
-	 *         same to each other, <code>false</code> otherwise.
+	 *         {@link DBCodeFragment} and the id values of the two objects are
+	 *         the same to each other, <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
