@@ -229,7 +229,7 @@ public class RawClonedFragmentDaoTest {
 				.getRawClonedFragments();
 		dao.registerAll(references.values());
 
-		final List<DBRawClonedFragment> results = dao.getAll();
+		final Collection<DBRawClonedFragment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawClonedFragment result : results) {

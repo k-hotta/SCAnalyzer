@@ -303,6 +303,11 @@ public class DBXmlParser {
 
 					segment.setSourceFile(this.volatileSourceFiles
 							.get(dbSegment.getSourceFile().getId()));
+					segment.setContents(segment
+							.getSourceFile()
+							.getContents()
+							.subMap(dbSegment.getStartPosition(),
+									dbSegment.getEndPosition() + 1).values());
 
 					codeFragment.addSegment(segment);
 					segment.setCodeFragment(codeFragment);

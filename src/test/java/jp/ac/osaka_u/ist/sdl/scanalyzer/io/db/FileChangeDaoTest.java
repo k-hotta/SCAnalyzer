@@ -237,7 +237,7 @@ public class FileChangeDaoTest {
 		final Map<Long, DBFileChange> references = parser.getFileChanges();
 		dao.registerAll(references.values());
 		
-		final List<DBFileChange> results = dao.getAll();
+		final Collection<DBFileChange> results = dao.getAll();
 		
 		assertTrue(results.size() == references.size());
 		for (final DBFileChange result : results) {

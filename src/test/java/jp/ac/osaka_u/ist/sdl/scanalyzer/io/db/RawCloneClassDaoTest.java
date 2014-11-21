@@ -212,7 +212,7 @@ public class RawCloneClassDaoTest {
 		final Map<Long, DBRawCloneClass> references = parser.getRawCloneClasses();
 		dao.registerAll(references.values());
 
-		final List<DBRawCloneClass> results = dao.getAll();
+		final Collection<DBRawCloneClass> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawCloneClass result : results) {

@@ -200,7 +200,7 @@ public class SourceFileDaoTest {
 		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
 		dao.registerAll(references.values());
 		
-		List<DBSourceFile> results = dao.getAll();
+		final Collection<DBSourceFile> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBSourceFile result : results) {

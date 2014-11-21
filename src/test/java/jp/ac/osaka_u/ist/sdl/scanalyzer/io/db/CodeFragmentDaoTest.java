@@ -202,7 +202,7 @@ public class CodeFragmentDaoTest {
 
 		dao.registerAll(references.values());
 
-		List<DBCodeFragment> results = dao.getAll();
+		Collection<DBCodeFragment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBCodeFragment result : results) {

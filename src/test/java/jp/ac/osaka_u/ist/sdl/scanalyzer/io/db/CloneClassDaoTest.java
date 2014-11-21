@@ -205,7 +205,7 @@ public class CloneClassDaoTest {
 		final Map<Long, DBCloneClass> references = parser.getCloneClasses();
 		dao.registerAll(references.values());
 
-		final List<DBCloneClass> results = dao.getAll();
+		final Collection<DBCloneClass> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBCloneClass result : results) {

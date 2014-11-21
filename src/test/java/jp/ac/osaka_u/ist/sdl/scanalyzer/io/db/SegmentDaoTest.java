@@ -210,7 +210,7 @@ public class SegmentDaoTest {
 
 		dao.registerAll(references.values());
 		
-		List<DBSegment> results = dao.getAll();
+		final Collection<DBSegment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBSegment result : results) {

@@ -168,7 +168,8 @@ public class VersionDaoTest {
 
 		assertTrue(results.size() == 2);
 		for (final DBVersion result : results) {
-			final DBVersion reference = parser.getVersions().get(result.getId());
+			final DBVersion reference = parser.getVersions()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -181,7 +182,8 @@ public class VersionDaoTest {
 
 		assertTrue(results.size() == 1);
 		for (final DBVersion result : results) {
-			final DBVersion reference = parser.getVersions().get(result.getId());
+			final DBVersion reference = parser.getVersions()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -197,7 +199,8 @@ public class VersionDaoTest {
 
 		assertTrue(results.size() == 2);
 		for (final DBVersion result : results) {
-			final DBVersion reference = parser.getVersions().get(result.getId());
+			final DBVersion reference = parser.getVersions()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -213,7 +216,8 @@ public class VersionDaoTest {
 
 		assertTrue(results.size() == 1);
 		for (final DBVersion result : results) {
-			final DBVersion reference = parser.getVersions().get(result.getId());
+			final DBVersion reference = parser.getVersions()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -265,7 +269,7 @@ public class VersionDaoTest {
 		final Map<Long, DBVersion> references = parser.getVersions();
 		dao.registerAll(references.values());
 
-		final List<DBVersion> results = dao.getAll();
+		final Collection<DBVersion> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBVersion result : results) {

@@ -216,7 +216,7 @@ public class RevisionDaoTest {
 		final Map<Long, DBRevision> references = parser.getRevisions();
 		dao.registerAll(references.values());
 
-		final List<DBRevision> results = dao.getAll();
+		final Collection<DBRevision> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRevision result : results) {
