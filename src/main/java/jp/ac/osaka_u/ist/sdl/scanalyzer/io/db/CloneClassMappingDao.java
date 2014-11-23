@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -155,6 +156,17 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 						.getId()));
 			}
 			element.setCodeFragmentMappings(toBeStored);
+		}
+
+		if (deepRefresh) {
+			final Set<DBVersion> versionsToBeRefreshed = new HashSet<>();
+			for (final DBCloneClassMapping element : elements) {
+				versionsToBeRefreshed.add(element.getVersion());
+			}
+			versionDao.refreshAll(versionsToBeRefreshed);
+			for (final DBCloneClassMapping element : elements) {
+				element.setVersion(versionDao.get(element.getVersion().getId()));
+			}
 		}
 
 		return elements;
