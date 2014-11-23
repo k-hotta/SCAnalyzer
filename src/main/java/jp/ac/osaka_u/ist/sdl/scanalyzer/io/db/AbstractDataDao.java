@@ -364,6 +364,10 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		// refresh the elements themselves in the native way
 		refreshAllInNagiveWay(elementsToBeRetrieved);
 
+		for (final D element : elementsToBeRetrieved) {
+			put(element);
+		}
+
 		// refresh all the children
 		// note: the returned value will be ignored
 		refreshChildrenForAll(elementsToBeRetrieved);
