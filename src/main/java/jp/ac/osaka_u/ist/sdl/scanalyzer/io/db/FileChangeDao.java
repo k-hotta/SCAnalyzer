@@ -2,6 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange.Type;
@@ -88,6 +90,44 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 		}
 
 		return element;
+	}
+
+	@Override
+	protected Collection<DBFileChange> refreshChildrenForAll(
+			Collection<DBFileChange> elements) throws Exception {
+		final Set<DBSourceFile> sourceFilesToBeRefreshed = new HashSet<>();
+		for (final DBFileChange element : elements) {
+			if (element.getOldSourceFile() != null) {
+				sourceFilesToBeRefreshed.add(element.getOldSourceFile());
+			}
+			if (element.getNewSourceFile() != null) {
+				sourceFilesToBeRefreshed.add(element.getNewSourceFile());
+			}
+		}
+		sourceFileDao.refreshAll(sourceFilesToBeRefreshed);
+		for (final DBFileChange element : elements) {
+			if (element.getOldSourceFile() != null) {
+				element.setOldSourceFile(sourceFileDao.get(element
+						.getOldSourceFile().getId()));
+			}
+			if (element.getNewSourceFile() != null) {
+				element.setNewSourceFile(sourceFileDao.get(element
+						.getNewSourceFile().getId()));
+			}
+		}
+
+		if (deepRefresh) {
+			final Set<DBVersion> versionsToBeRefreshed = new HashSet<>();
+			for (final DBFileChange element : elements) {
+				versionsToBeRefreshed.add(element.getVersion());
+			}
+			versionDao.refreshAll(versionsToBeRefreshed);
+			for (final DBFileChange element : elements) {
+				element.setVersion(versionDao.get(element.getVersion().getId()));
+			}
+		}
+
+		return elements;
 	}
 
 	/**
