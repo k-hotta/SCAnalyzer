@@ -2,6 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
@@ -100,6 +102,36 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 		}
 
 		return element;
+	}
+
+	@Override
+	protected Collection<DBRawClonedFragment> refreshChildrenForAll(
+			Collection<DBRawClonedFragment> elements) throws Exception {
+		if (deepRefresh) {
+			final Set<DBVersion> versionsToBeRefreshed = new HashSet<>();
+			final Set<DBSourceFile> sourceFilesToBeRefreshed = new HashSet<>();
+			final Set<DBRawCloneClass> rawCloneClassesToBeRefreshed = new HashSet<>();
+
+			for (final DBRawClonedFragment element : elements) {
+				versionsToBeRefreshed.add(element.getVersion());
+				sourceFilesToBeRefreshed.add(element.getSourceFile());
+				rawCloneClassesToBeRefreshed.add(element.getCloneClass());
+			}
+
+			versionDao.refreshAll(versionsToBeRefreshed);
+			sourceFileDao.refreshAll(sourceFilesToBeRefreshed);
+			rawCloneClassDao.refreshAll(rawCloneClassesToBeRefreshed);
+
+			for (final DBRawClonedFragment element : elements) {
+				element.setVersion(versionDao.get(element.getVersion().getId()));
+				element.setSourceFile(sourceFileDao.get(element.getSourceFile()
+						.getId()));
+				element.setCloneClass(rawCloneClassDao.get(element
+						.getCloneClass().getId()));
+			}
+		}
+
+		return elements;
 	}
 
 	/**
