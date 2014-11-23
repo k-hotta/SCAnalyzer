@@ -3,10 +3,18 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
@@ -181,9 +189,86 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 
 		cloneClassMappingDao.refreshAll(element.getCloneClassMappings());
 
-		element.setSourceFiles(getCorrespondingSourceFiles(element));
+		element.setSourceFiles(sourceFileDao
+				.refreshAll(getCorrespondingSourceFiles(element)));
 
 		return element;
+	}
+
+	@Override
+	protected Collection<DBVersion> refreshChildrenForAll(
+			Collection<DBVersion> elements) throws Exception {
+		final Set<DBRevision> revisionsToBeRefreshed = new HashSet<>();
+		final Set<DBFileChange> fileChangesToBeRefreshed = new HashSet<>();
+		final Set<DBRawCloneClass> rawCloneClassesToBeRefreshed = new HashSet<>();
+		final Set<DBCloneClass> cloneClassesToBeRefreshed = new HashSet<>();
+		final Set<DBCloneClassMapping> cloneClassMappingsToBeRefreshed = new HashSet<>();
+		final Set<DBSourceFile> sourceFilesToBeRefreshed = new HashSet<>();
+		final Map<Long, Collection<DBSourceFile>> sourceFilesInVersions = new TreeMap<>();
+
+		for (final DBVersion element : elements) {
+			revisionsToBeRefreshed.add(element.getRevision());
+			fileChangesToBeRefreshed.addAll(element.getFileChanges());
+			rawCloneClassesToBeRefreshed.addAll(element.getRawCloneClasses());
+			cloneClassesToBeRefreshed.addAll(element.getCloneClasses());
+			cloneClassMappingsToBeRefreshed.addAll(element
+					.getCloneClassMappings());
+
+			final Collection<DBSourceFile> sourceFilesInVersion = getCorrespondingSourceFiles(element);
+			sourceFilesToBeRefreshed.addAll(sourceFilesInVersion);
+			sourceFilesInVersions.put(element.getId(), sourceFilesInVersion);
+		}
+
+		revisionDao.refreshAll(revisionsToBeRefreshed);
+		fileChangeDao.refreshAll(fileChangesToBeRefreshed);
+		rawCloneClassDao.refreshAll(rawCloneClassesToBeRefreshed);
+		cloneClassDao.refreshAll(cloneClassesToBeRefreshed);
+		cloneClassMappingDao.refreshAll(cloneClassMappingsToBeRefreshed);
+		sourceFileDao.refreshAll(sourceFilesToBeRefreshed);
+
+		for (final DBVersion element : elements) {
+			element.setRevision(revisionDao.get(element.getRevision().getId()));
+
+			final List<DBFileChange> fileChangesToBeStored = new ArrayList<>();
+			for (final DBFileChange fileChange : element.getFileChanges()) {
+				fileChangesToBeStored
+						.add(fileChangeDao.get(fileChange.getId()));
+			}
+			element.setFileChanges(fileChangesToBeStored);
+
+			final List<DBRawCloneClass> rawCloneClassesToBeStored = new ArrayList<>();
+			for (final DBRawCloneClass rawCloneClass : element
+					.getRawCloneClasses()) {
+				rawCloneClassesToBeStored.add(rawCloneClassDao
+						.get(rawCloneClass.getId()));
+			}
+			element.setRawCloneClasses(rawCloneClassesToBeStored);
+
+			final List<DBCloneClass> cloneClassesToBeStored = new ArrayList<>();
+			for (final DBCloneClass cloneClass : element.getCloneClasses()) {
+				cloneClassesToBeStored
+						.add(cloneClassDao.get(cloneClass.getId()));
+			}
+			element.setCloneClasses(cloneClassesToBeStored);
+
+			final List<DBCloneClassMapping> cloneClassMappingsToBeStored = new ArrayList<>();
+			for (final DBCloneClassMapping cloneClassMapping : element
+					.getCloneClassMappings()) {
+				cloneClassMappingsToBeStored.add(cloneClassMappingDao
+						.get(cloneClassMapping.getId()));
+			}
+			element.setCloneClassMappings(cloneClassMappingsToBeStored);
+
+			final List<DBSourceFile> sourceFilesToBeStored = new ArrayList<>();
+			for (final DBSourceFile sourceFile : sourceFilesInVersions
+					.get(element.getId())) {
+				sourceFilesToBeStored
+						.add(sourceFileDao.get(sourceFile.getId()));
+			}
+			element.setSourceFiles(sourceFilesToBeStored);
+		}
+
+		return elements;
 	}
 
 	/**
@@ -217,7 +302,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 		}
 		sourceFilesForVersionQuery.setArgumentHolderValue(0, version);
 
-		return sourceFileDao.query(sourceFilesForVersionQuery);
+		return sourceFileDao.query(sourceFilesForVersionQuery, false);
 	}
 
 	private PreparedQuery<DBSourceFile> makeSourceFilesForVersionQuery()
@@ -261,4 +346,5 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 			}
 		});
 	}
+
 }
