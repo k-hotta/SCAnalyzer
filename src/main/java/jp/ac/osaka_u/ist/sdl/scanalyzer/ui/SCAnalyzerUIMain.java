@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This is the main class of SCAnalyzer.
+ * This is the main class of UI of SCAnalyzer.
  * 
  * @author k-hotta
  *
