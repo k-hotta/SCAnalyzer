@@ -1,7 +1,12 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
 import org.apache.logging.log4j.LogManager;
@@ -73,11 +78,50 @@ public class CodeFragmentMappingDao extends
 		}
 
 		if (deepRefresh) {
-			cloneClassMappingDao
-					.refresh(element.getCloneClassMapping());
+			cloneClassMappingDao.refresh(element.getCloneClassMapping());
 		}
 
 		return element;
+	}
+
+	@Override
+	protected Collection<DBCodeFragmentMapping> refreshChildrenForAll(
+			Collection<DBCodeFragmentMapping> elements) throws Exception {
+		final Set<DBCodeFragment> codeFragmentsToBeRefreshed = new HashSet<>();
+		for (final DBCodeFragmentMapping element : elements) {
+			if (element.getOldCodeFragment() != null) {
+				codeFragmentsToBeRefreshed.add(element.getOldCodeFragment());
+			}
+			if (element.getNewCodeFragment() != null) {
+				codeFragmentsToBeRefreshed.add(element.getNewCodeFragment());
+			}
+		}
+		codeFragmentDao.refreshAll(codeFragmentsToBeRefreshed);
+		for (final DBCodeFragmentMapping element : elements) {
+			if (element.getOldCodeFragment() != null) {
+				element.setOldCodeFragment(codeFragmentDao.get(element
+						.getOldCodeFragment().getId()));
+			}
+			if (element.getNewCodeFragment() != null) {
+				element.setNewCodeFragment(codeFragmentDao.get(element
+						.getNewCodeFragment().getId()));
+			}
+		}
+
+		if (deepRefresh) {
+			final Set<DBCloneClassMapping> cloneClassMappingsToBeRetrieved = new HashSet<>();
+			for (final DBCodeFragmentMapping element : elements) {
+				cloneClassMappingsToBeRetrieved.add(element
+						.getCloneClassMapping());
+			}
+			cloneClassMappingDao.refreshAll(cloneClassMappingsToBeRetrieved);
+			for (final DBCodeFragmentMapping element : elements) {
+				element.setCloneClassMapping(cloneClassMappingDao.get(element
+						.getCloneClassMapping().getId()));
+			}
+		}
+
+		return elements;
 	}
 
 }
