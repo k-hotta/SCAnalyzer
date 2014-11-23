@@ -403,13 +403,36 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	public Collection<D> query(final PreparedQuery<D> preparedQuery)
 			throws Exception {
+		return query(preparedQuery, true);
+	}
+
+	/**
+	 * Query the given prepared query.
+	 * 
+	 * @param preparedQuery
+	 *            the prepared query
+	 * @param refresh
+	 *            whether the elements should be refreshed
+	 * @return the result of the given query
+	 * @throws Exception
+	 *             If any error occurred when connecting the database
+	 */
+	protected Collection<D> query(final PreparedQuery<D> preparedQuery,
+			final boolean refresh) throws Exception {
 		if (preparedQuery == null) {
 			eLogger.warn("the specified prepared query is null, so nothing will be done");
 			return new ArrayList<D>();
 		}
 
 		trace("query " + preparedQuery.getStatement());
-		return refreshAll(originalDao.query(preparedQuery));
+
+		final Collection<D> result = originalDao.query(preparedQuery);
+
+		if (refresh) {
+			return refreshAll(result);
+		} else {
+			return result;
+		}
 	}
 
 }
