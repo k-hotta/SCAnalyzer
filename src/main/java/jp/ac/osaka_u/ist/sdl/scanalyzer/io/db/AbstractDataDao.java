@@ -294,6 +294,18 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	protected abstract D refreshChildren(final D element) throws Exception;
 
 	/**
+	 * Perform refreshing for the children of all the given elements.
+	 * 
+	 * @param elements
+	 *            elements to be refreshed
+	 * @return the elements after refreshed
+	 * @throws Exception
+	 *             If any error occurred when connecting the database
+	 */
+	protected abstract Collection<D> refreshChildrenForAll(
+			final Collection<D> elements) throws Exception;
+
+	/**
 	 * Check whether the given element is already stored. If so, this method
 	 * returns the stored element. Otherwise, this method stores the new element
 	 * refreshed.
@@ -342,16 +354,21 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			return elements;
 		}
 
-		originalDao.callBatchTasks(new Callable<Void>() {
-			public Void call() throws Exception {
-				for (D element : elements) {
-					// originalDao.refresh(element);
-					refreshChildren(element);
-				}
-				return null;
+		final Collection<D> elementsToBeRetrieved = new ArrayList<>();
+		for (final D element : elements) {
+			if (!retrievedElements.containsKey(element.getId())) {
+				elementsToBeRetrieved.add(element);
 			}
-		});
+		}
 
+		// refresh the elements themselves in the native way
+		refreshAllInNagiveWay(elementsToBeRetrieved);
+
+		// refresh all the children
+		// note: the returned value will be ignored
+		refreshChildrenForAll(elementsToBeRetrieved);
+
+		// return not elementsToBeRetrieved but elements
 		return elements;
 	}
 
@@ -368,8 +385,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		originalDao.callBatchTasks(new Callable<Void>() {
 			public Void call() throws Exception {
 				for (D element : elements) {
-					// originalDao.refresh(element);
-					refreshChildren(element);
+					originalDao.refresh(element);
 				}
 				return null;
 			}
