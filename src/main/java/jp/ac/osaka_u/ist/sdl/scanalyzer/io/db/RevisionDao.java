@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 
@@ -36,10 +37,16 @@ public class RevisionDao extends AbstractDataDao<DBRevision> {
 	}
 
 	@Override
-	protected DBRevision refreshChildren(DBRevision element)
-			throws Exception {
+	protected DBRevision refreshChildren(DBRevision element) throws Exception {
 		// do nothing because Revision doesn't have any foreign field
 		return element;
+	}
+
+	@Override
+	protected Collection<DBRevision> refreshChildrenForAll(
+			Collection<DBRevision> elements) throws Exception {
+		// do nothing because Revision doesn't have any foreign field
+		return elements;
 	}
 
 }
