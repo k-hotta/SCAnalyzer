@@ -1,8 +1,17 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -104,4 +113,50 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 		return element;
 	}
 
+	@Override
+	protected Collection<DBCloneClassMapping> refreshChildrenForAll(
+			Collection<DBCloneClassMapping> elements) throws Exception {
+		final Set<DBCloneClass> cloneClassesToBeRefreshed = new HashSet<>();
+		for (final DBCloneClassMapping element : elements) {
+			if (element.getOldCloneClass() != null) {
+				cloneClassesToBeRefreshed.add(element.getOldCloneClass());
+			}
+			if (element.getNewCloneClass() != null) {
+				cloneClassesToBeRefreshed.add(element.getNewCloneClass());
+			}
+		}
+		cloneClassDao.refreshAll(cloneClassesToBeRefreshed);
+		for (final DBCloneClassMapping element : elements) {
+			if (element.getOldCloneClass() != null) {
+				element.setOldCloneClass(cloneClassDao.get(element
+						.getOldCloneClass().getId()));
+			}
+			if (element.getNewCloneClass() != null) {
+				element.setOldCloneClass(cloneClassDao.get(element
+						.getNewCloneClass().getId()));
+			}
+		}
+
+		final Set<DBCodeFragmentMapping> fragmentMappingsToBeRefreshed = new HashSet<>();
+		final Map<Long, Collection<DBCodeFragmentMapping>> fragmentMappingsInElements = new TreeMap<>();
+		for (final DBCloneClassMapping element : elements) {
+			final Collection<DBCodeFragmentMapping> fragmentMappingsInElement = element
+					.getCodeFragmentMappings();
+			fragmentMappingsToBeRefreshed.addAll(fragmentMappingsInElement);
+			fragmentMappingsInElements.put(element.getId(),
+					fragmentMappingsInElement);
+		}
+		codeFragmentMappingDao.refreshAll(fragmentMappingsToBeRefreshed);
+		for (final DBCloneClassMapping element : elements) {
+			final List<DBCodeFragmentMapping> toBeStored = new ArrayList<>();
+			for (final DBCodeFragmentMapping fragmentMapping : fragmentMappingsInElements
+					.get(element.getId())) {
+				toBeStored.add(codeFragmentMappingDao.get(fragmentMapping
+						.getId()));
+			}
+			element.setCodeFragmentMappings(toBeStored);
+		}
+
+		return elements;
+	}
 }
