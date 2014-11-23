@@ -117,15 +117,14 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 					.getId()));
 		}
 
-		final Set<DBCloneClassMapping> cloneClassMappingsToBeRetrieved = new HashSet<>();
 		final Collection<DBCloneClassMapping> mappingsInElement = getCorrespondingCloneClassMappings(element);
-		cloneClassMappingsToBeRetrieved.addAll(mappingsInElement);
 
-		cloneClassMappingDao.refreshAll(cloneClassMappingsToBeRetrieved);
+		cloneClassMappingDao.refreshAll(mappingsInElement);
 		final Collection<DBCloneClassMapping> toBeStored = new ArrayList<>();
 		for (final DBCloneClassMapping mappingInElement : mappingsInElement) {
 			toBeStored.add(cloneClassMappingDao.get(mappingInElement.getId()));
 		}
+		element.setCloneClassMappings(toBeStored);
 
 		return element;
 	}
