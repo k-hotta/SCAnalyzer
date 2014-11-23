@@ -224,6 +224,7 @@ public class DBManager {
 		rawClonedFragmentDao.setVersionDao(versionDao);
 
 		segmentDao.setSourceFileDao(sourceFileDao);
+		segmentDao.setCodeFragmentDao(codeFragmentDao);
 
 		codeFragmentDao.setSegmentDao(segmentDao);
 		codeFragmentDao.setCloneClassDao(cloneClassDao);
