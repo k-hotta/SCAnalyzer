@@ -44,6 +44,13 @@ public class SourceFileDao extends AbstractDataDao<DBSourceFile> {
 		return element;
 	}
 
+	@Override
+	protected Collection<DBSourceFile> refreshChildrenForAll(
+			Collection<DBSourceFile> elements) throws Exception {
+		// do nothing because Revision doesn't have any foreign field
+		return elements;
+	}
+
 	/**
 	 * Get the elements whose paths are the specified one.
 	 * 
