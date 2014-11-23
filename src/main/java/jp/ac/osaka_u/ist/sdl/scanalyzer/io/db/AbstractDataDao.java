@@ -352,6 +352,27 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	}
 
 	/**
+	 * Perform refreshing in the native way for the given elements.
+	 * 
+	 * @param elements
+	 *            the elements to be refreshed
+	 * @throws Exception
+	 *             if any error occurred
+	 */
+	protected void refreshAllInNagiveWay(final Collection<D> elements)
+			throws Exception {
+		originalDao.callBatchTasks(new Callable<Void>() {
+			public Void call() throws Exception {
+				for (D element : elements) {
+					// originalDao.refresh(element);
+					refresh(element);
+				}
+				return null;
+			}
+		});
+	}
+
+	/**
 	 * Query the given prepared query.
 	 * 
 	 * @param preparedQuery
