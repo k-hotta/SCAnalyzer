@@ -1,8 +1,15 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,6 +86,37 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 		}
 
 		return element;
+	}
+
+	@Override
+	protected Collection<DBCodeFragment> refreshChildrenForAll(
+			Collection<DBCodeFragment> elements) throws Exception {
+		final Set<DBSegment> segmentsToBeRefreshed = new HashSet<>();
+		for (final DBCodeFragment element : elements) {
+			segmentsToBeRefreshed.addAll(element.getSegments());
+		}
+		segmentDao.refreshAll(segmentsToBeRefreshed);
+		for (final DBCodeFragment element : elements) {
+			final List<DBSegment> toBeStored = new ArrayList<>();
+			for (final DBSegment segment : element.getSegments()) {
+				toBeStored.add(segmentDao.get(segment.getId()));
+			}
+			element.setSegments(toBeStored);
+		}
+
+		if (deepRefresh) {
+			final Set<DBCloneClass> cloneClassesToBeRefreshed = new HashSet<>();
+			for (final DBCodeFragment element : elements) {
+				cloneClassesToBeRefreshed.add(element.getCloneClass());
+			}
+			cloneClassDao.refreshAll(cloneClassesToBeRefreshed);
+			for (final DBCodeFragment element : elements) {
+				element.setCloneClass(cloneClassDao.get(element.getCloneClass()
+						.getId()));
+			}
+		}
+
+		return elements;
 	}
 
 }
