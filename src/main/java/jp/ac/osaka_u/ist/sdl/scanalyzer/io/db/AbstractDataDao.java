@@ -155,7 +155,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			return retrievedElements.get(id);
 		} else {
 			final D result = retrieve(id);
-			return checkAndRefresh(result);
+			return refresh(result);
 		}
 	}
 
@@ -282,8 +282,8 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	}
 
 	/**
-	 * Perform refreshing on the given element. This operation is necessary for
-	 * elements having foreign objects.
+	 * Perform refreshing children of the given element. This operation is
+	 * necessary for elements having foreign objects.
 	 * 
 	 * @param element
 	 *            the element to be refreshed
@@ -291,7 +291,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public abstract D refresh(final D element) throws Exception;
+	protected abstract D refreshChildren(final D element) throws Exception;
 
 	/**
 	 * Check whether the given element is already stored. If so, this method
@@ -305,7 +305,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	private D checkAndRefresh(final D element) throws Exception {
+	public D refresh(final D element) throws Exception {
 		if (element == null) {
 			return null;
 		}
@@ -320,8 +320,12 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			return this.retrievedElements.get(element.getId());
 		}
 
+		// perform native refreshing
+		originalDao.refresh(element);
+		put(element);
+
 		// put(element);
-		return refresh(element);
+		return refreshChildren(element);
 	}
 
 	/**
@@ -342,7 +346,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			public Void call() throws Exception {
 				for (D element : elements) {
 					// originalDao.refresh(element);
-					refresh(element);
+					refreshChildren(element);
 				}
 				return null;
 			}
@@ -365,7 +369,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 			public Void call() throws Exception {
 				for (D element : elements) {
 					// originalDao.refresh(element);
-					refresh(element);
+					refreshChildren(element);
 				}
 				return null;
 			}

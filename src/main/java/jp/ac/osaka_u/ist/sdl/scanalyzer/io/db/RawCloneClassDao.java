@@ -72,14 +72,8 @@ public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
 	}
 
 	@Override
-	public DBRawCloneClass refresh(DBRawCloneClass element) throws Exception {
-		if (retrievedElements.containsKey(element.getId())) {
-			return retrievedElements.get(element.getId());
-		}
-		
-		originalDao.refresh(element);
-		put(element);
-		
+	protected DBRawCloneClass refreshChildren(DBRawCloneClass element)
+			throws Exception {
 		rawClonedFragmentDao.refreshAll(element.getElements());
 
 		if (deepRefresh) {

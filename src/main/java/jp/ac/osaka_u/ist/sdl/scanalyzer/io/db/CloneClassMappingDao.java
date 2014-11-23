@@ -85,15 +85,8 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 	}
 
 	@Override
-	public DBCloneClassMapping refresh(DBCloneClassMapping element)
+	protected DBCloneClassMapping refreshChildren(DBCloneClassMapping element)
 			throws Exception {
-		if (retrievedElements.containsKey(element.getId())) {
-			return retrievedElements.get(element.getId());
-		}
-
-		originalDao.refresh(element);
-		retrievedElements.put(element.getId(), element);
-
 		if (element.getOldCloneClass() != null) {
 			cloneClassDao.refresh(element.getOldCloneClass());
 		}

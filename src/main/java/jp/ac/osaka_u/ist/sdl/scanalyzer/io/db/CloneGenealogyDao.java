@@ -99,15 +99,8 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 	}
 
 	@Override
-	public DBCloneGenealogy refresh(DBCloneGenealogy element)
+	protected DBCloneGenealogy refreshChildren(DBCloneGenealogy element)
 			throws Exception {
-		if (retrievedElements.containsKey(element.getId())) {
-			return retrievedElements.get(element.getId());
-		}
-		
-		originalDao.refresh(element);
-		put(element);
-
 		if (deepRefresh) {
 			versionDao.refresh(element.getStartVersion());
 			versionDao.refresh(element.getEndVersion());

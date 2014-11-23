@@ -170,14 +170,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	}
 
 	@Override
-	public DBVersion refresh(DBVersion element) throws Exception {
-		if (retrievedElements.containsKey(element.getId())) {
-			return retrievedElements.get(element.getId());
-		}
-
-		originalDao.refresh(element);
-		put(element);
-
+	protected DBVersion refreshChildren(DBVersion element) throws Exception {
 		revisionDao.refresh(element.getRevision());
 
 		fileChangeDao.refreshAll(element.getFileChanges());

@@ -70,14 +70,8 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 	}
 
 	@Override
-	public DBCodeFragment refresh(DBCodeFragment element) throws Exception {
-		if (retrievedElements.containsKey(element.getId())) {
-			return retrievedElements.get(element.getId());
-		}
-
-		originalDao.refresh(element);
-		put(element);
-
+	protected DBCodeFragment refreshChildren(DBCodeFragment element)
+			throws Exception {
 		segmentDao.refreshAll(element.getSegments());
 
 		if (deepRefresh) {
