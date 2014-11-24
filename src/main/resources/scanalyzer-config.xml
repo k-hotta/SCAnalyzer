@@ -26,4 +26,7 @@
 		<clone-mapping>ICLONES</clone-mapping>
 		<element-mapping>Traditional_diff</element-mapping>
 	</mapping>
+	<mining>
+		<mining-strategy>GENEALOGY_PERSIST_PERIOD</mining-strategy>
+	</mining>
 </config>
