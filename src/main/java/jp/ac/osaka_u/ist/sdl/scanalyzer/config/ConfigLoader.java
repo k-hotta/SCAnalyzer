@@ -86,6 +86,9 @@ public class ConfigLoader implements DefaultConfiguration {
 						+ "or as an xml node \"overwrite\" in the configuration file");
 		usage.put("id",
 				"Please specify the id of the genealogy to be shown with \"-id\"");
+		usage.put("strategy", String.format(format + additional,
+				"strategy of mining", "strategy", "mining-strategy",
+				AvailableMiningStrategy.canBe()));
 	}
 
 	/**
@@ -181,6 +184,11 @@ public class ConfigLoader implements DefaultConfiguration {
 		// NOTE: this is just for UI mode
 		options.addOption(makeOption("id", "genealogy-id", true,
 				"the id of the genealogy to be shown", 1, false));
+
+		// the mining strategy
+		// NOTE: this is just for Mining
+		options.addOption(makeOption("strategy", "mining-strategy", true,
+				"the strategy of mining", 1, false));
 
 		return options;
 	}
@@ -340,9 +348,16 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "ow",
 				"overwrite", DEFAULT_OVERWRITING_DB.toString(), true);
 
+		/*
+		 * the following options are specific ones for modes
+		 */
+
 		if (cmd.hasOption("id")) {
 			loadedConfigsAsText.put("id", cmd.getOptionValue("id"));
 		}
+
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"strategy", "mining-strategy", null, true);
 
 		return loadedConfigsAsText;
 	}
@@ -433,6 +448,8 @@ public class ConfigLoader implements DefaultConfiguration {
 		final String endRevisionIdentifier = configsAsText.get("end");
 		final String overwritingDb = configsAsText.get("ow");
 		final String genealogyIdStr = configsAsText.get("id");
+		final AvailableMiningStrategy miningStrategy = AvailableMiningStrategy
+				.getCorrespondingStrategy(configsAsText.get("strategy"));
 
 		final Config result = new Config();
 
@@ -530,6 +547,10 @@ public class ConfigLoader implements DefaultConfiguration {
 				errors.put("id", "cannot parse the given value "
 						+ genealogyIdStr + " to long");
 			}
+		}
+
+		if (miningStrategy != null) {
+			result.setMiningStrategy(miningStrategy);
 		}
 
 		return result;

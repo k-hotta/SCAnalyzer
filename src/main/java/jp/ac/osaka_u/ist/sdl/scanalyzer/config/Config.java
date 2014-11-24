@@ -95,6 +95,11 @@ public class Config {
 	 */
 	private long genealogyId = -1;
 
+	/**
+	 * The mining strategy
+	 */
+	private AvailableMiningStrategy miningStrategy;
+
 	/*
 	 * getters and setters follow
 	 */
@@ -423,6 +428,26 @@ public class Config {
 	 */
 	public final void setGenealogyId(final long genealogyId) {
 		this.genealogyId = genealogyId;
+	}
+
+	/**
+	 * Get the mining strategy.
+	 * 
+	 * @return the mining strategy
+	 */
+	public AvailableMiningStrategy getMiningStrategy() {
+		return miningStrategy;
+	}
+
+	/**
+	 * Set the mining strategy with the specified one.
+	 * 
+	 * @param miningStrategy
+	 *            the strategy to be set
+	 */
+	public void setMiningStrategy(
+			final AvailableMiningStrategy miningStrategy) {
+		this.miningStrategy = miningStrategy;
 	}
 
 }
