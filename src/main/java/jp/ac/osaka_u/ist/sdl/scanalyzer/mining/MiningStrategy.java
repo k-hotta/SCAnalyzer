@@ -2,7 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mining;
 
 import java.util.Collection;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 
 /**
  * This interface represents how to mine the genealogies.
@@ -10,7 +11,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
  * @author k-hotta
  *
  */
-public interface MiningStrategy {
+public interface MiningStrategy<D extends IDBElement, T extends IDataElement<D>> {
 
 	/**
 	 * Whether or not this strategy requires volatile information. If
@@ -23,20 +24,19 @@ public interface MiningStrategy {
 	public boolean requiresVolatileObjects();
 
 	/**
-	 * Mine information from the given collection of genealogies. It is expected
+	 * Mine information from the given collection of elements. It is expected
 	 * that this method called several times to complete processing all the
-	 * genealogies. That is, the given collection of genealogies might have only
-	 * a part of genealogies to be processed. If
+	 * elements. That is, the given collection of elements might have only a
+	 * part of elements to be processed. If
 	 * {@link MiningStrategy#requiresVolatileObjects()} is <code>false</code>,
-	 * the genealogies in the given collection have only their cores.
+	 * the elements in the given collection have only their cores.
 	 * 
 	 * @param genealogies
-	 *            the target genealogies
+	 *            the target elements
 	 * @throws Exception
 	 *             If any error occurred
 	 */
-	public void mine(final Collection<CloneGenealogy<?>> genealogies)
-			throws Exception;
+	public void mine(final Collection<T> genealogies) throws Exception;
 
 	/**
 	 * Write the result of mining. This method is expected to be called after
