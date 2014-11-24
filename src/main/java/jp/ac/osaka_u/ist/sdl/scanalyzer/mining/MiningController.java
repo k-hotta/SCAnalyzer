@@ -55,11 +55,11 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	private final RetrievedObjectManager<E> manager;
 
 	public MiningController(final int maximumGenealogiesCount,
-			final MiningStrategy<D, T> stragety, final AbstractDataDao<D> dao,
+			final MiningStrategy<D, T> strategy, final AbstractDataDao<D> dao,
 			final IRetriever<E, D, T> retriever,
 			final RetrievedObjectManager<E> manager) {
 		this.maximumGenealogiesCount = maximumGenealogiesCount;
-		this.strategy = stragety;
+		this.strategy = strategy;
 		this.dao = dao;
 		this.retriever = retriever;
 		this.manager = manager;

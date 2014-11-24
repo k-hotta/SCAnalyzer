@@ -8,11 +8,20 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.config.DBMS;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ElementTypeSensitiveWorkerInitializer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.TokenSensitiveWorkerInitializer;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.AbstractDataDao;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBUrlProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.IRetriever;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrieveMode;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrievedObjectManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrieverManager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -179,9 +188,21 @@ public class SCAnalyzerMiningMain {
 		 */
 		private WorkerManager<E> workerManager;
 
+		/**
+		 * The manager for retrievers
+		 */
+		private RetrieverManager<E> retrieverManager;
+
+		/**
+		 * The helper for strategy
+		 */
+		private StrategyHelper<E, ?, ?> strategyHelper;
+
 		private MainHelper(final Config config) {
 			this.config = config;
 			this.workerManager = null;
+			this.retrieverManager = null;
+			this.strategyHelper = null;
 		}
 
 		/**
@@ -193,6 +214,8 @@ public class SCAnalyzerMiningMain {
 			setUpDatabase();
 			setUpRepository();
 			this.workerManager = setUpWorkers();
+			this.retrieverManager = setUpRetrievers();
+			this.strategyHelper = setUpStrategyHelper();
 		}
 
 		/**
@@ -299,12 +322,52 @@ public class SCAnalyzerMiningMain {
 		}
 
 		/**
+		 * Set up the retrievers
+		 * 
+		 * @return
+		 * @throws Exception
+		 */
+		private RetrieverManager<E> setUpRetrievers() throws Exception {
+			switch (config.getMiningStrategy()) {
+			case GENEALOGY_PERSIST_PERIOD:
+				return new RetrieverManager<E>(RetrieveMode.VOLATILE,
+						workerManager);
+			}
+
+			throw new IllegalStateException(
+					"the strategy of mining has not been correctly specified");
+		}
+
+		/**
+		 * Set up the helper for strategy
+		 * 
+		 * @return
+		 * @throws Exception
+		 */
+		private StrategyHelper<E, ?, ?> setUpStrategyHelper() throws Exception {
+			final RetrievedObjectManager<E> manager = new RetrievedObjectManager<E>();
+
+			switch (config.getMiningStrategy()) {
+			case GENEALOGY_PERSIST_PERIOD:
+				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
+						manager, retrieverManager.getGenealogyRetriever(),
+						DBManager.getInstance().getCloneGenealogyDao(),
+						new CloneGenealogyPersistPeriodFindStrategy<>(config
+								.getOutputFilePath()),
+						config.getMaximumRetrieveCount());
+			}
+
+			throw new IllegalStateException(
+					"the strategy of mining has not been correctly specified");
+		}
+
+		/**
 		 * Run the main procedure.
 		 * 
 		 * @throws Exception
 		 */
 		private void runMain() throws Exception {
-			// TODO implement
+			strategyHelper.run();
 		}
 
 		/**
@@ -314,6 +377,40 @@ public class SCAnalyzerMiningMain {
 		 */
 		private void tearDown() throws Exception {
 			DBManager.closeConnection();
+		}
+
+	}
+
+	private class StrategyHelper<E extends IProgramElement, D extends IDBElement, T extends IDataElement<D>> {
+
+		private final RetrievedObjectManager<E> manager;
+
+		private final IRetriever<E, D, T> retriever;
+
+		private final AbstractDataDao<D> dao;
+
+		private final MiningStrategy<D, T> strategy;
+
+		private final int maxRetrieved;
+
+		public StrategyHelper(final RetrievedObjectManager<E> manager,
+				final IRetriever<E, D, T> retriever,
+				final AbstractDataDao<D> dao,
+				final MiningStrategy<D, T> strategy, final int maxRetrieved) {
+			this.manager = manager;
+			this.retriever = retriever;
+			this.dao = dao;
+			this.strategy = strategy;
+			this.maxRetrieved = maxRetrieved;
+		}
+
+		private void run() throws Exception {
+			logger.info("start mining with strategy: "
+					+ strategy.getClass().getSimpleName());
+
+			final MiningController<E, D, T> controller = new MiningController<>(
+					maxRetrieved, strategy, dao, retriever, manager);
+			controller.performMining();
 		}
 
 	}
