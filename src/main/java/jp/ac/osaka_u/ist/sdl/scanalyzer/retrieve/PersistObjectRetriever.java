@@ -15,7 +15,10 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 public abstract class PersistObjectRetriever<E extends IProgramElement, D extends IDBElement, T extends IDataElement<D>>
 		implements IRetriever<E, D, T> {
 
-	private final RetrievedObjectManager<E> manager;
+	/**
+	 * The manager for retrieved objects
+	 */
+	protected final RetrievedObjectManager<E> manager;
 
 	public PersistObjectRetriever(final RetrievedObjectManager<E> manager) {
 		this.manager = manager;
