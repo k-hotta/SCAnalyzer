@@ -60,6 +60,9 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	protected final Dao<D, Long> originalDao;
 
+	/**
+	 * The retrieved elements
+	 */
 	protected final ConcurrentMap<Long, D> retrievedElements;
 
 	/**
