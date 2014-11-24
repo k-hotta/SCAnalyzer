@@ -12,10 +12,10 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy.CloneGenealogyRetriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBUrlProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.Retriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper.FileContentProvideHelper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyView;
 
@@ -302,7 +302,7 @@ public class SCAnalyzerUIMain {
 			FileContentProvideHelper.setProvider(workerManager
 					.getFileContentProvider());
 
-			final CloneGenealogyRetriever<E> retriever = new CloneGenealogyRetriever<>(
+			final Retriever<E> retriever = new Retriever<>(
 					DBManager.getInstance(),
 					workerManager.getFileContentProvider(),
 					workerManager.getFileParser());

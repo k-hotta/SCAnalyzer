@@ -1,4 +1,4 @@
-package jp.ac.osaka_u.ist.sdl.scanalyzer.genealogy;
+package jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve;
 
 import java.util.Collections;
 import java.util.Map;
@@ -32,18 +32,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class is for retrieving a clone genealogy with volatile data from
- * database.
+ * This class is for retrieving elements with volatile data from database.
  * 
  * @author k-hotta
  *
  * @param E
  *            the type of program element
  */
-public class CloneGenealogyRetriever<E extends IProgramElement> {
+public class Retriever<E extends IProgramElement> {
 
-	private static final Logger logger = LogManager
-			.getLogger(CloneGenealogyRetriever.class);
+	private static final Logger logger = LogManager.getLogger(Retriever.class);
 
 	private final DBManager dbManager;
 
@@ -69,7 +67,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 
 	private final Map<Long, CloneGenealogy<E>> genealogies = new TreeMap<>();
 
-	public CloneGenealogyRetriever(final DBManager dbManager,
+	public Retriever(final DBManager dbManager,
 			final IFileContentProvider<E> fileContentProvider,
 			final ISourceFileParser<E> parser) {
 		this.dbManager = dbManager;
