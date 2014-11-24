@@ -2,7 +2,10 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -440,6 +443,26 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		} else {
 			return result;
 		}
+	}
+
+	/**
+	 * Get all the ids stored in the database.
+	 * 
+	 * @return A collection contains all the ids
+	 * @throws Exception
+	 *             if any error occurred
+	 */
+	public List<Long> getAllIds() throws Exception {
+		final Collection<D> all = originalDao.queryForAll();
+
+		final List<Long> result = new ArrayList<>();
+		for (final D element : all) {
+			result.add(element.getId());
+		}
+		
+		Collections.sort(result);
+
+		return Collections.unmodifiableList(result);
 	}
 
 }
