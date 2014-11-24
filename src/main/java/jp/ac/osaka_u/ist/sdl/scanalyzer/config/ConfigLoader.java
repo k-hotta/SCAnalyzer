@@ -91,6 +91,9 @@ public class ConfigLoader implements DefaultConfiguration {
 				AvailableMiningStrategy.canBe()));
 		usage.put("output", String.format(format, "output file path", "output",
 				"output-file"));
+		usage.put("max", String.format(format,
+				"the maximum number of elements retrieved at a time", "max",
+				"max-retrieved"));
 	}
 
 	/**
@@ -196,6 +199,11 @@ public class ConfigLoader implements DefaultConfiguration {
 		// NOTE: this is just for Mining
 		options.addOption(makeOption("output", "output-file", true,
 				"the output file path", 1, false));
+
+		// the maximum number of elements retrieved at a time
+		// NOTE: this is just for Mining
+		options.addOption(makeOption("max", "maximum", true,
+				"the maximum number of elements retrieved at a time", 1, false));
 
 		return options;
 	}
@@ -369,6 +377,9 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "output",
 				"output-file", null, true);
 
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "max",
+				"max-retrieved", DEFAULT_MAXIMUM_RETRIEVED.toString(), true);
+
 		return loadedConfigsAsText;
 	}
 
@@ -461,6 +472,7 @@ public class ConfigLoader implements DefaultConfiguration {
 		final AvailableMiningStrategy miningStrategy = AvailableMiningStrategy
 				.getCorrespondingStrategy(configsAsText.get("strategy"));
 		final String outputFilePath = configsAsText.get("output");
+		final String maximumRetrieved = configsAsText.get("max");
 
 		final Config result = new Config();
 
@@ -566,6 +578,16 @@ public class ConfigLoader implements DefaultConfiguration {
 
 		if (outputFilePath != null) {
 			result.setOutputFilePath(outputFilePath);
+		}
+
+		if (maximumRetrieved != null) {
+			try {
+				result.setMaximumRetrieveCount(Integer
+						.parseInt(maximumRetrieved));
+			} catch (Exception e) {
+				errors.put("max", "cannot parse the given value "
+						+ maximumRetrieved + " to integer");
+			}
 		}
 
 		return result;

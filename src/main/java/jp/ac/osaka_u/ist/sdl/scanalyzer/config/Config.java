@@ -98,12 +98,17 @@ public class Config {
 	/**
 	 * The mining strategy
 	 */
-	private AvailableMiningStrategy miningStrategy;
+	private AvailableMiningStrategy miningStrategy = null;
 
 	/**
 	 * The path of a file where the result of mining should be stored
 	 */
-	private String outputFilePath;
+	private String outputFilePath = null;
+
+	/**
+	 * The maximum number of elements retrieved at a time
+	 */
+	private int maximumRetrieveCount = 100;
 
 	/*
 	 * getters and setters follow
@@ -471,6 +476,25 @@ public class Config {
 	 */
 	public void setOutputFilePath(final String outputFilePath) {
 		this.outputFilePath = outputFilePath;
+	}
+
+	/**
+	 * Get the maximum number of elements retrieved at a time.
+	 * 
+	 * @return the maximum number of elements retrieved at a time
+	 */
+	public int getMaximumRetrieveCount() {
+		return maximumRetrieveCount;
+	}
+
+	/**
+	 * Set the maximum number of elements retrieved at a time.
+	 * 
+	 * @param maximumRetrieveCount
+	 *            the integer value to be set
+	 */
+	public void setMaximumRetrieveCount(final int maximumRetrieveCount) {
+		this.maximumRetrieveCount = maximumRetrieveCount;
 	}
 
 }
