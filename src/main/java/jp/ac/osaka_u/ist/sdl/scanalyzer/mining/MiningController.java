@@ -8,7 +8,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.AbstractDataDao;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.VolatileObjectRetriever;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.IRetriever;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrievedObjectManager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,21 +47,32 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	/**
 	 * The object retriever
 	 */
-	private final VolatileObjectRetriever<E> retriever;
+	private final IRetriever<E, D, T> retriever;
+
+	/**
+	 * The manager for retrieved objects
+	 */
+	private final RetrievedObjectManager<E> manager;
 
 	public MiningController(final int maximumGenealogiesCount,
 			final MiningStrategy<D, T> stragety, final AbstractDataDao<D> dao,
-			final VolatileObjectRetriever<E> retriever) {
+			final IRetriever<E, D, T> retriever,
+			final RetrievedObjectManager<E> manager) {
 		this.maximumGenealogiesCount = maximumGenealogiesCount;
 		this.strategy = stragety;
 		this.dao = dao;
 		this.retriever = retriever;
+		this.manager = manager;
 	}
 
 	public void performMining() throws Exception {
 		final List<Long> ids = dao.getAllIds();
 		int count = 0;
+		int miningRunCount = 0;
+
 		final List<D> persistElementsToBeMined = new ArrayList<>();
+
+		logger.info("the number of elements to be mined: " + ids.size());
 
 		while (count <= ids.size()) {
 			final Long id = ids.get(count++);
@@ -67,6 +80,11 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 
 			if (count % maximumGenealogiesCount == 0) {
 				performMining(persistElementsToBeMined);
+				miningRunCount++;
+				logger.info("performed mining for " + miningRunCount
+						+ maximumGenealogiesCount + " elements out of "
+						+ ids.size() + " elements");
+
 				prepareToContinue();
 				persistElementsToBeMined.clear();
 			}
@@ -74,15 +92,26 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 
 		if (!persistElementsToBeMined.isEmpty()) {
 			performMining(persistElementsToBeMined);
+			logger.info("perform mining for all the elements");
 		}
+
+		logger.info("writing results ... ");
+		strategy.writeResult();
+		logger.info("complete writing");
 	}
 
-	private void performMining(final Collection<D> elements) {
-																										
+	private void performMining(final Collection<D> elements) throws Exception {
+		final List<T> toBeMined = new ArrayList<>();
+		for (final D element : elements) {
+			toBeMined.add(retriever.retrieveElement(element));
+		}
+
+		strategy.mine(toBeMined);
 	}
 
 	private void prepareToContinue() {
-
+		this.manager.clear();
+		DBManager.getInstance().clearDaos();
 	}
 
 }
