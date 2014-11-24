@@ -45,12 +45,20 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 		return Collections.unmodifiableMap(segments);
 	}
 
+	public final Segment<E> getSegment(final long id) {
+		return this.segments.get(id);
+	}
+
 	public final Segment<E> add(final Segment<E> segment) {
 		return this.segments.put(segment.getId(), segment);
 	}
 
 	public final Map<Long, CodeFragment<E>> getCodeFragments() {
 		return Collections.unmodifiableMap(codeFragments);
+	}
+
+	public final CodeFragment<E> getCodeFragment(final long id) {
+		return this.codeFragments.get(id);
 	}
 
 	public final CodeFragment<E> add(final CodeFragment<E> codeFragment) {
@@ -61,12 +69,20 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 		return Collections.unmodifiableMap(cloneClasses);
 	}
 
+	public final CloneClass<E> getCloneClass(final long id) {
+		return this.cloneClasses.get(id);
+	}
+
 	public CloneClass<E> add(final CloneClass<E> cloneClass) {
 		return this.cloneClasses.put(cloneClass.getId(), cloneClass);
 	}
 
 	public final Map<Long, SourceFile<E>> getSourceFiles() {
 		return Collections.unmodifiableMap(sourceFiles);
+	}
+
+	public final SourceFile<E> getSourceFile(final long id) {
+		return this.sourceFiles.get(id);
 	}
 
 	public SourceFile<E> add(final SourceFile<E> sourceFile) {
@@ -77,6 +93,10 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 		return Collections.unmodifiableMap(cloneClassMappings);
 	}
 
+	public final CloneClassMapping<E> getCloneClassMapping(final long id) {
+		return this.cloneClassMappings.get(id);
+	}
+
 	public CloneClassMapping<E> add(final CloneClassMapping<E> cloneClassMapping) {
 		return this.cloneClassMappings.put(cloneClassMapping.getId(),
 				cloneClassMapping);
@@ -84,6 +104,10 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 
 	public final Map<Long, CodeFragmentMapping<E>> getCodeFragmentMappings() {
 		return Collections.unmodifiableMap(codeFragmentMappings);
+	}
+
+	public final CodeFragmentMapping<E> getCodeFragmentMapping(final long id) {
+		return this.codeFragmentMappings.get(id);
 	}
 
 	public CodeFragmentMapping<E> add(
@@ -96,6 +120,10 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 		return Collections.unmodifiableMap(revisions);
 	}
 
+	public final Revision getRevision(final long id) {
+		return this.revisions.get(id);
+	}
+
 	public Revision add(final Revision revision) {
 		return this.revisions.put(revision.getId(), revision);
 	}
@@ -104,12 +132,20 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 		return Collections.unmodifiableMap(versions);
 	}
 
+	public final Version<E> getVersion(final long id) {
+		return this.versions.get(id);
+	}
+
 	public Version<E> add(final Version<E> version) {
 		return this.versions.put(version.getId(), version);
 	}
 
 	public final Map<Long, CloneGenealogy<E>> getGenealogies() {
 		return Collections.unmodifiableMap(genealogies);
+	}
+
+	public final CloneGenealogy<E> getGenealogy(final long id) {
+		return this.genealogies.get(id);
 	}
 
 	public CloneGenealogy<E> add(final CloneGenealogy<E> cloneGenealogy) {
