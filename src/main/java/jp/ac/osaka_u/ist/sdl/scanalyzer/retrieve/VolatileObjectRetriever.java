@@ -1,9 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
-
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
@@ -39,7 +35,8 @@ import org.apache.logging.log4j.Logger;
  * @param E
  *            the type of program element
  */
-public class VolatileObjectRetriever<E extends IProgramElement> {
+public class VolatileObjectRetriever<E extends IProgramElement> implements
+		IRetriever<E> {
 
 	private static final Logger logger = LogManager
 			.getLogger(VolatileObjectRetriever.class);
@@ -50,81 +47,16 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 
 	private final ISourceFileParser<E> parser;
 
-	private final Map<Long, Segment<E>> segments = new TreeMap<>();
-
-	private final Map<Long, CodeFragment<E>> codeFragments = new TreeMap<>();
-
-	private final Map<Long, CloneClass<E>> cloneClasses = new TreeMap<>();
-
-	private final Map<Long, SourceFile<E>> sourceFiles = new TreeMap<>();
-
-	private final Map<Long, CloneClassMapping<E>> cloneClassMappings = new TreeMap<>();
-
-	private final Map<Long, CodeFragmentMapping<E>> codeFragmentMappings = new TreeMap<>();
-
-	private final Map<Long, Revision> revisions = new TreeMap<>();
-
-	private final Map<Long, Version<E>> versions = new TreeMap<>();
-
-	private final Map<Long, CloneGenealogy<E>> genealogies = new TreeMap<>();
+	private final RetrievedObjectManager<E> manager;
 
 	public VolatileObjectRetriever(final DBManager dbManager,
 			final IFileContentProvider<E> fileContentProvider,
-			final ISourceFileParser<E> parser) {
+			final ISourceFileParser<E> parser,
+			final RetrievedObjectManager<E> manager) {
 		this.dbManager = dbManager;
 		this.fileContentProvider = fileContentProvider;
 		this.parser = parser;
-	}
-
-	public final Map<Long, Segment<E>> getSegments() {
-		return Collections.unmodifiableMap(segments);
-	}
-
-	public final Map<Long, CodeFragment<E>> getCodeFragments() {
-		return Collections.unmodifiableMap(codeFragments);
-	}
-
-	public final Map<Long, CloneClass<E>> getCloneClasses() {
-		return Collections.unmodifiableMap(cloneClasses);
-	}
-
-	public final Map<Long, SourceFile<E>> getSourceFiles() {
-		return Collections.unmodifiableMap(sourceFiles);
-	}
-
-	public final Map<Long, CloneClassMapping<E>> getCloneClassMappings() {
-		return Collections.unmodifiableMap(cloneClassMappings);
-	}
-
-	public final Map<Long, CodeFragmentMapping<E>> getCodeFragmentMappings() {
-		return Collections.unmodifiableMap(codeFragmentMappings);
-	}
-
-	public final Map<Long, Revision> getRevisions() {
-		return Collections.unmodifiableMap(revisions);
-	}
-
-	public final Map<Long, Version<E>> getVersions() {
-		return Collections.unmodifiableMap(versions);
-	}
-
-	public final Map<Long, CloneGenealogy<E>> getGenealogies() {
-		return Collections.unmodifiableMap(genealogies);
-	}
-
-	/**
-	 * Clear all the retrieved objects.
-	 */
-	public void clear() {
-		segments.clear();
-		codeFragments.clear();
-		cloneClasses.clear();
-		sourceFiles.clear();
-		cloneClassMappings.clear();
-		codeFragmentMappings.clear();
-		revisions.clear();
-		versions.clear();
-		genealogies.clear();
+		this.manager = manager;
 	}
 
 	/**
@@ -179,23 +111,23 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 		final CloneGenealogy<E> genealogy = new CloneGenealogy<E>(dbGenealogy);
 
 		{
-			Version<E> startVersion = versions.get(dbGenealogy
+			Version<E> startVersion = manager.getVersion(dbGenealogy
 					.getStartVersion().getId());
 			if (startVersion == null) {
 				startVersion = retrieveVersionOnlyWithRevision(dbGenealogy
 						.getStartVersion());
-				versions.put(startVersion.getId(), startVersion);
+				manager.add(startVersion);
 			}
 			genealogy.setStartVersion(startVersion);
 		}
 
 		{
-			Version<E> endVersion = versions.get(dbGenealogy.getEndVersion()
-					.getId());
+			Version<E> endVersion = manager.getVersion(dbGenealogy
+					.getEndVersion().getId());
 			if (endVersion == null) {
 				endVersion = retrieveVersionOnlyWithRevision(dbGenealogy
 						.getEndVersion());
-				versions.put(endVersion.getId(), endVersion);
+				manager.add(endVersion);
 			}
 			genealogy.setEndVersion(endVersion);
 		}
@@ -203,24 +135,22 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 		// set clone class mappings
 		for (final DBCloneClassMapping dbCloneClassMapping : dbGenealogy
 				.getCloneClassMappings()) {
-			CloneClassMapping<E> cloneClassMapping = cloneClassMappings
-					.get(dbCloneClassMapping.getId());
+			CloneClassMapping<E> cloneClassMapping = manager
+					.getCloneClassMapping(dbCloneClassMapping.getId());
 
 			if (cloneClassMapping == null) {
 				cloneClassMapping = retrieveCloneClassMapping(dbCloneClassMapping);
-				cloneClassMappings.put(cloneClassMapping.getId(),
-						cloneClassMapping);
+				manager.add(cloneClassMapping);
 			}
 
 			for (final DBCodeFragmentMapping dbCodeFragmentMapping : dbCloneClassMapping
 					.getCodeFragmentMappings()) {
-				CodeFragmentMapping<E> codeFragmentMapping = codeFragmentMappings
-						.get(dbCodeFragmentMapping.getId());
+				CodeFragmentMapping<E> codeFragmentMapping = manager
+						.getCodeFragmentMapping(dbCodeFragmentMapping.getId());
 
 				if (codeFragmentMapping == null) {
 					codeFragmentMapping = retrieveCodeFragmentMapping(dbCodeFragmentMapping);
-					codeFragmentMappings.put(codeFragmentMapping.getId(),
-							codeFragmentMapping);
+					manager.add(codeFragmentMapping);
 				}
 
 				cloneClassMapping.addCodeFragmentMappings(codeFragmentMapping);
@@ -252,24 +182,24 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 				.getNewCloneClass();
 
 		if (dbOldCloneClass != null) {
-			CloneClass<E> oldCloneClass = cloneClasses.get(dbOldCloneClass
+			CloneClass<E> oldCloneClass = manager.getCloneClass(dbOldCloneClass
 					.getId());
 
 			if (oldCloneClass == null) {
 				oldCloneClass = retrieveCloneClass(dbOldCloneClass);
-				cloneClasses.put(oldCloneClass.getId(), oldCloneClass);
+				manager.add(oldCloneClass);
 			}
 
 			cloneClassMapping.setOldCloneClass(oldCloneClass);
 		}
 
 		if (dbNewCloneClass != null) {
-			CloneClass<E> newCloneClass = cloneClasses.get(dbNewCloneClass
+			CloneClass<E> newCloneClass = manager.getCloneClass(dbNewCloneClass
 					.getId());
 
 			if (newCloneClass == null) {
 				newCloneClass = retrieveCloneClass(dbNewCloneClass);
-				cloneClasses.put(newCloneClass.getId(), newCloneClass);
+				manager.add(newCloneClass);
 			}
 
 			cloneClassMapping.setNewCloneClass(newCloneClass);
@@ -292,12 +222,12 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 		// set cloned & ghost code fragments
 		for (final DBCodeFragment dbCodeFragment : dbCloneClass
 				.getCodeFragments()) {
-			CodeFragment<E> codeFragment = codeFragments.get(dbCodeFragment
-					.getId());
+			CodeFragment<E> codeFragment = manager
+					.getCodeFragment(dbCodeFragment.getId());
 
 			if (codeFragment == null) {
 				codeFragment = retrieveCodeFragment(dbCodeFragment);
-				codeFragments.put(codeFragment.getId(), codeFragment);
+				manager.add(codeFragment);
 			}
 
 			cloneClass.addCodeFragment(codeFragment);
@@ -305,7 +235,8 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 		}
 
 		// set version
-		Version<E> version = versions.get(dbCloneClass.getVersion().getId());
+		Version<E> version = manager.getVersion(dbCloneClass.getVersion()
+				.getId());
 
 		if (version == null) {
 			version = retrieveVersionOnlyWithRevision(dbCloneClass.getVersion());
@@ -329,11 +260,11 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 		final CodeFragment<E> codeFragment = new CodeFragment<E>(dbCodeFragment);
 
 		for (final DBSegment dbSegment : dbCodeFragment.getSegments()) {
-			Segment<E> segment = segments.get(dbSegment.getId());
+			Segment<E> segment = manager.getSegment(dbSegment.getId());
 
 			if (segment == null) {
 				segment = retrieveSegment(dbSegment);
-				segments.put(segment.getId(), segment);
+				manager.add(segment);
 			}
 
 			codeFragment.addSegment(segment);
@@ -366,8 +297,8 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 					+ dbSegment.getId(), e);
 		}
 
-		SourceFile<E> sourceFile = sourceFiles.get(dbSegment.getSourceFile()
-				.getId());
+		SourceFile<E> sourceFile = manager.getSourceFile(dbSegment
+				.getSourceFile().getId());
 
 		// retrieve source file if it has not been retrieved yet
 		if (sourceFile == null) {
@@ -376,15 +307,16 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 			final DBVersion dbOwnerVersion = dbSegment.getCodeFragment()
 					.getCloneClass().getVersion();
 
-			Version<E> ownerVersion = versions.get(dbOwnerVersion.getId());
+			Version<E> ownerVersion = manager
+					.getVersion(dbOwnerVersion.getId());
 			if (ownerVersion == null) {
 				ownerVersion = retrieveVersionOnlyWithRevision(dbOwnerVersion);
-				versions.put(ownerVersion.getId(), ownerVersion);
+				manager.add(ownerVersion);
 			}
 
 			sourceFile = retrieveSourceFile(dbSourceFile,
 					ownerVersion.getCore());
-			sourceFiles.put(sourceFile.getId(), sourceFile);
+			manager.add(sourceFile);
 		}
 
 		segment.setSourceFile(sourceFile);
@@ -432,23 +364,25 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 				dbCodeFragmentMapping);
 
 		if (dbCodeFragmentMapping.getOldCodeFragment() != null) {
-			CodeFragment<E> oldCodeFragment = codeFragments
-					.get(dbCodeFragmentMapping.getOldCodeFragment().getId());
+			CodeFragment<E> oldCodeFragment = manager
+					.getCodeFragment(dbCodeFragmentMapping.getOldCodeFragment()
+							.getId());
 			if (oldCodeFragment == null) {
 				oldCodeFragment = retrieveCodeFragment(dbCodeFragmentMapping
 						.getOldCodeFragment());
-				codeFragments.put(oldCodeFragment.getId(), oldCodeFragment);
+				manager.add(oldCodeFragment);
 			}
 			codeFragmentMapping.setOldCodeFragment(oldCodeFragment);
 		}
 
 		if (dbCodeFragmentMapping.getNewCodeFragment() != null) {
-			CodeFragment<E> newCodeFragment = codeFragments
-					.get(dbCodeFragmentMapping.getNewCodeFragment().getId());
+			CodeFragment<E> newCodeFragment = manager
+					.getCodeFragment(dbCodeFragmentMapping.getNewCodeFragment()
+							.getId());
 			if (newCodeFragment == null) {
 				newCodeFragment = retrieveCodeFragment(dbCodeFragmentMapping
 						.getNewCodeFragment());
-				codeFragments.put(newCodeFragment.getId(), newCodeFragment);
+				manager.add(newCodeFragment);
 			}
 			codeFragmentMapping.setNewCodeFragment(newCodeFragment);
 		}
@@ -474,7 +408,8 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 					+ dbVersion.getId(), e);
 		}
 
-		Revision revision = revisions.get(dbVersion.getRevision().getId());
+		Revision revision = manager
+				.getRevision(dbVersion.getRevision().getId());
 
 		if (revision == null) {
 			try {
@@ -486,7 +421,7 @@ public class VolatileObjectRetriever<E extends IProgramElement> {
 			}
 
 			revision = retrieveRevision(dbVersion.getRevision());
-			revisions.put(revision.getId(), revision);
+			manager.add(revision);
 		}
 
 		version.setRevision(revision);
