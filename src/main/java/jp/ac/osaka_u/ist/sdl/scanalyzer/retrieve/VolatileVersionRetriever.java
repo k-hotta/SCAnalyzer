@@ -1,7 +1,5 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve;
 
-import org.tmatesoft.sqljet.core.internal.lang.SqlParser.reindex_stmt_return;
-
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Revision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
