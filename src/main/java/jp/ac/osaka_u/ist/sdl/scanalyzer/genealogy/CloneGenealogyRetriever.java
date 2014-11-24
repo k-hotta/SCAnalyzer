@@ -175,7 +175,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved genealogy
 	 */
-	private CloneGenealogy<E> retrieveCloneGenealogy(
+	public CloneGenealogy<E> retrieveCloneGenealogy(
 			final DBCloneGenealogy dbGenealogy) {
 		final CloneGenealogy<E> genealogy = new CloneGenealogy<E>(dbGenealogy);
 
@@ -242,7 +242,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved clone class mapping
 	 */
-	private CloneClassMapping<E> retrieveCloneClassMapping(
+	public CloneClassMapping<E> retrieveCloneClassMapping(
 			final DBCloneClassMapping dbCloneClassMapping) {
 		final CloneClassMapping<E> cloneClassMapping = new CloneClassMapping<E>(
 				dbCloneClassMapping);
@@ -287,7 +287,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved clone class
 	 */
-	private CloneClass<E> retrieveCloneClass(final DBCloneClass dbCloneClass) {
+	public CloneClass<E> retrieveCloneClass(final DBCloneClass dbCloneClass) {
 		final CloneClass<E> cloneClass = new CloneClass<E>(dbCloneClass);
 
 		// set cloned & ghost code fragments
@@ -325,7 +325,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved code fragment
 	 */
-	private CodeFragment<E> retrieveCodeFragment(
+	public CodeFragment<E> retrieveCodeFragment(
 			final DBCodeFragment dbCodeFragment) {
 		final CodeFragment<E> codeFragment = new CodeFragment<E>(dbCodeFragment);
 
@@ -352,7 +352,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved segment
 	 */
-	private Segment<E> retrieveSegment(final DBSegment dbSegment) {
+	public Segment<E> retrieveSegment(final DBSegment dbSegment) {
 		final Segment<E> segment = new Segment<E>(dbSegment);
 
 		try {
@@ -407,7 +407,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved source file
 	 */
-	private SourceFile<E> retrieveSourceFile(final DBSourceFile dbSourceFile,
+	public SourceFile<E> retrieveSourceFile(final DBSourceFile dbSourceFile,
 			final DBVersion dbVersion) {
 		final SourceFile<E> sourceFile = new SourceFile<E>(dbSourceFile);
 
@@ -427,7 +427,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved code fragment mapping
 	 */
-	private CodeFragmentMapping<E> retrieveCodeFragmentMapping(
+	public CodeFragmentMapping<E> retrieveCodeFragmentMapping(
 			final DBCodeFragmentMapping dbCodeFragmentMapping) {
 		final CodeFragmentMapping<E> codeFragmentMapping = new CodeFragmentMapping<E>(
 				dbCodeFragmentMapping);
@@ -465,7 +465,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved version
 	 */
-	private Version<E> retrieveVersionOnlyWithRevision(final DBVersion dbVersion) {
+	public Version<E> retrieveVersionOnlyWithRevision(final DBVersion dbVersion) {
 		final Version<E> version = new Version<E>(dbVersion);
 
 		try {
@@ -503,7 +503,7 @@ public class CloneGenealogyRetriever<E extends IProgramElement> {
 	 * 
 	 * @return the retrieved revision
 	 */
-	private Revision retrieveRevision(final DBRevision dbRevision) {
+	public Revision retrieveRevision(final DBRevision dbRevision) {
 		return new Revision(dbRevision);
 	}
 
