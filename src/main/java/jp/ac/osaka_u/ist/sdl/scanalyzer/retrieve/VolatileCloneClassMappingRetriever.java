@@ -77,6 +77,8 @@ public class VolatileCloneClassMappingRetriever<E extends IProgramElement>
 
 			cloneClassMapping.setNewCloneClass(newCloneClass);
 		}
+		
+		manager.add(cloneClassMapping);
 
 		return cloneClassMapping;
 	}
