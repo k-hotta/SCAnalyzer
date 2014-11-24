@@ -37,7 +37,8 @@ public enum CloneClassMappingAlgorithm {
 	}
 
 	/**
-	 * Provide a string that represents which values can be used as ElementType.
+	 * Provide a string that represents which values can be used as
+	 * CloneClassMappingAlgorithm.
 	 * 
 	 * @return a string representing available values
 	 */
