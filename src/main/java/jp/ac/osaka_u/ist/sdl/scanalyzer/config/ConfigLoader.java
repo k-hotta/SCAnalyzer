@@ -89,6 +89,8 @@ public class ConfigLoader implements DefaultConfiguration {
 		usage.put("strategy", String.format(format + additional,
 				"strategy of mining", "strategy", "mining-strategy",
 				AvailableMiningStrategy.canBe()));
+		usage.put("output", String.format(format, "output file path", "output",
+				"output-file"));
 	}
 
 	/**
@@ -189,6 +191,11 @@ public class ConfigLoader implements DefaultConfiguration {
 		// NOTE: this is just for Mining
 		options.addOption(makeOption("strategy", "mining-strategy", true,
 				"the strategy of mining", 1, false));
+
+		// the output file path
+		// NOTE: this is just for Mining
+		options.addOption(makeOption("output", "output-file", true,
+				"the output file path", 1, false));
 
 		return options;
 	}
@@ -359,6 +366,9 @@ public class ConfigLoader implements DefaultConfiguration {
 		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
 				"strategy", "mining-strategy", null, true);
 
+		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "output",
+				"output-file", null, true);
+
 		return loadedConfigsAsText;
 	}
 
@@ -450,6 +460,7 @@ public class ConfigLoader implements DefaultConfiguration {
 		final String genealogyIdStr = configsAsText.get("id");
 		final AvailableMiningStrategy miningStrategy = AvailableMiningStrategy
 				.getCorrespondingStrategy(configsAsText.get("strategy"));
+		final String outputFilePath = configsAsText.get("output");
 
 		final Config result = new Config();
 
@@ -551,6 +562,10 @@ public class ConfigLoader implements DefaultConfiguration {
 
 		if (miningStrategy != null) {
 			result.setMiningStrategy(miningStrategy);
+		}
+
+		if (outputFilePath != null) {
+			result.setOutputFilePath(outputFilePath);
 		}
 
 		return result;

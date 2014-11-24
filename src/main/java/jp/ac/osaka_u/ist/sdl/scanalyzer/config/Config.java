@@ -100,6 +100,11 @@ public class Config {
 	 */
 	private AvailableMiningStrategy miningStrategy;
 
+	/**
+	 * The path of a file where the result of mining should be stored
+	 */
+	private String outputFilePath;
+
 	/*
 	 * getters and setters follow
 	 */
@@ -445,9 +450,27 @@ public class Config {
 	 * @param miningStrategy
 	 *            the strategy to be set
 	 */
-	public void setMiningStrategy(
-			final AvailableMiningStrategy miningStrategy) {
+	public void setMiningStrategy(final AvailableMiningStrategy miningStrategy) {
 		this.miningStrategy = miningStrategy;
+	}
+
+	/**
+	 * Get the output file path
+	 * 
+	 * @return the output file path
+	 */
+	public String getOutputFilePath() {
+		return outputFilePath;
+	}
+
+	/**
+	 * Set the output file path
+	 * 
+	 * @param outputFilePath
+	 *            the output file path to be stored
+	 */
+	public void setOutputFilePath(final String outputFilePath) {
+		this.outputFilePath = outputFilePath;
 	}
 
 }
