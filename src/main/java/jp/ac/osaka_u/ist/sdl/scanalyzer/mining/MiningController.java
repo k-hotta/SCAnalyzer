@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.AbstractDataDao;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.VolatileObjectRetriever;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  * @author k-hotta
  *
  */
-public class MiningController<D extends IDBElement, T extends IDataElement<D>> {
+public class MiningController<E extends IProgramElement, D extends IDBElement, T extends IDataElement<D>> {
 
 	/**
 	 * The logger
@@ -40,11 +42,18 @@ public class MiningController<D extends IDBElement, T extends IDataElement<D>> {
 	 */
 	private final AbstractDataDao<D> dao;
 
+	/**
+	 * The object retriever
+	 */
+	private final VolatileObjectRetriever<E> retriever;
+
 	public MiningController(final int maximumGenealogiesCount,
-			final MiningStrategy<D, T> stragety, final AbstractDataDao<D> dao) {
+			final MiningStrategy<D, T> stragety, final AbstractDataDao<D> dao,
+			final VolatileObjectRetriever<E> retriever) {
 		this.maximumGenealogiesCount = maximumGenealogiesCount;
 		this.strategy = stragety;
 		this.dao = dao;
+		this.retriever = retriever;
 	}
 
 	public void performMining() throws Exception {
@@ -62,14 +71,14 @@ public class MiningController<D extends IDBElement, T extends IDataElement<D>> {
 				persistElementsToBeMined.clear();
 			}
 		}
-		
+
 		if (!persistElementsToBeMined.isEmpty()) {
 			performMining(persistElementsToBeMined);
 		}
 	}
 
 	private void performMining(final Collection<D> elements) {
-		
+																										
 	}
 
 	private void prepareToContinue() {
