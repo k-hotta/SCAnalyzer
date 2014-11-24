@@ -39,7 +39,7 @@ public class VolatileCloneClassMappingRetriever<E extends IProgramElement>
 	 * @param cloneClassRetriever
 	 *            the retriever to be set
 	 */
-	public void setCloneClassMappingRetriever(
+	public void setCloneClassRetriever(
 			final VolatileCloneClassRetriever<E> cloneClassRetriever) {
 		this.cloneClassRetriever = cloneClassRetriever;
 	}
@@ -77,7 +77,7 @@ public class VolatileCloneClassMappingRetriever<E extends IProgramElement>
 
 			cloneClassMapping.setNewCloneClass(newCloneClass);
 		}
-		
+
 		manager.add(cloneClassMapping);
 
 		return cloneClassMapping;
