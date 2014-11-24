@@ -15,7 +15,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBUrlProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.Retriever;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.VolatileObjectRetriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper.FileContentProvideHelper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyView;
 
@@ -302,7 +302,7 @@ public class SCAnalyzerUIMain {
 			FileContentProvideHelper.setProvider(workerManager
 					.getFileContentProvider());
 
-			final Retriever<E> retriever = new Retriever<>(
+			final VolatileObjectRetriever<E> retriever = new VolatileObjectRetriever<>(
 					DBManager.getInstance(),
 					workerManager.getFileContentProvider(),
 					workerManager.getFileParser());

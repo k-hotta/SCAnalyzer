@@ -39,9 +39,10 @@ import org.apache.logging.log4j.Logger;
  * @param E
  *            the type of program element
  */
-public class Retriever<E extends IProgramElement> {
+public class VolatileObjectRetriever<E extends IProgramElement> {
 
-	private static final Logger logger = LogManager.getLogger(Retriever.class);
+	private static final Logger logger = LogManager
+			.getLogger(VolatileObjectRetriever.class);
 
 	private final DBManager dbManager;
 
@@ -67,7 +68,7 @@ public class Retriever<E extends IProgramElement> {
 
 	private final Map<Long, CloneGenealogy<E>> genealogies = new TreeMap<>();
 
-	public Retriever(final DBManager dbManager,
+	public VolatileObjectRetriever(final DBManager dbManager,
 			final IFileContentProvider<E> fileContentProvider,
 			final ISourceFileParser<E> parser) {
 		this.dbManager = dbManager;
