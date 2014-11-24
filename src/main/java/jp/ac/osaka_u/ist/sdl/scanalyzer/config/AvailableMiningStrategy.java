@@ -25,4 +25,30 @@ public enum AvailableMiningStrategy {
 		return builder.toString();
 	}
 
+	/**
+	 * Get the corresponding element of this enum for the given string.
+	 * 
+	 * @param str
+	 *            the query to get AvailableMiningStrategy ignoring the case
+	 * @return the corresponding AvailableMiningStrategy if found,
+	 *         <code>null</code> if not found
+	 */
+	public static AvailableMiningStrategy getCorrespondingStrategy(
+			final String str) {
+		if (str == null) {
+			return null;
+		}
+
+		final String upperStr = str.toUpperCase();
+
+		AvailableMiningStrategy result = null;
+		try {
+			result = AvailableMiningStrategy.valueOf(upperStr);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		return result;
+	}
+
 }
