@@ -74,7 +74,7 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 
 		logger.info("the number of elements to be mined: " + ids.size());
 
-		while (count <= ids.size()) {
+		while (count < ids.size()) {
 			final Long id = ids.get(count++);
 			persistElementsToBeMined.add(dao.get(id));
 
