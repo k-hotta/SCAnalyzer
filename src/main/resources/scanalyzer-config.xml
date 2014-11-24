@@ -28,5 +28,6 @@
 	</mapping>
 	<mining>
 		<mining-strategy>GENEALOGY_PERSIST_PERIOD</mining-strategy>
+		<output-file>src/test/resources/mining.csv</output-file>
 	</mining>
 </config>
