@@ -12,10 +12,14 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Token;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.AbstractDataDao;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBUrlProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRepositoryManager;
-import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.VolatileObjectRetriever;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrieveMode;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrieverManager;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.VolatileGenealogyRetriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.helper.FileContentProvideHelper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.ui.view.CloneGenealogyView;
 
@@ -183,9 +187,15 @@ public class SCAnalyzerUIMain {
 		 */
 		private WorkerManager<E> workerManager;
 
+		/**
+		 * The manager for retrievers
+		 */
+		private RetrieverManager<E> retrieverManager;
+
 		private MainHelper(final Config config) {
 			this.config = config;
 			this.workerManager = null;
+			this.retrieverManager = null;
 		}
 
 		/**
@@ -197,6 +207,7 @@ public class SCAnalyzerUIMain {
 			setUpDatabase();
 			setUpRepository();
 			this.workerManager = setUpWorkers();
+			this.retrieverManager = setUpRetrievers();
 		}
 
 		/**
@@ -293,6 +304,16 @@ public class SCAnalyzerUIMain {
 		}
 
 		/**
+		 * Set up the retrievers
+		 * 
+		 * @return
+		 * @throws Exception
+		 */
+		private RetrieverManager<E> setUpRetrievers() throws Exception {
+			return new RetrieverManager<>(RetrieveMode.VOLATILE, workerManager);
+		}
+
+		/**
 		 * Run the main procedure.
 		 * 
 		 * @throws Exception
@@ -302,14 +323,9 @@ public class SCAnalyzerUIMain {
 			FileContentProvideHelper.setProvider(workerManager
 					.getFileContentProvider());
 
-			final VolatileObjectRetriever<E> retriever = new VolatileObjectRetriever<>(
-					DBManager.getInstance(),
-					workerManager.getFileContentProvider(),
-					workerManager.getFileParser());
 			final long idToBeRetrieved = config.getGenealogyId();
 
-			final CloneGenealogy<E> genealogy = retriever
-					.retrieveCloneGenealogy(idToBeRetrieved);
+			final CloneGenealogy<E> genealogy = retrieveGenealogy(idToBeRetrieved);
 
 			if (genealogy == null) {
 				throw new IllegalStateException("cannot find genealogy "
@@ -317,6 +333,44 @@ public class SCAnalyzerUIMain {
 			}
 
 			showFrame(genealogy);
+		}
+
+		/**
+		 * Retrieve the genealogy whose id is the specified value.
+		 * 
+		 * @param id
+		 * @return
+		 * @throws Exception
+		 */
+		private CloneGenealogy<E> retrieveGenealogy(final long id)
+				throws Exception {
+			// make sure the deep refreshing is OFF
+			AbstractDataDao.setDeepRefresh(false);
+
+			// make sure the auto refreshing is ON
+			AbstractDataDao.setAutoRefresh(true);
+
+			logger.info("retrieving genealogy " + id + " from database ...");
+
+			final DBCloneGenealogy core = DBManager.getInstance()
+					.getCloneGenealogyDao().get(id);
+
+			if (core == null) {
+				// cannot find the corresponding genealogy from database
+				return null;
+			}
+
+			logger.info("persist information has successfully retrieved");
+			logger.info("setting volatile inforamtion ...");
+
+			final VolatileGenealogyRetriever<E> retriever = (VolatileGenealogyRetriever<E>) retrieverManager
+					.getGenealogyRetriever();
+
+			CloneGenealogy<E> result = retriever.retrieveElement(core);
+
+			logger.info("complete retrieving the genealogy " + id);
+
+			return result;
 		}
 
 		/**
