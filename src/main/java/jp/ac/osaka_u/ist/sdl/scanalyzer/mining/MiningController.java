@@ -79,11 +79,14 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 			persistElementsToBeMined.add(dao.get(id));
 
 			if (count % maximumGenealogiesCount == 0) {
+				logger.info("perform mining a part of the set of elements to be mined");
+				logger.info(persistElementsToBeMined.size()
+						+ " elements will be mined");
 				performMining(persistElementsToBeMined);
 				miningRunCount++;
 				logger.info("performed mining for " + miningRunCount
 						+ maximumGenealogiesCount + " elements out of "
-						+ ids.size() + " elements");
+						+ ids.size() + " elements in total");
 
 				prepareToContinue();
 				persistElementsToBeMined.clear();
@@ -102,7 +105,10 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 
 	private void performMining(final Collection<D> elements) throws Exception {
 		final List<T> toBeMined = new ArrayList<>();
+		int count = 0;
 		for (final D element : elements) {
+			logger.info("[" + (++count) + "/" + elements.size()
+					+ "] retrieving element " + element.getId());
 			toBeMined.add(retriever.retrieveElement(element));
 		}
 

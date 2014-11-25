@@ -16,8 +16,17 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 		implements MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(CloneGenealogyPersistPeriodFindStrategy.class);
 
 	private final String outputFilePath;
 
@@ -36,6 +45,9 @@ public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 	@Override
 	public void mine(Collection<CloneGenealogy<E>> genealogies)
 			throws Exception {
+		logger.info("start minining for " + genealogies.size() + " genealogies");
+
+		int count = 0;
 		for (final CloneGenealogy<E> genealogy : genealogies) {
 			Set<DBRevision> revisions = new HashSet<>();
 			for (final DBCloneClassMapping mapping : genealogy.getCore()
@@ -46,7 +58,10 @@ public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 						.getRevision());
 			}
 			persistPeriods.put(genealogy.getId(), revisions.size());
+			logger.info("[" + (++count) + "/" + genealogies.size()
+					+ "] complete mining genealogy " + genealogy.getId());
 		}
+		logger.info("complete minining all the specified genealogies");
 	}
 
 	@Override
