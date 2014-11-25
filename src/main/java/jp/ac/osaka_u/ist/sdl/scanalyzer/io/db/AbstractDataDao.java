@@ -367,7 +367,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 
 		// refresh the elements themselves in the native way
 		refreshAllInNagiveWay(elementsToBeRetrieved);
-
+		
 		for (final D element : elementsToBeRetrieved) {
 			put(element);
 		}
@@ -390,6 +390,9 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 */
 	protected void refreshAllInNagiveWay(final Collection<D> elements)
 			throws Exception {
+//		for (D element : elements) {
+//			originalDao.refresh(element);
+//		}
 		originalDao.callBatchTasks(new Callable<Void>() {
 			public Void call() throws Exception {
 				for (D element : elements) {
