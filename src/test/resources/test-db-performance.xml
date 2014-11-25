@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<db>
+	<config>
+		<dbms>SQLITE</dbms>
+		<path>src/test/resources/for-test.db</path>
+	</config>
+	
+	<data>
+		<versions>
+			<version>
+				<id>1</id>
+				<revision>
+					<id>1</id>
+					<identifier>1</identifier>
+					<date>2014-10-15 11:35</date>
+				</revision>
+				<sourcefiles>
+					<sourcefile>
+						<id>1</id>
+						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
+					</sourcefile>
+				</sourcefiles>
+				<filechanges>
+					<filechange>
+						<id>1</id>
+						<old></old>
+						<new>1</new>
+						<type>ADD</type>
+					</filechange>
+				</filechanges>
+				<rawcloneclasses>
+					<rawcloneclass></rawcloneclass>
+				</rawcloneclasses>
+			</version>
+			
+			<version>
+				<id>2</id>
+				<revision>
+					<id>2</id>
+					<identifier>2</identifier>
+					<date>2014-10-15 15:10</date>
+				</revision>
+				<sourcefiles>
+					<sourcefile>
+						<id>1</id>
+						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
+					</sourcefile>
+					<sourcefile>
+						<id>2</id>
+						<path>B.java</path>
+						<contents>int y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
+					</sourcefile>
+				</sourcefiles>
+				<filechanges>
+					<filechange>
+						<id>2</id>
+						<old></old>
+						<new>2</new>
+						<type>ADD</type>
+					</filechange>
+				</filechanges>
+				<rawcloneclasses>
+					<rawcloneclass>
+						<id>1</id>
+						<rawclonedfragments>
+							<rawclonedfragment>
+								<id>1</id>
+								<ownerfile>1</ownerfile>
+								<startline>2</startline>
+								<length>3</length>
+							</rawclonedfragment>
+							<rawclonedfragment>
+								<id>2</id>
+								<ownerfile>2</ownerfile>
+								<startline>1</startline>
+								<length>3</length>
+							</rawclonedfragment>
+						</rawclonedfragments>
+					</rawcloneclass>
+				</rawcloneclasses>
+			</version>
+			
+			<version>
+				<id>3</id>
+				<revision>
+					<id>3</id>
+					<identifier>3</identifier>
+					<date>2014-10-15 18:20</date>
+				</revision>
+				<sourcefiles>
+					<sourcefile>
+						<id>3</id>
+						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");\nint w = 0;</contents>
+					</sourcefile>
+					<sourcefile>
+						<id>2</id>
+						<path>B.java</path>
+						<contents>int y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
+					</sourcefile>
+					<sourcefile>
+						<id>4</id>
+						<path>C.java</path>
+						<contents>while (br.ready()) {\nSystem.out.println(br.getLine());\n}</contents>
+					</sourcefile>
+				</sourcefiles>
+				<filechanges>
+					<filechange>
+						<id>3</id>
+						<old>1</old>
+						<new>3</new>
+						<type>MODIFY</type>
+					</filechange>
+					<filechange>
+						<id>4</id>
+						<old></old>
+						<new>4</new>
+						<type>ADD</type>
+					</filechange>
+				</filechanges>
+				<rawcloneclasses>
+					<rawcloneclass>
+						<id>2</id>
+						<rawclonedfragments>
+							<rawclonedfragment>
+								<id>3</id>
+								<ownerfile>3</ownerfile>
+								<startline>2</startline>
+								<length>3</length>
+							</rawclonedfragment>
+							<rawclonedfragment>
+								<id>4</id>
+								<ownerfile>2</ownerfile>
+								<startline>1</startline>
+								<length>3</length>
+							</rawclonedfragment>
+						</rawclonedfragments>
+					</rawcloneclass>
+				</rawcloneclasses>
+			</version>
+			
+			<version>
+				<id>4</id>
+				<revision>
+					<id>4</id>
+					<identifier>4</identifier>
+					<date>2014-10-15 18:45</date>
+				</revision>
+				<sourcefiles>
+					<sourcefile>
+						<id>3</id>
+						<path>A.java</path>
+						<contents>int x = 0;\nint y = 0;\nint z = 0;\nSystem.out.println("hoge");\nint w = 0;</contents>
+					</sourcefile>
+					<sourcefile>
+						<id>2</id>
+						<path>B.java</path>
+						<contents>int y = 0;\nint z = 0;\nSystem.out.println("hoge");</contents>
+					</sourcefile>
+				</sourcefiles>
+				<filechanges>
+					<filechange>
+						<id>5</id>
+						<old>4</old>
+						<new></new>
+						<type>DELETE</type>
+					</filechange>
+				</filechanges>
+				<rawcloneclasses>
+					<rawcloneclass>
+						<id>3</id>
+						<rawclonedfragments>
+							<rawclonedfragment>
+								<id>5</id>
+								<ownerfile>3</ownerfile>
+								<startline>2</startline>
+								<length>3</length>
+							</rawclonedfragment>
+							<rawclonedfragment>
+								<id>6</id>
+								<ownerfile>2</ownerfile>
+								<startline>1</startline>
+								<length>3</length>
+							</rawclonedfragment>
+						</rawclonedfragments>
+					</rawcloneclass>
+				</rawcloneclasses>
+			</version>
+		</versions>
+	</data>
+</db>
