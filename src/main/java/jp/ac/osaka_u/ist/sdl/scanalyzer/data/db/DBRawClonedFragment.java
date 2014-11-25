@@ -20,7 +20,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see DBRawCloneClass
  * 
  */
-@DatabaseTable(tableName = "RAW_CLONED_FRAGMENTS")
+@DatabaseTable(tableName = TableName.RAW_CLONED_FRAGMENT)
 public class DBRawClonedFragment implements IDBElement {
 
 	/**

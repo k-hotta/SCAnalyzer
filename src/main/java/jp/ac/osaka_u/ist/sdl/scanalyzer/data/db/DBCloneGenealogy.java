@@ -11,7 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  *
  */
-@DatabaseTable(tableName = "CLONE_GENEALOGIES")
+@DatabaseTable(tableName = TableName.CLONE_GENEALOGY)
 public class DBCloneGenealogy implements IDBElement {
 
 	/**

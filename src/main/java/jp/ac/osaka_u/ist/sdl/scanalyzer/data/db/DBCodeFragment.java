@@ -12,7 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "CODE_FRAGMENTS")
+@DatabaseTable(tableName = TableName.CODE_FRAGMENT)
 public class DBCodeFragment implements IDBElement {
 
 	/**

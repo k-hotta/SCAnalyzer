@@ -11,7 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "REVISIONS")
+@DatabaseTable(tableName = TableName.REVISION)
 public class DBRevision implements IDBElement, Comparable<DBRevision> {
 
 	/**

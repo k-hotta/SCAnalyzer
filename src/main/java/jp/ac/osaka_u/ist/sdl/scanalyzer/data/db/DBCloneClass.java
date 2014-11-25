@@ -13,7 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "CLONE_CLASSES")
+@DatabaseTable(tableName = TableName.CLONE_CLASS)
 public class DBCloneClass implements IDBElement {
 
 	/**

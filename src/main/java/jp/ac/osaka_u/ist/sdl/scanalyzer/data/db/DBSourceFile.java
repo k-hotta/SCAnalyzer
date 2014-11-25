@@ -10,7 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "SOURCE_FILES")
+@DatabaseTable(tableName = TableName.SOURCE_FILE)
 public class DBSourceFile implements IDBElement {
 
 	/**

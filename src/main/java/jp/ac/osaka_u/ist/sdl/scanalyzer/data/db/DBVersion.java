@@ -16,7 +16,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "VERSIONS")
+@DatabaseTable(tableName = TableName.VERSION)
 public class DBVersion implements IDBElement {
 
 	/**

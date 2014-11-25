@@ -12,7 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author k-hotta
  * 
  */
-@DatabaseTable(tableName = "FILE_CHANGES")
+@DatabaseTable(tableName = TableName.FILE_CHANGE)
 public class DBFileChange implements IDBElement {
 
 	/**

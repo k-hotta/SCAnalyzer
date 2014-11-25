@@ -11,7 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
  *
  * @see DBCodeFragment
  */
-@DatabaseTable(tableName = "CODE_FRAGMENT_MAPPING")
+@DatabaseTable(tableName = TableName.CODE_FRAGMENT_MAPPING)
 public class DBCodeFragmentMapping implements IDBElement {
 
 	/**

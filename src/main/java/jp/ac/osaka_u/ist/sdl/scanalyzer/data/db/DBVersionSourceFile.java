@@ -5,15 +5,15 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * This class is just for realizing many-to-many relationship between
- * {@link DBVersion} and {@link DBSourceFile}. An instance of this class represents
- * a relationship between an instance of {@link DBVersion} and an instance of
- * {@link DBSourceFile}.
+ * {@link DBVersion} and {@link DBSourceFile}. An instance of this class
+ * represents a relationship between an instance of {@link DBVersion} and an
+ * instance of {@link DBSourceFile}.
  * 
  * @author k-hotta
  * @see DBVersion
  * @see DBSourceFile
  */
-@DatabaseTable(tableName = "VERSION_SOURCE_FILES")
+@DatabaseTable(tableName = TableName.VERSION_SOURCE_FILE)
 public class DBVersionSourceFile {
 
 	/**
@@ -129,7 +129,7 @@ public class DBVersionSourceFile {
 	public void setSourceFile(DBSourceFile sourceFile) {
 		this.sourceFile = sourceFile;
 	}
-	
+
 	/**
 	 * Judge whether the given object equals to this object. <br>
 	 * 
