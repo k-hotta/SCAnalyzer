@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.PreparedQuery;
 
 /**
@@ -50,6 +51,11 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * also the version will be refreshed.
 	 */
 	protected static boolean deepRefresh = false;
+	
+	/**
+	 * The maximum number of elements that can be specified in a "in" query
+	 */
+	protected static int maximumOfIN = 1000;
 
 	/**
 	 * The DB manager
@@ -213,16 +219,12 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *             If any error occurred when connecting the database
 	 */
 	public List<D> get(final long... ids) throws Exception {
-		final List<D> result = new ArrayList<D>();
-
+		final List<Long> idsList = new ArrayList<>();
 		for (final long id : ids) {
-			final D element = get(id);
-			if (element != null) {
-				result.add(element);
-			}
+			idsList.add(id);
 		}
-
-		return result;
+		
+		return get(idsList);
 	}
 
 	/**
@@ -366,8 +368,8 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		}
 
 		// refresh the elements themselves in the native way
-		refreshAllInNagiveWay(elementsToBeRetrieved);
-		
+		refreshThemselves(elementsToBeRetrieved);
+
 		for (final D element : elementsToBeRetrieved) {
 			put(element);
 		}
@@ -388,8 +390,15 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             if any error occurred
 	 */
-	protected void refreshAllInNagiveWay(final Collection<D> elements)
+	protected void refreshThemselves(final Collection<D> elements)
 			throws Exception {
+		Class<?> clazz = null;
+		for (D element : elements) {
+			clazz = element.getClass();
+			break;
+		}
+
+		long t1 = System.nanoTime();
 //		for (D element : elements) {
 //			originalDao.refresh(element);
 //		}
@@ -401,6 +410,9 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 				return null;
 			}
 		});
+		long t2 = System.nanoTime();
+		String name = (clazz == null) ? "null" : clazz.getSimpleName();
+		System.out.println("refreshing " + name + ": " + (t2 - t1));
 	}
 
 	/**
@@ -460,9 +472,16 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		for (final D element : all) {
 			result.add(element.getId());
 		}
+//		GenericRawResults<Long> rawResults = originalDao.queryRaw("select ID from CLONE_CLASS_MAPPING", (columns, results) -> {
+//			return Long.parseLong(results[0]);
+//		});
+//		for (Long id : rawResults) {
+//			result.add(id);
+//		}
 		
 		Collections.sort(result);
-
+		
+		
 		return Collections.unmodifiableList(result);
 	}
 
