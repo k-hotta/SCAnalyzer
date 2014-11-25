@@ -4,3 +4,4 @@
 .project
 *.db
 *.db-journal
+*.csv
