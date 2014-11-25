@@ -8,6 +8,7 @@ import java.util.Set;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,6 +74,16 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 		logger.trace(msg);
 	}
 
+	@Override
+	protected String getTableName() {
+		return TableName.SEGMENT;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBSegment.ID_COLUMN_NAME;
+	}
+	
 	@Override
 	protected DBSegment refreshChildren(DBSegment element) throws Exception {
 		if (deepRefresh) {

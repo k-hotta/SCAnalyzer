@@ -19,6 +19,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -175,6 +176,16 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
+	}
+	
+	@Override
+	protected String getTableName() {
+		return TableName.VERSION;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBVersion.ID_COLUMN_NAME;
 	}
 
 	@Override

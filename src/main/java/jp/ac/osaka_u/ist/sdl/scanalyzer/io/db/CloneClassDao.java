@@ -10,6 +10,7 @@ import java.util.Set;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,6 +72,16 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
+	}
+	
+	@Override
+	protected String getTableName() {
+		return TableName.CLONE_CLASS;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBCloneClass.ID_COLUMN_NAME;
 	}
 
 	@Override

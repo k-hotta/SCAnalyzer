@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,16 @@ public class RevisionDao extends AbstractDataDao<DBRevision> {
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
+	}
+	
+	@Override
+	protected String getTableName() {
+		return TableName.REVISION;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBRevision.ID_COLUMN_NAME;
 	}
 
 	@Override

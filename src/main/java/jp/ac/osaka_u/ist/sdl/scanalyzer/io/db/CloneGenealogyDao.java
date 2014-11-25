@@ -15,6 +15,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogyCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,6 +82,16 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
+	}
+
+	@Override
+	protected String getTableName() {
+		return TableName.CLONE_GENEALOGY;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBCloneGenealogy.ID_COLUMN_NAME;
 	}
 
 	/**

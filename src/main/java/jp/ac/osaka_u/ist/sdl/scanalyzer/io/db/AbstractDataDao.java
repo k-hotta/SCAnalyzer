@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.PreparedQuery;
 
 /**
@@ -51,7 +50,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * also the version will be refreshed.
 	 */
 	protected static boolean deepRefresh = false;
-	
+
 	/**
 	 * The maximum number of elements that can be specified in a "in" query
 	 */
@@ -117,6 +116,20 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *            the message to be output
 	 */
 	protected abstract void trace(final String msg);
+
+	/**
+	 * Get the name of the table is which the DAO is interested
+	 * 
+	 * @return the name of the table
+	 */
+	protected abstract String getTableName();
+
+	/**
+	 * Get the name of the column that represents ID.
+	 * 
+	 * @return the name of the ID column
+	 */
+	protected abstract String getIdColumnName();
 
 	/**
 	 * Retrieve the elements from database whose id equals to the given value.
@@ -223,7 +236,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		for (final long id : ids) {
 			idsList.add(id);
 		}
-		
+
 		return get(idsList);
 	}
 
@@ -399,9 +412,9 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		}
 
 		long t1 = System.nanoTime();
-//		for (D element : elements) {
-//			originalDao.refresh(element);
-//		}
+		// for (D element : elements) {
+		// originalDao.refresh(element);
+		// }
 		originalDao.callBatchTasks(new Callable<Void>() {
 			public Void call() throws Exception {
 				for (D element : elements) {
@@ -472,16 +485,17 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		for (final D element : all) {
 			result.add(element.getId());
 		}
-//		GenericRawResults<Long> rawResults = originalDao.queryRaw("select ID from CLONE_CLASS_MAPPING", (columns, results) -> {
-//			return Long.parseLong(results[0]);
-//		});
-//		for (Long id : rawResults) {
-//			result.add(id);
-//		}
-		
+		// GenericRawResults<Long> rawResults =
+		// originalDao.queryRaw("select ID from CLONE_CLASS_MAPPING", (columns,
+		// results) -> {
+		// return Long.parseLong(results[0]);
+		// });
+		// for (Long id : rawResults) {
+		// result.add(id);
+		// }
+
 		Collections.sort(result);
-		
-		
+
 		return Collections.unmodifiableList(result);
 	}
 

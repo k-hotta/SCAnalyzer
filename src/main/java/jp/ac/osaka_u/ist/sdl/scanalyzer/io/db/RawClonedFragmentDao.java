@@ -9,6 +9,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,6 +91,17 @@ public class RawClonedFragmentDao extends AbstractDataDao<DBRawClonedFragment> {
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
+	}
+	
+
+	@Override
+	protected String getTableName() {
+		return TableName.RAW_CLONED_FRAGMENT;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBRawClonedFragment.ID_COLUMN_NAME;
 	}
 
 	@Override

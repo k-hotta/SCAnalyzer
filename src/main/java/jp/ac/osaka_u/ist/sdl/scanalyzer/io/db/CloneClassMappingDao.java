@@ -13,6 +13,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,6 +94,16 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 	protected void trace(String msg) {
 		logger.trace(msg);
 	}
+	
+	@Override
+	protected String getTableName() {
+		return TableName.CLONE_CLASS_MAPPING;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBCloneClassMapping.ID_COLUMN_NAME;
+	}
 
 	@Override
 	protected DBCloneClassMapping refreshChildren(DBCloneClassMapping element)
@@ -171,4 +182,42 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 
 		return elements;
 	}
+
+	private class InternalDBCloneClassMapping {
+
+		private final long id;
+
+		private final Long oldCloneClassId;
+
+		private final Long newCloneClassId;
+
+		private final Long versionId;
+
+		private InternalDBCloneClassMapping(final long id,
+				final Long oldCloneClassId, final Long newCloneClassId,
+				final Long versionId) {
+			this.id = id;
+			this.oldCloneClassId = oldCloneClassId;
+			this.newCloneClassId = newCloneClassId;
+			this.versionId = versionId;
+		}
+
+		private final long getId() {
+			return id;
+		}
+
+		private final Long getOldCloneClassId() {
+			return oldCloneClassId;
+		}
+
+		private final Long getNewCloneClassId() {
+			return newCloneClassId;
+		}
+
+		private final Long getVersionId() {
+			return versionId;
+		}
+
+	}
+
 }

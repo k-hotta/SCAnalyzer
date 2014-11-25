@@ -10,6 +10,7 @@ import java.util.Set;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,6 +75,16 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
+	}
+
+	@Override
+	protected String getTableName() {
+		return TableName.CODE_FRAGMENT;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBCodeFragment.ID_COLUMN_NAME;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersionSourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +38,16 @@ public class SourceFileDao extends AbstractDataDao<DBSourceFile> {
 		logger.trace(msg);
 	}
 
+	@Override
+	protected String getTableName() {
+		return TableName.SOURCE_FILE;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBSourceFile.ID_COLUMN_NAME;
+	}
+	
 	@Override
 	protected DBSourceFile refreshChildren(DBSourceFile element)
 			throws Exception {

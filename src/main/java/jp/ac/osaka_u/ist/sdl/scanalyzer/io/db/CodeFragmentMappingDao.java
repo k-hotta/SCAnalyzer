@@ -8,6 +8,7 @@ import java.util.Set;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,6 +67,16 @@ public class CodeFragmentMappingDao extends
 		logger.trace(msg);
 	}
 
+	@Override
+	protected String getTableName() {
+		return TableName.CODE_FRAGMENT_MAPPING;
+	}
+
+	@Override
+	protected String getIdColumnName() {
+		return DBCodeFragmentMapping.ID_COLUMN_NAME;
+	}
+	
 	@Override
 	protected DBCodeFragmentMapping refreshChildren(
 			DBCodeFragmentMapping element) throws Exception {
