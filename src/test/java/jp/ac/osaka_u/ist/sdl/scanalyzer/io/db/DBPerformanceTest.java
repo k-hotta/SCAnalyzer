@@ -1,5 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -34,62 +35,118 @@ public class DBPerformanceTest {
 					.getInstance().getNativeDao(DBCloneClassMapping.class);
 
 			run(() -> {
-				GenericRawResults<DBCloneClassMapping> result = mappingDao.queryRaw("select * from CLONE_CLASS_MAPPING", (
+				mappingDao.queryRaw("select * from CLONE_CLASS_MAPPING", (
 						columns, results) -> {
 					return new DBCloneClassMapping(Long.parseLong(results[0]),
 							null, null, null, null);
 				});
-				int count = 0;
-				for (DBCloneClassMapping tmp : result) {
-					mappingDao.refresh(tmp);
-					System.out.println(count++);
-				}
 			}, "select *: ");
-
-			run(() -> mappingDao.queryForAll(), "queryForAll: ");
 			mappingDao.clearObjectCache();
 
 			run(() -> {
-				for (final Long id : ids) {
-					mappingDao.queryForId(id);
+				final List<DBCloneClassMapping> result = new ArrayList<>();
+				for (final long id : ids) {
+					final GenericRawResults<DBCloneClassMapping> rawResult = mappingDao.queryRaw(
+							"select * from CLONE_CLASS_MAPPING where ID = "
+									+ id,
+							(columns, results) -> {
+								return new DBCloneClassMapping(Long
+										.parseLong(results[0]), null, null,
+										null, null);
+							});
+					result.add(rawResult.getFirstResult());
 				}
-			}, "queryForId (for each): ");
+			}, "select (for each): ");
 			mappingDao.clearObjectCache();
 
 			run(() -> {
+				final List<DBCloneClassMapping> result = new ArrayList<>();
 				mappingDao.callBatchTasks(new Callable<Void>() {
+
 					@Override
 					public Void call() throws Exception {
 						for (final long id : ids) {
-							mappingDao.queryForId(id);
+							final GenericRawResults<DBCloneClassMapping> rawResult = mappingDao
+									.queryRaw(
+											"select * from CLONE_CLASS_MAPPING where ID = "
+													+ id,
+											(columns, results) -> {
+												return new DBCloneClassMapping(
+														Long.parseLong(results[0]),
+														null, null, null, null);
+											});
+							result.add(rawResult.getFirstResult());
 						}
+
 						return null;
 					}
+
 				});
-			}, "queryForId (batch): ");
+
+			}, "select (batch): ");
 			mappingDao.clearObjectCache();
 
-			final List<DBCloneClassMapping> elements = mappingDao.queryForAll();
-
 			run(() -> {
-				for (DBCloneClassMapping element : elements) {
-					mappingDao.refresh(element);
+				final StringBuilder builder = new StringBuilder();
+				builder.append("select * from CLONE_CLASS_MAPPING where ID in (");
+				for (final long id : ids) {
+					builder.append(id + ",");
 				}
-			}, "refresh (for each): ");
+				builder.deleteCharAt(builder.length() - 1);
+				builder.append(")");
+
+				mappingDao.queryRaw(builder.toString(), (columns, results) -> {
+					return new DBCloneClassMapping(Long.parseLong(results[0]),
+							null, null, null, null);
+				});
+			}, "select (with IN): ");
 			mappingDao.clearObjectCache();
 
-			run(() -> {
-				mappingDao.callBatchTasks(new Callable<Void>() {
-					@Override
-					public Void call() throws Exception {
-						for (DBCloneClassMapping element : elements) {
-							mappingDao.refresh(element);
-						}
-						return null;
-					}
-				});
-			}, "refresh (batch): ");
-			mappingDao.clearObjectCache();
+			// run(() -> mappingDao.queryForAll(), "queryForAll: ");
+			// mappingDao.clearObjectCache();
+			//
+			// run(() -> {
+			// for (final Long id : ids) {
+			// mappingDao.queryForId(id);
+			// }
+			// }, "queryForId (for each): ");
+			// mappingDao.clearObjectCache();
+			//
+			// run(() -> {
+			// mappingDao.callBatchTasks(new Callable<Void>() {
+			// @Override
+			// public Void call() throws Exception {
+			// for (final long id : ids) {
+			// mappingDao.queryForId(id);
+			// }
+			// return null;
+			// }
+			// });
+			// }, "queryForId (batch): ");
+			// mappingDao.clearObjectCache();
+			//
+			// final List<DBCloneClassMapping> elements =
+			// mappingDao.queryForAll();
+			//
+			// run(() -> {
+			// for (DBCloneClassMapping element : elements) {
+			// mappingDao.refresh(element);
+			// }
+			// }, "refresh (for each): ");
+			// mappingDao.clearObjectCache();
+			//
+			// run(() -> {
+			// mappingDao.callBatchTasks(new Callable<Void>() {
+			// @Override
+			// public Void call() throws Exception {
+			// for (DBCloneClassMapping element : elements) {
+			// mappingDao.refresh(element);
+			// }
+			// return null;
+			// }
+			// });
+			// }, "refresh (batch): ");
+			// mappingDao.clearObjectCache();
 
 		} finally {
 			DBManager.closeConnection();
