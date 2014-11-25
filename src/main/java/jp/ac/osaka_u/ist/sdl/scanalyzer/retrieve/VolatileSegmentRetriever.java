@@ -106,7 +106,7 @@ public class VolatileSegmentRetriever<E extends IProgramElement> implements
 			}
 
 			sourceFile = sourceFileRetriever.retrieveElement(dbSourceFile,
-					dbOwnerVersion);
+					ownerVersion.getCore());
 		}
 
 		segment.setSourceFile(sourceFile);
