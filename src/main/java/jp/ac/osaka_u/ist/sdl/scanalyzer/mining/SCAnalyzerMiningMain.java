@@ -246,9 +246,6 @@ public class SCAnalyzerMiningMain {
 
 			final DBManager dbManager = DBManager.setup(dbUrl);
 			logger.info("complete creating the database connection");
-
-			dbManager.initializeAllTables();
-			logger.info("all the tables have been successfully initialized");
 		}
 
 		/**
