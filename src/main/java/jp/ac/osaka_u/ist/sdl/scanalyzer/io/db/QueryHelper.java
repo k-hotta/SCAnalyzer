@@ -20,14 +20,15 @@ public class QueryHelper {
 
 	public static final String querySelectIdIn(final String tableName,
 			final String idColumn, final Collection<Long> ids) {
+		if (ids == null || ids.isEmpty()) {
+			return "";
+		}
+
+		
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append("select * from " + tableName);
-
-		if (ids == null || ids.isEmpty()) {
-			return builder.toString();
-		}
-
+		
 		builder.append(" where ");
 
 		int count = 0;

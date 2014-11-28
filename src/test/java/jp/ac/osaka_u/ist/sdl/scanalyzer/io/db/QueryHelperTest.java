@@ -12,14 +12,14 @@ public class QueryHelperTest {
 	@Test
 	public void testquerySelectIdIn1() {
 		String query = QueryHelper.querySelectIdIn("Table", "ID", null);
-		assertEquals(query, "select * from Table");
+		assertEquals(query, "");
 	}
 
 	@Test
 	public void testquerySelectIdIn2() {
 		String query = QueryHelper.querySelectIdIn("Table", "ID",
 				new ArrayList<Long>());
-		assertEquals(query, "select * from Table");
+		assertEquals(query, "");
 	}
 
 	@Test
