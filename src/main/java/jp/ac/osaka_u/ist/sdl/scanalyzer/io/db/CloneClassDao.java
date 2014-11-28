@@ -184,15 +184,18 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 			final Map<Long, List<DBCodeFragment>> codeFragmentsByCloneClassId,
 			final InternalDBCloneClass rawResult, final long id) {
 		final DBCloneClass newInstance = new DBCloneClass(id, null, null);
-		if (deepRefresh) {
-			newInstance.setVersion(versions.get(rawResult.getVersionId()));
-		} else {
-			newInstance.setVersion(new DBVersion(rawResult.getId(), null, null,
-					null, null, null, null));
+
+		if (autoRefresh) {
+			if (deepRefresh) {
+				newInstance.setVersion(versions.get(rawResult.getVersionId()));
+			} else {
+				newInstance.setVersion(new DBVersion(rawResult.getId(), null,
+						null, null, null, null, null));
+			}
+			newInstance.setCodeFragments(new ArrayList<>());
+			newInstance.getCodeFragments().addAll(
+					codeFragmentsByCloneClassId.get(id));
 		}
-		newInstance.setCodeFragments(new ArrayList<>());
-		newInstance.getCodeFragments().addAll(
-				codeFragmentsByCloneClassId.get(id));
 
 		retrievedElements.put(id, newInstance);
 	}
