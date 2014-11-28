@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
@@ -128,6 +129,12 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 		}
 
 		return elements;
+	}
+
+	public Map<Long, DBCodeFragment> getWithCloneClassIds(
+			final Collection<Long> ids) {
+		// TODO implement
+		return null;
 	}
 
 }
