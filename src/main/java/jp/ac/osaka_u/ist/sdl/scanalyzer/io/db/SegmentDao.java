@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
@@ -83,7 +84,7 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 	protected String getIdColumnName() {
 		return DBSegment.ID_COLUMN_NAME;
 	}
-	
+
 	@Override
 	protected DBSegment refreshChildren(DBSegment element) throws Exception {
 		if (deepRefresh) {
@@ -132,6 +133,19 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBSegment.SOURCE_FILE_COLUMN_NAME, sourceFile));
+	}
+
+	/**
+	 * Get the elements whose owner code fragment IDs are the specified one.
+	 * 
+	 * @param ids
+	 *            a collection contains IDs of interest
+	 * @return a map between ID of an element and the instance itself.
+	 */
+	public Map<Long, DBSegment> getWithCodeFragmentIds(
+			final Collection<Long> ids) {
+		// TODO implement
+		return null;
 	}
 
 }

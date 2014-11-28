@@ -3,10 +3,14 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
@@ -17,6 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.dao.RawRowMapper;
 
 /**
  * The DAO for {@link DBCodeFragment}.
@@ -135,6 +141,141 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 			final Collection<Long> ids) {
 		// TODO implement
 		return null;
+	}
+
+	@Override
+	protected Map<Long, DBCodeFragment> queryRaw(String query) throws Exception {
+		final GenericRawResults<InternalDBCodeFragment> rawResults = originalDao
+				.queryRaw(query, new RowMapper());
+
+		final SortedMap<Long, DBCodeFragment> result = new TreeMap<>();
+		final Set<Long> codeFragmentsToBeRetrieved = new TreeSet<>();
+		final Set<Long> cloneClassIdsToBeRetrieved = new TreeSet<>();
+
+		for (final InternalDBCodeFragment rawResult : rawResults) {
+			final long id = rawResult.getId();
+			if (!retrievedElements.containsKey(id)) {
+				codeFragmentsToBeRetrieved.add(id);
+				cloneClassIdsToBeRetrieved.add(rawResult.getCloneClassId());
+			}
+		}
+
+		final Map<Long, DBCloneClass> cloneClasses = (deepRefresh) ? cloneClassDao
+				.get(cloneClassIdsToBeRetrieved) : new TreeMap<>();
+		final Map<Long, DBSegment> relatedSegments = segmentDao
+				.getWithCodeFragmentIds(codeFragmentsToBeRetrieved);
+
+		final Map<Long, List<DBSegment>> segmentsByCodeFragmentIds = new TreeMap<>();
+		for (final DBSegment relatedSegment : relatedSegments.values()) {
+			final long codeFragmentId = relatedSegment.getCodeFragment()
+					.getId();
+			if (segmentsByCodeFragmentIds.containsKey(codeFragmentId)) {
+				segmentsByCodeFragmentIds.get(codeFragmentId).add(
+						relatedSegment);
+			} else {
+				final List<DBSegment> newList = new ArrayList<>();
+				newList.add(relatedSegment);
+				segmentsByCodeFragmentIds.put(codeFragmentId, newList);
+			}
+		}
+
+		for (final InternalDBCodeFragment rawResult : rawResults) {
+			final long id = rawResult.getId();
+
+			if (!retrievedElements.containsKey(id)) {
+				makeNewInstance(cloneClasses, segmentsByCodeFragmentIds,
+						rawResult, id);
+			}
+
+			result.put(id, retrievedElements.get(id));
+		}
+
+		return Collections.unmodifiableSortedMap(result);
+	}
+
+	private void makeNewInstance(final Map<Long, DBCloneClass> cloneClasses,
+			final Map<Long, List<DBSegment>> segmentsByCodeFragmentIds,
+			final InternalDBCodeFragment rawResult, final long id) {
+		final DBCodeFragment newInstance = new DBCodeFragment(id, null,
+				null, false);
+
+		if (autoRefresh) {
+			if (deepRefresh) {
+				newInstance.setCloneClass(cloneClasses.get(rawResult
+						.getCloneClassId()));
+			} else {
+				newInstance.setCloneClass(new DBCloneClass(rawResult
+						.getCloneClassId(), null, null));
+			}
+
+			newInstance.setSegments(new ArrayList<>());
+			newInstance.getSegments().addAll(
+					segmentsByCodeFragmentIds.get(id));
+
+			newInstance.setGhost(rawResult.getGhost() == 1);
+		}
+
+		retrievedElements.put(id, newInstance);
+	}
+
+	private class InternalDBCodeFragment implements
+			InternalDataRepresentation<DBCodeFragment> {
+
+		private final Long id;
+
+		private final Long cloneClassId;
+
+		private final Integer ghost;
+
+		private InternalDBCodeFragment(final Long id, final Long cloneClassId,
+				final Integer ghost) {
+			this.id = id;
+			this.cloneClassId = cloneClassId;
+			this.ghost = ghost;
+		}
+
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getCloneClassId() {
+			return cloneClassId;
+		}
+
+		public final Integer getGhost() {
+			return ghost;
+		}
+
+	}
+
+	private class RowMapper implements RawRowMapper<InternalDBCodeFragment> {
+
+		@Override
+		public InternalDBCodeFragment mapRow(String[] columnNames,
+				String[] resultColumns) throws SQLException {
+			Long id = null;
+			Long cloneClassId = null;
+			Integer ghost = null;
+
+			for (int i = 0; i < columnNames.length; i++) {
+				final String columnName = columnNames[i];
+
+				switch (columnName) {
+				case DBCodeFragment.ID_COLUMN_NAME:
+					id = Long.parseLong(resultColumns[i]);
+					break;
+				case DBCodeFragment.CLONE_CLASS_COLUMN_NAME:
+					cloneClassId = Long.parseLong(resultColumns[i]);
+					break;
+				case DBCodeFragment.GHOST_NAME:
+					ghost = Integer.parseInt(resultColumns[i]);
+					break;
+				}
+			}
+
+			return new InternalDBCodeFragment(id, cloneClassId, ghost);
+		}
+
 	}
 
 }
