@@ -14,7 +14,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
  * @param <D>
  *            the type of data to be represented
  */
-public interface InternalDataRepresentation<D extends IDBElement> {
+interface InternalDataRepresentation<D extends IDBElement> {
 
 	/**
 	 * Get the id of the element.

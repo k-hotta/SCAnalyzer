@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
@@ -76,7 +77,7 @@ public class CodeFragmentMappingDao extends
 	protected String getIdColumnName() {
 		return DBCodeFragmentMapping.ID_COLUMN_NAME;
 	}
-	
+
 	@Override
 	protected DBCodeFragmentMapping refreshChildren(
 			DBCodeFragmentMapping element) throws Exception {
@@ -133,6 +134,12 @@ public class CodeFragmentMappingDao extends
 		}
 
 		return elements;
+	}
+
+	public Map<Long, DBCodeFragmentMapping> getWithCloneClassMappingIds(
+			final Collection<Long> cloneClassMappingIds) {
+		// TODO implement
+		return null;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.PreparedQuery;
 
 /**
@@ -226,7 +228,7 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> get(final long... ids) throws Exception {
+	public Map<Long, D> get(final long... ids) throws Exception {
 		final List<Long> idsList = new ArrayList<>();
 		for (final long id : ids) {
 			idsList.add(id);
@@ -245,18 +247,23 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public List<D> get(final Collection<Long> ids) throws Exception {
-		final List<D> result = new ArrayList<D>();
+	public Map<Long, D> get(final Collection<Long> ids) throws Exception {
+		// final List<D> result = new ArrayList<D>();
+		//
+		// for (final long id : ids) {
+		// final D element = get(id);
+		// if (element != null) {
+		// result.add(element);
+		// }
+		// }
+		// return result;
 
-		for (final long id : ids) {
-			final D element = get(id);
-			if (element != null) {
-				result.add(element);
-			}
-		}
-
-		return result;
+		return queryRaw(QueryHelper.querySelectIdIn(getTableName(),
+				getIdColumnName(), ids));
 	}
+
+	protected abstract Map<Long, D> queryRaw(final String query)
+			throws Exception;
 
 	/**
 	 * Register the given element into the database.
@@ -474,20 +481,20 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *             if any error occurred
 	 */
 	public List<Long> getAllIds() throws Exception {
-		final Collection<D> all = originalDao.queryForAll();
+		// final Collection<D> all = originalDao.queryForAll();
 
 		final List<Long> result = new ArrayList<>();
-		for (final D element : all) {
-			result.add(element.getId());
-		}
-		// GenericRawResults<Long> rawResults =
-		// originalDao.queryRaw("select ID from CLONE_CLASS_MAPPING", (columns,
-		// results) -> {
-		// return Long.parseLong(results[0]);
-		// });
-		// for (Long id : rawResults) {
-		// result.add(id);
+		// for (final D element : all) {
+		// result.add(element.getId());
 		// }
+		GenericRawResults<Long> rawResults = originalDao.queryRaw("select "
+				+ getIdColumnName() + " from " + getTableName(), (columns,
+				results) -> {
+			return Long.parseLong(results[0]);
+		});
+		for (Long id : rawResults) {
+			result.add(id);
+		}
 
 		Collections.sort(result);
 
