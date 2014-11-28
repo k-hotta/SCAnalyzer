@@ -61,6 +61,22 @@ public class DBPerformanceTest {
 
 			run(() -> {
 				final List<DBCloneClassMapping> result = new ArrayList<>();
+				for (final long id : ids) {
+					final GenericRawResults<DBCloneClassMapping> rawResult = mappingDao
+							.queryRaw(
+									"select * from CLONE_CLASS_MAPPING inner join CLONE_CLASS on CLONE_CLASS_MAPPING.NEW_CLONE_CLASS = CLONE_CLASS.ID where CLONE_CLASS_MAPPING.ID = "
+											+ id,
+									(columns, results) -> {
+										return new DBCloneClassMapping(Long
+												.parseLong(results[0]), null,
+												null, null, null);
+									});
+					result.add(rawResult.getFirstResult());
+				}
+			}, "innner join: ");
+
+			run(() -> {
+				final List<DBCloneClassMapping> result = new ArrayList<>();
 				mappingDao.callBatchTasks(new Callable<Void>() {
 
 					@Override
