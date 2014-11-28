@@ -167,10 +167,16 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 						newInstance.setOldCloneClass(cloneClasses.get(rawResult
 								.getOldCloneClassId()));
 					}
+
 					if (rawResult.getNewCloneClassId() != null) {
 						newInstance.setNewCloneClass(cloneClasses.get(rawResult
 								.getNewCloneClassId()));
 					}
+
+					newInstance.setCodeFragmentMappings(new ArrayList<>());
+					newInstance.getCodeFragmentMappings().addAll(
+							fragmentMappingsByCloneMappingId.get(id));
+
 					if (deepRefresh) {
 						newInstance.setVersion(versions.get(rawResult
 								.getVersionId()));
