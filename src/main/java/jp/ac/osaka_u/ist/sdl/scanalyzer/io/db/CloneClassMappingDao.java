@@ -156,42 +156,50 @@ public class CloneClassMappingDao extends AbstractDataDao<DBCloneClassMapping> {
 
 		for (final InternalDBCloneClassMapping rawResult : rawResults) {
 			final long id = rawResult.getId();
-			if (retrievedElements.containsKey(id)) {
-				result.put(id, retrievedElements.get(id));
-			} else {
-				final DBCloneClassMapping newInstance = new DBCloneClassMapping(
-						id, null, null, null, null);
 
-				if (autoRefresh) {
-					if (rawResult.getOldCloneClassId() != null) {
-						newInstance.setOldCloneClass(cloneClasses.get(rawResult
-								.getOldCloneClassId()));
-					}
-
-					if (rawResult.getNewCloneClassId() != null) {
-						newInstance.setNewCloneClass(cloneClasses.get(rawResult
-								.getNewCloneClassId()));
-					}
-
-					newInstance.setCodeFragmentMappings(new ArrayList<>());
-					newInstance.getCodeFragmentMappings().addAll(
-							fragmentMappingsByCloneMappingId.get(id));
-
-					if (deepRefresh) {
-						newInstance.setVersion(versions.get(rawResult
-								.getVersionId()));
-					} else {
-						newInstance.setVersion(new DBVersion(rawResult
-								.getVersionId(), null, null, null, null, null,
-								null));
-					}
-				}
-
-				retrievedElements.put(id, newInstance);
+			if (!retrievedElements.containsKey(id)) {
+				makeNewInstance(cloneClasses, versions,
+						fragmentMappingsByCloneMappingId, rawResult, id);
 			}
+
+			result.put(id, retrievedElements.get(id));
 		}
 
 		return Collections.unmodifiableSortedMap(result);
+	}
+
+	private void makeNewInstance(
+			final Map<Long, DBCloneClass> cloneClasses,
+			final Map<Long, DBVersion> versions,
+			final Map<Long, List<DBCodeFragmentMapping>> fragmentMappingsByCloneMappingId,
+			final InternalDBCloneClassMapping rawResult, final long id) {
+		final DBCloneClassMapping newInstance = new DBCloneClassMapping(id,
+				null, null, null, null);
+
+		if (autoRefresh) {
+			if (rawResult.getOldCloneClassId() != null) {
+				newInstance.setOldCloneClass(cloneClasses.get(rawResult
+						.getOldCloneClassId()));
+			}
+
+			if (rawResult.getNewCloneClassId() != null) {
+				newInstance.setNewCloneClass(cloneClasses.get(rawResult
+						.getNewCloneClassId()));
+			}
+
+			newInstance.setCodeFragmentMappings(new ArrayList<>());
+			newInstance.getCodeFragmentMappings().addAll(
+					fragmentMappingsByCloneMappingId.get(id));
+
+			if (deepRefresh) {
+				newInstance.setVersion(versions.get(rawResult.getVersionId()));
+			} else {
+				newInstance.setVersion(new DBVersion(rawResult.getVersionId(),
+						null, null, null, null, null, null));
+			}
+		}
+
+		retrievedElements.put(id, newInstance);
 	}
 
 	@Override
