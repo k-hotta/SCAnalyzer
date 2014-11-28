@@ -20,8 +20,14 @@ public class QueryHelper {
 			final String idColumn, final Collection<Long> ids) {
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append("select * from " + tableName + " where ");
+		builder.append("select * from " + tableName);
 
+		if (ids == null || ids.isEmpty()) {
+			return builder.toString();
+		}
+
+		builder.append(" where ");
+		
 		int count = 0;
 		for (final long id : ids) {
 			if (count % maximumOfIn == 0) {
