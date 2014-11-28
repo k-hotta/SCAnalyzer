@@ -3,8 +3,10 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -257,9 +259,21 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 		// }
 		// }
 		// return result;
+		final Map<Long, D> result = new TreeMap<>();
 
-		return queryRaw(QueryHelper.querySelectIdIn(getTableName(),
-				getIdColumnName(), ids));
+		final Collection<Long> idsToBeRetrieved = new HashSet<>();
+		for (final Long id : ids) {
+			if (retrievedElements.containsKey(id)) {
+				result.put(id, retrievedElements.get(id));
+			} else {
+				idsToBeRetrieved.add(id);
+			}
+		}
+
+		result.putAll(queryRaw(QueryHelper.querySelectIdIn(getTableName(),
+				getIdColumnName(), ids)));
+
+		return result;
 	}
 
 	protected abstract Map<Long, D> queryRaw(final String query)
