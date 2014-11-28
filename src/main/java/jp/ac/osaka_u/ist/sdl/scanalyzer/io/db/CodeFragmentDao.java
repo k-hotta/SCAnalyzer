@@ -138,9 +138,11 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 	}
 
 	public Map<Long, DBCodeFragment> getWithCloneClassIds(
-			final Collection<Long> ids) {
-		// TODO implement
-		return null;
+			final Collection<Long> ids) throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBCodeFragment.CLONE_CLASS_COLUMN_NAME, ids);
+
+		return queryRaw(query);
 	}
 
 	@Override
@@ -196,8 +198,8 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 	private void makeNewInstance(final Map<Long, DBCloneClass> cloneClasses,
 			final Map<Long, List<DBSegment>> segmentsByCodeFragmentIds,
 			final InternalDBCodeFragment rawResult, final long id) {
-		final DBCodeFragment newInstance = new DBCodeFragment(id, null,
-				null, false);
+		final DBCodeFragment newInstance = new DBCodeFragment(id, null, null,
+				false);
 
 		if (autoRefresh) {
 			if (deepRefresh) {
@@ -209,8 +211,7 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 			}
 
 			newInstance.setSegments(new ArrayList<>());
-			newInstance.getSegments().addAll(
-					segmentsByCodeFragmentIds.get(id));
+			newInstance.getSegments().addAll(segmentsByCodeFragmentIds.get(id));
 
 			newInstance.setGhost(rawResult.getGhost() == 1);
 		}
