@@ -168,27 +168,33 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 
 		for (final InternalDBCloneClass rawResult : rawResults) {
 			final long id = rawResult.getId();
-			if (retrievedElements.containsKey(id)) {
-				result.put(id, retrievedElements.get(id));
-			} else {
-				final DBCloneClass newInstance = new DBCloneClass(id, null,
-						null);
-				if (deepRefresh) {
-					newInstance.setVersion(versions.get(rawResult
-							.getVersionId()));
-				} else {
-					newInstance.setVersion(new DBVersion(rawResult.getId(),
-							null, null, null, null, null, null));
-				}
-				newInstance.setCodeFragments(new ArrayList<>());
-				newInstance.getCodeFragments().addAll(
-						codeFragmentsByCloneClassId.get(id));
-				
-				retrievedElements.put(id, newInstance);
+
+			if (!retrievedElements.containsKey(id)) {
+				makeNewInstance(versions, codeFragmentsByCloneClassId,
+						rawResult, id);
 			}
+
+			result.put(id, retrievedElements.get(id));
 		}
 
 		return result;
+	}
+
+	private void makeNewInstance(final Map<Long, DBVersion> versions,
+			final Map<Long, List<DBCodeFragment>> codeFragmentsByCloneClassId,
+			final InternalDBCloneClass rawResult, final long id) {
+		final DBCloneClass newInstance = new DBCloneClass(id, null, null);
+		if (deepRefresh) {
+			newInstance.setVersion(versions.get(rawResult.getVersionId()));
+		} else {
+			newInstance.setVersion(new DBVersion(rawResult.getId(), null, null,
+					null, null, null, null));
+		}
+		newInstance.setCodeFragments(new ArrayList<>());
+		newInstance.getCodeFragments().addAll(
+				codeFragmentsByCloneClassId.get(id));
+
+		retrievedElements.put(id, newInstance);
 	}
 
 	private class InternalDBCloneClass implements
