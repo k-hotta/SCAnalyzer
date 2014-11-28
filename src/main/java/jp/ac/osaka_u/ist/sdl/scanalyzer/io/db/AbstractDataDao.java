@@ -52,11 +52,6 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	protected static boolean deepRefresh = false;
 
 	/**
-	 * The maximum number of elements that can be specified in a "in" query
-	 */
-	protected static int maximumOfIN = 1000;
-
-	/**
 	 * The DB manager
 	 */
 	protected final DBManager manager;

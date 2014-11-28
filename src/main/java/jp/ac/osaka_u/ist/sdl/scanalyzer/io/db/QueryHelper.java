@@ -2,6 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.util.Collection;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.DefaultConfiguration;
+
 /**
  * This is a helper class for building queries.
  * 
@@ -10,7 +12,7 @@ import java.util.Collection;
  */
 public class QueryHelper {
 
-	private static int maximumOfIn = 1000;
+	private static int maximumOfIn = DefaultConfiguration.DEFAULT_MAXIMUM_OF_IN;
 
 	public static void setMaximumOfIn(final int maximumOfIn) {
 		QueryHelper.maximumOfIn = maximumOfIn;
@@ -27,7 +29,7 @@ public class QueryHelper {
 		}
 
 		builder.append(" where ");
-		
+
 		int count = 0;
 		for (final long id : ids) {
 			if (count % maximumOfIn == 0) {
