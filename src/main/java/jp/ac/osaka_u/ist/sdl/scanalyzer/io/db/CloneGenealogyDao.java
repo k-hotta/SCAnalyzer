@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -115,6 +117,160 @@ public class CloneGenealogyDao
 	 */
 	void setCloneClassMappingDao(final CloneClassMappingDao cloneClassMappingDao) {
 		this.cloneClassMappingDao = cloneClassMappingDao;
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBCloneGenealogyRepresentation> getRowMapper()
+			throws Exception {
+		return new RowMapper();
+	}
+
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.CLONE_GENEALOGY, new TreeSet<Long>());
+		relativeElementIds.put(TableName.VERSION, new TreeSet<Long>());
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		foreignChildElementIds.put(TableName.CLONE_CLASS_MAPPING,
+				new TreeMap<Long, Set<Long>>());
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBCloneGenealogyRepresentation rawResult) throws Exception {
+		relativeElementIds.get(TableName.CLONE_GENEALOGY)
+				.add(rawResult.getId());
+
+		final Set<Long> versionIdsToBeRetrieved = relativeElementIds
+				.get(TableName.VERSION);
+		versionIdsToBeRetrieved.add(rawResult.getStartVersionId());
+		versionIdsToBeRetrieved.add(rawResult.getEndVersionId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// retrieve clone class mappings
+		final Set<Long> cloneGenealogyIdsToBeRetrieved = relativeElementIds
+				.get(TableName.CLONE_GENEALOGY);
+
+		// get IDs of relative clone class mapping
+		// from CloneGenealogyCloneClassMapping table
+		final String queryForCloneClassMappings = QueryHelper.querySelectIdIn(
+				TableName.CLONE_GENEALOGY_CLONE_CLASS,
+				DBCloneGenealogyCloneClassMapping.CLONE_GENEALOGY_COLUMN_NAME,
+				cloneGenealogyIdsToBeRetrieved);
+		final GenericRawResults<InternalDBCloneGenealogyCloneClassMapping> rawIntermediateResults = nativeCloneGenealogyCloneClassMappingDao
+				.queryRaw(
+						queryForCloneClassMappings,
+						(columnNames, resultColumns) -> {
+							Long id = null;
+							Long cloneGenealogyId = null;
+							Long cloneClassMappingId = null;
+
+							for (int i = 0; i < columnNames.length; i++) {
+								final String columnName = columnNames[i];
+								final String resultColumn = resultColumns[i];
+
+								switch (columnName) {
+								case DBCloneGenealogyCloneClassMapping.ID_COLUMN_NAME:
+									id = Long.parseLong(resultColumn);
+									break;
+								case DBCloneGenealogyCloneClassMapping.CLONE_GENEALOGY_COLUMN_NAME:
+									cloneGenealogyId = Long
+											.parseLong(resultColumn);
+									break;
+								case DBCloneGenealogyCloneClassMapping.CLONE_CLASS_MAPPING_COLUMN_NAME:
+									cloneClassMappingId = Long
+											.parseLong(resultColumn);
+									break;
+								}
+							}
+
+							return new InternalDBCloneGenealogyCloneClassMapping(
+									id, cloneGenealogyId, cloneClassMappingId);
+						});
+
+		final Set<Long> cloneClassMappingIdsToBeRetrieved = new TreeSet<Long>();
+		final Map<Long, Set<Long>> cloneClassMappingIdsByGenealogyIds = foreignChildElementIds
+				.get(TableName.CLONE_CLASS_MAPPING);
+		for (final InternalDBCloneGenealogyCloneClassMapping rawIntermediateResult : rawIntermediateResults) {
+			final long genealogyId = rawIntermediateResult
+					.getCloneGenealogyId();
+			final long mappingId = rawIntermediateResult
+					.getCloneClassMappingId();
+
+			cloneClassMappingIdsToBeRetrieved.add(mappingId);
+			Set<Long> cloneClassMappingIdsInGenealogy = cloneClassMappingIdsByGenealogyIds
+					.get(genealogyId);
+
+			if (cloneClassMappingIdsInGenealogy == null) {
+				cloneClassMappingIdsInGenealogy = new TreeSet<Long>();
+				cloneClassMappingIdsByGenealogyIds.put(genealogyId,
+						cloneClassMappingIdsInGenealogy);
+			}
+
+			cloneClassMappingIdsInGenealogy.add(mappingId);
+		}
+
+		// perform retrieving clone class mappings
+		cloneClassMappingDao.get(cloneClassMappingIdsToBeRetrieved);
+
+		// retrieve versions if deep refreshing is ON
+		if (deepRefresh) {
+			final Set<Long> versionIdsToBeRetrieved = relativeElementIds
+					.get(TableName.VERSION);
+			versionDao.get(versionIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBCloneGenealogy makeInstance(
+			InternalDBCloneGenealogyRepresentation rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBCloneGenealogy newInstance = new DBCloneGenealogy(
+				rawResult.getId(), null, null, null);
+
+		if (autoRefresh) {
+			if (deepRefresh) {
+				newInstance.setStartVersion(versionDao.get(rawResult
+						.getStartVersionId()));
+				newInstance.setEndVersion(versionDao.get(rawResult
+						.getEndVersionId()));
+			} else {
+				newInstance.setStartVersion(new DBVersion(rawResult
+						.getStartVersionId(), null, null, null, null, null,
+						null));
+				newInstance
+						.setEndVersion(new DBVersion(rawResult
+								.getEndVersionId(), null, null, null, null,
+								null, null));
+			}
+
+			final Map<Long, Set<Long>> cloneClassMappingIdsByGenealogyId = foreignChildElementIds
+					.get(TableName.CLONE_CLASS_MAPPING);
+			final Set<Long> cloneClassMappingIdsInGenealogy = cloneClassMappingIdsByGenealogyId
+					.get(rawResult.getId());
+
+			newInstance.setCloneClassMappings(new ArrayList<>());
+
+			if (cloneClassMappingIdsInGenealogy != null
+					&& !cloneClassMappingIdsInGenealogy.isEmpty()) {
+				final Collection<DBCloneClassMapping> cloneClassMappings = cloneClassMappingDao
+						.get(cloneClassMappingIdsInGenealogy).values();
+				newInstance.getCloneClassMappings().addAll(cloneClassMappings);
+			}
+		}
+
+		return newInstance;
 	}
 
 	@Override
@@ -337,39 +493,35 @@ public class CloneGenealogyDao
 
 	}
 
-	@Override
-	protected RawRowMapper<InternalDBCloneGenealogyRepresentation> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	class InternalDBCloneGenealogyCloneClassMapping implements
+			InternalDataRepresentation<DBCloneGenealogyCloneClassMapping> {
 
-	@Override
-	protected void updateRelativeElementIds(
-			InternalDBCloneGenealogyRepresentation rawResult) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+		private final Long id;
 
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+		private final Long cloneGenealogyId;
 
-	@Override
-	protected DBCloneGenealogy makeInstance(
-			InternalDBCloneGenealogyRepresentation rawResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		private final Long cloneClassMappingId;
 
-	@Override
-	protected Map<Long, DBCloneGenealogy> queryRaw(String query)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		public InternalDBCloneGenealogyCloneClassMapping(final Long id,
+				final Long cloneGenealogyId, final Long cloneClassMappingId) {
+			this.id = id;
+			this.cloneGenealogyId = cloneGenealogyId;
+			this.cloneClassMappingId = cloneClassMappingId;
+		}
+
+		@Override
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getCloneGenealogyId() {
+			return cloneGenealogyId;
+		}
+
+		public final Long getCloneClassMappingId() {
+			return cloneClassMappingId;
+		}
+
 	}
 
 }
