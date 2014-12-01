@@ -143,81 +143,105 @@ public class CodeFragmentDao extends
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBCodeFragment.CLONE_CLASS_COLUMN_NAME, ids);
 
-		return queryRaw(query);
+		return runRawQuery(query);
 	}
 
 	@Override
-	protected Map<Long, DBCodeFragment> queryRaw(String query) throws Exception {
-		final GenericRawResults<InternalDBCodeFragment> rawResults = originalDao
-				.queryRaw(query, new RowMapper());
-
-		final SortedMap<Long, DBCodeFragment> result = new TreeMap<>();
-		final Set<Long> codeFragmentsToBeRetrieved = new TreeSet<>();
-		final Set<Long> cloneClassIdsToBeRetrieved = new TreeSet<>();
-
-		for (final InternalDBCodeFragment rawResult : rawResults) {
-			final long id = rawResult.getId();
-			if (!retrievedElements.containsKey(id)) {
-				codeFragmentsToBeRetrieved.add(id);
-				cloneClassIdsToBeRetrieved.add(rawResult.getCloneClassId());
-			}
-		}
-
-		final Map<Long, DBCloneClass> cloneClasses = (deepRefresh) ? cloneClassDao
-				.get(cloneClassIdsToBeRetrieved) : new TreeMap<>();
-		final Map<Long, DBSegment> relatedSegments = segmentDao
-				.getWithCodeFragmentIds(codeFragmentsToBeRetrieved);
-
-		final Map<Long, List<DBSegment>> segmentsByCodeFragmentIds = new TreeMap<>();
-		for (final DBSegment relatedSegment : relatedSegments.values()) {
-			final long codeFragmentId = relatedSegment.getCodeFragment()
-					.getId();
-			if (segmentsByCodeFragmentIds.containsKey(codeFragmentId)) {
-				segmentsByCodeFragmentIds.get(codeFragmentId).add(
-						relatedSegment);
-			} else {
-				final List<DBSegment> newList = new ArrayList<>();
-				newList.add(relatedSegment);
-				segmentsByCodeFragmentIds.put(codeFragmentId, newList);
-			}
-		}
-
-		for (final InternalDBCodeFragment rawResult : rawResults) {
-			final long id = rawResult.getId();
-
-			if (!retrievedElements.containsKey(id)) {
-				makeNewInstance(cloneClasses, segmentsByCodeFragmentIds,
-						rawResult, id);
-			}
-
-			result.put(id, retrievedElements.get(id));
-		}
-
-		return Collections.unmodifiableSortedMap(result);
+	protected RawRowMapper<InternalDBCodeFragment> getRowMapper()
+			throws Exception {
+		return new RowMapper();
 	}
 
-	private void makeNewInstance(final Map<Long, DBCloneClass> cloneClasses,
-			final Map<Long, List<DBSegment>> segmentsByCodeFragmentIds,
-			final InternalDBCodeFragment rawResult, final long id) {
-		final DBCodeFragment newInstance = new DBCodeFragment(id, null, null,
-				false);
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.CODE_FRAGMENT, new TreeSet<Long>());
+		relativeElementIds.put(TableName.CLONE_CLASS, new TreeSet<Long>());
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		foreignChildElementIds.put(TableName.SEGMENT,
+				new TreeMap<Long, Set<Long>>());
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBCodeFragment rawResult) throws Exception {
+		relativeElementIds.get(TableName.CODE_FRAGMENT).add(rawResult.getId());
+		relativeElementIds.get(TableName.CLONE_CLASS).add(
+				rawResult.getCloneClassId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// retrieve segments
+		final Set<Long> codeFragmentIdsToBeRetrieved = relativeElementIds
+				.get(TableName.CODE_FRAGMENT);
+		final Map<Long, DBSegment> segments = segmentDao
+				.getWithCodeFragmentIds(codeFragmentIdsToBeRetrieved);
+		final Map<Long, Set<Long>> segmentsByCodeFragmentId = foreignChildElementIds
+				.get(TableName.SEGMENT);
+
+		for (final DBSegment segment : segments.values()) {
+			final long codeFragmentId = segment.getCodeFragment().getId();
+			Set<Long> segmentIdsInCodeFragment = segmentsByCodeFragmentId
+					.get(codeFragmentId);
+
+			if (segmentIdsInCodeFragment == null) {
+				segmentIdsInCodeFragment = new TreeSet<Long>();
+				segmentsByCodeFragmentId.put(codeFragmentId,
+						segmentIdsInCodeFragment);
+			}
+
+			segmentIdsInCodeFragment.add(segment.getId());
+		}
+
+		// retrieve clone classes if deep refreshing is ON
+		if (deepRefresh) {
+			final Set<Long> cloneClassIdsToBeRetrieved = relativeElementIds
+					.get(TableName.CLONE_CLASS);
+			cloneClassDao.get(cloneClassIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBCodeFragment makeInstance(InternalDBCodeFragment rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBCodeFragment newInstance = new DBCodeFragment(
+				rawResult.getId(), null, null, rawResult.getGhost() == 1);
 
 		if (autoRefresh) {
 			if (deepRefresh) {
-				newInstance.setCloneClass(cloneClasses.get(rawResult
+				newInstance.setCloneClass(cloneClassDao.get(rawResult
 						.getCloneClassId()));
 			} else {
 				newInstance.setCloneClass(new DBCloneClass(rawResult
 						.getCloneClassId(), null, null));
 			}
 
-			newInstance.setSegments(new ArrayList<>());
-			newInstance.getSegments().addAll(segmentsByCodeFragmentIds.get(id));
+			final Map<Long, Set<Long>> segmentIdsByCodeFragmentIds = foreignChildElementIds
+					.get(TableName.SEGMENT);
+			final Set<Long> segmentIdsInCodeFragment = segmentIdsByCodeFragmentIds
+					.get(rawResult.getId());
 
-			newInstance.setGhost(rawResult.getGhost() == 1);
+			newInstance.setSegments(new ArrayList<>());
+
+			if (segmentIdsInCodeFragment != null
+					&& !segmentIdsInCodeFragment.isEmpty()) {
+				final Collection<DBSegment> segments = segmentDao.get(
+						segmentIdsInCodeFragment).values();
+				newInstance.getSegments().addAll(segments);
+			}
 		}
 
-		retrievedElements.put(id, newInstance);
+		return newInstance;
 	}
 
 	class InternalDBCodeFragment implements
@@ -278,33 +302,6 @@ public class CodeFragmentDao extends
 			return new InternalDBCodeFragment(id, cloneClassId, ghost);
 		}
 
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBCodeFragment> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(InternalDBCodeFragment rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected DBCodeFragment makeInstance(InternalDBCodeFragment rawResult) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
