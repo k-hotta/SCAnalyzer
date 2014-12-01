@@ -31,7 +31,8 @@ import com.j256.ormlite.dao.RawRowMapper;
  * 
  * @see DBCodeFragment
  */
-public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
+public class CodeFragmentDao extends
+		AbstractDataDao<DBCodeFragment, CodeFragmentDao.InternalDBCodeFragment> {
 
 	/**
 	 * The logger
@@ -219,7 +220,7 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 		retrievedElements.put(id, newInstance);
 	}
 
-	private class InternalDBCodeFragment implements
+	class InternalDBCodeFragment implements
 			InternalDataRepresentation<DBCodeFragment> {
 
 		private final Long id;
@@ -249,7 +250,7 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 
 	}
 
-	private class RowMapper implements RawRowMapper<InternalDBCodeFragment> {
+	class RowMapper implements RawRowMapper<InternalDBCodeFragment> {
 
 		@Override
 		public InternalDBCodeFragment mapRow(String[] columnNames,
@@ -277,6 +278,33 @@ public class CodeFragmentDao extends AbstractDataDao<DBCodeFragment> {
 			return new InternalDBCodeFragment(id, cloneClassId, ghost);
 		}
 
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBCodeFragment> getRowMapper()
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(InternalDBCodeFragment rawResult)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBCodeFragment makeInstance(InternalDBCodeFragment rawResult) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

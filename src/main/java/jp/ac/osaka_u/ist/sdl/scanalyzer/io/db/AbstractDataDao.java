@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
@@ -18,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.PreparedQuery;
 
 /**
@@ -30,7 +33,7 @@ import com.j256.ormlite.stmt.PreparedQuery;
  *            the data class under consideration of the instance of the child
  *            class of this abstract class
  */
-public abstract class AbstractDataDao<D extends IDBElement> {
+public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDataRepresentation<D>> {
 
 	/**
 	 * The logger for errors
@@ -173,12 +176,12 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 	 *             If any error occurred when connecting the database
 	 */
 	public D get(final long id) throws Exception {
-		if (retrievedElements.containsKey(id)) {
-			return retrievedElements.get(id);
-		} else {
-			final D result = retrieve(id);
-			return refresh(result);
+		D result = retrievedElements.get(id);
+		if (result == null) {
+			result = retrieve(id);
+			refresh(result);
 		}
+		return result;
 	}
 
 	/**
@@ -275,6 +278,46 @@ public abstract class AbstractDataDao<D extends IDBElement> {
 
 		return result;
 	}
+
+	public Map<Long, D> runRawQuery(final String query) throws Exception {
+		final GenericRawResults<R> rawResults = originalDao.queryRaw(query,
+				getRowMapper());
+
+		final SortedMap<Long, D> result = new TreeMap<>();
+		final SortedMap<String, Set<Long>> relativeElementIds = new TreeMap<>();
+
+		for (final R rawResult : rawResults) {
+			final long id = rawResult.getId();
+			if (!retrievedElements.containsKey(id)) {
+				updateRelativeElementIds(rawResult);
+			}
+		}
+
+		retrieveRelativeElements(relativeElementIds);
+
+		for (final R rawResult : rawResults) {
+			final long id = rawResult.getId();
+
+			D element = retrievedElements.get(id);
+			if (element == null) {
+				element = makeInstance(rawResult);
+				retrievedElements.put(id, element);
+			}
+			result.put(id, element);
+		}
+
+		return Collections.unmodifiableSortedMap(result);
+	}
+
+	protected abstract RawRowMapper<R> getRowMapper() throws Exception;
+
+	protected abstract void updateRelativeElementIds(final R rawResult)
+			throws Exception;
+
+	protected abstract void retrieveRelativeElements(
+			final Map<String, Set<Long>> relativeElementIds) throws Exception;
+
+	protected abstract D makeInstance(final R rawResult);
 
 	protected abstract Map<Long, D> queryRaw(final String query)
 			throws Exception;

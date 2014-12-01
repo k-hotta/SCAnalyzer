@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.RawRowMapper;
 
 /**
  * The DAO for {@link DBRawCloneClass}.
@@ -24,7 +26,9 @@ import com.j256.ormlite.dao.Dao;
  * 
  * @see DBRawCloneClass
  */
-public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
+public class RawCloneClassDao
+		extends
+		AbstractDataDao<DBRawCloneClass, RawCloneClassDao.InternalDBRawCloneClass> {
 
 	/**
 	 * The logger
@@ -76,7 +80,7 @@ public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
 	protected void trace(String msg) {
 		logger.trace(msg);
 	}
-	
+
 	@Override
 	protected String getTableName() {
 		return TableName.RAW_CLONE_CLASS;
@@ -144,6 +148,90 @@ public class RawCloneClassDao extends AbstractDataDao<DBRawCloneClass> {
 			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawCloneClass.VERSION_COLUMN_NAME, version));
+	}
+
+	class InternalDBRawCloneClass implements
+			InternalDataRepresentation<DBRawCloneClass> {
+
+		private final Long id;
+
+		private final Long versionId;
+
+		public InternalDBRawCloneClass(final Long id, final Long versionId) {
+			this.id = id;
+			this.versionId = versionId;
+		}
+
+		@Override
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getVersionId() {
+			return versionId;
+		}
+
+	}
+
+	class RowMapper implements RawRowMapper<InternalDBRawCloneClass> {
+
+		@Override
+		public InternalDBRawCloneClass mapRow(String[] columnNames,
+				String[] resultColumns) throws SQLException {
+			Long id = null;
+			Long versionId = null;
+
+			for (int i = 0; i < columnNames.length; i++) {
+				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				switch (columnName) {
+				case DBRawCloneClass.ID_COLUMN_NAME:
+					id = Long.parseLong(resultColumn);
+					break;
+				case DBRawCloneClass.VERSION_COLUMN_NAME:
+					versionId = Long.parseLong(resultColumn);
+					break;
+				}
+			}
+
+			return new InternalDBRawCloneClass(id, versionId);
+		}
+
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBRawCloneClass> getRowMapper()
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(InternalDBRawCloneClass rawResult)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBRawCloneClass makeInstance(InternalDBRawCloneClass rawResult) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Map<Long, DBRawCloneClass> queryRaw(String query)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

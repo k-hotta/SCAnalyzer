@@ -30,7 +30,7 @@ import com.j256.ormlite.dao.RawRowMapper;
  * 
  * @see DBCloneClass
  */
-public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
+public class CloneClassDao extends AbstractDataDao<DBCloneClass, CloneClassDao.InternalDBCloneClass> {
 
 	/**
 	 * The logger
@@ -200,7 +200,7 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 		retrievedElements.put(id, newInstance);
 	}
 
-	private class InternalDBCloneClass implements
+	class InternalDBCloneClass implements
 			InternalDataRepresentation<DBCloneClass> {
 
 		private final Long id;
@@ -223,7 +223,7 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 
 	}
 
-	private class RowMapper implements RawRowMapper<InternalDBCloneClass> {
+	class RowMapper implements RawRowMapper<InternalDBCloneClass> {
 
 		@Override
 		public InternalDBCloneClass mapRow(String[] columnNames,
@@ -245,6 +245,33 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass> {
 
 			return new InternalDBCloneClass(id, versionId);
 		}
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBCloneClass> getRowMapper()
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(InternalDBCloneClass rawResult)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBCloneClass makeInstance(InternalDBCloneClass rawResult) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

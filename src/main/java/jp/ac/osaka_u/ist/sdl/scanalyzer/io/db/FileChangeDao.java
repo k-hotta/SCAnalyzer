@@ -30,7 +30,8 @@ import com.j256.ormlite.dao.RawRowMapper;
  * 
  * @see DBFileChange
  */
-public class FileChangeDao extends AbstractDataDao<DBFileChange> {
+public class FileChangeDao extends
+		AbstractDataDao<DBFileChange, FileChangeDao.InternalDBFileChange> {
 
 	/**
 	 * The logger
@@ -275,7 +276,7 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 		return Collections.unmodifiableSortedMap(result);
 	}
 
-	private class InternalDBFileChange implements
+	class InternalDBFileChange implements
 			InternalDataRepresentation<DBFileChange> {
 
 		private final Long id;
@@ -321,7 +322,7 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 
 	}
 
-	private class RowMapper implements RawRowMapper<InternalDBFileChange> {
+	class RowMapper implements RawRowMapper<InternalDBFileChange> {
 
 		@Override
 		public InternalDBFileChange mapRow(String[] columnNames,
@@ -359,6 +360,33 @@ public class FileChangeDao extends AbstractDataDao<DBFileChange> {
 					newSourceFileId, type, versionId);
 		}
 
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBFileChange> getRowMapper()
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(InternalDBFileChange rawResult)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBFileChange makeInstance(InternalDBFileChange rawResult) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

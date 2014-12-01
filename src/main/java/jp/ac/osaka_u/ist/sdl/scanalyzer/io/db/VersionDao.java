@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
@@ -37,7 +38,8 @@ import com.j256.ormlite.stmt.SelectArg;
  * @see DBVersion
  * @see DBVersionSourceFile
  */
-public class VersionDao extends AbstractDataDao<DBVersion> {
+public class VersionDao extends
+		AbstractDataDao<DBVersion, VersionDao.InternalDBVersion> {
 
 	/**
 	 * The logger
@@ -177,7 +179,7 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 	protected void trace(String msg) {
 		logger.trace(msg);
 	}
-	
+
 	@Override
 	protected String getTableName() {
 		return TableName.VERSION;
@@ -356,6 +358,87 @@ public class VersionDao extends AbstractDataDao<DBVersion> {
 				return null;
 			}
 		});
+	}
+
+	class InternalDBVersion implements InternalDataRepresentation<DBVersion> {
+
+		private final Long id;
+
+		private final Long revisionId;
+
+		public InternalDBVersion(final Long id, final Long revisionId) {
+			this.id = id;
+			this.revisionId = revisionId;
+		}
+
+		@Override
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getRevisionId() {
+			return revisionId;
+		}
+
+	}
+
+	class RowMapper implements RawRowMapper<InternalDBVersion> {
+
+		@Override
+		public InternalDBVersion mapRow(String[] columnNames,
+				String[] resultColumns) throws SQLException {
+			Long id = null;
+			Long revisionId = null;
+
+			for (int i = 0; i < columnNames.length; i++) {
+				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				switch (columnName) {
+				case DBVersion.ID_COLUMN_NAME:
+					id = Long.parseLong(resultColumn);
+					break;
+				case DBVersion.REVISION_COLUMN_NAME:
+					revisionId = Long.parseLong(resultColumn);
+					break;
+				}
+			}
+
+			return new InternalDBVersion(id, revisionId);
+		}
+
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBVersion> getRowMapper() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(InternalDBVersion rawResult)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBVersion makeInstance(InternalDBVersion rawResult) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Map<Long, DBVersion> queryRaw(String query) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.RawRowMapper;
 
 /**
  * The DAO for {@link DBSegment}.
@@ -23,7 +24,8 @@ import com.j256.ormlite.dao.Dao;
  * 
  * @see DBSegment
  */
-public class SegmentDao extends AbstractDataDao<DBSegment> {
+public class SegmentDao extends
+		AbstractDataDao<DBSegment, SegmentDao.InternalDBSegment> {
 
 	/**
 	 * The logger
@@ -145,6 +147,122 @@ public class SegmentDao extends AbstractDataDao<DBSegment> {
 	public Map<Long, DBSegment> getWithCodeFragmentIds(
 			final Collection<Long> ids) {
 		// TODO implement
+		return null;
+	}
+
+	class InternalDBSegment implements InternalDataRepresentation<DBSegment> {
+
+		private final Long id;
+
+		private final Long sourceFileId;
+
+		private final Integer startPosition;
+
+		private final Integer endPosition;
+
+		private final Long codeFragmentId;
+
+		public InternalDBSegment(final Long id, final Long sourceFileId,
+				final Integer startPosition, final Integer endPosition,
+				final Long codeFragmentId) {
+			this.id = id;
+			this.sourceFileId = sourceFileId;
+			this.startPosition = startPosition;
+			this.endPosition = endPosition;
+			this.codeFragmentId = codeFragmentId;
+		}
+
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getSourceFileId() {
+			return sourceFileId;
+		}
+
+		public final Integer getStartPosition() {
+			return startPosition;
+		}
+
+		public final Integer getEndPosition() {
+			return endPosition;
+		}
+
+		public final Long getCodeFragmentId() {
+			return codeFragmentId;
+		}
+
+	}
+
+	class RowMapper implements RawRowMapper<InternalDBSegment> {
+
+		@Override
+		public InternalDBSegment mapRow(String[] columnNames,
+				String[] resultColumns) throws SQLException {
+			Long id = null;
+			Long sourceFileId = null;
+			Integer startPosition = null;
+			Integer endPosition = null;
+			Long codeFragmentId = null;
+
+			for (int i = 0; i < columnNames.length; i++) {
+				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				switch (columnName) {
+				case DBSegment.ID_COLUMN_NAME:
+					id = Long.parseLong(resultColumn);
+					break;
+				case DBSegment.SOURCE_FILE_COLUMN_NAME:
+					sourceFileId = Long.parseLong(resultColumn);
+					break;
+				case DBSegment.START_POSITION_COLUMN_NAME:
+					startPosition = Integer.parseInt(resultColumn);
+					break;
+				case DBSegment.END_POSITION_COLUMN_NAME:
+					endPosition = Integer.parseInt(resultColumn);
+					break;
+				case DBSegment.CODE_FRAGMENT_COLUMN_NAME:
+					codeFragmentId = Long.parseLong(resultColumn);
+					break;
+				}
+			}
+
+			return new InternalDBSegment(id, sourceFileId, startPosition,
+					endPosition, codeFragmentId);
+		}
+
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBSegment> getRowMapper() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(InternalDBSegment rawResult)
+			throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBSegment makeInstance(InternalDBSegment rawResult) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Map<Long, DBSegment> queryRaw(String query) throws Exception {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

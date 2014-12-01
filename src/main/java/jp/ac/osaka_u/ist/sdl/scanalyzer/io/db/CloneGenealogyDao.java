@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
@@ -33,7 +34,9 @@ import com.j256.ormlite.stmt.SelectArg;
  * @see DBCloneGenealogy
  * @see DBCloneGenealogyCloneClassMapping
  */
-public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
+public class CloneGenealogyDao
+		extends
+		AbstractDataDao<DBCloneGenealogy, CloneGenealogyDao.InternalDBCloneGenealogyRepresentation> {
 
 	/**
 	 * The logger
@@ -267,6 +270,106 @@ public class CloneGenealogyDao extends AbstractDataDao<DBCloneGenealogy> {
 						return null;
 					}
 				});
+	}
+
+	class InternalDBCloneGenealogyRepresentation implements
+			InternalDataRepresentation<DBCloneGenealogy> {
+
+		private final Long id;
+
+		private final Long startVersionId;
+
+		private final Long endVersionId;
+
+		public InternalDBCloneGenealogyRepresentation(final Long id,
+				final Long startVersionId, final Long endVersionId) {
+			this.id = id;
+			this.startVersionId = startVersionId;
+			this.endVersionId = endVersionId;
+		}
+
+		@Override
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getStartVersionId() {
+			return startVersionId;
+		}
+
+		public final Long getEndVersionId() {
+			return endVersionId;
+		}
+
+	}
+
+	class RowMapper implements
+			RawRowMapper<InternalDBCloneGenealogyRepresentation> {
+
+		@Override
+		public InternalDBCloneGenealogyRepresentation mapRow(
+				String[] columnNames, String[] resultColumns)
+				throws SQLException {
+			Long id = null;
+			Long startVersionId = null;
+			Long endVersionId = null;
+
+			for (int i = 0; i < columnNames.length; i++) {
+				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				switch (columnName) {
+				case DBCloneGenealogy.ID_COLUMN_NAME:
+					id = Long.parseLong(resultColumn);
+					break;
+				case DBCloneGenealogy.START_VERSION_COLUMN_NAME:
+					startVersionId = Long.parseLong(resultColumn);
+					break;
+				case DBCloneGenealogy.END_VERSION_COLUMN_NAME:
+					endVersionId = Long.parseLong(resultColumn);
+					break;
+				}
+			}
+
+			return new InternalDBCloneGenealogyRepresentation(id,
+					startVersionId, endVersionId);
+		}
+
+	}
+
+	@Override
+	protected RawRowMapper<InternalDBCloneGenealogyRepresentation> getRowMapper()
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			InternalDBCloneGenealogyRepresentation rawResult) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected DBCloneGenealogy makeInstance(
+			InternalDBCloneGenealogyRepresentation rawResult) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Map<Long, DBCloneGenealogy> queryRaw(String query)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
