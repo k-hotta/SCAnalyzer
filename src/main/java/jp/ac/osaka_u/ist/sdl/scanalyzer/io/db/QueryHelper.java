@@ -18,17 +18,17 @@ public class QueryHelper {
 		QueryHelper.maximumOfIn = maximumOfIn;
 	}
 
-	public static final String querySelectIdIn(final String tableName,
-			final String idColumn, final Collection<Long> ids) {
+	public static final String querySelectColumnIdIn(final String tableName,
+			final String idColumn, final String targetColumnName,
+			final Collection<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return "";
 		}
 
-		
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append("select * from " + tableName);
-		
+		builder.append("select " + targetColumnName + " from " + tableName);
+
 		builder.append(" where ");
 
 		int count = 0;
@@ -55,6 +55,11 @@ public class QueryHelper {
 		}
 
 		return builder.toString();
+	}
+
+	public static final String querySelectIdIn(final String tableName,
+			final String idColumn, final Collection<Long> ids) {
+		return querySelectColumnIdIn(tableName, idColumn, "*", ids);
 	}
 
 }
