@@ -273,7 +273,7 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 			}
 		}
 
-		result.putAll(queryRaw(QueryHelper.querySelectIdIn(getTableName(),
+		result.putAll(runRawQuery(QueryHelper.querySelectIdIn(getTableName(),
 				getIdColumnName(), ids)));
 
 		return result;
@@ -285,22 +285,26 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 
 		final SortedMap<Long, D> result = new TreeMap<>();
 		final SortedMap<String, Set<Long>> relativeElementIds = new TreeMap<>();
+		final SortedMap<String, Map<Long, Set<Long>>> foreignChildElementIds = new TreeMap<>();
+
+		initializeRelativeElementIds(relativeElementIds);
+		initializeForeignChildElementIds(foreignChildElementIds);
 
 		for (final R rawResult : rawResults) {
 			final long id = rawResult.getId();
 			if (!retrievedElements.containsKey(id)) {
-				updateRelativeElementIds(rawResult);
+				updateRelativeElementIds(relativeElementIds, rawResult);
 			}
 		}
 
-		retrieveRelativeElements(relativeElementIds);
+		retrieveRelativeElements(relativeElementIds, foreignChildElementIds);
 
 		for (final R rawResult : rawResults) {
 			final long id = rawResult.getId();
 
 			D element = retrievedElements.get(id);
 			if (element == null) {
-				element = makeInstance(rawResult);
+				element = makeInstance(rawResult, foreignChildElementIds);
 				retrievedElements.put(id, element);
 			}
 			result.put(id, element);
@@ -311,16 +315,23 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 
 	protected abstract RawRowMapper<R> getRowMapper() throws Exception;
 
-	protected abstract void updateRelativeElementIds(final R rawResult)
+	protected abstract void initializeRelativeElementIds(
+			final Map<String, Set<Long>> relativeElementIds);
+
+	protected abstract void initializeForeignChildElementIds(
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds);
+
+	protected abstract void updateRelativeElementIds(
+			final Map<String, Set<Long>> relativeElementIds, final R rawResult)
 			throws Exception;
 
 	protected abstract void retrieveRelativeElements(
-			final Map<String, Set<Long>> relativeElementIds) throws Exception;
-
-	protected abstract D makeInstance(final R rawResult);
-
-	protected abstract Map<Long, D> queryRaw(final String query)
+			final Map<String, Set<Long>> relativeElementIds,
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception;
+
+	protected abstract D makeInstance(final R rawResult,
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds);
 
 	/**
 	 * Register the given element into the database.
