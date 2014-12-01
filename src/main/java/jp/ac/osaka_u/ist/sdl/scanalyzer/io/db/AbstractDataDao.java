@@ -333,7 +333,8 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 			throws Exception;
 
 	protected abstract D makeInstance(final R rawResult,
-			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds);
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception;
 
 	/**
 	 * Register the given element into the database.

@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -20,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 
 /**
@@ -30,7 +28,8 @@ import com.j256.ormlite.dao.RawRowMapper;
  * 
  * @see DBCloneClass
  */
-public class CloneClassDao extends AbstractDataDao<DBCloneClass, CloneClassDao.InternalDBCloneClass> {
+public class CloneClassDao extends
+		AbstractDataDao<DBCloneClass, CloneClassDao.InternalDBCloneClass> {
 
 	/**
 	 * The logger
@@ -133,71 +132,81 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass, CloneClassDao.I
 	}
 
 	@Override
-	protected Map<Long, DBCloneClass> queryRaw(String query) throws Exception {
-		final GenericRawResults<InternalDBCloneClass> rawResults = originalDao
-				.queryRaw(query, new RowMapper());
-
-		final SortedMap<Long, DBCloneClass> result = new TreeMap<>();
-		final Set<Long> cloneClassIdsToBeRetrieved = new TreeSet<>();
-		final Set<Long> versionIdsToBeRetrieved = new TreeSet<>();
-
-		for (final InternalDBCloneClass rawResult : rawResults) {
-			final long id = rawResult.getId();
-			if (retrievedElements.containsKey(id)) {
-				cloneClassIdsToBeRetrieved.add(id);
-				versionIdsToBeRetrieved.add(rawResult.getVersionId());
-			}
-		}
-
-		final Map<Long, DBVersion> versions = (deepRefresh) ? versionDao
-				.get(versionIdsToBeRetrieved) : new TreeMap<>();
-		final Map<Long, DBCodeFragment> relatedCodeFragments = codeFragmentDao
-				.getWithCloneClassIds(cloneClassIdsToBeRetrieved);
-
-		final Map<Long, List<DBCodeFragment>> codeFragmentsByCloneClassId = new TreeMap<>();
-		for (final DBCodeFragment codeFragment : relatedCodeFragments.values()) {
-			final long cloneClassId = codeFragment.getCloneClass().getId();
-			if (codeFragmentsByCloneClassId.containsKey(cloneClassId)) {
-				codeFragmentsByCloneClassId.get(cloneClassId).add(codeFragment);
-			} else {
-				final List<DBCodeFragment> newList = new ArrayList<>();
-				newList.add(codeFragment);
-				codeFragmentsByCloneClassId.put(cloneClassId, newList);
-			}
-		}
-
-		for (final InternalDBCloneClass rawResult : rawResults) {
-			final long id = rawResult.getId();
-
-			if (!retrievedElements.containsKey(id)) {
-				makeNewInstance(versions, codeFragmentsByCloneClassId,
-						rawResult, id);
-			}
-
-			result.put(id, retrievedElements.get(id));
-		}
-
-		return result;
+	protected RawRowMapper<InternalDBCloneClass> getRowMapper()
+			throws Exception {
+		return new RowMapper();
 	}
 
-	private void makeNewInstance(final Map<Long, DBVersion> versions,
-			final Map<Long, List<DBCodeFragment>> codeFragmentsByCloneClassId,
-			final InternalDBCloneClass rawResult, final long id) {
-		final DBCloneClass newInstance = new DBCloneClass(id, null, null);
+	@Override
+	protected void initializeRelativeElementIds(
+			final Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.CLONE_CLASS, new TreeSet<Long>());
+		relativeElementIds.put(TableName.VERSION, new TreeSet<Long>());
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		foreignChildElementIds.put(TableName.CODE_FRAGMENT,
+				new TreeMap<Long, Set<Long>>());
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			final Map<String, Set<Long>> relativeElementIds,
+			final InternalDBCloneClass rawResult) throws Exception {
+		relativeElementIds.get(TableName.CLONE_CLASS).add(rawResult.getId());
+		relativeElementIds.get(TableName.VERSION).add(rawResult.getVersionId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final Set<Long> cloneClassIdsToBeRetrieved = relativeElementIds
+				.get(TableName.CLONE_CLASS);
+		final Set<Long> versionIdsToBeRetrieved = relativeElementIds
+				.get(TableName.VERSION);
+
+		codeFragmentDao.getWithCloneClassIds(cloneClassIdsToBeRetrieved);
+		if (deepRefresh) {
+			versionDao.get(versionIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBCloneClass makeInstance(InternalDBCloneClass rawResult,
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBCloneClass newInstance = new DBCloneClass(rawResult.getId(),
+				null, null);
 
 		if (autoRefresh) {
 			if (deepRefresh) {
-				newInstance.setVersion(versions.get(rawResult.getVersionId()));
+				newInstance
+						.setVersion(versionDao.get(rawResult.getVersionId()));
 			} else {
-				newInstance.setVersion(new DBVersion(rawResult.getId(), null,
-						null, null, null, null, null));
+				newInstance.setVersion(new DBVersion(rawResult.getVersionId(),
+						null, null, null, null, null, null));
 			}
+
+			final Map<Long, Set<Long>> codeFragmentIdsByCloneClassIds = foreignChildElementIds
+					.get(TableName.CODE_FRAGMENT);
+			final Set<Long> codeFragmentIdsInCloneClass = codeFragmentIdsByCloneClassIds
+					.get(rawResult.getId());
+
 			newInstance.setCodeFragments(new ArrayList<>());
-			newInstance.getCodeFragments().addAll(
-					codeFragmentsByCloneClassId.get(id));
+
+			if (codeFragmentIdsInCloneClass != null
+					&& !codeFragmentIdsInCloneClass.isEmpty()) {
+				final Collection<DBCodeFragment> codeFragments = codeFragmentDao
+						.get(codeFragmentIdsInCloneClass).values();
+				newInstance.getCodeFragments().addAll(codeFragments);
+			}
 		}
 
-		retrievedElements.put(id, newInstance);
+		return newInstance;
 	}
 
 	class InternalDBCloneClass implements
@@ -245,33 +254,6 @@ public class CloneClassDao extends AbstractDataDao<DBCloneClass, CloneClassDao.I
 
 			return new InternalDBCloneClass(id, versionId);
 		}
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBCloneClass> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(InternalDBCloneClass rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected DBCloneClass makeInstance(InternalDBCloneClass rawResult) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
