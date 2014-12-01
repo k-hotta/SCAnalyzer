@@ -273,8 +273,10 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 			}
 		}
 
-		result.putAll(runRawQuery(QueryHelper.querySelectIdIn(getTableName(),
-				getIdColumnName(), ids)));
+		if (!idsToBeRetrieved.isEmpty()) {
+			result.putAll(runRawQuery(QueryHelper.querySelectIdIn(
+					getTableName(), getIdColumnName(), ids)));
+		}
 
 		return result;
 	}
