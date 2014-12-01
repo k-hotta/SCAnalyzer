@@ -169,7 +169,25 @@ public class CloneClassDao extends
 		final Set<Long> versionIdsToBeRetrieved = relativeElementIds
 				.get(TableName.VERSION);
 
-		codeFragmentDao.getWithCloneClassIds(cloneClassIdsToBeRetrieved);
+		final Map<Long, DBCodeFragment> codeFragments = codeFragmentDao
+				.getWithCloneClassIds(cloneClassIdsToBeRetrieved);
+		final Map<Long, Set<Long>> codeFragmentsByCloneClassIds = foreignChildElementIds
+				.get(TableName.CODE_FRAGMENT);
+
+		for (final DBCodeFragment codeFragment : codeFragments.values()) {
+			final long cloneClassId = codeFragment.getCloneClass().getId();
+			Set<Long> codeFragmentIdsInCloneClass = codeFragmentsByCloneClassIds
+					.get(cloneClassId);
+
+			if (codeFragmentIdsInCloneClass == null) {
+				codeFragmentIdsInCloneClass = new TreeSet<>();
+				codeFragmentsByCloneClassIds.put(cloneClassId,
+						codeFragmentIdsInCloneClass);
+			}
+
+			codeFragmentIdsInCloneClass.add(codeFragment.getId());
+		}
+
 		if (deepRefresh) {
 			versionDao.get(versionIdsToBeRetrieved);
 		}
