@@ -91,22 +91,21 @@ public class ForeignCollectionRetrieveHelper {
 	/**
 	 * Get child objects
 	 * 
-	 * @param rawResult
+	 * @param parentId
 	 * @param foreignChildElementIds
 	 * @param key
 	 * @param applier
 	 * @return
 	 */
-	public static <D extends IDBElement, R extends InternalDataRepresentation<D>> List<D> getChildObjects(
-			final R rawResult,
+	public static <D extends IDBElement> List<D> getChildObjects(
+			final long parentId,
 			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds,
 			final String key, final Function<Set<Long>, Collection<D>> applier) {
 		final List<D> result = new ArrayList<>();
 
 		final Map<Long, Set<Long>> childIdsByParents = foreignChildElementIds
 				.get(key);
-		final Set<Long> childIdsInParent = childIdsByParents.get(rawResult
-				.getId());
+		final Set<Long> childIdsInParent = childIdsByParents.get(parentId);
 
 		if (childIdsInParent != null && !childIdsInParent.isEmpty()) {
 			result.addAll(applier.apply(childIdsInParent));

@@ -222,19 +222,17 @@ public class CloneGenealogyDao
 								null, null));
 			}
 
-			final Map<Long, Set<Long>> cloneClassMappingIdsByGenealogyId = foreignChildElementIds
-					.get(TableName.CLONE_CLASS_MAPPING);
-			final Set<Long> cloneClassMappingIdsInGenealogy = cloneClassMappingIdsByGenealogyId
-					.get(rawResult.getId());
-
-			newInstance.setCloneClassMappings(new ArrayList<>());
-
-			if (cloneClassMappingIdsInGenealogy != null
-					&& !cloneClassMappingIdsInGenealogy.isEmpty()) {
-				final Collection<DBCloneClassMapping> cloneClassMappings = cloneClassMappingDao
-						.get(cloneClassMappingIdsInGenealogy).values();
-				newInstance.getCloneClassMappings().addAll(cloneClassMappings);
-			}
+			final List<DBCloneClassMapping> cloneClassMappings = ForeignCollectionRetrieveHelper
+					.getChildObjects(rawResult.getId(), foreignChildElementIds,
+							TableName.CLONE_CLASS_MAPPING, (set) -> {
+								try {
+									return cloneClassMappingDao.get(set)
+											.values();
+								} catch (Exception e) {
+									return null;
+								}
+							});
+			newInstance.setCloneClassMappings(cloneClassMappings);
 		}
 
 		return newInstance;
