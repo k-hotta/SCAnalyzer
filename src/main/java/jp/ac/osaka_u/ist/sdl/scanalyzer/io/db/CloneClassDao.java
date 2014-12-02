@@ -131,6 +131,14 @@ public class CloneClassDao extends
 		return elements;
 	}
 
+	public Map<Long, DBCloneClass> getWithVersionIds(Set<Long> ids)
+			throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBCloneClass.VERSION_COLUMN_NAME, ids);
+
+		return runRawQuery(query);
+	}
+
 	@Override
 	protected RawRowMapper<InternalDBCloneClass> getRowMapper()
 			throws Exception {
