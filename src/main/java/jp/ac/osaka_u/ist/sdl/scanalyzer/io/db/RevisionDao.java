@@ -65,6 +65,46 @@ public class RevisionDao extends
 		return elements;
 	}
 
+	@Override
+	protected RawRowMapper<InternalDBRevision> getRowMapper() throws Exception {
+		return new RowMapper();
+	}
+
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBRevision rawResult) throws Exception {
+		// do nothing
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// do nothing
+	}
+
+	@Override
+	protected DBRevision makeInstance(InternalDBRevision rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		return new DBRevision(rawResult.getId(), rawResult.getIdentifier(),
+				rawResult.getDate());
+	}
+
 	class InternalDBRevision implements InternalDataRepresentation<DBRevision> {
 
 		private final Long id;
@@ -124,37 +164,5 @@ public class RevisionDao extends
 			return new InternalDBRevision(id, identifier, date);
 		}
 
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBRevision> getRowMapper() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(InternalDBRevision rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected DBRevision makeInstance(InternalDBRevision rawResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Map<Long, DBRevision> queryRaw(String query) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
