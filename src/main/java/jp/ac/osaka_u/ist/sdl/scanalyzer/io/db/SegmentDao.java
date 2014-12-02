@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
@@ -150,6 +151,76 @@ public class SegmentDao extends
 		return null;
 	}
 
+	@Override
+	protected RawRowMapper<InternalDBSegment> getRowMapper() throws Exception {
+		return new RowMapper();
+	}
+
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.CODE_FRAGMENT, new TreeSet<Long>());
+		relativeElementIds.put(TableName.SOURCE_FILE, new TreeSet<Long>());
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBSegment rawResult) throws Exception {
+		relativeElementIds.get(TableName.CODE_FRAGMENT).add(
+				rawResult.getCodeFragmentId());
+		relativeElementIds.get(TableName.SOURCE_FILE).add(
+				rawResult.getSourceFileId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// retrieve elements only if deep refreshing is ON
+		if (deepRefresh) {
+			// retrieve code fragments
+			final Set<Long> codeFragmentIdsToBeRetrieved = relativeElementIds
+					.get(TableName.CODE_FRAGMENT);
+			codeFragmentDao.get(codeFragmentIdsToBeRetrieved);
+
+			final Set<Long> sourceFileIdsToBeRetrieved = relativeElementIds
+					.get(TableName.SOURCE_FILE);
+			sourceFileDao.get(sourceFileIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBSegment makeInstance(InternalDBSegment rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBSegment newInstance = new DBSegment(rawResult.getId(), null,
+				rawResult.getStartPosition(), rawResult.getEndPosition(), null);
+
+		if (autoRefresh) {
+			if (deepRefresh) {
+				newInstance.setSourceFile(sourceFileDao.get(rawResult
+						.getSourceFileId()));
+				newInstance.setCodeFragment(codeFragmentDao.get(rawResult
+						.getCodeFragmentId()));
+			} else {
+				newInstance.setSourceFile(new DBSourceFile(rawResult
+						.getSourceFileId(), null));
+				newInstance.setCodeFragment(new DBCodeFragment(rawResult
+						.getCodeFragmentId(), null, null, false));
+			}
+		}
+
+		return newInstance;
+	}
+
 	class InternalDBSegment implements InternalDataRepresentation<DBSegment> {
 
 		private final Long id;
@@ -232,38 +303,6 @@ public class SegmentDao extends
 					endPosition, codeFragmentId);
 		}
 
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBSegment> getRowMapper() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(InternalDBSegment rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected DBSegment makeInstance(InternalDBSegment rawResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Map<Long, DBSegment> queryRaw(String query) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
