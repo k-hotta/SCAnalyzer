@@ -51,4 +51,36 @@ public class ForeignCollectionRetrieveHelper {
 		return result;
 	}
 
+	/**
+	 * Get a set of IDs of RIGHT elements that should be retrieved. In addition,
+	 * the map given as the first argument will be updated to store which right
+	 * elements each of left ones has.
+	 * 
+	 * @param rightIdsByLeft
+	 * @param rawIntermediateResults
+	 * @return
+	 */
+	public static <R extends InternalIntermediateDataRepresentation<?>> Set<Long> getRightIdsAndUpdate(
+			final Map<Long, Set<Long>> rightIdsByLeft,
+			final Collection<R> rawIntermediateResults) {
+		final Set<Long> result = new TreeSet<>();
+
+		for (final R rawIntermedaiteResult : rawIntermediateResults) {
+			final long leftId = rawIntermedaiteResult.getLeftId();
+			final long rightId = rawIntermedaiteResult.getRightId();
+
+			result.add(rightId);
+			Set<Long> rightIdsInLeft = rightIdsByLeft.get(leftId);
+
+			if (rightIdsInLeft == null) {
+				rightIdsInLeft = new TreeSet<Long>();
+				rightIdsByLeft.put(leftId, rightIdsInLeft);
+			}
+
+			rightIdsInLeft.add(rightId);
+		}
+
+		return result;
+	}
+
 }
