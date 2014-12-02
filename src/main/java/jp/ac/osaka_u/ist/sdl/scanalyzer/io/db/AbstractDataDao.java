@@ -165,9 +165,12 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 	 * @throws Exception
 	 *             If any error occurred when connecting the database
 	 */
-	public Collection<D> getAll() throws Exception {
+	public Map<Long, D> getAll() throws Exception {
 		trace("get all the elements of this table from database");
-		return refreshAll(originalDao.queryForAll());
+		// return refreshAll(originalDao.queryForAll());
+
+		final List<Long> allIds = getAllIds();
+		return get(allIds);
 	}
 
 	/**
