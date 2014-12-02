@@ -211,9 +211,11 @@ public class RawClonedFragmentDao
 	}
 
 	public Map<Long, DBRawClonedFragment> getWithRawCloneClassIds(
-			final Collection<Long> ids) {
-		// TODO implement
-		return null;
+			final Collection<Long> ids) throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBRawClonedFragment.CLONE_CLASS_COLUMN_NAME, ids);
+
+		return runRawQuery(query);
 	}
 
 	@Override
