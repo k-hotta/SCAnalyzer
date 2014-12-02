@@ -146,9 +146,11 @@ public class SegmentDao extends
 	 * @return a map between ID of an element and the instance itself.
 	 */
 	public Map<Long, DBSegment> getWithCodeFragmentIds(
-			final Collection<Long> ids) {
-		// TODO implement
-		return null;
+			final Collection<Long> ids) throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBSegment.CODE_FRAGMENT_COLUMN_NAME, ids);
+
+		return runRawQuery(query);
 	}
 
 	@Override
