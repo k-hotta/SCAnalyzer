@@ -1,10 +1,13 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Function;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 
@@ -80,6 +83,33 @@ public class ForeignCollectionRetrieveHelper {
 			}
 
 			rightIdsInLeft.add(rightId);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get child objects
+	 * 
+	 * @param rawResult
+	 * @param foreignChildElementIds
+	 * @param key
+	 * @param applier
+	 * @return
+	 */
+	public static <D extends IDBElement, R extends InternalDataRepresentation<D>> List<D> getChildObjects(
+			final R rawResult,
+			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds,
+			final String key, final Function<Set<Long>, Collection<D>> applier) {
+		final List<D> result = new ArrayList<>();
+
+		final Map<Long, Set<Long>> childIdsByParents = foreignChildElementIds
+				.get(key);
+		final Set<Long> childIdsInParent = childIdsByParents.get(rawResult
+				.getId());
+
+		if (childIdsInParent != null && !childIdsInParent.isEmpty()) {
+			result.addAll(applier.apply(childIdsInParent));
 		}
 
 		return result;
