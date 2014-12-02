@@ -180,21 +180,6 @@ public class RawClonedFragmentDao
 	}
 
 	/**
-	 * Get the elements whose raw clone classes are the specified one.
-	 * 
-	 * @param rawCloneClass
-	 *            raw clone class as a query
-	 * @return a list of elements whose raw clone classes are the specified one
-	 * @throws Exception
-	 *             If any error occurred when connecting the database
-	 */
-	public Collection<DBRawClonedFragment> getWithRawCloneClass(
-			final DBRawCloneClass rawCloneClass) throws Exception {
-		return refreshAll(originalDao.queryForEq(
-				DBRawClonedFragment.CLONE_CLASS_COLUMN_NAME, rawCloneClass));
-	}
-
-	/**
 	 * Get the elements whose start lines are the specified value.
 	 * 
 	 * @param startLine
@@ -222,6 +207,12 @@ public class RawClonedFragmentDao
 			throws Exception {
 		return refreshAll(originalDao.queryForEq(
 				DBRawClonedFragment.LENGTH_COLUMN_NAME, length));
+	}
+
+	public Map<Long, DBRawClonedFragment> getWithRawCloneClassIds(
+			final Collection<Long> ids) {
+		// TODO implement
+		return null;
 	}
 
 	class InternalDBRawClonedFragment implements
