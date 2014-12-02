@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
@@ -16,11 +15,14 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 
 public class ParallelRetriever<E extends IProgramElement, D extends IDBElement, T extends IDataElement<D>> {
 
-	private final Supplier<IRetriever<E, D, T>> retrieverSupplier;
+	// private final Supplier<IRetriever<E, D, T>> retrieverSupplier;
 
-	public ParallelRetriever(
-			final Supplier<IRetriever<E, D, T>> retrieverSupplier) {
-		this.retrieverSupplier = retrieverSupplier;
+	private final IRetriever<E, D, T> retriever;
+
+	public ParallelRetriever(final IRetriever<E, D, T> retriever) {
+		// final Supplier<IRetriever<E, D, T>> retrieverSupplier) {
+		// this.retrieverSupplier = retrieverSupplier;
+		this.retriever = retriever;
 	}
 
 	public final Map<Long, T> retrieveAll(final Collection<D> dbElements) {
@@ -31,7 +33,7 @@ public class ParallelRetriever<E extends IProgramElement, D extends IDBElement, 
 			final List<Future<T>> futures = new ArrayList<>();
 			for (final D dbElement : dbElements) {
 				final ParallelRetrieveTask<E, D, T> task = new ParallelRetrieveTask<>(
-						dbElement, retrieverSupplier.get());
+						dbElement, retriever);
 				futures.add(pool.submit(task));
 			}
 
