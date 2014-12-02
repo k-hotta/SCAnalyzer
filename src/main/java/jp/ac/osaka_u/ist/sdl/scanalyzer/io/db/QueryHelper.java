@@ -18,6 +18,10 @@ public class QueryHelper {
 		QueryHelper.maximumOfIn = maximumOfIn;
 	}
 
+	public static final String queryForAll(final String tableName) {
+		return "select * from " + tableName;
+	}
+
 	public static final String querySelectColumnIdIn(final String tableName,
 			final String idColumn, final String targetColumnName,
 			final Collection<Long> ids) {
