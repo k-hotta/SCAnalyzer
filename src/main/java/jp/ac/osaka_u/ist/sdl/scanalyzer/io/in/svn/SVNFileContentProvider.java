@@ -95,43 +95,49 @@ public class SVNFileContentProvider<E extends IProgramElement> implements
 		}
 	}
 
-	private synchronized String getFileContent(final long revisionNum, final String path)
+	private String getFileContent(final long revisionNum, final String path)
 			throws SVNException {
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
-		final SVNClientManager clientManager = SVNClientManager.newInstance();
 		String result = null;
 
-		try {
-			final SVNURL target = repositoryManager.getUrl().appendPath(path,
-					false);
+		synchronized (SVNFileContentProvider.class) {
+			final ByteArrayOutputStream os = new ByteArrayOutputStream();
+			final SVNClientManager clientManager = SVNClientManager
+					.newInstance();
 
-			final SVNWCClient wcClient = clientManager.getWCClient();
-			wcClient.doGetFileContents(target, SVNRevision.create(revisionNum),
-					SVNRevision.create(revisionNum), false, new OutputStream() {
-						@Override
-						public void write(int b) throws IOException {
-							os.write(b);
-						}
-					});
+			try {
+				final SVNURL target = repositoryManager.getUrl().appendPath(
+						path, false);
 
-			final byte[] bytes = os.toByteArray();
-			final Charset guessEncoding = StringUtil.guessEncoding(bytes);
+				final SVNWCClient wcClient = clientManager.getWCClient();
+				wcClient.doGetFileContents(target,
+						SVNRevision.create(revisionNum),
+						SVNRevision.create(revisionNum), false,
+						new OutputStream() {
+							@Override
+							public void write(int b) throws IOException {
+								os.write(b);
+							}
+						});
 
-			result = new String(bytes, guessEncoding);
+				final byte[] bytes = os.toByteArray();
+				final Charset guessEncoding = StringUtil.guessEncoding(bytes);
 
-		} finally {
-			if (clientManager != null) {
-				clientManager.dispose();
-			}
-			if (os != null) {
-				try {
-					os.close();
-				} catch (Exception e) {
-					e.printStackTrace();
+				result = new String(bytes, guessEncoding);
+
+			} finally {
+				if (clientManager != null) {
+					clientManager.dispose();
+				}
+				if (os != null) {
+					try {
+						os.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-
+		
 		return result;
 	}
 
