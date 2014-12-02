@@ -207,6 +207,14 @@ public class FileChangeDao extends
 				type));
 	}
 
+	public Map<Long, DBFileChange> getWithVersionIds(final Collection<Long> ids)
+			throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBFileChange.VERSION_COLUMN_NAME, ids);
+
+		return runRawQuery(query);
+	}
+
 	@Override
 	protected RawRowMapper<InternalDBFileChange> getRowMapper()
 			throws Exception {
