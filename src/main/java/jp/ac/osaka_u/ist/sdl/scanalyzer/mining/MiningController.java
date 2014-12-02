@@ -13,6 +13,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.AbstractDataDao;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.IRetriever;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.ParallelRetriever;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve.RetrievedObjectManager;
 
 import org.apache.logging.log4j.LogManager;
@@ -111,16 +112,24 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 		logger.info("retrieving " + ids.size() + " elements from database");
 		final Map<Long, D> retrieved = retrieveFromDatabase(ids);
 		logger.info("complete retrieving elements from database");
-		
-		final List<T> toBeMined = new ArrayList<>();
-		int count = 0;
-		for (final long id : ids) {
-			logger.info("[" + (++count) + "/" + ids.size()
-					+ "] retrieving element " + id);
-			toBeMined.add(retriever.retrieveElement(retrieved.get(id)));
-		}
 
+		final List<T> toBeMined = new ArrayList<>();
+		// int count = 0;
+		// for (final long id : ids) {
+		// logger.info("[" + (++count) + "/" + ids.size()
+		// + "] retrieving element " + id);
+		// toBeMined.add(retriever.retrieveElement(retrieved.get(id)));
+		// }
+		logger.info("retrieving volatile information ...");
+		final ParallelRetriever<E, D, T> parallelRetriever = new ParallelRetriever<>(
+				retriever);
+		toBeMined.addAll(parallelRetriever.retrieveAll(retrieved.values())
+				.values());
+		logger.info("complete retrieving volatile information");
+
+		logger.info("start mining ...");
 		strategy.mine(toBeMined);
+		logger.info("complete mining for " + ids.size() + " elements");
 	}
 
 	private Map<Long, D> retrieveFromDatabase(final Collection<Long> ids)
