@@ -159,7 +159,7 @@ public class CodeFragmentDaoTest {
 	@Test
 	public void testGetAll() throws Exception {
 		final Map<Long, DBCodeFragment> references = parser.getCodeFragments();
-		final Collection<DBCodeFragment> results = dao.getAll();
+		final Collection<DBCodeFragment> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBCodeFragment result : results) {
@@ -202,7 +202,7 @@ public class CodeFragmentDaoTest {
 
 		dao.registerAll(references.values());
 
-		Collection<DBCodeFragment> results = dao.getAll();
+		Collection<DBCodeFragment> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBCodeFragment result : results) {

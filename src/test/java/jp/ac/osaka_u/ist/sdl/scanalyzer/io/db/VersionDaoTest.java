@@ -225,7 +225,7 @@ public class VersionDaoTest {
 	@Test
 	public void testGetAll() throws Exception {
 		final Map<Long, DBVersion> references = parser.getVersions();
-		final Collection<DBVersion> results = dao.getAll();
+		final Collection<DBVersion> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBVersion result : results) {
@@ -269,7 +269,7 @@ public class VersionDaoTest {
 		final Map<Long, DBVersion> references = parser.getVersions();
 		dao.registerAll(references.values());
 
-		final Collection<DBVersion> results = dao.getAll();
+		final Collection<DBVersion> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBVersion result : results) {

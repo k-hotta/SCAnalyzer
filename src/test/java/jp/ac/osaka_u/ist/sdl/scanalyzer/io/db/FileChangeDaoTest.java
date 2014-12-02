@@ -197,7 +197,7 @@ public class FileChangeDaoTest {
 	@Test
 	public void testGetAll1() throws Exception {
 		final Map<Long, DBFileChange> references = parser.getFileChanges();
-		final Collection<DBFileChange> results = dao.getAll();
+		final Collection<DBFileChange> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBFileChange result : results) {
@@ -238,7 +238,7 @@ public class FileChangeDaoTest {
 		final Map<Long, DBFileChange> references = parser.getFileChanges();
 		dao.registerAll(references.values());
 
-		final Collection<DBFileChange> results = dao.getAll();
+		final Collection<DBFileChange> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBFileChange result : results) {

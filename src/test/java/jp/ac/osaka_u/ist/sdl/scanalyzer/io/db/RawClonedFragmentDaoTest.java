@@ -187,7 +187,7 @@ public class RawClonedFragmentDaoTest {
 	public void testGetAll1() throws Exception {
 		final Map<Long, DBRawClonedFragment> references = parser
 				.getRawClonedFragments();
-		final Collection<DBRawClonedFragment> results = dao.getAll();
+		final Collection<DBRawClonedFragment> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawClonedFragment result : results) {
@@ -232,7 +232,7 @@ public class RawClonedFragmentDaoTest {
 				.getRawClonedFragments();
 		dao.registerAll(references.values());
 
-		final Collection<DBRawClonedFragment> results = dao.getAll();
+		final Collection<DBRawClonedFragment> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawClonedFragment result : results) {

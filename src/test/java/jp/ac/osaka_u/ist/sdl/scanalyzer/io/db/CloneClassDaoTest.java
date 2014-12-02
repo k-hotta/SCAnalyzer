@@ -164,7 +164,7 @@ public class CloneClassDaoTest {
 	@Test
 	public void testGetAll1() throws Exception {
 		final Map<Long, DBCloneClass> references = parser.getCloneClasses();
-		final Collection<DBCloneClass> results = dao.getAll();
+		final Collection<DBCloneClass> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBCloneClass result : results) {
@@ -206,7 +206,7 @@ public class CloneClassDaoTest {
 		final Map<Long, DBCloneClass> references = parser.getCloneClasses();
 		dao.registerAll(references.values());
 
-		final Collection<DBCloneClass> results = dao.getAll();
+		final Collection<DBCloneClass> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBCloneClass result : results) {

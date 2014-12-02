@@ -171,7 +171,7 @@ public class RawCloneClassDaoTest {
 	public void testGetAll1() throws Exception {
 		final Map<Long, DBRawCloneClass> references = parser
 				.getRawCloneClasses();
-		final Collection<DBRawCloneClass> results = dao.getAll();
+		final Collection<DBRawCloneClass> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawCloneClass result : results) {
@@ -215,7 +215,7 @@ public class RawCloneClassDaoTest {
 				.getRawCloneClasses();
 		dao.registerAll(references.values());
 
-		final Collection<DBRawCloneClass> results = dao.getAll();
+		final Collection<DBRawCloneClass> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawCloneClass result : results) {

@@ -159,7 +159,7 @@ public class SourceFileDaoTest {
 	@Test
 	public void testGetAll() throws Exception {
 		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
-		final Collection<DBSourceFile> results = dao.getAll();
+		final Collection<DBSourceFile> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBSourceFile result : results) {
@@ -201,7 +201,7 @@ public class SourceFileDaoTest {
 		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
 		dao.registerAll(references.values());
 
-		final Collection<DBSourceFile> results = dao.getAll();
+		final Collection<DBSourceFile> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBSourceFile result : results) {

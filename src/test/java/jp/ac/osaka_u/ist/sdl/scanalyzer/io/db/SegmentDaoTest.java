@@ -171,7 +171,7 @@ public class SegmentDaoTest {
 	@Test
 	public void testGetAll() throws Exception {
 		final Map<Long, DBSegment> references = parser.getSegments();
-		final Collection<DBSegment> results = dao.getAll();
+		final Collection<DBSegment> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBSegment result : results) {
@@ -214,7 +214,7 @@ public class SegmentDaoTest {
 
 		dao.registerAll(references.values());
 
-		final Collection<DBSegment> results = dao.getAll();
+		final Collection<DBSegment> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBSegment result : results) {

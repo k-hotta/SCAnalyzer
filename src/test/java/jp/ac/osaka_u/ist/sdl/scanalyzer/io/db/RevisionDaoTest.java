@@ -53,7 +53,7 @@ public class RevisionDaoTest {
 			connection.storeRevisionWithNativeWay(revision);
 		}
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		DBManager.getInstance().clearDaos();
@@ -117,8 +117,8 @@ public class RevisionDaoTest {
 
 		assertTrue(results.size() == 2);
 		for (final DBRevision result : results) {
-			final DBRevision reference = parser.getRevisions()
-					.get(result.getId());
+			final DBRevision reference = parser.getRevisions().get(
+					result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -131,8 +131,8 @@ public class RevisionDaoTest {
 
 		assertTrue(results.size() == 1);
 		for (final DBRevision result : results) {
-			final DBRevision reference = parser.getRevisions()
-					.get(result.getId());
+			final DBRevision reference = parser.getRevisions().get(
+					result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -148,8 +148,8 @@ public class RevisionDaoTest {
 
 		assertTrue(results.size() == 2);
 		for (final DBRevision result : results) {
-			final DBRevision reference = parser.getRevisions()
-					.get(result.getId());
+			final DBRevision reference = parser.getRevisions().get(
+					result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -165,8 +165,8 @@ public class RevisionDaoTest {
 
 		assertTrue(results.size() == 1);
 		for (final DBRevision result : results) {
-			final DBRevision reference = parser.getRevisions()
-					.get(result.getId());
+			final DBRevision reference = parser.getRevisions().get(
+					result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -174,7 +174,7 @@ public class RevisionDaoTest {
 	@Test
 	public void testGetAll1() throws Exception {
 		final Map<Long, DBRevision> references = parser.getRevisions();
-		final Collection<DBRevision> results = dao.getAll();
+		final Collection<DBRevision> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRevision result : results) {
@@ -195,7 +195,7 @@ public class RevisionDaoTest {
 
 		assertTrue(caughtException);
 	}
-	
+
 	@Test
 	public void testRegister2() throws Exception {
 		connection.initializeTable(DBRevision.class); // clear tables
@@ -208,7 +208,7 @@ public class RevisionDaoTest {
 
 		assertTrue(check(result, reference));
 	}
-	
+
 	@Test
 	public void testRegister3() throws Exception {
 		connection.initializeTable(DBRevision.class); // clear tables
@@ -216,7 +216,7 @@ public class RevisionDaoTest {
 		final Map<Long, DBRevision> references = parser.getRevisions();
 		dao.registerAll(references.values());
 
-		final Collection<DBRevision> results = dao.getAll();
+		final Collection<DBRevision> results = dao.getAll().values();
 
 		assertTrue(results.size() == references.size());
 		for (final DBRevision result : results) {
@@ -224,5 +224,5 @@ public class RevisionDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 }
