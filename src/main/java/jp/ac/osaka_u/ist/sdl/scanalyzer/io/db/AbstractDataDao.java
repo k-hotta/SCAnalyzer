@@ -490,13 +490,6 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 	 */
 	protected void refreshThemselves(final Collection<D> elements)
 			throws Exception {
-		Class<?> clazz = null;
-		for (D element : elements) {
-			clazz = element.getClass();
-			break;
-		}
-
-		long t1 = System.nanoTime();
 		// for (D element : elements) {
 		// originalDao.refresh(element);
 		// }
@@ -508,9 +501,6 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 				return null;
 			}
 		});
-		long t2 = System.nanoTime();
-		String name = (clazz == null) ? "null" : clazz.getSimpleName();
-		System.out.println("refreshing " + name + ": " + (t2 - t1));
 	}
 
 	/**
