@@ -31,7 +31,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
  * @param <D>
  */
 @FunctionalInterface
-interface ForeignCollectionRetrieveHelpFunction<D extends IDBElement> {
+interface ForeignCollectionOwnerIdRetrieveFunction<D extends IDBElement> {
 
 	/**
 	 * Provide the id value of the owner data element of the given foreign child
