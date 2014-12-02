@@ -13,6 +13,19 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 
+/**
+ * This class is for retrieving multiple elements in parallel. This class reuses
+ * a single retriever in all the threads. Hence, it is possible to try to
+ * retrieve same objects even though they have already been retrieved by some
+ * other threads. This might affect performance, but this doesn't affect the
+ * validity of results.
+ * 
+ * @author k-hotta
+ *
+ * @param <E>
+ * @param <D>
+ * @param <T>
+ */
 public class ParallelRetriever<E extends IProgramElement, D extends IDBElement, T extends IDataElement<D>> {
 
 	// private final Supplier<IRetriever<E, D, T>> retrieverSupplier;
