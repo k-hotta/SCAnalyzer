@@ -95,7 +95,7 @@ public class SVNFileContentProvider<E extends IProgramElement> implements
 		}
 	}
 
-	private String getFileContent(final long revisionNum, final String path)
+	private synchronized String getFileContent(final long revisionNum, final String path)
 			throws SVNException {
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 		final SVNClientManager clientManager = SVNClientManager.newInstance();
