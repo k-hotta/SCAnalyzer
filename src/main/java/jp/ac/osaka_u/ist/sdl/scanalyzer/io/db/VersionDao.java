@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -284,6 +286,226 @@ public class VersionDao extends
 		return elements;
 	}
 
+	@Override
+	protected RawRowMapper<InternalDBVersion> getRowMapper() throws Exception {
+		return new RowMapper();
+	}
+
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.VERSION, new TreeSet<Long>());
+		relativeElementIds.put(TableName.REVISION, new TreeSet<Long>());
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		foreignChildElementIds.put(TableName.FILE_CHANGE,
+				new TreeMap<Long, Set<Long>>());
+		foreignChildElementIds.put(TableName.RAW_CLONE_CLASS,
+				new TreeMap<Long, Set<Long>>());
+		foreignChildElementIds.put(TableName.CLONE_CLASS,
+				new TreeMap<Long, Set<Long>>());
+		foreignChildElementIds.put(TableName.SOURCE_FILE,
+				new TreeMap<Long, Set<Long>>());
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBVersion rawResult) throws Exception {
+		relativeElementIds.get(TableName.VERSION).add(rawResult.getId());
+		relativeElementIds.get(TableName.REVISION).add(
+				rawResult.getRevisionId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// retrieve revisions
+		final Set<Long> revisionIds = relativeElementIds
+				.get(TableName.REVISION);
+		revisionDao.get(revisionIds);
+
+		/*
+		 * this is used for retrieving foreign collection elements
+		 */
+		final Set<Long> versionIds = relativeElementIds.get(TableName.VERSION);
+
+		// retrieve file changes
+		{
+			final Map<Long, DBFileChange> fileChanges = fileChangeDao
+					.getWithVersionIds(versionIds);
+			final Map<Long, Set<Long>> fileChangeIdsByVersion = foreignChildElementIds
+					.get(TableName.FILE_CHANGE);
+			fileChangeIdsByVersion.putAll(ForeignCollectionRetrieveHelper
+					.sortIdsByParentElement(fileChanges.values(), (e) -> {
+						return e.getVersion().getId();
+					}));
+		}
+
+		// retrieve raw clone classes
+		{
+			final Map<Long, DBRawCloneClass> rawCloneClasses = rawCloneClassDao
+					.getWithVersionIds(versionIds);
+			final Map<Long, Set<Long>> rawCloneClassIdsByVersion = foreignChildElementIds
+					.get(TableName.RAW_CLONE_CLASS);
+			rawCloneClassIdsByVersion.putAll(ForeignCollectionRetrieveHelper
+					.sortIdsByParentElement(rawCloneClasses.values(), (e) -> {
+						return e.getVersion().getId();
+					}));
+		}
+
+		// retrieve clone classes
+		{
+			final Map<Long, DBCloneClass> cloneClasses = cloneClassDao
+					.getWithVersionIds(versionIds);
+			final Map<Long, Set<Long>> cloneClassIdsByVersion = foreignChildElementIds
+					.get(TableName.CLONE_CLASS);
+			cloneClassIdsByVersion.putAll(ForeignCollectionRetrieveHelper
+					.sortIdsByParentElement(cloneClasses.values(), (e) -> {
+						return e.getVersion().getId();
+					}));
+		}
+
+		// retrieve clone class mappings
+		{
+			final Map<Long, DBCloneClassMapping> cloneClassMappings = cloneClassMappingDao
+					.getWithVersionIds(versionIds);
+			final Map<Long, Set<Long>> cloneClassMappingIdsByVersion = foreignChildElementIds
+					.get(TableName.CLONE_CLASS_MAPPING);
+			cloneClassMappingIdsByVersion
+					.putAll(ForeignCollectionRetrieveHelper
+							.sortIdsByParentElement(
+									cloneClassMappings.values(), (e) -> {
+										return e.getVersion().getId();
+									}));
+		}
+
+		// retrieve source files
+
+		// query for version source files
+		{
+			final String queryForSourceFiles = QueryHelper.querySelectIdIn(
+					TableName.VERSION_SOURCE_FILE,
+					DBVersionSourceFile.VERSION_COLUMN_NAME, versionIds);
+
+			final IntermediateRowMapper<DBVersionSourceFile, InternalDBVersionSourceFile> rowMapper = new IntermediateRowMapper<>();
+			rowMapper.setInstantiateFunction((map) -> {
+				return new InternalDBVersionSourceFile( //
+						map.get(DBVersionSourceFile.ID_COLUMN_NAME), //
+						map.get(DBVersionSourceFile.VERSION_COLUMN_NAME), //
+						map.get(DBVersionSourceFile.SOURCE_FILE_COLUMN_NAME));
+			});
+
+			final GenericRawResults<InternalDBVersionSourceFile> rawIntermediateResults = nativeVersionSourceFileDao
+					.queryRaw(queryForSourceFiles, rowMapper);
+
+			final Map<Long, Set<Long>> sourceFileIdsByVersionIds = foreignChildElementIds
+					.get(TableName.SOURCE_FILE);
+
+			final Set<Long> sourceFileIds = ForeignCollectionRetrieveHelper
+					.getRightIdsAndUpdate(sourceFileIdsByVersionIds,
+							rawIntermediateResults);
+
+			sourceFileDao.get(sourceFileIds);
+		}
+	}
+
+	@Override
+	protected DBVersion makeInstance(InternalDBVersion rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBVersion newInstance = new DBVersion(rawResult.getId(), null,
+				null, null, null, null, null);
+
+		if (autoRefresh) {
+			newInstance.setRevision(revisionDao.get(rawResult.getRevisionId()));
+
+			{
+				final List<DBFileChange> fileChanges = ForeignCollectionRetrieveHelper
+						.getChildObjects(rawResult.getId(),
+								foreignChildElementIds, TableName.FILE_CHANGE,
+								(set) -> {
+									try {
+										return fileChangeDao.get(set).values();
+									} catch (Exception e) {
+										return null;
+									}
+								});
+
+				newInstance.setFileChanges(fileChanges);
+			}
+
+			{
+				final List<DBRawCloneClass> rawCloneClasses = ForeignCollectionRetrieveHelper
+						.getChildObjects(rawResult.getId(),
+								foreignChildElementIds,
+								TableName.RAW_CLONE_CLASS, (set) -> {
+									try {
+										return rawCloneClassDao.get(set)
+												.values();
+									} catch (Exception e) {
+										return null;
+									}
+								});
+
+				newInstance.setRawCloneClasses(rawCloneClasses);
+			}
+
+			{
+				final List<DBCloneClass> cloneClasses = ForeignCollectionRetrieveHelper
+						.getChildObjects(rawResult.getId(),
+								foreignChildElementIds, TableName.CLONE_CLASS,
+								(set) -> {
+									try {
+										return cloneClassDao.get(set).values();
+									} catch (Exception e) {
+										return null;
+									}
+								});
+
+				newInstance.setCloneClasses(cloneClasses);
+			}
+
+			{
+				final List<DBCloneClassMapping> cloneClassMapping = ForeignCollectionRetrieveHelper
+						.getChildObjects(rawResult.getId(),
+								foreignChildElementIds, TableName.CLONE_CLASS,
+								(set) -> {
+									try {
+										return cloneClassMappingDao.get(set)
+												.values();
+									} catch (Exception e) {
+										return null;
+									}
+								});
+
+				newInstance.setCloneClassMappings(cloneClassMapping);
+			}
+
+			{
+				final List<DBSourceFile> sourceFiles = ForeignCollectionRetrieveHelper
+						.getChildObjects(rawResult.getId(),
+								foreignChildElementIds, TableName.CLONE_CLASS,
+								(set) -> {
+									try {
+										return sourceFileDao.get(set).values();
+									} catch (Exception e) {
+										return null;
+									}
+								});
+
+				newInstance.setSourceFiles(sourceFiles);
+			}
+		}
+
+		return newInstance;
+	}
+
 	/**
 	 * Get the elements whose revisions are the specified one.
 	 * 
@@ -410,7 +632,7 @@ public class VersionDao extends
 	}
 
 	class InternalDBVersionSourceFile implements
-			InternalDataRepresentation<DBVersionSourceFile> {
+			InternalIntermediateDataRepresentation<DBVersionSourceFile> {
 
 		private final Long id;
 
@@ -428,6 +650,16 @@ public class VersionDao extends
 		@Override
 		public final Long getId() {
 			return id;
+		}
+
+		@Override
+		public final Long getLeftId() {
+			return versionId;
+		}
+
+		@Override
+		public final Long getRightId() {
+			return sourceFileId;
 		}
 
 		public final Long getVersionId() {
