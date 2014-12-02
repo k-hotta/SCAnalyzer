@@ -495,7 +495,7 @@ public class CloneGenealogyDao
 
 	class InternalDBCloneGenealogyCloneClassMapping
 			implements
-			InternalLeftRightDataRepresentation<DBCloneGenealogyCloneClassMapping> {
+			InternalIntermediateDataRepresentation<DBCloneGenealogyCloneClassMapping> {
 
 		private final Long id;
 

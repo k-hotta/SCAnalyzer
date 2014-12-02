@@ -11,7 +11,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
  *
  * @param <D>
  */
-public interface InternalLeftRightDataRepresentation<D extends IDBElement>
+public interface InternalIntermediateDataRepresentation<D extends IDBElement>
 		extends InternalDataRepresentation<D> {
 
 	public Long getLeftId();
