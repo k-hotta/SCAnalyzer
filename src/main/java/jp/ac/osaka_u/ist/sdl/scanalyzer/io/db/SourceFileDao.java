@@ -81,6 +81,46 @@ public class SourceFileDao extends
 				path));
 	}
 
+	@Override
+	protected RawRowMapper<InternalDBSourceFile> getRowMapper()
+			throws Exception {
+		return new RowMapper();
+	}
+
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBSourceFile rawResult) throws Exception {
+		// do nothing
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// TODO do nothing
+	}
+
+	@Override
+	protected DBSourceFile makeInstance(InternalDBSourceFile rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		return new DBSourceFile(rawResult.getId(), rawResult.getPath());
+	}
+
 	class InternalDBSourceFile implements
 			InternalDataRepresentation<DBSourceFile> {
 
@@ -131,36 +171,4 @@ public class SourceFileDao extends
 
 	}
 
-	@Override
-	protected RawRowMapper<InternalDBSourceFile> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(InternalDBSourceFile rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected DBSourceFile makeInstance(InternalDBSourceFile rawResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Map<Long, DBSourceFile> queryRaw(String query) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
