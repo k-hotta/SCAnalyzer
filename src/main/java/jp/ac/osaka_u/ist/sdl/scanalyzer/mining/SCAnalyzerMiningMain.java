@@ -244,7 +244,7 @@ public class SCAnalyzerMiningMain {
 					config.getDbPath());
 			logger.info("the URL is " + dbUrl);
 
-			final DBManager dbManager = DBManager.setup(dbUrl);
+			DBManager.setup(dbUrl);
 			logger.info("complete creating the database connection");
 		}
 
@@ -384,7 +384,7 @@ public class SCAnalyzerMiningMain {
 
 		private final IRetriever<E, D, T> retriever;
 
-		private final AbstractDataDao<D> dao;
+		private final AbstractDataDao<D, ?> dao;
 
 		private final MiningStrategy<D, T> strategy;
 
@@ -392,7 +392,7 @@ public class SCAnalyzerMiningMain {
 
 		public StrategyHelper(final RetrievedObjectManager<E> manager,
 				final IRetriever<E, D, T> retriever,
-				final AbstractDataDao<D> dao,
+				final AbstractDataDao<D, ?> dao,
 				final MiningStrategy<D, T> strategy, final int maxRetrieved) {
 			this.manager = manager;
 			this.retriever = retriever;

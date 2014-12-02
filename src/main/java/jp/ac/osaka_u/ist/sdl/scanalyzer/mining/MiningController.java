@@ -42,7 +42,7 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	/**
 	 * The DAO
 	 */
-	private final AbstractDataDao<D> dao;
+	private final AbstractDataDao<D, ?> dao;
 
 	/**
 	 * The object retriever
@@ -55,7 +55,8 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	private final RetrievedObjectManager<E> manager;
 
 	public MiningController(final int maximumGenealogiesCount,
-			final MiningStrategy<D, T> strategy, final AbstractDataDao<D> dao,
+			final MiningStrategy<D, T> strategy,
+			final AbstractDataDao<D, ?> dao,
 			final IRetriever<E, D, T> retriever,
 			final RetrievedObjectManager<E> manager) {
 		this.maximumGenealogiesCount = maximumGenealogiesCount;
@@ -77,6 +78,8 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 		while (count < ids.size()) {
 			final Long id = ids.get(count++);
 			persistElementsToBeMined.add(dao.get(id));
+			logger.info("[" + count + "/" + ids.size() + "] element " + id
+					+ " has been retrieved");
 
 			if (count % maximumGenealogiesCount == 0) {
 				logger.info("perform mining a part of the set of elements to be mined");

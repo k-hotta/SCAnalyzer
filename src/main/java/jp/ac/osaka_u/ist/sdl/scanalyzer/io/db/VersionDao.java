@@ -411,6 +411,8 @@ public class VersionDao extends
 					.getRightIdsAndUpdate(sourceFileIdsByVersionIds,
 							rawIntermediateResults);
 
+			rawIntermediateResults.close();
+			
 			sourceFileDao.get(sourceFileIds);
 		}
 	}

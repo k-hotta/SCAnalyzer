@@ -290,10 +290,18 @@ public class CodeFragmentMappingDao
 					id = Long.parseLong(resultColumns[i]);
 					break;
 				case DBCodeFragmentMapping.OLD_CODE_FRAGMENT_COLUMN_NAME:
-					oldCodeFragmentId = Long.parseLong(resultColumns[i]);
+					try {
+						oldCodeFragmentId = Long.parseLong(resultColumns[i]);
+					} catch (Exception e) {
+						// ignore
+					}
 					break;
 				case DBCodeFragmentMapping.NEW_CODE_FRAGMENT_COLUMN_NAME:
-					newCodeFragmentId = Long.parseLong(resultColumns[i]);
+					try {
+						newCodeFragmentId = Long.parseLong(resultColumns[i]);
+					} catch (Exception e) {
+						// ignore
+					}
 					break;
 				case DBCodeFragmentMapping.CLONE_CLASS_MAPPING_COLUMN_NAME:
 					cloneClassMappingId = Long.parseLong(resultColumns[i]);

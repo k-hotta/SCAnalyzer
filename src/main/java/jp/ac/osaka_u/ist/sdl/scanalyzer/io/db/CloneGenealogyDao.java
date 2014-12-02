@@ -187,6 +187,8 @@ public class CloneGenealogyDao
 				.getRightIdsAndUpdate(cloneClassMappingIdsByGenealogyIds,
 						rawIntermediateResults);
 
+		rawIntermediateResults.close();
+
 		// perform retrieving clone class mappings
 		cloneClassMappingDao.get(cloneClassMappingIdsToBeRetrieved);
 

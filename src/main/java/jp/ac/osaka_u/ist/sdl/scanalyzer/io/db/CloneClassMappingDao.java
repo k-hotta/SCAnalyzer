@@ -384,10 +384,18 @@ public class CloneClassMappingDao
 					id = Long.parseLong(resultColumns[i]);
 					break;
 				case DBCloneClassMapping.OLD_CLONE_CLASS_COLUMN_NAME:
-					oldCloneClassId = Long.parseLong(resultColumns[i]);
+					try {
+						oldCloneClassId = Long.parseLong(resultColumns[i]);
+					} catch (Exception e) {
+						// ignore
+					}
 					break;
 				case DBCloneClassMapping.NEW_CLONE_CLASS_COLUMN_NAME:
-					newCloneClassId = Long.parseLong(resultColumns[i]);
+					try {
+						newCloneClassId = Long.parseLong(resultColumns[i]);
+					} catch (Exception e) {
+						// ignore
+					}
 					break;
 				case DBCloneClassMapping.VERSION_COLUMN_NAME:
 					versionId = Long.parseLong(resultColumns[i]);

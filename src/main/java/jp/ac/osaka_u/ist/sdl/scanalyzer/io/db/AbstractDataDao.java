@@ -290,12 +290,17 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 	}
 
 	public Map<Long, D> queryRaw(final String query) throws Exception {
+		if (query == null || query.isEmpty()) {
+			return new TreeMap<Long, D>();
+		}
+
 		final GenericRawResults<R> genericRawResults = originalDao.queryRaw(
 				query, getRowMapper());
 		final List<R> rawResults = new ArrayList<>();
 		for (final R rawResult : genericRawResults) {
 			rawResults.add(rawResult);
 		}
+		genericRawResults.close();
 
 		final SortedMap<Long, D> result = new TreeMap<>();
 		final SortedMap<String, Set<Long>> relativeElementIds = new TreeMap<>();

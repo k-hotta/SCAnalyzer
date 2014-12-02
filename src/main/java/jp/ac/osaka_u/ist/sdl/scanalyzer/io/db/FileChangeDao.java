@@ -363,10 +363,18 @@ public class FileChangeDao extends
 					id = Long.parseLong(resultColumn);
 					break;
 				case DBFileChange.OLD_SOURCE_FILE_COLUMN_NAME:
-					oldSourceFileId = Long.parseLong(resultColumn);
+					try {
+						oldSourceFileId = Long.parseLong(resultColumn);
+					} catch (Exception e) {
+						// ignore
+					}
 					break;
 				case DBFileChange.NEW_SOURCE_FILE_COLUMN_NAME:
-					newSourceFileId = Long.parseLong(resultColumn);
+					try {
+						newSourceFileId = Long.parseLong(resultColumn);
+					} catch (Exception e) {
+						// ignore
+					}
 					break;
 				case DBFileChange.TYPE_COLUMN_NAME:
 					type = resultColumn;
