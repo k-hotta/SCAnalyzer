@@ -297,10 +297,6 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 		final GenericRawResults<R> genericRawResults = originalDao.queryRaw(
 				query, getRowMapper());
 		final List<R> rawResults = new ArrayList<>();
-		for (final R rawResult : genericRawResults) {
-			rawResults.add(rawResult);
-		}
-		genericRawResults.close();
 
 		final SortedMap<Long, D> result = new TreeMap<>();
 		final SortedMap<String, Set<Long>> relativeElementIds = new TreeMap<>();
@@ -309,12 +305,14 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 		initializeRelativeElementIds(relativeElementIds);
 		initializeForeignChildElementIds(foreignChildElementIds);
 
-		for (final R rawResult : rawResults) {
+		for (final R rawResult : genericRawResults) {
 			final long id = rawResult.getId();
+			rawResults.add(rawResult);
 			if (!retrievedElements.containsKey(id)) {
 				updateRelativeElementIds(relativeElementIds, rawResult);
 			}
 		}
+		genericRawResults.close();
 
 		retrieveRelativeElements(relativeElementIds, foreignChildElementIds);
 

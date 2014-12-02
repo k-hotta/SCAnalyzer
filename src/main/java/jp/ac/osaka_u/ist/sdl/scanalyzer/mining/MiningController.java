@@ -3,6 +3,9 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mining;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDataElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
@@ -71,33 +74,31 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 		int count = 0;
 		int miningRunCount = 0;
 
-		final List<D> persistElementsToBeMined = new ArrayList<>();
+		final Set<Long> waitingIds = new TreeSet<Long>();
 
 		logger.info("the number of elements to be mined: " + ids.size());
 
 		while (count < ids.size()) {
 			final Long id = ids.get(count++);
-			persistElementsToBeMined.add(dao.get(id));
-			logger.info("[" + count + "/" + ids.size() + "] element " + id
-					+ " has been retrieved");
+			waitingIds.add(id);
+			// persistElementsToBeMined.add(dao.get(id));
 
 			if (count % maximumGenealogiesCount == 0) {
 				logger.info("perform mining a part of the set of elements to be mined");
-				logger.info(persistElementsToBeMined.size()
-						+ " elements will be mined");
-				performMining(persistElementsToBeMined);
+				logger.info(waitingIds.size() + " elements will be mined");
+				performMining(waitingIds);
 				miningRunCount++;
 				logger.info("performed mining for " + miningRunCount
 						+ maximumGenealogiesCount + " elements out of "
 						+ ids.size() + " elements in total");
 
 				prepareToContinue();
-				persistElementsToBeMined.clear();
+				waitingIds.clear();
 			}
 		}
 
-		if (!persistElementsToBeMined.isEmpty()) {
-			performMining(persistElementsToBeMined);
+		if (!waitingIds.isEmpty()) {
+			performMining(waitingIds);
 			logger.info("perform mining for all the elements");
 		}
 
@@ -106,16 +107,25 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 		logger.info("complete writing");
 	}
 
-	private void performMining(final Collection<D> elements) throws Exception {
+	private void performMining(final Collection<Long> ids) throws Exception {
+		logger.info("retrieving " + ids.size() + " from database");
+		final Map<Long, D> retrieved = retrieveFromDatabase(ids);
+		logger.info("complete retrieving elements from database");
+		
 		final List<T> toBeMined = new ArrayList<>();
 		int count = 0;
-		for (final D element : elements) {
-			logger.info("[" + (++count) + "/" + elements.size()
-					+ "] retrieving element " + element.getId());
-			toBeMined.add(retriever.retrieveElement(element));
+		for (final long id : ids) {
+			logger.info("[" + (++count) + "/" + ids.size()
+					+ "] retrieving element " + id);
+			toBeMined.add(retriever.retrieveElement(retrieved.get(id)));
 		}
 
 		strategy.mine(toBeMined);
+	}
+
+	private Map<Long, D> retrieveFromDatabase(final Collection<Long> ids)
+			throws Exception {
+		return dao.get(ids);
 	}
 
 	private void prepareToContinue() {
