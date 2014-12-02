@@ -167,36 +167,18 @@ public class CloneGenealogyDao
 				TableName.CLONE_GENEALOGY_CLONE_CLASS,
 				DBCloneGenealogyCloneClassMapping.CLONE_GENEALOGY_COLUMN_NAME,
 				cloneGenealogyIdsToBeRetrieved);
+
+		final IntermediateRowMapper<DBCloneGenealogyCloneClassMapping, InternalDBCloneGenealogyCloneClassMapping> rowMapper = new IntermediateRowMapper<>();
+		rowMapper
+				.setInstantiateFunction((map) -> {
+					return new InternalDBCloneGenealogyCloneClassMapping(
+							map.get(DBCloneGenealogyCloneClassMapping.ID_COLUMN_NAME),
+							map.get(DBCloneGenealogyCloneClassMapping.CLONE_GENEALOGY_COLUMN_NAME),
+							map.get(DBCloneGenealogyCloneClassMapping.CLONE_CLASS_MAPPING_COLUMN_NAME));
+				});
+
 		final GenericRawResults<InternalDBCloneGenealogyCloneClassMapping> rawIntermediateResults = nativeCloneGenealogyCloneClassMappingDao
-				.queryRaw(
-						queryForCloneClassMappings,
-						(columnNames, resultColumns) -> {
-							Long id = null;
-							Long cloneGenealogyId = null;
-							Long cloneClassMappingId = null;
-
-							for (int i = 0; i < columnNames.length; i++) {
-								final String columnName = columnNames[i];
-								final String resultColumn = resultColumns[i];
-
-								switch (columnName) {
-								case DBCloneGenealogyCloneClassMapping.ID_COLUMN_NAME:
-									id = Long.parseLong(resultColumn);
-									break;
-								case DBCloneGenealogyCloneClassMapping.CLONE_GENEALOGY_COLUMN_NAME:
-									cloneGenealogyId = Long
-											.parseLong(resultColumn);
-									break;
-								case DBCloneGenealogyCloneClassMapping.CLONE_CLASS_MAPPING_COLUMN_NAME:
-									cloneClassMappingId = Long
-											.parseLong(resultColumn);
-									break;
-								}
-							}
-
-							return new InternalDBCloneGenealogyCloneClassMapping(
-									id, cloneGenealogyId, cloneClassMappingId);
-						});
+				.queryRaw(queryForCloneClassMappings, rowMapper);
 
 		final Set<Long> cloneClassMappingIdsToBeRetrieved = new TreeSet<Long>();
 		final Map<Long, Set<Long>> cloneClassMappingIdsByGenealogyIds = foreignChildElementIds

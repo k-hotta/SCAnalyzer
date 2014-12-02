@@ -5,9 +5,11 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
+
 import com.j256.ormlite.dao.RawRowMapper;
 
-public class IntermediateRowMapper<R extends InternalIntermediateDataRepresentation<?>>
+public class IntermediateRowMapper<D extends IDBElement, R extends InternalIntermediateDataRepresentation<D>>
 		implements RawRowMapper<R> {
 
 	private Function<Map<String, Long>, R> instantiateFunction;
