@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRawClonedFragment;
@@ -215,6 +216,91 @@ public class RawClonedFragmentDao
 		return null;
 	}
 
+	@Override
+	protected RawRowMapper<InternalDBRawClonedFragment> getRowMapper()
+			throws Exception {
+		return new RowMapper();
+	}
+
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.VERSION, new TreeSet<Long>());
+		relativeElementIds.put(TableName.SOURCE_FILE, new TreeSet<Long>());
+		relativeElementIds.put(TableName.RAW_CLONE_CLASS, new TreeSet<Long>());
+	}
+
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBRawClonedFragment rawResult) throws Exception {
+		relativeElementIds.get(TableName.VERSION).add(rawResult.getVersionId());
+		relativeElementIds.get(TableName.SOURCE_FILE).add(
+				rawResult.getSourceFileId());
+		relativeElementIds.get(TableName.RAW_CLONE_CLASS).add(
+				rawResult.getRawCloneClassId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// all the foreign elements are retrieved only in the case where
+		// deep refreshing is ON
+		if (deepRefresh) {
+			// retrieve raw clone class
+			final Set<Long> rawCloneClassIdsToBeRetrieved = relativeElementIds
+					.get(TableName.RAW_CLONE_CLASS);
+			rawCloneClassDao.get(rawCloneClassIdsToBeRetrieved);
+
+			// retrieve source files
+			final Set<Long> sourceFileIdsToBeRetrieved = relativeElementIds
+					.get(TableName.SOURCE_FILE);
+			sourceFileDao.get(sourceFileIdsToBeRetrieved);
+
+			// retrieve versions
+			final Set<Long> versionIdsToBeRetrieved = relativeElementIds
+					.get(TableName.VERSION);
+			versionDao.get(versionIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBRawClonedFragment makeInstance(
+			InternalDBRawClonedFragment rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBRawClonedFragment newInstance = new DBRawClonedFragment(
+				rawResult.getId(), null, null, rawResult.getStartLine(),
+				rawResult.getLength(), null);
+
+		if (autoRefresh) {
+			if (deepRefresh) {
+				newInstance
+						.setVersion(versionDao.get(rawResult.getVersionId()));
+				newInstance.setSourceFile(sourceFileDao.get(rawResult
+						.getSourceFileId()));
+				newInstance.setCloneClass(rawCloneClassDao.get(rawResult
+						.getRawCloneClassId()));
+			} else {
+				newInstance.setVersion(new DBVersion(rawResult.getVersionId(),
+						null, null, null, null, null, null));
+				newInstance.setSourceFile(new DBSourceFile(rawResult
+						.getSourceFileId(), null));
+				newInstance.setCloneClass(new DBRawCloneClass(rawResult
+						.getRawCloneClassId(), null, null));
+			}
+		}
+		return newInstance;
+	}
+
 	class InternalDBRawClonedFragment implements
 			InternalDataRepresentation<DBRawClonedFragment> {
 
@@ -309,41 +395,6 @@ public class RawClonedFragmentDao
 			return new InternalDBRawClonedFragment(id, versionId, sourceFileId,
 					rawCloneClassId, startLine, length);
 		}
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBRawClonedFragment> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(
-			InternalDBRawClonedFragment rawResult) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected DBRawClonedFragment makeInstance(
-			InternalDBRawClonedFragment rawResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Map<Long, DBRawClonedFragment> queryRaw(String query)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
