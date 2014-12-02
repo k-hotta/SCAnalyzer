@@ -180,27 +180,12 @@ public class CloneGenealogyDao
 		final GenericRawResults<InternalDBCloneGenealogyCloneClassMapping> rawIntermediateResults = nativeCloneGenealogyCloneClassMappingDao
 				.queryRaw(queryForCloneClassMappings, rowMapper);
 
-		final Set<Long> cloneClassMappingIdsToBeRetrieved = new TreeSet<Long>();
 		final Map<Long, Set<Long>> cloneClassMappingIdsByGenealogyIds = foreignChildElementIds
 				.get(TableName.CLONE_CLASS_MAPPING);
-		for (final InternalDBCloneGenealogyCloneClassMapping rawIntermediateResult : rawIntermediateResults) {
-			final long genealogyId = rawIntermediateResult
-					.getCloneGenealogyId();
-			final long mappingId = rawIntermediateResult
-					.getCloneClassMappingId();
 
-			cloneClassMappingIdsToBeRetrieved.add(mappingId);
-			Set<Long> cloneClassMappingIdsInGenealogy = cloneClassMappingIdsByGenealogyIds
-					.get(genealogyId);
-
-			if (cloneClassMappingIdsInGenealogy == null) {
-				cloneClassMappingIdsInGenealogy = new TreeSet<Long>();
-				cloneClassMappingIdsByGenealogyIds.put(genealogyId,
-						cloneClassMappingIdsInGenealogy);
-			}
-
-			cloneClassMappingIdsInGenealogy.add(mappingId);
-		}
+		final Set<Long> cloneClassMappingIdsToBeRetrieved = ForeignCollectionRetrieveHelper
+				.getRightIdsAndUpdate(cloneClassMappingIdsByGenealogyIds,
+						rawIntermediateResults);
 
 		// perform retrieving clone class mappings
 		cloneClassMappingDao.get(cloneClassMappingIdsToBeRetrieved);

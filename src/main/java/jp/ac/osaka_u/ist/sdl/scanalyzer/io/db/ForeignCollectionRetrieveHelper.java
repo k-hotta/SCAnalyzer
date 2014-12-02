@@ -8,6 +8,8 @@ import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.IDBElement;
 
+import com.j256.ormlite.dao.GenericRawResults;
+
 /**
  * This class provides helper methods to retrieve foreign collection fields with
  * raw queries.
@@ -62,7 +64,7 @@ public class ForeignCollectionRetrieveHelper {
 	 */
 	public static <R extends InternalIntermediateDataRepresentation<?>> Set<Long> getRightIdsAndUpdate(
 			final Map<Long, Set<Long>> rightIdsByLeft,
-			final Collection<R> rawIntermediateResults) {
+			final GenericRawResults<R> rawIntermediateResults) {
 		final Set<Long> result = new TreeSet<>();
 
 		for (final R rawIntermedaiteResult : rawIntermediateResults) {
