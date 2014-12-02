@@ -282,8 +282,12 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 	}
 
 	public Map<Long, D> queryRaw(final String query) throws Exception {
-		final GenericRawResults<R> rawResults = originalDao.queryRaw(query,
+		final GenericRawResults<R> genericRawResults = originalDao.queryRaw(query,
 				getRowMapper());
+		final List<R> rawResults = new ArrayList<>();
+		for (final R rawResult : genericRawResults) {
+			rawResults.add(rawResult);
+		}
 
 		final SortedMap<Long, D> result = new TreeMap<>();
 		final SortedMap<String, Set<Long>> relativeElementIds = new TreeMap<>();
