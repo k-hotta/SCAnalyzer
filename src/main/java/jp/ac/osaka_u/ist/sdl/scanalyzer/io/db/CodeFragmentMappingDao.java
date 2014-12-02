@@ -2,12 +2,9 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
@@ -19,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 
 public class CodeFragmentMappingDao
@@ -143,74 +139,81 @@ public class CodeFragmentMappingDao
 		return elements;
 	}
 
-	public Map<Long, DBCodeFragmentMapping> getWithCloneClassMappingIds(
-			final Collection<Long> cloneClassMappingIds) throws Exception {
-		final String query = QueryHelper.querySelectIdIn(getTableName(),
-				DBCodeFragmentMapping.CLONE_CLASS_MAPPING_COLUMN_NAME,
-				cloneClassMappingIds);
-
-		return queryRaw(query);
+	@Override
+	protected RawRowMapper<InternalDBCodeFragmentMapping> getRowMapper()
+			throws Exception {
+		return new RowMapper();
 	}
 
 	@Override
-	protected Map<Long, DBCodeFragmentMapping> queryRaw(String query)
-			throws Exception {
-		final GenericRawResults<InternalDBCodeFragmentMapping> rawResults = originalDao
-				.queryRaw(query, new RowMapper());
-
-		final SortedMap<Long, DBCodeFragmentMapping> result = new TreeMap<>();
-		final Set<Long> codeFragmentIdsToBeRetrieved = new TreeSet<>();
-		final Set<Long> cloneClassMappingIdsToBeRetrieved = new TreeSet<>();
-
-		for (final InternalDBCodeFragmentMapping rawResult : rawResults) {
-			final long id = rawResult.getId();
-			if (!retrievedElements.containsKey(id)) {
-				codeFragmentIdsToBeRetrieved.add(rawResult
-						.getOldCodeFragmentId());
-				codeFragmentIdsToBeRetrieved.add(rawResult
-						.getNewCodeFragmentId());
-				cloneClassMappingIdsToBeRetrieved.add(rawResult
-						.getCloneClassMappingId());
-			}
-		}
-
-		final Map<Long, DBCodeFragment> codeFragments = codeFragmentDao
-				.get(codeFragmentIdsToBeRetrieved);
-		final Map<Long, DBCloneClassMapping> cloneClassMappings = (deepRefresh) ? cloneClassMappingDao
-				.get(cloneClassMappingIdsToBeRetrieved) : new TreeMap<>();
-
-		for (final InternalDBCodeFragmentMapping rawResult : rawResults) {
-			final long id = rawResult.getId();
-
-			if (!retrievedElements.containsKey(id)) {
-				makeNewInstance(codeFragments, cloneClassMappings, rawResult,
-						id);
-			}
-
-			result.put(id, retrievedElements.get(id));
-		}
-
-		return Collections.unmodifiableSortedMap(result);
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.CODE_FRAGMENT, new TreeSet<Long>());
+		relativeElementIds.put(TableName.CLONE_CLASS_MAPPING,
+				new TreeSet<Long>());
 	}
 
-	private void makeNewInstance(final Map<Long, DBCodeFragment> codeFragments,
-			final Map<Long, DBCloneClassMapping> cloneClassMappings,
-			final InternalDBCodeFragmentMapping rawResult, final long id) {
-		final DBCodeFragmentMapping newInstance = new DBCodeFragmentMapping(id,
-				null, null, null);
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBCodeFragmentMapping rawResult) throws Exception {
+		if (rawResult.getOldCodeFragmentId() != null) {
+			relativeElementIds.get(TableName.CODE_FRAGMENT).add(
+					rawResult.getOldCodeFragmentId());
+		}
+		if (rawResult.getNewCodeFragmentId() != null) {
+			relativeElementIds.get(TableName.CODE_FRAGMENT).add(
+					rawResult.getNewCodeFragmentId());
+		}
+
+		relativeElementIds.get(TableName.CLONE_CLASS_MAPPING).add(
+				rawResult.getCloneClassMappingId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// retrieve code fragments
+		final Set<Long> codeFragmentsToBeRetrieved = relativeElementIds
+				.get(TableName.CODE_FRAGMENT);
+		codeFragmentDao.get(codeFragmentsToBeRetrieved);
+
+		// retrieve clone class mappings if deep refreshing is ON
+		if (deepRefresh) {
+			final Set<Long> cloneClassMappingIdsToBeRetrieved = relativeElementIds
+					.get(TableName.CLONE_CLASS_MAPPING);
+			cloneClassMappingDao.get(cloneClassMappingIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBCodeFragmentMapping makeInstance(
+			InternalDBCodeFragmentMapping rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBCodeFragmentMapping newInstance = new DBCodeFragmentMapping(
+				rawResult.getId(), null, null, null);
 
 		if (autoRefresh) {
 			if (rawResult.getOldCodeFragmentId() != null) {
-				newInstance.setOldCodeFragment(codeFragments.get(rawResult
+				newInstance.setOldCodeFragment(codeFragmentDao.get(rawResult
 						.getOldCodeFragmentId()));
 			}
 			if (rawResult.getNewCodeFragmentId() != null) {
-				newInstance.setNewCodeFragment(codeFragments.get(rawResult
+				newInstance.setNewCodeFragment(codeFragmentDao.get(rawResult
 						.getNewCodeFragmentId()));
 			}
 
 			if (deepRefresh) {
-				newInstance.setCloneClassMapping(cloneClassMappings
+				newInstance.setCloneClassMapping(cloneClassMappingDao
 						.get(rawResult.getCloneClassMappingId()));
 			} else {
 				newInstance.setCloneClassMapping(new DBCloneClassMapping(
@@ -219,7 +222,16 @@ public class CodeFragmentMappingDao
 			}
 		}
 
-		retrievedElements.put(id, newInstance);
+		return newInstance;
+	}
+
+	public Map<Long, DBCodeFragmentMapping> getWithCloneClassMappingIds(
+			final Collection<Long> cloneClassMappingIds) throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBCodeFragmentMapping.CLONE_CLASS_MAPPING_COLUMN_NAME,
+				cloneClassMappingIds);
+
+		return runRawQuery(query);
 	}
 
 	class InternalDBCodeFragmentMapping implements
@@ -293,34 +305,6 @@ public class CodeFragmentMappingDao
 					newCodeFragmentId, cloneClassMappingId);
 		}
 
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBCodeFragmentMapping> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(
-			InternalDBCodeFragmentMapping rawResult) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected DBCodeFragmentMapping makeInstance(
-			InternalDBCodeFragmentMapping rawResult) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
