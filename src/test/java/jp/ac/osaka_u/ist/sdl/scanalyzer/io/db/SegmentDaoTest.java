@@ -110,11 +110,12 @@ public class SegmentDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBSegment> results = dao.get(id1, id2);
+		final Collection<DBSegment> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBSegment result : results) {
-			final DBSegment reference = parser.getSegments().get(result.getId());
+			final DBSegment reference = parser.getSegments()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -123,11 +124,12 @@ public class SegmentDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBSegment> results = dao.get(id1, id2);
+		final Collection<DBSegment> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBSegment result : results) {
-			final DBSegment reference = parser.getSegments().get(result.getId());
+			final DBSegment reference = parser.getSegments()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -139,11 +141,12 @@ public class SegmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBSegment> results = dao.get(ids);
+		final Collection<DBSegment> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBSegment result : results) {
-			final DBSegment reference = parser.getSegments().get(result.getId());
+			final DBSegment reference = parser.getSegments()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -155,11 +158,12 @@ public class SegmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBSegment> results = dao.get(ids);
+		final Collection<DBSegment> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBSegment result : results) {
-			final DBSegment reference = parser.getSegments().get(result.getId());
+			final DBSegment reference = parser.getSegments()
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -175,7 +179,7 @@ public class SegmentDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testRegister1() throws Exception {
 		boolean caughtException = false;
@@ -188,7 +192,7 @@ public class SegmentDaoTest {
 
 		assertTrue(caughtException);
 	}
-	
+
 	@Test
 	public void testRegister2() throws Exception {
 		connection.initializeTable(DBSegment.class); // clear tables
@@ -209,7 +213,7 @@ public class SegmentDaoTest {
 		final Map<Long, DBSegment> references = parser.getSegments();
 
 		dao.registerAll(references.values());
-		
+
 		final Collection<DBSegment> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
@@ -218,5 +222,5 @@ public class SegmentDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 }

@@ -45,7 +45,7 @@ public class RawClonedFragmentDaoTest {
 	public static void tearDownAfterClass() throws Exception {
 		connection.close();
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		DBManager.getInstance().clearDaos();
@@ -102,8 +102,8 @@ public class RawClonedFragmentDaoTest {
 	@Test
 	public void testGet1() throws Exception {
 		final long id = 1;
-		final DBRawClonedFragment reference = parser.getRawClonedFragments().get(
-				id);
+		final DBRawClonedFragment reference = parser.getRawClonedFragments()
+				.get(id);
 		final DBRawClonedFragment result = dao.get(id);
 
 		assertTrue(check(result, reference));
@@ -112,8 +112,8 @@ public class RawClonedFragmentDaoTest {
 	@Test
 	public void testGet2() throws Exception {
 		final long id = -1;
-		final DBRawClonedFragment reference = parser.getRawClonedFragments().get(
-				id);
+		final DBRawClonedFragment reference = parser.getRawClonedFragments()
+				.get(id);
 		final DBRawClonedFragment result = dao.get(id);
 
 		assertTrue(check(result, reference));
@@ -123,12 +123,13 @@ public class RawClonedFragmentDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBRawClonedFragment> results = dao.get(id1, id2);
+		final Collection<DBRawClonedFragment> results = dao.get(id1, id2)
+				.values();
 
 		assertTrue(results.size() == 2);
 		for (final DBRawClonedFragment result : results) {
-			final DBRawClonedFragment reference = parser.getRawClonedFragments()
-					.get(result.getId());
+			final DBRawClonedFragment reference = parser
+					.getRawClonedFragments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -137,12 +138,13 @@ public class RawClonedFragmentDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBRawClonedFragment> results = dao.get(id1, id2);
+		final Collection<DBRawClonedFragment> results = dao.get(id1, id2)
+				.values();
 
 		assertTrue(results.size() == 1);
 		for (final DBRawClonedFragment result : results) {
-			final DBRawClonedFragment reference = parser.getRawClonedFragments()
-					.get(result.getId());
+			final DBRawClonedFragment reference = parser
+					.getRawClonedFragments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -154,12 +156,12 @@ public class RawClonedFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBRawClonedFragment> results = dao.get(ids);
+		final Collection<DBRawClonedFragment> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBRawClonedFragment result : results) {
-			final DBRawClonedFragment reference = parser.getRawClonedFragments()
-					.get(result.getId());
+			final DBRawClonedFragment reference = parser
+					.getRawClonedFragments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -171,12 +173,12 @@ public class RawClonedFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBRawClonedFragment> results = dao.get(ids);
+		final Collection<DBRawClonedFragment> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBRawClonedFragment result : results) {
-			final DBRawClonedFragment reference = parser.getRawClonedFragments()
-					.get(result.getId());
+			final DBRawClonedFragment reference = parser
+					.getRawClonedFragments().get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -189,7 +191,8 @@ public class RawClonedFragmentDaoTest {
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawClonedFragment result : results) {
-			final DBRawClonedFragment reference = references.get(result.getId());
+			final DBRawClonedFragment reference = references
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
@@ -233,7 +236,8 @@ public class RawClonedFragmentDaoTest {
 
 		assertTrue(results.size() == references.size());
 		for (final DBRawClonedFragment result : results) {
-			final DBRawClonedFragment reference = references.get(result.getId());
+			final DBRawClonedFragment reference = references
+					.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}

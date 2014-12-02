@@ -52,7 +52,7 @@ public class CloneClassDaoTest {
 	public void tearDown() throws Exception {
 		DBManager.getInstance().clearDaos();
 	}
-	
+
 	private boolean check(final DBCloneClass result,
 			final DBCloneClass reference) {
 		if (result == null && reference == null) {
@@ -73,7 +73,8 @@ public class CloneClassDaoTest {
 			return false;
 		}
 
-		if (result.getCodeFragments().size() != reference.getCodeFragments().size()) {
+		if (result.getCodeFragments().size() != reference.getCodeFragments()
+				.size()) {
 			return false;
 		}
 
@@ -102,7 +103,7 @@ public class CloneClassDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBCloneClass> results = dao.get(id1, id2);
+		final Collection<DBCloneClass> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBCloneClass result : results) {
@@ -116,7 +117,7 @@ public class CloneClassDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBCloneClass> results = dao.get(id1, id2);
+		final Collection<DBCloneClass> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBCloneClass result : results) {
@@ -133,7 +134,7 @@ public class CloneClassDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBCloneClass> results = dao.get(ids);
+		final Collection<DBCloneClass> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBCloneClass result : results) {
@@ -150,7 +151,7 @@ public class CloneClassDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBCloneClass> results = dao.get(ids);
+		final Collection<DBCloneClass> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBCloneClass result : results) {

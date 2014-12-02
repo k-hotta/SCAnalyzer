@@ -98,7 +98,7 @@ public class CodeFragmentDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBCodeFragment> results = dao.get(id1, id2);
+		final Collection<DBCodeFragment> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBCodeFragment result : results) {
@@ -112,7 +112,7 @@ public class CodeFragmentDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBCodeFragment> results = dao.get(id1, id2);
+		final Collection<DBCodeFragment> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBCodeFragment result : results) {
@@ -129,7 +129,7 @@ public class CodeFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBCodeFragment> results = dao.get(ids);
+		final Collection<DBCodeFragment> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBCodeFragment result : results) {
@@ -146,7 +146,7 @@ public class CodeFragmentDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBCodeFragment> results = dao.get(ids);
+		final Collection<DBCodeFragment> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBCodeFragment result : results) {

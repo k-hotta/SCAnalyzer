@@ -109,7 +109,7 @@ public class RawCloneClassDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBRawCloneClass> results = dao.get(id1, id2);
+		final Collection<DBRawCloneClass> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBRawCloneClass result : results) {
@@ -123,7 +123,7 @@ public class RawCloneClassDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBRawCloneClass> results = dao.get(id1, id2);
+		final Collection<DBRawCloneClass> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBRawCloneClass result : results) {
@@ -140,7 +140,7 @@ public class RawCloneClassDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBRawCloneClass> results = dao.get(ids);
+		final Collection<DBRawCloneClass> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBRawCloneClass result : results) {
@@ -157,7 +157,7 @@ public class RawCloneClassDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBRawCloneClass> results = dao.get(ids);
+		final Collection<DBRawCloneClass> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBRawCloneClass result : results) {
@@ -169,7 +169,8 @@ public class RawCloneClassDaoTest {
 
 	@Test
 	public void testGetAll1() throws Exception {
-		final Map<Long, DBRawCloneClass> references = parser.getRawCloneClasses();
+		final Map<Long, DBRawCloneClass> references = parser
+				.getRawCloneClasses();
 		final Collection<DBRawCloneClass> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
@@ -196,7 +197,8 @@ public class RawCloneClassDaoTest {
 	public void testRegister2() throws Exception {
 		connection.initializeTable(DBRawCloneClass.class); // clear tables
 
-		final Map<Long, DBRawCloneClass> references = parser.getRawCloneClasses();
+		final Map<Long, DBRawCloneClass> references = parser
+				.getRawCloneClasses();
 		final DBRawCloneClass reference = references.get((long) 1);
 
 		dao.register(reference);
@@ -209,7 +211,8 @@ public class RawCloneClassDaoTest {
 	public void testRegister3() throws Exception {
 		connection.initializeTable(DBRawCloneClass.class); // clear tables
 
-		final Map<Long, DBRawCloneClass> references = parser.getRawCloneClasses();
+		final Map<Long, DBRawCloneClass> references = parser
+				.getRawCloneClasses();
 		dao.registerAll(references.values());
 
 		final Collection<DBRawCloneClass> results = dao.getAll();

@@ -164,7 +164,7 @@ public class VersionDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBVersion> results = dao.get(id1, id2);
+		final Collection<DBVersion> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBVersion result : results) {
@@ -178,7 +178,7 @@ public class VersionDaoTest {
 	public void testGet5() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBVersion> results = dao.get(id1, id2);
+		final Collection<DBVersion> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBVersion result : results) {
@@ -195,7 +195,7 @@ public class VersionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBVersion> results = dao.get(ids);
+		final Collection<DBVersion> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBVersion result : results) {
@@ -212,7 +212,7 @@ public class VersionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBVersion> results = dao.get(ids);
+		final Collection<DBVersion> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBVersion result : results) {

@@ -113,7 +113,7 @@ public class RevisionDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBRevision> results = dao.get(id1, id2);
+		final Collection<DBRevision> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBRevision result : results) {
@@ -127,7 +127,7 @@ public class RevisionDaoTest {
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBRevision> results = dao.get(id1, id2);
+		final Collection<DBRevision> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBRevision result : results) {
@@ -144,7 +144,7 @@ public class RevisionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBRevision> results = dao.get(ids);
+		final Collection<DBRevision> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBRevision result : results) {
@@ -161,7 +161,7 @@ public class RevisionDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBRevision> results = dao.get(ids);
+		final Collection<DBRevision> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBRevision result : results) {

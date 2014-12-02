@@ -47,13 +47,14 @@ public class SourceFileDaoTest {
 			connection.storeSourceFileWithNativeWay(sourceFile);
 		}
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		DBManager.getInstance().clearDaos();
 	}
 
-	private boolean check(final DBSourceFile result, final DBSourceFile reference) {
+	private boolean check(final DBSourceFile result,
+			final DBSourceFile reference) {
 		if (result == null && reference == null) {
 			return true;
 		}
@@ -97,7 +98,7 @@ public class SourceFileDaoTest {
 	public void testGet3() throws Exception {
 		final long id1 = 1;
 		final long id2 = 2;
-		final List<DBSourceFile> results = dao.get(id1, id2);
+		final Collection<DBSourceFile> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBSourceFile result : results) {
@@ -106,12 +107,12 @@ public class SourceFileDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet4() throws Exception {
 		final long id1 = 1;
 		final long id2 = -1;
-		final List<DBSourceFile> results = dao.get(id1, id2);
+		final Collection<DBSourceFile> results = dao.get(id1, id2).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBSourceFile result : results) {
@@ -120,7 +121,7 @@ public class SourceFileDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet5() throws Exception {
 		final long id1 = 1;
@@ -128,7 +129,7 @@ public class SourceFileDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBSourceFile> results = dao.get(ids);
+		final Collection<DBSourceFile> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 2);
 		for (final DBSourceFile result : results) {
@@ -137,7 +138,7 @@ public class SourceFileDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGet6() throws Exception {
 		final long id1 = 1;
@@ -145,7 +146,7 @@ public class SourceFileDaoTest {
 		final List<Long> ids = new ArrayList<Long>();
 		ids.add(id1);
 		ids.add(id2);
-		final List<DBSourceFile> results = dao.get(ids);
+		final Collection<DBSourceFile> results = dao.get(ids).values();
 
 		assertTrue(results.size() == 1);
 		for (final DBSourceFile result : results) {
@@ -154,19 +155,19 @@ public class SourceFileDaoTest {
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testGetAll() throws Exception {
 		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
 		final Collection<DBSourceFile> results = dao.getAll();
-		
+
 		assertTrue(results.size() == references.size());
 		for (final DBSourceFile result : results) {
 			final DBSourceFile reference = references.get(result.getId());
 			assertTrue(check(result, reference));
 		}
 	}
-	
+
 	@Test
 	public void testRegister1() throws Exception {
 		boolean caughtException = false;
@@ -179,7 +180,7 @@ public class SourceFileDaoTest {
 
 		assertTrue(caughtException);
 	}
-	
+
 	@Test
 	public void testRegister2() throws Exception {
 		connection.initializeTable(DBSourceFile.class); // clear tables
@@ -192,14 +193,14 @@ public class SourceFileDaoTest {
 
 		assertTrue(check(result, sf1));
 	}
-	
+
 	@Test
 	public void testRegisterAll1() throws Exception {
 		connection.initializeTable(DBSourceFile.class); // clear tables
 
 		final Map<Long, DBSourceFile> references = parser.getSourceFiles();
 		dao.registerAll(references.values());
-		
+
 		final Collection<DBSourceFile> results = dao.getAll();
 
 		assertTrue(results.size() == references.size());
