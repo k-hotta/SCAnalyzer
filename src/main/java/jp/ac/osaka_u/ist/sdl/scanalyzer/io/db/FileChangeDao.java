@@ -2,12 +2,9 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
@@ -20,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 
 /**
@@ -212,68 +208,85 @@ public class FileChangeDao extends
 	}
 
 	@Override
-	protected Map<Long, DBFileChange> queryRaw(String query) throws Exception {
-		final GenericRawResults<InternalDBFileChange> rawResults = originalDao
-				.queryRaw(query, new RowMapper());
+	protected RawRowMapper<InternalDBFileChange> getRowMapper()
+			throws Exception {
+		return new RowMapper();
+	}
 
-		final SortedMap<Long, DBFileChange> result = new TreeMap<>();
-		final Set<Long> sourceFileIdsToBeRetrieved = new TreeSet<>();
-		final Set<Long> versionIdsToBeRetrieved = new TreeSet<>();
+	@Override
+	protected void initializeRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.SOURCE_FILE, new TreeSet<Long>());
+		relativeElementIds.put(TableName.VERSION, new TreeSet<>());
+	}
 
-		for (final InternalDBFileChange rawResult : rawResults) {
-			final long id = rawResult.getId();
-			if (!retrievedElements.containsKey(id)) {
-				if (rawResult.getOldSourceFileId() != null) {
-					sourceFileIdsToBeRetrieved.add(rawResult
-							.getOldSourceFileId());
-				}
-				if (rawResult.getNewSourceFileId() != null) {
-					sourceFileIdsToBeRetrieved.add(rawResult
-							.getNewSourceFileId());
-				}
-				versionIdsToBeRetrieved.add(rawResult.getVersionId());
+	@Override
+	protected void initializeForeignChildElementIds(
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
+		// do nothing
+	}
+
+	@Override
+	protected void updateRelativeElementIds(
+			Map<String, Set<Long>> relativeElementIds,
+			InternalDBFileChange rawResult) throws Exception {
+		if (rawResult.getOldSourceFileId() != null) {
+			relativeElementIds.get(TableName.SOURCE_FILE).add(
+					rawResult.getOldSourceFileId());
+		}
+		if (rawResult.getNewSourceFileId() != null) {
+			relativeElementIds.get(TableName.SOURCE_FILE).add(
+					rawResult.getNewSourceFileId());
+		}
+
+		relativeElementIds.get(TableName.VERSION).add(rawResult.getVersionId());
+	}
+
+	@Override
+	protected void retrieveRelativeElements(
+			Map<String, Set<Long>> relativeElementIds,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		// retrieve source files
+		final Set<Long> sourceFileIdsToBeRetrieved = relativeElementIds
+				.get(TableName.SOURCE_FILE);
+		sourceFileDao.get(sourceFileIdsToBeRetrieved);
+
+		// retrieve versions if deep refreshing is ON
+		if (deepRefresh) {
+			final Set<Long> versionIdsToBeRetrieved = relativeElementIds
+					.get(TableName.VERSION);
+			versionDao.get(versionIdsToBeRetrieved);
+		}
+	}
+
+	@Override
+	protected DBFileChange makeInstance(InternalDBFileChange rawResult,
+			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
+			throws Exception {
+		final DBFileChange newInstance = new DBFileChange(rawResult.getId(),
+				null, null, Type.valueOf(rawResult.getType()), null);
+
+		if (autoRefresh) {
+			if (rawResult.getOldSourceFileId() != null) {
+				newInstance.setOldSourceFile(sourceFileDao.get(rawResult
+						.getOldSourceFileId()));
+			}
+			if (rawResult.getNewSourceFileId() != null) {
+				newInstance.setNewSourceFile(sourceFileDao.get(rawResult
+						.getNewSourceFileId()));
+			}
+
+			if (deepRefresh) {
+				newInstance
+						.setVersion(versionDao.get(rawResult.getVersionId()));
+			} else {
+				newInstance.setVersion(new DBVersion(rawResult.getVersionId(),
+						null, null, null, null, null, null));
 			}
 		}
 
-		final Map<Long, DBSourceFile> sourceFiles = sourceFileDao
-				.get(sourceFileIdsToBeRetrieved);
-		final Map<Long, DBVersion> versions = (deepRefresh) ? versionDao
-				.get(versionIdsToBeRetrieved) : new TreeMap<>();
-
-		for (final InternalDBFileChange rawResult : rawResults) {
-			final long id = rawResult.getId();
-
-			if (!retrievedElements.containsKey(id)) {
-				final DBFileChange newInstance = new DBFileChange(id, null,
-						null, null, null);
-
-				if (autoRefresh) {
-					if (rawResult.getOldSourceFileId() != null) {
-						newInstance.setOldSourceFile(sourceFiles.get(rawResult
-								.getOldSourceFileId()));
-					}
-					if (rawResult.getNewSourceFileId() != null) {
-						newInstance.setNewSourceFile(sourceFiles.get(rawResult
-								.getNewSourceFileId()));
-					}
-
-					if (deepRefresh) {
-						newInstance.setVersion(versions.get(rawResult
-								.getVersionId()));
-					} else {
-						newInstance.setVersion(new DBVersion(rawResult
-								.getVersionId(), null, null, null, null, null,
-								null));
-					}
-				}
-
-				retrievedElements.put(id, newInstance);
-			}
-
-			result.put(id, retrievedElements.get(id));
-		}
-
-		return Collections.unmodifiableSortedMap(result);
+		return newInstance;
 	}
 
 	class InternalDBFileChange implements
@@ -360,33 +373,6 @@ public class FileChangeDao extends
 					newSourceFileId, type, versionId);
 		}
 
-	}
-
-	@Override
-	protected RawRowMapper<InternalDBFileChange> getRowMapper()
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateRelativeElementIds(InternalDBFileChange rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected DBFileChange makeInstance(InternalDBFileChange rawResult) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
