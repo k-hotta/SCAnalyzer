@@ -90,12 +90,14 @@ public class VolatileSegmentRetriever<E extends IProgramElement> implements
 		// this is required because these attributes might not be refreshed
 		// if the deep refreshing is OFF
 		try {
-			dbManager.getNativeDao(DBCodeFragment.class).refresh(
-					dbElement.getCodeFragment());
-			dbManager.getNativeDao(DBCloneClass.class).refresh(
-					dbElement.getCodeFragment().getCloneClass());
-			dbManager.getNativeDao(DBSourceFile.class).refresh(
-					dbElement.getSourceFile());
+			synchronized (dbManager) {
+				dbManager.getNativeDao(DBCodeFragment.class).refresh(
+						dbElement.getCodeFragment());
+				dbManager.getNativeDao(DBCloneClass.class).refresh(
+						dbElement.getCodeFragment().getCloneClass());
+				dbManager.getNativeDao(DBSourceFile.class).refresh(
+						dbElement.getSourceFile());
+			}
 		} catch (Exception e) {
 			throw new IllegalStateException("fail to refresh the segment "
 					+ dbElement.getId(), e);

@@ -61,7 +61,9 @@ public class VolatileVersionRetriever<E extends IProgramElement> implements
 		// this is required because it might not be refreshed
 		// when deep refreshing is OFF
 		try {
-			dbManager.getNativeDao(DBVersion.class).refresh(dbElement);
+			synchronized (dbManager) {
+				dbManager.getNativeDao(DBVersion.class).refresh(dbElement);
+			}
 		} catch (Exception e) {
 			throw new IllegalStateException("cannot refresh the version "
 					+ dbElement.getId(), e);
@@ -72,8 +74,10 @@ public class VolatileVersionRetriever<E extends IProgramElement> implements
 
 		if (revision == null) {
 			try {
-				dbManager.getNativeDao(DBRevision.class).refresh(
-						dbElement.getRevision());
+				synchronized (dbManager) {
+					dbManager.getNativeDao(DBRevision.class).refresh(
+							dbElement.getRevision());
+				}
 			} catch (Exception e) {
 				throw new IllegalStateException("cannot refresh the revision "
 						+ dbElement.getRevision().getIdentifier(), e);
