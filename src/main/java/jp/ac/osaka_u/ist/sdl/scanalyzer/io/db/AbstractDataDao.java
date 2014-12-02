@@ -144,7 +144,12 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 	 */
 	private synchronized D retrieve(final long id) throws Exception {
 		trace("get the element whose id is " + id + " from database");
-		final D result = originalDao.queryForId(id);
+		// final D result = originalDao.queryForId(id);
+		final Collection<Long> ids = new ArrayList<>();
+		ids.add(id);
+
+		final Map<Long, D> results = get(ids);
+		final D result = results.get(id);
 
 		if (result == null) {
 			eLogger.warn("cannot find the corresponding element for id " + id);
@@ -179,7 +184,7 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 		D result = retrievedElements.get(id);
 		if (result == null) {
 			result = retrieve(id);
-			refresh(result);
+			// refresh(result);
 		}
 		return result;
 	}
@@ -274,16 +279,16 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 		}
 
 		if (!idsToBeRetrieved.isEmpty()) {
-			result.putAll(queryRaw(QueryHelper.querySelectIdIn(
-					getTableName(), getIdColumnName(), ids)));
+			result.putAll(queryRaw(QueryHelper.querySelectIdIn(getTableName(),
+					getIdColumnName(), ids)));
 		}
 
 		return result;
 	}
 
 	public Map<Long, D> queryRaw(final String query) throws Exception {
-		final GenericRawResults<R> genericRawResults = originalDao.queryRaw(query,
-				getRowMapper());
+		final GenericRawResults<R> genericRawResults = originalDao.queryRaw(
+				query, getRowMapper());
 		final List<R> rawResults = new ArrayList<>();
 		for (final R rawResult : genericRawResults) {
 			rawResults.add(rawResult);
