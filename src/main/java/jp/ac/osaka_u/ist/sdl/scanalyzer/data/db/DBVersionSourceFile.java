@@ -14,7 +14,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @see DBSourceFile
  */
 @DatabaseTable(tableName = TableName.VERSION_SOURCE_FILE)
-public class DBVersionSourceFile {
+public class DBVersionSourceFile implements IDBElement {
 
 	/**
 	 * The column name for id
