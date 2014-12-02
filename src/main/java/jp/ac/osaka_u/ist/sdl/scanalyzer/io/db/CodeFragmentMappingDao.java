@@ -231,7 +231,7 @@ public class CodeFragmentMappingDao
 				DBCodeFragmentMapping.CLONE_CLASS_MAPPING_COLUMN_NAME,
 				cloneClassMappingIds);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	class InternalDBCodeFragmentMapping implements

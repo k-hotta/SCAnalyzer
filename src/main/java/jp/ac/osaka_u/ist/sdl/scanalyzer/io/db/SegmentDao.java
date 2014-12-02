@@ -150,7 +150,7 @@ public class SegmentDao extends
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBSegment.CODE_FRAGMENT_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override

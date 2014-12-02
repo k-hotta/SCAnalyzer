@@ -212,7 +212,7 @@ public class FileChangeDao extends
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBFileChange.VERSION_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override

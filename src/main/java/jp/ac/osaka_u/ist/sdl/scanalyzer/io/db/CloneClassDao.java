@@ -136,7 +136,7 @@ public class CloneClassDao extends
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBCloneClass.VERSION_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override

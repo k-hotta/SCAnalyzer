@@ -274,14 +274,14 @@ public abstract class AbstractDataDao<D extends IDBElement, R extends InternalDa
 		}
 
 		if (!idsToBeRetrieved.isEmpty()) {
-			result.putAll(runRawQuery(QueryHelper.querySelectIdIn(
+			result.putAll(queryRaw(QueryHelper.querySelectIdIn(
 					getTableName(), getIdColumnName(), ids)));
 		}
 
 		return result;
 	}
 
-	public Map<Long, D> runRawQuery(final String query) throws Exception {
+	public Map<Long, D> queryRaw(final String query) throws Exception {
 		final GenericRawResults<R> rawResults = originalDao.queryRaw(query,
 				getRowMapper());
 

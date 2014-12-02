@@ -114,7 +114,7 @@ public class CloneClassMappingDao
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBCloneClassMapping.VERSION_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override

@@ -140,7 +140,7 @@ public class CodeFragmentDao extends
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBCodeFragment.CLONE_CLASS_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override

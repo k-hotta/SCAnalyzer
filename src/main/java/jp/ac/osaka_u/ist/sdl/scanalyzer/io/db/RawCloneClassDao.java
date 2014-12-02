@@ -157,7 +157,7 @@ public class RawCloneClassDao
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBRawCloneClass.VERSION_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override

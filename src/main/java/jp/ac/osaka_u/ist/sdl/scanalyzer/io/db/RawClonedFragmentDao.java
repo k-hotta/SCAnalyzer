@@ -215,7 +215,7 @@ public class RawClonedFragmentDao
 		final String query = QueryHelper.querySelectIdIn(getTableName(),
 				DBRawClonedFragment.CLONE_CLASS_COLUMN_NAME, ids);
 
-		return runRawQuery(query);
+		return queryRaw(query);
 	}
 
 	@Override
