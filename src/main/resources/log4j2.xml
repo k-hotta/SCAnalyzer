@@ -31,7 +31,8 @@
 		<Logger name="usage" level="warn" additivity="false">
 			<AppenderRef ref="usageconsole" />
 		</Logger>
-		<Root level="info">
+		<Logger name="com.j256.ormlite" level="info" additivity="false" />
+		<Root level="debug">
 			<AppenderRef ref="console" />
 		</Root>
 	</Loggers>

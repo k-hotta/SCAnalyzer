@@ -5,6 +5,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is a retriever for {@link CodeFragmentMapping} with the volatile
  * information.
@@ -16,6 +19,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
  */
 public class VolatileCodeFragmentMappingRetriever<E extends IProgramElement>
 		implements IRetriever<E, DBCodeFragmentMapping, CodeFragmentMapping<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileCodeFragmentMappingRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -46,6 +55,8 @@ public class VolatileCodeFragmentMappingRetriever<E extends IProgramElement>
 	@Override
 	public CodeFragmentMapping<E> retrieveElement(
 			DBCodeFragmentMapping dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
+
 		final CodeFragmentMapping<E> codeFragmentMapping = new CodeFragmentMapping<E>(
 				dbElement);
 

@@ -9,6 +9,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This class is a retriever for {@link CloneGenealogy} with volatile
  * information.
@@ -21,6 +24,11 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 public class VolatileGenealogyRetriever<E extends IProgramElement> implements
 		IRetriever<E, DBCloneGenealogy, CloneGenealogy<E>> {
 
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager.getLogger(VolatileGenealogyRetriever.class);
+	
 	/**
 	 * The manager for retrieved objects
 	 */
@@ -83,6 +91,7 @@ public class VolatileGenealogyRetriever<E extends IProgramElement> implements
 
 	@Override
 	public CloneGenealogy<E> retrieveElement(DBCloneGenealogy dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
 		final CloneGenealogy<E> genealogy = new CloneGenealogy<E>(dbElement);
 
 		// retrieve start version

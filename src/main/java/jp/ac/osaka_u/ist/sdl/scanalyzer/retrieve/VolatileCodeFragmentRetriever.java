@@ -6,6 +6,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * The retriever for {@link CodeFragment} with the volatile information.
  * 
@@ -16,6 +19,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
  */
 public class VolatileCodeFragmentRetriever<E extends IProgramElement>
 		implements IRetriever<E, DBCodeFragment, CodeFragment<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileCodeFragmentRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -45,6 +54,8 @@ public class VolatileCodeFragmentRetriever<E extends IProgramElement>
 
 	@Override
 	public CodeFragment<E> retrieveElement(DBCodeFragment dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
+
 		final CodeFragment<E> codeFragment = new CodeFragment<E>(dbElement);
 
 		for (final DBSegment dbSegment : dbElement.getSegments()) {

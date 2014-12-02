@@ -7,6 +7,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.IFileContentProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is a retriever for {@link SourceFile} with volatile information. Note
  * that it is impossible to retrieve file contents only from an instance of
@@ -23,6 +26,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.ISourceFileParser;
  */
 public class VolatileSourceFileRetriever<E extends IProgramElement> implements
 		IRetriever<E, DBSourceFile, SourceFile<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileSourceFileRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -60,6 +69,7 @@ public class VolatileSourceFileRetriever<E extends IProgramElement> implements
 
 	public SourceFile<E> retrieveElement(DBSourceFile dbElement,
 			DBVersion dbVersion) {
+		logger.debug("start retrieving " + dbElement.getId());
 		final SourceFile<E> sourceFile = new SourceFile<E>(dbElement);
 
 		if (dbVersion != null) {

@@ -7,6 +7,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is a retriever for {@link CloneClass} with the volatile information.
  * 
@@ -17,6 +20,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
  */
 public class VolatileCloneClassRetriever<E extends IProgramElement> implements
 		IRetriever<E, DBCloneClass, CloneClass<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileCloneClassRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -63,6 +72,8 @@ public class VolatileCloneClassRetriever<E extends IProgramElement> implements
 
 	@Override
 	public CloneClass<E> retrieveElement(DBCloneClass dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
+
 		final CloneClass<E> cloneClass = new CloneClass<E>(dbElement);
 
 		// set cloned & ghost code fragments

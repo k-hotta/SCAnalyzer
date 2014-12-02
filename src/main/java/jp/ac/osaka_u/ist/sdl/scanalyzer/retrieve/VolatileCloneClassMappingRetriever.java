@@ -6,6 +6,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is a retriever for {@link CloneClassMapping} with volatile information.
  * 
@@ -16,6 +19,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
  */
 public class VolatileCloneClassMappingRetriever<E extends IProgramElement>
 		implements IRetriever<E, DBCloneClassMapping, CloneClassMapping<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileCloneClassMappingRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -46,6 +55,8 @@ public class VolatileCloneClassMappingRetriever<E extends IProgramElement>
 
 	@Override
 	public CloneClassMapping<E> retrieveElement(DBCloneClassMapping dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
+
 		final CloneClassMapping<E> cloneClassMapping = new CloneClassMapping<E>(
 				dbElement);
 

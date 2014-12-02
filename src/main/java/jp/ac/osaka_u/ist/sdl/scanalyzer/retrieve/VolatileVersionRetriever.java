@@ -7,8 +7,17 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class VolatileVersionRetriever<E extends IProgramElement> implements
 		IRetriever<E, DBVersion, Version<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileVersionRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -44,6 +53,8 @@ public class VolatileVersionRetriever<E extends IProgramElement> implements
 
 	@Override
 	public Version<E> retrieveElement(DBVersion dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
+
 		final Version<E> version = new Version<E>(dbElement);
 
 		// refresh the db version

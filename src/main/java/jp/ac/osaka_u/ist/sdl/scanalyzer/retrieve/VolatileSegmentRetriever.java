@@ -11,6 +11,9 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBVersion;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is a retriever for {@link Segment} with the volatile information.
  * 
@@ -21,6 +24,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
  */
 public class VolatileSegmentRetriever<E extends IProgramElement> implements
 		IRetriever<E, DBSegment, Segment<E>> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(VolatileSegmentRetriever.class);
 
 	/**
 	 * The manager for retrieved objects
@@ -73,6 +82,8 @@ public class VolatileSegmentRetriever<E extends IProgramElement> implements
 
 	@Override
 	public Segment<E> retrieveElement(DBSegment dbElement) {
+		logger.debug("start retrieving " + dbElement.getId());
+
 		final Segment<E> segment = new Segment<E>(dbElement);
 
 		// refresh the parent attributes of the segment

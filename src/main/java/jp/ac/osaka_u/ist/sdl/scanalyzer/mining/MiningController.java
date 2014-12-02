@@ -108,7 +108,7 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	}
 
 	private void performMining(final Collection<Long> ids) throws Exception {
-		logger.info("retrieving " + ids.size() + " from database");
+		logger.info("retrieving " + ids.size() + " elements from database");
 		final Map<Long, D> retrieved = retrieveFromDatabase(ids);
 		logger.info("complete retrieving elements from database");
 		
