@@ -409,36 +409,35 @@ public class VersionDao extends
 
 	}
 
-	@Override
-	protected RawRowMapper<InternalDBVersion> getRowMapper() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	class InternalDBVersionSourceFile implements
+			InternalDataRepresentation<DBVersionSourceFile> {
 
-	@Override
-	protected void updateRelativeElementIds(InternalDBVersion rawResult)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+		private final Long id;
 
-	@Override
-	protected void retrieveRelativeElements(
-			Map<String, Set<Long>> relativeElementIds) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+		private final Long versionId;
 
-	@Override
-	protected DBVersion makeInstance(InternalDBVersion rawResult) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		private final Long sourceFileId;
 
-	@Override
-	protected Map<Long, DBVersion> queryRaw(String query) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		public InternalDBVersionSourceFile(final Long id, final Long versionId,
+				final Long sourceFileId) {
+			this.id = id;
+			this.versionId = id;
+			this.sourceFileId = sourceFileId;
+		}
+
+		@Override
+		public final Long getId() {
+			return id;
+		}
+
+		public final Long getVersionId() {
+			return versionId;
+		}
+
+		public final Long getSourceFileId() {
+			return sourceFileId;
+		}
+
 	}
 
 }
