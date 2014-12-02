@@ -2,7 +2,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.retrieve;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
@@ -23,23 +24,23 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
  */
 public class RetrievedObjectManager<E extends IProgramElement> {
 
-	private final Map<Long, Segment<E>> segments = new TreeMap<>();
+	private final ConcurrentMap<Long, Segment<E>> segments = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, CodeFragment<E>> codeFragments = new TreeMap<>();
+	private final ConcurrentMap<Long, CodeFragment<E>> codeFragments = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, CloneClass<E>> cloneClasses = new TreeMap<>();
+	private final ConcurrentMap<Long, CloneClass<E>> cloneClasses = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, SourceFile<E>> sourceFiles = new TreeMap<>();
+	private final ConcurrentMap<Long, SourceFile<E>> sourceFiles = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, CloneClassMapping<E>> cloneClassMappings = new TreeMap<>();
+	private final ConcurrentMap<Long, CloneClassMapping<E>> cloneClassMappings = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, CodeFragmentMapping<E>> codeFragmentMappings = new TreeMap<>();
+	private final ConcurrentMap<Long, CodeFragmentMapping<E>> codeFragmentMappings = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, Revision> revisions = new TreeMap<>();
+	private final ConcurrentMap<Long, Revision> revisions = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, Version<E>> versions = new TreeMap<>();
+	private final ConcurrentMap<Long, Version<E>> versions = new ConcurrentSkipListMap<>();
 
-	private final Map<Long, CloneGenealogy<E>> genealogies = new TreeMap<>();
+	private final ConcurrentMap<Long, CloneGenealogy<E>> genealogies = new ConcurrentSkipListMap<>();
 
 	public final Map<Long, Segment<E>> getSegments() {
 		return Collections.unmodifiableMap(segments);
