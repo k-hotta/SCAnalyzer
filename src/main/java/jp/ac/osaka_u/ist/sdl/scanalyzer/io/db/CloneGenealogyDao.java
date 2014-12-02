@@ -493,8 +493,9 @@ public class CloneGenealogyDao
 
 	}
 
-	class InternalDBCloneGenealogyCloneClassMapping implements
-			InternalDataRepresentation<DBCloneGenealogyCloneClassMapping> {
+	class InternalDBCloneGenealogyCloneClassMapping
+			implements
+			InternalLeftRightDataRepresentation<DBCloneGenealogyCloneClassMapping> {
 
 		private final Long id;
 
@@ -512,6 +513,16 @@ public class CloneGenealogyDao
 		@Override
 		public final Long getId() {
 			return id;
+		}
+
+		@Override
+		public final Long getLeftId() {
+			return cloneGenealogyId;
+		}
+
+		@Override
+		public final Long getRightId() {
+			return cloneClassMappingId;
 		}
 
 		public final Long getCloneGenealogyId() {
