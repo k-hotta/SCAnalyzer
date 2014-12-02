@@ -152,6 +152,14 @@ public class RawCloneClassDao
 				DBRawCloneClass.VERSION_COLUMN_NAME, version));
 	}
 
+	public Map<Long, DBRawCloneClass> getWithVersionIds(
+			final Collection<Long> ids) throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBRawCloneClass.VERSION_COLUMN_NAME, ids);
+
+		return runRawQuery(query);
+	}
+
 	@Override
 	protected RawRowMapper<InternalDBRawCloneClass> getRowMapper()
 			throws Exception {
