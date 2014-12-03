@@ -87,9 +87,9 @@ public class LCSFinder {
 	 *            default comparator will be used, which compare elements with
 	 *            equals method
 	 * @return a map contains the result, each of whose key represents an index
-	 *         of a list, which equals to that in the given targetElements, each
-	 *         of whose value represents a sorted set of indexes to the elements
-	 *         that are included in the detected LCS
+	 *         of a list which equals to that in the given targetElements, and
+	 *         each of whose value represents a sorted set of indexes to the
+	 *         elements that are included in the detected LCS
 	 */
 	public static <E extends IProgramElement> Map<Long, SortedSet<Integer>> detectLcs(
 			final Map<Long, List<E>> targetElements,
