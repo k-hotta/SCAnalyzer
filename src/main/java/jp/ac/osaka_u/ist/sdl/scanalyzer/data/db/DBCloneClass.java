@@ -115,11 +115,13 @@ public class DBCloneClass implements IDBElement {
 		this.codeFragments = codeFragments;
 		this.numClonedFragments = 0;
 		this.numGhostFragments = 0;
-		for (final DBCodeFragment codeFragment : codeFragments) {
-			if (codeFragment.isGhost()) {
-				this.numGhostFragments++;
-			} else {
-				this.numClonedFragments++;
+		if (codeFragments != null) {
+			for (final DBCodeFragment codeFragment : codeFragments) {
+				if (codeFragment.isGhost()) {
+					this.numGhostFragments++;
+				} else {
+					this.numClonedFragments++;
+				}
 			}
 		}
 		this.numCommonClonedElements = 0;
