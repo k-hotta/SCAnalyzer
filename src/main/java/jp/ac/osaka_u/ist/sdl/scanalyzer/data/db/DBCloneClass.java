@@ -33,14 +33,24 @@ public class DBCloneClass implements IDBElement {
 	public static final String CODE_FRAGMENTS_COLUMN_NAME = "CODE_FRAGMENTS";
 
 	/**
-	 * The column name for numFragments
+	 * The column name for numClonedFragments
 	 */
-	public static final String NUM_CLONE_FRAGMENTS_COLUMN_NAME = "NUM_CLONE_FRAGMENTS";
+	public static final String NUM_CLONED_FRAGMENTS_COLUMN_NAME = "NUM_CLONED_FRAGMENTS";
 
 	/**
 	 * The column name for numGhosts
 	 */
 	public static final String NUM_GHOST_FRAGMENTS_COLUMN_NAME = "NUM_GHOST_FRAGMENTS";
+
+	/**
+	 * The column name for numCommonClonedElements
+	 */
+	public static final String NUM_COMMON_CLONED_ELEMENTS_COLUMN_NAME = "NUM_COMMON_CLONED_ELEMENTS";
+
+	/**
+	 * The column name for numCommonAllElements
+	 */
+	public static final String NUM_COMMON_ALL_ELEMENTS_COLUMN_NAME = "NUM_COMMON_ALL_ELEMENTS";
 
 	/**
 	 * The id of this clone class
@@ -60,14 +70,26 @@ public class DBCloneClass implements IDBElement {
 	/**
 	 * The number of cloned fragments
 	 */
-	@DatabaseField(columnName = NUM_CLONE_FRAGMENTS_COLUMN_NAME)
-	private int numCloneFragments;
+	@DatabaseField(columnName = NUM_CLONED_FRAGMENTS_COLUMN_NAME)
+	private int numClonedFragments;
 
 	/**
 	 * The number of ghost fragments
 	 */
 	@DatabaseField(columnName = NUM_GHOST_FRAGMENTS_COLUMN_NAME)
 	private int numGhostFragments;
+
+	/**
+	 * The number of common program elements among cloned fragments
+	 */
+	@DatabaseField(columnName = NUM_COMMON_CLONED_ELEMENTS_COLUMN_NAME)
+	private int numCommonClonedElements;
+
+	/**
+	 * The number of common program elements among all code fragments
+	 */
+	@DatabaseField(columnName = NUM_COMMON_ALL_ELEMENTS_COLUMN_NAME)
+	private int numCommonAllElements;
 
 	/**
 	 * The default constructor
@@ -77,7 +99,7 @@ public class DBCloneClass implements IDBElement {
 	}
 
 	/**
-	 * The constructor with all the values specified.
+	 * The constructor with all the values specified, without metrics.
 	 * 
 	 * @param id
 	 *            the id of this clone class
@@ -91,15 +113,48 @@ public class DBCloneClass implements IDBElement {
 		this.id = id;
 		this.version = version;
 		this.codeFragments = codeFragments;
-		this.numCloneFragments = 0;
+		this.numClonedFragments = 0;
 		this.numGhostFragments = 0;
 		for (final DBCodeFragment codeFragment : codeFragments) {
 			if (codeFragment.isGhost()) {
 				this.numGhostFragments++;
 			} else {
-				this.numCloneFragments++;
+				this.numClonedFragments++;
 			}
 		}
+		this.numCommonClonedElements = 0;
+		this.numCommonAllElements = 0;
+	}
+
+	/**
+	 * The constructor with all the values specified, including metrics.
+	 * 
+	 * @param id
+	 *            the id of this clone class
+	 * @param version
+	 *            the owner version of this clone class
+	 * @param codeFragments
+	 *            the code fragments in this clone class
+	 * @param numCloneFragments
+	 *            the number of cloned fragments
+	 * @param numGhostFragments
+	 *            the number of ghost fragments
+	 * @param numCommonClonedElements
+	 *            the number of common program elements among cloned fragments
+	 * @param numCommonAllElements
+	 *            the number of common program elements among all code fragments
+	 */
+	public DBCloneClass(final long id, final DBVersion version,
+			final Collection<DBCodeFragment> codeFragments,
+			final int numCloneFragments, final int numGhostFragments,
+			final int numCommonClonedElements, final int numCommonAllElements) {
+		this.id = id;
+		this.version = version;
+		this.codeFragments = codeFragments;
+		this.numClonedFragments = numCloneFragments;
+		this.numGhostFragments = numGhostFragments;
+		this.numCommonClonedElements = numCommonClonedElements;
+		this.numCommonAllElements = numCommonAllElements;
 	}
 
 	/**
@@ -165,7 +220,7 @@ public class DBCloneClass implements IDBElement {
 		if (codeFragment.isGhost()) {
 			this.numGhostFragments++;
 		} else {
-			this.numCloneFragments++;
+			this.numClonedFragments++;
 		}
 
 		codeFragments.add(codeFragment);
@@ -191,15 +246,76 @@ public class DBCloneClass implements IDBElement {
 	 */
 	public void setCodeFragments(final Collection<DBCodeFragment> codeFragments) {
 		this.codeFragments = codeFragments;
-		this.numCloneFragments = 0;
+		this.numClonedFragments = 0;
 		this.numGhostFragments = 0;
 		for (final DBCodeFragment codeFragment : codeFragments) {
 			if (codeFragment.isGhost()) {
 				this.numGhostFragments++;
 			} else {
-				this.numCloneFragments++;
+				this.numClonedFragments++;
 			}
 		}
+	}
+
+	/**
+	 * Get the number of cloned fragments.
+	 * 
+	 * @return the number of cloned fragments
+	 */
+	public int getNumClonedFragments() {
+		return numClonedFragments;
+	}
+
+	/**
+	 * Get the number of ghost fragments.
+	 * 
+	 * @return
+	 */
+	public int getNumGhostFragments() {
+		return numGhostFragments;
+	}
+
+	/**
+	 * Get the number of common program elements among all the cloned fragments.
+	 * 
+	 * @return the number of common program elements among all the cloned
+	 *         fragments
+	 */
+	public int getNumCommonClonedElements() {
+		return numCommonClonedElements;
+	}
+
+	/**
+	 * Set the number of common program elements among all the cloned fragments
+	 * with the specified value.
+	 * 
+	 * @param numCommonClonedElements
+	 *            an integer value to be set
+	 */
+	public void setNumCommonClonedElements(int numCommonClonedElements) {
+		this.numCommonClonedElements = numCommonClonedElements;
+	}
+
+	/**
+	 * Get the number of common program elements among all the code fragments
+	 * (including ghosts).
+	 * 
+	 * @return the number of common program elements among all the code
+	 *         fragments
+	 */
+	public int getNumCommonAllElements() {
+		return numCommonAllElements;
+	}
+
+	/**
+	 * Set the number of common program elements among all the code fragments
+	 * (including ghosts) with the specified value.
+	 * 
+	 * @param numCommonAllElements
+	 *            an integer value to be set
+	 */
+	public void setNumCommonAllElements(int numCommonAllElements) {
+		this.numCommonAllElements = numCommonAllElements;
 	}
 
 	/**
