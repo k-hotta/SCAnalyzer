@@ -331,7 +331,8 @@ public class SCAnalyzerMiningMain {
 				new CloneGenealogyPersistPeriodFindStrategy<>(
 						config.getOutputFilePath());
 			case GENEALOGY_SIMILARITY_PERIOD:
-				return new CloneGenealogySimilarityStrategy<>();
+				return new CloneGenealogySimilarityStrategy<>(
+						config.getOutputFilePath());
 			}
 
 			throw new IllegalStateException("cannot find strategy");
