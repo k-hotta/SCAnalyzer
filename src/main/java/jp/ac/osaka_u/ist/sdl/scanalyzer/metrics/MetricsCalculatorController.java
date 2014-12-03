@@ -27,10 +27,9 @@ public class MetricsCalculatorController<E extends IProgramElement> {
 		this.calculators.add(calculator);
 	}
 
-	public void calculateAll(final Version<E> previous, final Version<E> next,
-			final Collection<CloneClassMapping<E>> mappings) {
+	public void calculateAll(final Version<E> previous, final Version<E> next) {
 		for (final IMetricsCalculator<E> calculator : calculators) {
-			calculator.calculate(previous, next, mappings);
+			calculator.calculate(previous, next);
 		}
 	}
 
