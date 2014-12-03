@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -32,6 +33,16 @@ public class DBCloneClass implements IDBElement {
 	public static final String CODE_FRAGMENTS_COLUMN_NAME = "CODE_FRAGMENTS";
 
 	/**
+	 * The column name for numFragments
+	 */
+	public static final String NUM_CLONE_FRAGMENTS_COLUMN_NAME = "NUM_CLONE_FRAGMENTS";
+
+	/**
+	 * The column name for numGhosts
+	 */
+	public static final String NUM_GHOST_FRAGMENTS_COLUMN_NAME = "NUM_GHOST_FRAGMENTS";
+
+	/**
 	 * The id of this clone class
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -45,6 +56,18 @@ public class DBCloneClass implements IDBElement {
 	 */
 	@ForeignCollectionField(eager = true, columnName = CODE_FRAGMENTS_COLUMN_NAME)
 	private Collection<DBCodeFragment> codeFragments;
+
+	/**
+	 * The number of cloned fragments
+	 */
+	@DatabaseField(columnName = NUM_CLONE_FRAGMENTS_COLUMN_NAME)
+	private int numCloneFragments;
+
+	/**
+	 * The number of ghost fragments
+	 */
+	@DatabaseField(columnName = NUM_GHOST_FRAGMENTS_COLUMN_NAME)
+	private int numGhostFragments;
 
 	/**
 	 * The default constructor
@@ -68,6 +91,15 @@ public class DBCloneClass implements IDBElement {
 		this.id = id;
 		this.version = version;
 		this.codeFragments = codeFragments;
+		this.numCloneFragments = 0;
+		this.numGhostFragments = 0;
+		for (final DBCodeFragment codeFragment : codeFragments) {
+			if (codeFragment.isGhost()) {
+				this.numGhostFragments++;
+			} else {
+				this.numCloneFragments++;
+			}
+		}
 	}
 
 	/**
@@ -116,7 +148,39 @@ public class DBCloneClass implements IDBElement {
 	 * @return the code fragments in this clone class
 	 */
 	public Collection<DBCodeFragment> getCodeFragments() {
-		return codeFragments;
+		return Collections.unmodifiableCollection(codeFragments);
+	}
+
+	/**
+	 * Add the given code fragment into this clone class.
+	 * 
+	 * @param codeFragment
+	 *            the code fragment to be added
+	 */
+	public void addCodeFragment(final DBCodeFragment codeFragment) {
+		if (codeFragment == null) {
+			return;
+		}
+
+		if (codeFragment.isGhost()) {
+			this.numGhostFragments++;
+		} else {
+			this.numCloneFragments++;
+		}
+
+		codeFragments.add(codeFragment);
+	}
+
+	/**
+	 * Add the given code fragments into this clone class.
+	 * 
+	 * @param codeFragments
+	 *            a collection of code fragments to be added
+	 */
+	public void addCodeFragments(final Collection<DBCodeFragment> codeFragments) {
+		for (final DBCodeFragment codeFragment : codeFragments) {
+			addCodeFragment(codeFragment);
+		}
 	}
 
 	/**
@@ -127,6 +191,15 @@ public class DBCloneClass implements IDBElement {
 	 */
 	public void setCodeFragments(final Collection<DBCodeFragment> codeFragments) {
 		this.codeFragments = codeFragments;
+		this.numCloneFragments = 0;
+		this.numGhostFragments = 0;
+		for (final DBCodeFragment codeFragment : codeFragments) {
+			if (codeFragment.isGhost()) {
+				this.numGhostFragments++;
+			} else {
+				this.numCloneFragments++;
+			}
+		}
 	}
 
 	/**

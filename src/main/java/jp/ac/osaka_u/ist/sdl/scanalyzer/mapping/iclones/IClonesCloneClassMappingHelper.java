@@ -582,7 +582,7 @@ public class IClonesCloneClassMappingHelper {
 		for (final CodeFragment<E> ghostFragment : instanciatedFragments) {
 			ghostFragment.getCore().setGhost(true);
 			ghostFragment.getCore().setCloneClass(ghostDBCloneClass);
-			ghostDBCloneClass.getCodeFragments().add(ghostFragment.getCore());
+			ghostDBCloneClass.addCodeFragment(ghostFragment.getCore());
 
 			ghostFragment.setCloneClass(ghostCloneClass);
 			ghostCloneClass.addGhostFragment(ghostFragment);

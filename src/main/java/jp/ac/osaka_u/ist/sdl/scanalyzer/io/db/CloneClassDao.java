@@ -228,7 +228,7 @@ public class CloneClassDao extends
 					&& !codeFragmentIdsInCloneClass.isEmpty()) {
 				final Collection<DBCodeFragment> codeFragments = codeFragmentDao
 						.get(codeFragmentIdsInCloneClass).values();
-				newInstance.getCodeFragments().addAll(codeFragments);
+				newInstance.addCodeFragments(codeFragments);
 			}
 		}
 

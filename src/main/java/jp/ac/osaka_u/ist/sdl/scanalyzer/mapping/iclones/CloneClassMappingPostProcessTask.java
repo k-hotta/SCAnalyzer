@@ -111,8 +111,8 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 				// store the ghost fragment into the new clone class
 				synchronized (newCloneClass) {
 					instanciatedFragment.getCore().setGhost(true);
-					newCloneClass.getCore().getCodeFragments()
-							.add(instanciatedFragment.getCore());
+					newCloneClass.getCore().addCodeFragment(
+							instanciatedFragment.getCore());
 					instanciatedFragment.getCore().setCloneClass(
 							newCloneClass.getCore());
 
@@ -129,5 +129,4 @@ public class CloneClassMappingPostProcessTask<E extends IProgramElement>
 		}
 
 	}
-
 }

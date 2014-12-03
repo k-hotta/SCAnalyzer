@@ -160,7 +160,7 @@ public class CloneClassBuildTask<E extends IProgramElement> implements
 		for (int i = 0; i < targetFragments.size(); i++) {
 			final CodeFragment<E> fragment = constructFragment(
 					targetFragments.get(i), targetFragmentsSourceFiles.get(i));
-			dbCloneClass.getCodeFragments().add(fragment.getCore());
+			dbCloneClass.addCodeFragment(fragment.getCore());
 			fragment.getCore().setCloneClass(dbCloneClass);
 
 			cloneClass.addCodeFragment(fragment);
