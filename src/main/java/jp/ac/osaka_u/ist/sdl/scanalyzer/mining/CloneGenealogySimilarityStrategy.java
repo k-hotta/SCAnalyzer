@@ -116,7 +116,7 @@ public class CloneGenealogySimilarityStrategy<E extends IProgramElement>
 	private String buildHeader() {
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append("ID,KIND,");
+		builder.append("GENEALOGY_ID,KIND,");
 		for (final long versionId : versionsUnderConsideration) {
 			builder.append("v." + versionId);
 		}
