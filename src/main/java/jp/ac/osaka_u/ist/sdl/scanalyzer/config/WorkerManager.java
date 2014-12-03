@@ -16,6 +16,8 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.svn.SVNRevisionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones.IClonesCloneClassMapper;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.metrics.DefaultCloneClassMetricsCalculator;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.metrics.MetricsCalculatorController;
 import difflib.myers.Equalizer;
 
 /**
@@ -89,6 +91,11 @@ public class WorkerManager<E extends IProgramElement> {
 	 */
 	private VersionProvider<E> versionProvider;
 
+	/**
+	 * The controller of metrics calculators
+	 */
+	private MetricsCalculatorController<E> metricsController;
+
 	public final IRevisionProvider getRevisionProvider() {
 		return revisionProvider;
 	}
@@ -129,6 +136,10 @@ public class WorkerManager<E extends IProgramElement> {
 		return versionProvider;
 	}
 
+	public final MetricsCalculatorController<E> getMetricsController() {
+		return metricsController;
+	}
+
 	/**
 	 * Set up all the workers with the specified configuration
 	 * 
@@ -154,6 +165,7 @@ public class WorkerManager<E extends IProgramElement> {
 				.getElementMappingAlgorithm());
 		cloneMapper = setupCloneClassMapper(config.getCloneMappingAlgorithm());
 		versionProvider = setupVersionProvider();
+		metricsController = setupMetricsController();
 	}
 
 	/**
@@ -296,6 +308,19 @@ public class WorkerManager<E extends IProgramElement> {
 		result.setFileParser(fileParser);
 
 		return result;
+	}
+
+	/**
+	 * Set up metrics calculator controller.
+	 * 
+	 * @return
+	 */
+	private MetricsCalculatorController<E> setupMetricsController() {
+		final MetricsCalculatorController<E> controller = new MetricsCalculatorController<>();
+
+		controller.addCalculator(new DefaultCloneClassMetricsCalculator<>());
+
+		return controller;
 	}
 
 }

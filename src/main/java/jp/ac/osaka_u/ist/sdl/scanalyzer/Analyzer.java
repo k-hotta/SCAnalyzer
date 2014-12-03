@@ -37,6 +37,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.io.db.DBManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.io.in.VersionProvider;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.ICloneClassMapper;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.IProgramElementMapper;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.metrics.MetricsCalculatorController;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,11 +58,6 @@ public class Analyzer<E extends IProgramElement> {
 	private static final Logger logger = LogManager.getLogger(Analyzer.class);
 
 	/**
-	 * The manager of workers
-	 */
-	private final WorkerManager<E> workerManager;
-
-	/**
 	 * The version provider
 	 */
 	private final VersionProvider<E> versionProvider;
@@ -76,11 +72,16 @@ public class Analyzer<E extends IProgramElement> {
 	 */
 	private final ICloneClassMapper<E> cloneMapper;
 
+	/**
+	 * The controller of metrics calculators
+	 */
+	private final MetricsCalculatorController<E> metricsController;
+
 	public Analyzer(final WorkerManager<E> workerManager) {
-		this.workerManager = workerManager;
 		this.versionProvider = workerManager.getVersionProvider();
 		this.elementMapper = workerManager.getElementMapper();
 		this.cloneMapper = workerManager.getCloneMapper();
+		this.metricsController = workerManager.getMetricsController();
 	}
 
 	/**
@@ -143,6 +144,11 @@ public class Analyzer<E extends IProgramElement> {
 
 			logger.info("complete mapping clone classes: "
 					+ cloneClassMappings.size() + " mappings have been found");
+			
+			// calculating metrics of elements
+			logger.info("calculating metrics ...");
+			metricsController.calculateAll(previous, next);
+			logger.info("complete calculating metrics");
 
 			// concatenate clone genealogies
 			logger.info("concatenating genealogies ...");
