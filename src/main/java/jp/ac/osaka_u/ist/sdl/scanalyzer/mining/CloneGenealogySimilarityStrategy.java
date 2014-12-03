@@ -199,7 +199,7 @@ public class CloneGenealogySimilarityStrategy<E extends IProgramElement>
 			commonInCloned.put(genealogy.getId(), commonInClonedInGenealogy);
 			commonInAll.put(genealogy.getId(), commonInAllInGenealogy);
 
-			logger.info("[" + count.getAndIncrement() + "/" + numGenealogies
+			logger.info("[" + count.incrementAndGet() + "/" + numGenealogies
 					+ "] complete mining genealogy " + genealogy.getId());
 		}
 
