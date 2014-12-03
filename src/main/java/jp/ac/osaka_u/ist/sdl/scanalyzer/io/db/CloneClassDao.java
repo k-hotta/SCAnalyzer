@@ -206,7 +206,10 @@ public class CloneClassDao extends
 			final Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception {
 		final DBCloneClass newInstance = new DBCloneClass(rawResult.getId(),
-				null, null);
+				null, null, rawResult.getNumClonedFragments(),
+				rawResult.getNumGhostFragments(),
+				rawResult.getNumCommonClonedElements(),
+				rawResult.getNumCommonAllElements());
 
 		if (autoRefresh) {
 			if (deepRefresh) {
@@ -242,9 +245,25 @@ public class CloneClassDao extends
 
 		private final Long versionId;
 
-		private InternalDBCloneClass(final Long id, final Long versionId) {
+		private final Integer numClonedFragments;
+
+		private final Integer numGhostFragments;
+
+		private final Integer numCommonClonedElements;
+
+		private final Integer numCommonAllElements;
+
+		private InternalDBCloneClass(final Long id, final Long versionId,
+				final Integer numClonedFragments,
+				final Integer numGhostFragments,
+				final Integer numCommonClonedElements,
+				final Integer numCommonAllElements) {
 			this.id = id;
 			this.versionId = versionId;
+			this.numClonedFragments = numClonedFragments;
+			this.numGhostFragments = numGhostFragments;
+			this.numCommonClonedElements = numCommonClonedElements;
+			this.numCommonAllElements = numCommonAllElements;
 		}
 
 		@Override
@@ -256,6 +275,22 @@ public class CloneClassDao extends
 			return versionId;
 		}
 
+		public Integer getNumClonedFragments() {
+			return numClonedFragments;
+		}
+
+		public Integer getNumGhostFragments() {
+			return numGhostFragments;
+		}
+
+		public Integer getNumCommonClonedElements() {
+			return numCommonClonedElements;
+		}
+
+		public Integer getNumCommonAllElements() {
+			return numCommonAllElements;
+		}
+
 	}
 
 	class RowMapper implements RawRowMapper<InternalDBCloneClass> {
@@ -265,20 +300,40 @@ public class CloneClassDao extends
 				String[] resultColumns) throws SQLException {
 			Long id = null;
 			Long versionId = null;
+			Integer numClonedFragments = null;
+			Integer numGhostFragments = null;
+			Integer numCommonClonedElements = null;
+			Integer numCommonAllElements = null;
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
 				switch (columnName) {
 				case DBCloneClass.ID_COLUMN_NAME:
-					id = Long.parseLong(resultColumns[i]);
+					id = Long.parseLong(resultColumn);
 					break;
 				case DBCloneClass.VERSION_COLUMN_NAME:
-					versionId = Long.parseLong(resultColumns[i]);
+					versionId = Long.parseLong(resultColumn);
+					break;
+				case DBCloneClass.NUM_CLONED_FRAGMENTS_COLUMN_NAME:
+					numClonedFragments = Integer.parseInt(resultColumn);
+					break;
+				case DBCloneClass.NUM_GHOST_FRAGMENTS_COLUMN_NAME:
+					numGhostFragments = Integer.parseInt(resultColumn);
+					break;
+				case DBCloneClass.NUM_COMMON_CLONED_ELEMENTS_COLUMN_NAME:
+					numCommonClonedElements = Integer.parseInt(resultColumn);
+					break;
+				case DBCloneClass.NUM_COMMON_ALL_ELEMENTS_COLUMN_NAME:
+					numCommonAllElements = Integer.parseInt(resultColumn);
 					break;
 				}
 			}
 
-			return new InternalDBCloneClass(id, versionId);
+			return new InternalDBCloneClass(id, versionId, numClonedFragments,
+					numGhostFragments, numCommonClonedElements,
+					numCommonAllElements);
 		}
 	}
 
