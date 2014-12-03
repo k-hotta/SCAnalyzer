@@ -118,7 +118,7 @@ public class CloneGenealogySimilarityStrategy<E extends IProgramElement>
 
 		builder.append("GENEALOGY_ID,KIND,");
 		for (final long versionId : versionsUnderConsideration) {
-			builder.append("v." + versionId);
+			builder.append("v." + versionId + ",");
 		}
 		builder.deleteCharAt(builder.length() - 1);
 
@@ -206,7 +206,7 @@ public class CloneGenealogySimilarityStrategy<E extends IProgramElement>
 		private void addCloneClass(
 				final Map<Long, Set<DBCloneClass>> cloneClassesByVersions,
 				final DBCloneClass cloneClass) {
-			final long versionId = cloneClass.getId();
+			final long versionId = cloneClass.getVersion().getId();
 
 			Set<DBCloneClass> cloneClassesInVersion = cloneClassesByVersions
 					.get(versionId);

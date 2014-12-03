@@ -64,9 +64,9 @@ public class ParallelRetriever<E extends IProgramElement, D extends IDBElement, 
 			for (final Future<T> future : futures) {
 				try {
 					final T retrievedObject = future.get();
-					logger.info("[" + count.getAndIncrement() + "/"
-							+ dbElements.size() + "] element "
-							+ retrievedObject.getId() + " has been retrieved");
+//					logger.info("[" + count.getAndIncrement() + "/"
+//							+ dbElements.size() + "] element "
+//							+ retrievedObject.getId() + " has been retrieved");
 					result.put(retrievedObject.getId(), retrievedObject);
 				} catch (Exception e) {
 					e.printStackTrace();
