@@ -1,10 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.metrics;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 
