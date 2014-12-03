@@ -2,7 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
 public enum AvailableMiningStrategy {
 
-	GENEALOGY_PERSIST_PERIOD;
+	GENEALOGY_PERSIST_PERIOD, GENEALOGY_SIMILARITY_PERIOD;
 
 	/**
 	 * Provide a string that represents which values can be used as

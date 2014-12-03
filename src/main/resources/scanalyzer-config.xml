@@ -27,7 +27,7 @@
 		<element-mapping>Traditional_diff</element-mapping>
 	</mapping>
 	<mining>
-		<mining-strategy>GENEALOGY_PERSIST_PERIOD</mining-strategy>
+		<mining-strategy>GENEALOGY_SIMILARITY_PERIOD</mining-strategy>
 		<output-file>src/test/resources/mining.csv</output-file>
 		<max-retrieved>100</max-retrieved>
 	</mining>

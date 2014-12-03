@@ -198,11 +198,17 @@ public class SCAnalyzerMiningMain {
 		 */
 		private StrategyHelper<E, ?, ?> strategyHelper;
 
+		/**
+		 * The strategy
+		 */
+		private MiningStrategy<?, ?> strategy;
+
 		private MainHelper(final Config config) {
 			this.config = config;
 			this.workerManager = null;
 			this.retrieverManager = null;
 			this.strategyHelper = null;
+			this.strategy = null;
 		}
 
 		/**
@@ -214,6 +220,7 @@ public class SCAnalyzerMiningMain {
 			setUpDatabase();
 			setUpRepository();
 			this.workerManager = setUpWorkers();
+			this.strategy = setUpStrategy();
 			this.retrieverManager = setUpRetrievers();
 			this.strategyHelper = setUpStrategyHelper();
 		}
@@ -318,6 +325,18 @@ public class SCAnalyzerMiningMain {
 			return result;
 		}
 
+		private MiningStrategy<?, ?> setUpStrategy() {
+			switch (config.getMiningStrategy()) {
+			case GENEALOGY_PERSIST_PERIOD:
+				new CloneGenealogyPersistPeriodFindStrategy<>(
+						config.getOutputFilePath());
+			case GENEALOGY_SIMILARITY_PERIOD:
+				return new CloneGenealogySimilarityStrategy<>();
+			}
+
+			throw new IllegalStateException("cannot find strategy");
+		}
+
 		/**
 		 * Set up the retrievers
 		 * 
@@ -325,14 +344,13 @@ public class SCAnalyzerMiningMain {
 		 * @throws Exception
 		 */
 		private RetrieverManager<E> setUpRetrievers() throws Exception {
-			switch (config.getMiningStrategy()) {
-			case GENEALOGY_PERSIST_PERIOD:
+			if (strategy.requiresVolatileObjects()) {
 				return new RetrieverManager<E>(RetrieveMode.VOLATILE,
 						workerManager);
+			} else {
+				return new RetrieverManager<E>(RetrieveMode.PERSIST,
+						workerManager);
 			}
-
-			throw new IllegalStateException(
-					"the strategy of mining has not been correctly specified");
 		}
 
 		/**
@@ -341,16 +359,24 @@ public class SCAnalyzerMiningMain {
 		 * @return
 		 * @throws Exception
 		 */
+		@SuppressWarnings("unchecked")
 		private StrategyHelper<E, ?, ?> setUpStrategyHelper() throws Exception {
 			final RetrievedObjectManager<E> manager = new RetrievedObjectManager<E>();
 
 			switch (config.getMiningStrategy()) {
 			case GENEALOGY_PERSIST_PERIOD:
 				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
-						manager, retrieverManager.getGenealogyRetriever(),
+						manager,
+						retrieverManager.getGenealogyRetriever(),
 						DBManager.getInstance().getCloneGenealogyDao(),
-						new CloneGenealogyPersistPeriodFindStrategy<>(config
-								.getOutputFilePath()),
+						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
+						config.getMaximumRetrieveCount());
+			case GENEALOGY_SIMILARITY_PERIOD:
+				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
+						manager,
+						retrieverManager.getGenealogyRetriever(),
+						DBManager.getInstance().getCloneGenealogyDao(),
+						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
 						config.getMaximumRetrieveCount());
 			}
 
