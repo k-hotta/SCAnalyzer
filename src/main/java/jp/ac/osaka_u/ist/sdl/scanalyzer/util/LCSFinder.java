@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,9 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import difflib.Chunk;
 import difflib.Delta;
 import difflib.DiffUtils;
@@ -23,6 +26,56 @@ import difflib.myers.Equalizer;
  *
  */
 public class LCSFinder {
+
+	/**
+	 * Get list of program elements for each of the given code fragments. If a
+	 * code fragment has two or more code fragments, this method provides a list
+	 * where all the elements of all the segments are concatenated. Hence, the
+	 * order of code segments in a code fragment plays an important role. The
+	 * segments should be sorted based on their file paths and positions in
+	 * default.
+	 * 
+	 * @param codeFragments
+	 *            a collection contains all the code fragments under
+	 *            consideration
+	 * 
+	 * @return a map contains all the list of program elements for each code
+	 *         fragment.
+	 */
+	public static <E extends IProgramElement> Map<Long, List<E>> getFragmentElements(
+			final Collection<CodeFragment<E>> codeFragments) {
+		final Map<Long, List<E>> result = new TreeMap<>();
+
+		for (final CodeFragment<E> codeFragment : codeFragments) {
+			final List<Segment<E>> segments = codeFragment.getSegments();
+			final List<E> elements = new ArrayList<>();
+			for (final Segment<E> segment : segments) {
+				elements.addAll(segment.getContents());
+			}
+			result.put(codeFragment.getId(), elements);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get list of program elements for each of the given code fragments. If a
+	 * code fragment has two or more code fragments, this method provides a list
+	 * where all the elements of all the segments are concatenated. Hence, the
+	 * order of code segments in a code fragment plays an important role. The
+	 * segments should be sorted based on their file paths and positions in
+	 * default.
+	 * 
+	 * @param codeFragments
+	 *            a map contains all the code fragments under consideration
+	 * 
+	 * @return a map contains all the list of program elements for each code
+	 *         fragment.
+	 */
+	public static <E extends IProgramElement> Map<Long, List<E>> getFragmentElements(
+			final Map<?, CodeFragment<E>> codeFragments) {
+		return getFragmentElements(codeFragments.values());
+	}
 
 	/**
 	 * Detect LCS among all the given lists of program elements.
