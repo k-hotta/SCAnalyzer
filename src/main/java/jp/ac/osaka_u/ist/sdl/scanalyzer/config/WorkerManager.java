@@ -318,7 +318,8 @@ public class WorkerManager<E extends IProgramElement> {
 	private MetricsCalculatorController<E> setupMetricsController() {
 		final MetricsCalculatorController<E> controller = new MetricsCalculatorController<>();
 
-		controller.addCalculator(new DefaultCloneClassMetricsCalculator<>());
+		controller.addCalculator(new DefaultCloneClassMetricsCalculator<>(
+				equalizer));
 
 		return controller;
 	}
