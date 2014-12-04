@@ -105,8 +105,7 @@ public class CloneClassListView extends JPanel implements MouseListener,
 		final Collection<CodeFragment<?>> codeFragments = new ArrayList<>();
 		codeFragments.addAll(cloneClass.getCodeFragments().values());
 		codeFragments.addAll(cloneClass.getGhostFragments().values());
-		for (final CodeFragment<?> codeFragment : cloneClass.getCodeFragments()
-				.values()) {
+		for (final CodeFragment<?> codeFragment : codeFragments) {
 			final Long id = codeFragment.getId();
 			final Integer numSegments = codeFragment.getSegments().size();
 
