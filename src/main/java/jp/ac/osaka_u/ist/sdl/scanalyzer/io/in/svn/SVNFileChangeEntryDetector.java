@@ -197,6 +197,10 @@ public class SVNFileChangeEntryDetector implements IFileChangeEntryDetector {
 		// relative path of changed file/directory
 		final String relativePath = path.getPath();
 
+		if (!relativePath.startsWith(this.repositoryManager.getRelativePath())) {
+			return; // not in the relative path
+		}
+
 		// type of change (A, D, M, R)
 		final char type = path.getType();
 
