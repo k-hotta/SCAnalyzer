@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -100,6 +102,9 @@ public class CloneClassListView extends JPanel implements MouseListener,
 	}
 
 	private void makeRows(final CloneClass<?> cloneClass) {
+		final Collection<CodeFragment<?>> codeFragments = new ArrayList<>();
+		codeFragments.addAll(cloneClass.getCodeFragments().values());
+		codeFragments.addAll(cloneClass.getGhostFragments().values());
 		for (final CodeFragment<?> codeFragment : cloneClass.getCodeFragments()
 				.values()) {
 			final Long id = codeFragment.getId();
