@@ -129,7 +129,8 @@ public class CloneClassListViewModel {
 			this.leftCodeFragment = cloneClass.getCodeFragments().get(
 					codeFragmentId);
 			if (this.leftCodeFragment == null) {
-				cloneClass.getGhostFragments().get(codeFragmentId);
+				this.leftCodeFragment = cloneClass.getGhostFragments().get(
+						codeFragmentId);
 			}
 		} else {
 			this.leftCodeFragment = null;
@@ -148,7 +149,8 @@ public class CloneClassListViewModel {
 			this.rightCodeFragment = cloneClass.getCodeFragments().get(
 					codeFragmentId);
 			if (this.rightCodeFragment == null) {
-				cloneClass.getGhostFragments().get(codeFragmentId);
+				this.rightCodeFragment = cloneClass.getGhostFragments().get(
+						codeFragmentId);
 			}
 		} else {
 			this.rightCodeFragment = null;
