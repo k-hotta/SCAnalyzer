@@ -142,15 +142,13 @@ public class ScorpioCloneResultReader<E extends IProgramElement> implements
 
 				final SourceFile<E> sourceFile1 = sourceFiles.get(path1);
 				if (sourceFile1 == null) {
-					eLogger.fatal("cannot find " + path1 + " in this version");
-					throw new IllegalStateException(path1
-							+ " doesn't exist in the version");
+					eLogger.warn("cannot find " + path1 + " in this version");
+					continue;
 				}
 				final SourceFile<E> sourceFile2 = sourceFiles.get(path2);
 				if (sourceFile2 == null) {
-					eLogger.fatal("cannot find " + path2 + " in this version");
-					throw new IllegalStateException(path2
-							+ " doesn't exist in the version");
+					eLogger.warn("cannot find " + path2 + " in this version");
+					continue;
 				}
 
 				final DBRawClonedFragment dbFragment1 = new DBRawClonedFragment(
