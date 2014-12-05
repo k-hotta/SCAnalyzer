@@ -60,6 +60,9 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 
 	@Override
 	public void calculate(Version<E> previous, Version<E> next) {
+		this.lcsElementsInCloned.clear();
+		this.lcsElementsInAll.clear();
+
 		final Map<Long, CloneClass<E>> cloneClasses = next.getCloneClasses();
 
 		final ExecutorService pool = Executors.newCachedThreadPool();
