@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.metrics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
@@ -85,16 +86,43 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 			final Map<Long, CodeFragment<E>> ghostFragments = cloneClass
 					.getGhostFragments();
 
-			// find LCS among all the CLONED fragments
+			// elements included in LCS
 			final Map<Long, List<E>> clonedFragmentElements = LCSFinder
 					.getFragmentElements(clonedFragments);
+			final Map<Long, List<E>> ghostFragmentElements = LCSFinder
+					.getFragmentElements(ghostFragments);
+
+			/*
+			 * find LCS among all the CLONED fragments
+			 */
+			final SortedMap<Long, List<E>> clonedFragmentElementsInCloneLcs = findLcsInCloned(clonedFragmentElements);
+
+			final Long firstKey = clonedFragmentElementsInCloneLcs.firstKey();
+			final int numCommonClonedElements = (firstKey == null) ? 0
+					: clonedFragmentElementsInCloneLcs.get(firstKey).size();
+
+			// find LCS among the LCS of cloned fragments and
+			// all the ghost fragments
+
+			final SortedMap<Long, List<E>> fragmentElementsInAllLcs = findLcsInAll(
+					ghostFragmentElements, clonedFragmentElementsInCloneLcs,
+					firstKey);
+
+			final int numCommonAllElements = fragmentElementsInAllLcs.get(
+					fragmentElementsInAllLcs.firstKey()).size();
+
+			cloneClass.getCore().setNumCommonClonedElements(
+					numCommonClonedElements);
+			cloneClass.getCore().setNumCommonAllElements(numCommonAllElements);
+		}
+
+		private SortedMap<Long, List<E>> findLcsInCloned(
+				final Map<Long, List<E>> clonedFragmentElements) {
 			final Map<Long, SortedSet<Integer>> lcsInCloned = LCSFinder
 					.detectLcs(clonedFragmentElements, equalizer);
 
-			int numCommonClonedElements = 0;
-			final Map<Long, List<E>> clonedFragmentElementsInCloneLcs = new TreeMap<>();
+			final SortedMap<Long, List<E>> clonedFragmentElementsInCloneLcs = new TreeMap<>();
 
-			Long firstKey = null;
 			for (final Map.Entry<Long, SortedSet<Integer>> entry : lcsInCloned
 					.entrySet()) {
 				final List<E> all = clonedFragmentElements.get(entry.getKey());
@@ -105,18 +133,15 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 				}
 
 				clonedFragmentElementsInCloneLcs.put(entry.getKey(), newList);
-
-				if (firstKey == null) {
-					firstKey = entry.getKey();
-					numCommonClonedElements = newList.size();
-				}
 			}
 
-			// find LCS among the LCS of cloned fragments and
-			// all the ghost fragments
-			final Map<Long, List<E>> ghostFragmentElements = LCSFinder
-					.getFragmentElements(ghostFragments);
+			return clonedFragmentElementsInCloneLcs;
+		}
 
+		private SortedMap<Long, List<E>> findLcsInAll(
+				final Map<Long, List<E>> ghostFragmentElements,
+				final SortedMap<Long, List<E>> clonedFragmentElementsInCloneLcs,
+				final Long firstKey) {
 			// add the LCS of cloned fragments into target
 			if (firstKey != null) {
 				ghostFragmentElements.put(firstKey,
@@ -125,9 +150,7 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 
 			final Map<Long, SortedSet<Integer>> lcsInAll = LCSFinder.detectLcs(
 					ghostFragmentElements, equalizer);
-			final Map<Long, List<E>> fragmentElementsInAllLcs = new TreeMap<>();
-
-			int numCommonAllElements = 0;
+			final SortedMap<Long, List<E>> fragmentElementsInAllLcs = new TreeMap<>();
 
 			for (final Map.Entry<Long, SortedSet<Integer>> entry : lcsInAll
 					.entrySet()) {
@@ -157,14 +180,8 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 				}
 
 				fragmentElementsInAllLcs.put(entry.getKey(), newList);
-				if (numCommonAllElements == 0) {
-					numCommonAllElements = newList.size();
-				}
 			}
-
-			cloneClass.getCore().setNumCommonClonedElements(
-					numCommonClonedElements);
-			cloneClass.getCore().setNumCommonAllElements(numCommonAllElements);
+			return fragmentElementsInAllLcs;
 		}
 
 	}
