@@ -31,8 +31,7 @@ public class CloneModificationDao
 			.getLogger(CloneModificationDao.class);
 
 	@SuppressWarnings("unchecked")
-	public CloneModificationDao(Dao<DBCloneModification, Long> originalDao)
-			throws SQLException {
+	public CloneModificationDao() throws SQLException {
 		super((Dao<DBCloneModification, Long>) DBManager.getInstance()
 				.getNativeDao(DBCloneModification.class));
 	}

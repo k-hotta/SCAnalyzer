@@ -6,6 +6,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogyCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBFileChange;
@@ -103,6 +104,11 @@ public class DBManager {
 	 * The DAO for CloneClassMapping
 	 */
 	private CloneClassMappingDao cloneClassMappingDao;
+
+	/**
+	 * The DAO for CloneModification
+	 */
+	private CloneModificationDao cloneModificationDao;
 
 	/**
 	 * The DAO for Revision
@@ -208,6 +214,7 @@ public class DBManager {
 		final CloneClassDao cloneClassDao = new CloneClassDao();
 		final CodeFragmentMappingDao codeFragmentMappingDao = new CodeFragmentMappingDao();
 		final CloneClassMappingDao cloneClassMappingDao = new CloneClassMappingDao();
+		final CloneModificationDao cloneModificationDao = new CloneModificationDao();
 		final RevisionDao revisionDao = new RevisionDao();
 		final SourceFileDao sourceFileDao = new SourceFileDao();
 		final VersionDao versionDao = new VersionDao();
@@ -257,6 +264,7 @@ public class DBManager {
 		instance.setCloneClassDao(cloneClassDao);
 		instance.setCodeFragmentMappingDao(codeFragmentMappingDao);
 		instance.setCloneClassMappingDao(cloneClassMappingDao);
+		instance.setCloneModificationDao(cloneModificationDao);
 		instance.setRevisionDao(revisionDao);
 		instance.setSourceFileDao(sourceFileDao);
 		instance.setVersionDao(versionDao);
@@ -298,6 +306,11 @@ public class DBManager {
 		this.cloneClassMappingDao = cloneClassMappingDao;
 	}
 
+	private void setCloneModificationDao(
+			final CloneModificationDao cloneModificationDao) {
+		this.cloneModificationDao = cloneModificationDao;
+	}
+
 	private void setRevisionDao(final RevisionDao revisionDao) {
 		this.revisionDao = revisionDao;
 	}
@@ -326,6 +339,7 @@ public class DBManager {
 		cloneClassDao.clear();
 		codeFragmentMappingDao.clear();
 		cloneClassMappingDao.clear();
+		cloneModificationDao.clear();
 		revisionDao.clear();
 		sourceFileDao.clear();
 		versionDao.clear();
@@ -418,6 +432,17 @@ public class DBManager {
 	 */
 	public CloneClassMappingDao getCloneClassMappingDao() {
 		return cloneClassMappingDao;
+	}
+
+	/**
+	 * Get the DAO for
+	 * {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification}.
+	 * 
+	 * @return the DAO for
+	 *         {@link jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification}
+	 */
+	public CloneModificationDao getCloneModificationDao() {
+		return cloneModificationDao;
 	}
 
 	/**
@@ -542,6 +567,7 @@ public class DBManager {
 		initializeTable(DBCodeFragment.class);
 		initializeTable(DBSegment.class);
 		initializeTable(DBCloneClassMapping.class);
+		initializeTable(DBCloneModification.class);
 		initializeTable(DBCodeFragmentMapping.class);
 		initializeTable(DBCloneGenealogy.class);
 		initializeTable(DBCloneGenealogyCloneClassMapping.class);
