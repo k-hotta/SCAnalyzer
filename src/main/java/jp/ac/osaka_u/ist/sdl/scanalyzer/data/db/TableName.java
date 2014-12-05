@@ -16,6 +16,8 @@ public interface TableName {
 	
 	public static final String CLONE_GENEALOGY_CLONE_CLASS = "CLONE_GENEALOGY_CLONE_CLASS";
 	
+	public static final String CLONE_MODIFICATION = "CLONE_MODIFICATION";
+	
 	public static final String CODE_FRAGMENT = "CODE_FRAGMENT";
 	
 	public static final String CODE_FRAGMENT_MAPPING = "CODE_FRAGMENT_MAPPING";
