@@ -59,6 +59,9 @@ public class DBCloneClassMapping implements IDBElement {
 	@DatabaseField(canBeNull = true, foreign = true, columnName = NEW_CLONE_CLASS_COLUMN_NAME)
 	private DBCloneClass newCloneClass;
 
+	/**
+	 * The mappings of code fragments in this clone class mapping
+	 */
 	@ForeignCollectionField(eager = true, columnName = CODE_FRAGMENT_MAPPINGS_COLUMN_NAME)
 	private Collection<DBCodeFragmentMapping> codeFragmentMappings;
 
