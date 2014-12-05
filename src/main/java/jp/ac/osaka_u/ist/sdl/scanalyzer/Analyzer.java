@@ -144,8 +144,11 @@ public class Analyzer<E extends IProgramElement> {
 
 			logger.info("complete mapping clone classes: "
 					+ cloneClassMappings.size() + " mappings have been found");
-			
+
 			// calculating metrics of elements
+			// here, metrics mean all the values calculated by using any
+			// information of the two versions
+			// hence, change analysis should be included in this step
 			logger.info("calculating metrics ...");
 			metricsController.calculateAll(previous, next);
 			logger.info("complete calculating metrics");
