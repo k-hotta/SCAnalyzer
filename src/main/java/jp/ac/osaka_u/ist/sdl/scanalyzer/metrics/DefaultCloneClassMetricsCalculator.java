@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -34,8 +36,26 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 	 */
 	private final Equalizer<E> equalizer;
 
+	/**
+	 * This map contains the information about which elements are included in
+	 * LCS between CLONED fragments for each clone class. The keys are the ids
+	 * of clone classes, and the values are maps between fragment ids and
+	 * elements in each of the fragment.
+	 */
+	private final ConcurrentMap<Long, Map<Long, List<E>>> lcsElementsInCloned;
+
+	/**
+	 * This map contains the information about which elements are included in
+	 * LCS between ALL fragments for each clone class. The keys are the ids of
+	 * clone classes, and the values are maps between fragment ids and elements
+	 * in each of the fragment.
+	 */
+	private final ConcurrentMap<Long, Map<Long, List<E>>> lcsElementsInAll;
+
 	public DefaultCloneClassMetricsCalculator(final Equalizer<E> equalizer) {
 		this.equalizer = equalizer;
+		this.lcsElementsInCloned = new ConcurrentSkipListMap<>();
+		this.lcsElementsInAll = new ConcurrentSkipListMap<>();
 	}
 
 	@Override
@@ -101,9 +121,10 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 			final int numCommonClonedElements = (firstKey == null) ? 0
 					: clonedFragmentElementsInCloneLcs.get(firstKey).size();
 
-			// find LCS among the LCS of cloned fragments and
-			// all the ghost fragments
-
+			/*
+			 * find LCS among the LCS of cloned fragments and all the ghost
+			 * fragments
+			 */
 			final SortedMap<Long, List<E>> fragmentElementsInAllLcs = findLcsInAll(
 					ghostFragmentElements, clonedFragmentElementsInCloneLcs,
 					firstKey);
@@ -111,9 +132,15 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 			final int numCommonAllElements = fragmentElementsInAllLcs.get(
 					fragmentElementsInAllLcs.firstKey()).size();
 
+			// record the metric values for clone classes
 			cloneClass.getCore().setNumCommonClonedElements(
 					numCommonClonedElements);
 			cloneClass.getCore().setNumCommonAllElements(numCommonAllElements);
+
+			// store the information of LCSs
+			lcsElementsInCloned.put(cloneClass.getId(),
+					clonedFragmentElementsInCloneLcs);
+			lcsElementsInAll.put(cloneClass.getId(), fragmentElementsInAllLcs);
 		}
 
 		private SortedMap<Long, List<E>> findLcsInCloned(
