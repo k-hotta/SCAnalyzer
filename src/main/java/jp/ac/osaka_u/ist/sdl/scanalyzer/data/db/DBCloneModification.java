@@ -18,7 +18,7 @@ public class DBCloneModification implements IDBElement {
 	 * @author k-hotta
 	 * 
 	 */
-	private enum Type {
+	public enum Type {
 		ADD, REMOVE
 	};
 
@@ -35,7 +35,7 @@ public class DBCloneModification implements IDBElement {
 	/**
 	 * The column name for newStartPosition
 	 */
-	public static final String NEW_START_POSITION_INDEX_COLUMN_NAME = "NEW_START_POSITION";
+	public static final String NEW_START_POSITION_COLUMN_NAME = "NEW_START_POSITION";
 
 	/**
 	 * The column name for length
@@ -69,7 +69,7 @@ public class DBCloneModification implements IDBElement {
 	 * The start position of elements affected by this modification in the after
 	 * version
 	 */
-	@DatabaseField(canBeNull = false, columnName = NEW_START_POSITION_INDEX_COLUMN_NAME)
+	@DatabaseField(canBeNull = false, columnName = NEW_START_POSITION_COLUMN_NAME)
 	private int newStartPosition;
 
 	/**
