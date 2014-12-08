@@ -352,7 +352,7 @@ public class IClonesCodeFragmentMappingHelper {
 		final DBCodeFragmentMapping dbMapping = new DBCodeFragmentMapping(
 				IDGenerator.generate(DBCodeFragmentMapping.class),
 				oldFragment.getCore(), newFragment.getCore(),
-				cloneClassMapping.getCore());
+				null, cloneClassMapping.getCore());
 		final CodeFragmentMapping<E> mapping = new CodeFragmentMapping<>(
 				dbMapping);
 
