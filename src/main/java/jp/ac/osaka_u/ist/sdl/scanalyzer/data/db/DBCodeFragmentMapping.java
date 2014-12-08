@@ -1,6 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -170,7 +171,7 @@ public class DBCodeFragmentMapping implements IDBElement {
 	 * @return a collection of modifications
 	 */
 	public Collection<DBCloneModification> getModifications() {
-		return modifications;
+		return Collections.unmodifiableCollection(modifications);
 	}
 
 	/**
@@ -182,6 +183,33 @@ public class DBCodeFragmentMapping implements IDBElement {
 	public void setModifications(
 			final Collection<DBCloneModification> modifications) {
 		this.modifications = modifications;
+	}
+
+	/**
+	 * Add the given modification to this mapping.
+	 * 
+	 * @param modification
+	 *            a modification to be added
+	 */
+	public void addModification(final DBCloneModification modification) {
+		if (modification == null) {
+			return;
+		}
+
+		modifications.add(modification);
+	}
+
+	/**
+	 * Add the given modifications into this mapping.
+	 * 
+	 * @param modifications
+	 *            a collection of modifications to be added
+	 */
+	public void addModifications(
+			final Collection<DBCloneModification> modifications) {
+		for (final DBCloneModification modification : modifications) {
+			addModification(modification);
+		}
 	}
 
 	/**
