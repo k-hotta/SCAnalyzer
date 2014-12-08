@@ -214,7 +214,7 @@ public class SegmentDao extends
 						.getCodeFragmentId()));
 			} else {
 				newInstance.setSourceFile(new DBSourceFile(rawResult
-						.getSourceFileId(), null));
+						.getSourceFileId(), null, -1));
 				newInstance.setCodeFragment(new DBCodeFragment(rawResult
 						.getCodeFragmentId(), null, null, false));
 			}

@@ -118,7 +118,8 @@ public class SourceFileDao extends
 	protected DBSourceFile makeInstance(InternalDBSourceFile rawResult,
 			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception {
-		return new DBSourceFile(rawResult.getId(), rawResult.getPath());
+		return new DBSourceFile(rawResult.getId(), rawResult.getPath(),
+				rawResult.getHashOfPath());
 	}
 
 	class InternalDBSourceFile implements
@@ -128,9 +129,13 @@ public class SourceFileDao extends
 
 		private final String path;
 
-		public InternalDBSourceFile(final Long id, final String path) {
+		private final Integer hashOfPath;
+
+		public InternalDBSourceFile(final Long id, final String path,
+				final Integer hashOfPath) {
 			this.id = id;
 			this.path = path;
+			this.hashOfPath = hashOfPath;
 		}
 
 		@Override
@@ -142,6 +147,10 @@ public class SourceFileDao extends
 			return path;
 		}
 
+		public final Integer getHashOfPath() {
+			return hashOfPath;
+		}
+
 	}
 
 	class RowMapper implements RawRowMapper<InternalDBSourceFile> {
@@ -151,6 +160,7 @@ public class SourceFileDao extends
 				String[] resultColumns) throws SQLException {
 			Long id = null;
 			String path = null;
+			Integer hashOfPath = null;
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
@@ -163,10 +173,13 @@ public class SourceFileDao extends
 				case DBSourceFile.PATH_COLUMN_NAME:
 					path = resultColumn;
 					break;
+				case DBSourceFile.HASH_OF_PATH_COLUMN_NAME:
+					hashOfPath = Integer.parseInt(resultColumn);
+					break;
 				}
 			}
 
-			return new InternalDBSourceFile(id, path);
+			return new InternalDBSourceFile(id, path, hashOfPath);
 		}
 
 	}

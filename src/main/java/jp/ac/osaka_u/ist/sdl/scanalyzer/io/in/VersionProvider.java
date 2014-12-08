@@ -428,7 +428,20 @@ public class VersionProvider<E extends IProgramElement> {
 			if (newPath != null) {
 				// create new instance of source file
 				final DBSourceFile newDBSourceFile = new DBSourceFile(
-						IDGenerator.generate(DBSourceFile.class), newPath);
+						IDGenerator.generate(DBSourceFile.class), newPath,
+						newPath.hashCode());
+
+				// replace hash of path with the old value
+				// if the change is relocation
+				if (type == Type.RELOCATE) {
+					if (oldSourceFile == null) {
+						eLogger.warn("the file change is relocation, but old source file is null");
+					} else {
+						newDBSourceFile.setHashOfPath(oldSourceFile
+								.getHashOfPath());
+					}
+				}
+
 				newSourceFile = new SourceFile<E>(newDBSourceFile);
 
 				logger.trace("create a new source file "

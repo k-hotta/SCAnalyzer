@@ -427,7 +427,8 @@ public class DBXmlNodeParser {
 		}
 
 		if (!sourceFiles.containsKey(id)) {
-			final DBSourceFile sourceFile = new DBSourceFile(id, path);
+			final DBSourceFile sourceFile = new DBSourceFile(id, path,
+					path.hashCode());
 			sourceFiles.put(id, sourceFile);
 			fileContentsStr.put(id, contentStr);
 			fileContents

@@ -149,8 +149,9 @@ public class TestVersionBuilder {
 		long count = 0;
 
 		for (final File file : listFiles) {
+			final String formatedPath = formatPath(file, new File(beforeSrcDir));
 			final DBSourceFile dbSourceFile = new DBSourceFile(count++,
-					formatPath(file, new File(beforeSrcDir)));
+					formatedPath, formatedPath.hashCode());
 			final SourceFile<Token> sourceFile = new SourceFile<>(dbSourceFile);
 			readAndSet(file, sourceFile);
 
@@ -254,7 +255,8 @@ public class TestVersionBuilder {
 		for (FileChangeEntry changeEntry : fileChangeEntries) {
 			if (changeEntry.getType() == 'A') {
 				final DBSourceFile newDbFile = new DBSourceFile(index++,
-						changeEntry.getAfterPath());
+						changeEntry.getAfterPath(), changeEntry.getAfterPath()
+								.hashCode());
 				final SourceFile<Token> newFile = new SourceFile<Token>(
 						newDbFile);
 				readAndSet(filesInAfter.get(changeEntry.getAfterPath()),
@@ -289,7 +291,8 @@ public class TestVersionBuilder {
 						.remove(changeEntry.getBeforePath());
 
 				final DBSourceFile newDbFile = new DBSourceFile(index++,
-						changeEntry.getAfterPath());
+						changeEntry.getAfterPath(), changeEntry.getAfterPath()
+								.hashCode());
 				final SourceFile<Token> newFile = new SourceFile<Token>(
 						newDbFile);
 				readAndSet(filesInAfter.get(changeEntry.getAfterPath()),

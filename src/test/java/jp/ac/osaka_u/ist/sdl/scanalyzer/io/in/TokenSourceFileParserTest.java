@@ -69,7 +69,8 @@ public class TokenSourceFileParserTest {
 		boolean caughtException = false;
 
 		try {
-			DBSourceFile sourceFile = new DBSourceFile(1, "A.java");
+			DBSourceFile sourceFile = new DBSourceFile(1, "A.java",
+					"A.java".hashCode());
 			parser.parse(new SourceFile<Token>(sourceFile), null);
 		} catch (IllegalArgumentException e) {
 			caughtException = true;
@@ -80,7 +81,8 @@ public class TokenSourceFileParserTest {
 
 	@Test
 	public void testParse4() throws Exception {
-		DBSourceFile sourceFile = new DBSourceFile(1, "A.java");
+		DBSourceFile sourceFile = new DBSourceFile(1, "A.java",
+				"A.java".hashCode());
 		final Map<Integer, Token> result = parser.parse(new SourceFile<Token>(
 				sourceFile), "int x = 0;");
 		assertTrue(result.size() == 5);
@@ -90,8 +92,11 @@ public class TokenSourceFileParserTest {
 	public void testParse5() throws Exception {
 		final DBVersion version = new DBVersion();
 		version.setRevision(new DBRevision(0, "419", null));
-		final DBSourceFile sourceFile = new DBSourceFile(1,
-				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java");
+		final DBSourceFile sourceFile = new DBSourceFile(
+				1,
+				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java",
+				"/c20r_main/src/jp/ac/osaka_u/ist/sdl/c20r/rev_analyzer/BlockDetectThread.java"
+						.hashCode());
 		final Version<Token> volatileVersion = new Version<Token>(version);
 		volatileVersion.setRevision(new Revision(version.getRevision()));
 		final String content = provider.getFileContent(volatileVersion,

@@ -24,6 +24,11 @@ public class DBSourceFile implements IDBElement {
 	public static final String PATH_COLUMN_NAME = "PATH";
 
 	/**
+	 * The column name for hash
+	 */
+	public static final String HASH_OF_PATH_COLUMN_NAME = "HASH_OF_PATH";
+
+	/**
 	 * The id of this source file
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -34,6 +39,15 @@ public class DBSourceFile implements IDBElement {
 	 */
 	@DatabaseField(canBeNull = false, columnName = PATH_COLUMN_NAME)
 	private String path;
+
+	/**
+	 * The hash code of the path of this source file. Note that if this source
+	 * file has been introduced by relocation, the hash code of path will equal
+	 * to that in the origin file. This is for handling file relocation in
+	 * mapping process.
+	 */
+	@DatabaseField(canBeNull = false, columnName = HASH_OF_PATH_COLUMN_NAME)
+	private int hashOfPath;
 
 	/**
 	 * The default constructor
@@ -49,10 +63,13 @@ public class DBSourceFile implements IDBElement {
 	 *            the id of this source file
 	 * @param path
 	 *            the path of this source file
+	 * @param hashOfPath
+	 *            the hash code of the path of this source file
 	 */
-	public DBSourceFile(final long id, final String path) {
+	public DBSourceFile(final long id, final String path, final int hashOfPath) {
 		this.id = id;
 		this.path = path;
+		this.hashOfPath = hashOfPath;
 	}
 
 	/**
@@ -93,6 +110,29 @@ public class DBSourceFile implements IDBElement {
 	 */
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	/**
+	 * Get the hash code of the path of this source file. This hash value might
+	 * be different from that calculated by {@link #hashCode()}. This hash value
+	 * is expected to be used in mapping process. Please use {@link #hashCode()}
+	 * instead in other cases.
+	 * 
+	 * @return the hash code of the path.
+	 */
+	public int getHashOfPath() {
+		return hashOfPath;
+	}
+
+	/**
+	 * Set the hash code of the path of this source file with the specified
+	 * value.
+	 * 
+	 * @param hashOfPath
+	 *            an integer value to be set
+	 */
+	public void setHashOfPath(final int hashOfPath) {
+		this.hashOfPath = hashOfPath;
 	}
 
 	/**

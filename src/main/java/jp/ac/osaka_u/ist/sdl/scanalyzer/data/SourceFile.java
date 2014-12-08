@@ -125,4 +125,13 @@ public class SourceFile<E extends IProgramElement> implements
 		return this.core.getPath();
 	}
 
+	/**
+	 * Get the hash code of the path of this file.
+	 * 
+	 * @return the hash code of the path
+	 */
+	public int getHashOfPath() {
+		return this.core.getHashOfPath();
+	}
+
 }

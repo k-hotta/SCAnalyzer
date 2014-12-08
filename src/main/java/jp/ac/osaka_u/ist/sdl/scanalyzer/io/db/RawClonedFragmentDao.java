@@ -295,7 +295,7 @@ public class RawClonedFragmentDao
 				newInstance.setVersion(new DBVersion(rawResult.getVersionId(),
 						null, null, null, null, null, null));
 				newInstance.setSourceFile(new DBSourceFile(rawResult
-						.getSourceFileId(), null));
+						.getSourceFileId(), null, -1));
 				newInstance.setCloneClass(new DBRawCloneClass(rawResult
 						.getRawCloneClassId(), null, null));
 			}
