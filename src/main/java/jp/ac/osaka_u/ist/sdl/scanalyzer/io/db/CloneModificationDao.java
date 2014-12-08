@@ -55,6 +55,24 @@ public class CloneModificationDao
 		this.codeFragmentMappingDao = codeFragmentMappingDao;
 	}
 
+	/**
+	 * Get the elements whose owner code fragment mappings are the specified
+	 * ones.
+	 * 
+	 * @param ids
+	 *            a collection contains IDs of interest
+	 * @return a map between ID of an element and the instance itself
+	 * 
+	 * @throws Exception
+	 */
+	public Map<Long, DBCloneModification> getWithCodeFragmentMappingIds(
+			final Collection<Long> ids) throws Exception {
+		final String query = QueryHelper.querySelectIdIn(getTableName(),
+				DBCloneModification.CODE_FRAGMENT_MAPPING_COLUMN_NAME, ids);
+
+		return queryRaw(query);
+	}
+
 	@Override
 	protected void trace(String msg) {
 		logger.trace(msg);
