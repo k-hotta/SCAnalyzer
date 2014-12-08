@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,10 +32,27 @@ public class CloneModificationDao
 	private static final Logger logger = LogManager
 			.getLogger(CloneModificationDao.class);
 
+	/**
+	 * The DAO for code fragment mappings
+	 */
+	private CodeFragmentMappingDao codeFragmentMappingDao;
+
 	@SuppressWarnings("unchecked")
 	public CloneModificationDao() throws SQLException {
 		super((Dao<DBCloneModification, Long>) DBManager.getInstance()
 				.getNativeDao(DBCloneModification.class));
+		codeFragmentMappingDao = null;
+	}
+
+	/**
+	 * Set the DAO for code fragment mappings
+	 * 
+	 * @param codeFragmentMappingDao
+	 *            the DAO to be set
+	 */
+	void setCodeFragmentMappingDao(
+			final CodeFragmentMappingDao codeFragmentMappingDao) {
+		this.codeFragmentMappingDao = codeFragmentMappingDao;
 	}
 
 	@Override
@@ -74,7 +93,8 @@ public class CloneModificationDao
 	@Override
 	protected void initializeRelativeElementIds(
 			Map<String, Set<Long>> relativeElementIds) {
-		// do nothing
+		relativeElementIds.put(TableName.CODE_FRAGMENT_MAPPING,
+				new TreeSet<Long>());
 	}
 
 	@Override
@@ -87,7 +107,8 @@ public class CloneModificationDao
 	protected void updateRelativeElementIds(
 			Map<String, Set<Long>> relativeElementIds,
 			InternalDBCloneModification rawResult) throws Exception {
-		// do nothing
+		relativeElementIds.get(TableName.CODE_FRAGMENT_MAPPING).add(
+				rawResult.getCodeFragmentMappingId());
 	}
 
 	@Override
@@ -95,7 +116,11 @@ public class CloneModificationDao
 			Map<String, Set<Long>> relativeElementIds,
 			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception {
-		// do nothing
+		if (deepRefresh) {
+			final Set<Long> codeFragmentMappingsToBeRetrieved = relativeElementIds
+					.get(TableName.CODE_FRAGMENT_MAPPING);
+			codeFragmentMappingDao.get(codeFragmentMappingsToBeRetrieved);
+		}
 	}
 
 	@Override
@@ -111,10 +136,23 @@ public class CloneModificationDao
 					+ rawResult.getType());
 		}
 
-		return new DBCloneModification(rawResult.getId(),
-				rawResult.getOldStartPosition(),
+		final DBCloneModification newInstance = new DBCloneModification(
+				rawResult.getId(), rawResult.getOldStartPosition(),
 				rawResult.getNewStartPosition(), rawResult.getLength(), type,
-				rawResult.getContentHash());
+				rawResult.getContentHash(), null);
+
+		if (autoRefresh) {
+			if (deepRefresh) {
+				newInstance.setCodeFragmentMapping(codeFragmentMappingDao
+						.get(rawResult.getCodeFragmentMappingId()));
+			} else {
+				newInstance.setCodeFragmentMapping(new DBCodeFragmentMapping(
+						rawResult.getCodeFragmentMappingId(), null, null, null,
+						null));
+			}
+		}
+
+		return newInstance;
 	}
 
 	class InternalDBCloneModification implements
@@ -132,16 +170,19 @@ public class CloneModificationDao
 
 		private final Integer contentHash;
 
+		private final Long codeFragmentMappingId;
+
 		public InternalDBCloneModification(final Long id,
 				final Integer oldStartPosition, final Integer newStartPosition,
 				final Integer length, final String type,
-				final Integer contentHash) {
+				final Integer contentHash, final Long codeFragmentMappingId) {
 			this.id = id;
 			this.oldStartPosition = oldStartPosition;
 			this.newStartPosition = newStartPosition;
 			this.length = length;
 			this.type = type;
 			this.contentHash = contentHash;
+			this.codeFragmentMappingId = codeFragmentMappingId;
 		}
 
 		@Override
@@ -169,6 +210,10 @@ public class CloneModificationDao
 			return contentHash;
 		}
 
+		public final Long getCodeFragmentMappingId() {
+			return codeFragmentMappingId;
+		}
+
 	}
 
 	class RowMapper implements RawRowMapper<InternalDBCloneModification> {
@@ -182,6 +227,7 @@ public class CloneModificationDao
 			Integer length = null;
 			String type = null;
 			Integer contentHash = null;
+			Long codeFragmentMappingId = null;
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
@@ -206,11 +252,15 @@ public class CloneModificationDao
 				case DBCloneModification.CONTENT_HASH_COLUMN_NAME:
 					contentHash = Integer.parseInt(resultColumn);
 					break;
+				case DBCloneModification.CODE_FRAGMENT_MAPPING_COLUMN_NAME:
+					codeFragmentMappingId = Long.parseLong(resultColumn);
+					break;
 				}
 			}
 
 			return new InternalDBCloneModification(id, oldStartPosition,
-					newStartPosition, length, type, contentHash);
+					newStartPosition, length, type, contentHash,
+					codeFragmentMappingId);
 		}
 
 	}
