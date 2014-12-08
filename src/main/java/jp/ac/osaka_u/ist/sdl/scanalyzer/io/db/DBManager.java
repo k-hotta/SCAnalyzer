@@ -248,6 +248,7 @@ public class DBManager {
 		cloneClassMappingDao.setVersionDao(versionDao);
 
 		cloneModificationDao.setCodeFragmentMappingDao(codeFragmentMappingDao);
+		cloneModificationDao.setSegmentDao(segmentDao);
 
 		versionDao.setRevisionDao(revisionDao);
 		versionDao.setFileChangeDao(fileChangeDao);

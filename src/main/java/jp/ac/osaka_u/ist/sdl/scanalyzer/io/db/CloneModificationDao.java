@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBSegment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,11 +39,17 @@ public class CloneModificationDao
 	 */
 	private CodeFragmentMappingDao codeFragmentMappingDao;
 
+	/**
+	 * The DAO for segments
+	 */
+	private SegmentDao segmentDao;
+
 	@SuppressWarnings("unchecked")
 	public CloneModificationDao() throws SQLException {
 		super((Dao<DBCloneModification, Long>) DBManager.getInstance()
 				.getNativeDao(DBCloneModification.class));
 		codeFragmentMappingDao = null;
+		segmentDao = null;
 	}
 
 	/**
@@ -54,6 +61,16 @@ public class CloneModificationDao
 	void setCodeFragmentMappingDao(
 			final CodeFragmentMappingDao codeFragmentMappingDao) {
 		this.codeFragmentMappingDao = codeFragmentMappingDao;
+	}
+
+	/**
+	 * Set the DAO for segments
+	 * 
+	 * @param segmentDao
+	 *            the DAO to be set
+	 */
+	void setSegmentDao(final SegmentDao segmentDao) {
+		this.segmentDao = segmentDao;
 	}
 
 	/**
@@ -98,6 +115,14 @@ public class CloneModificationDao
 	@Override
 	protected DBCloneModification refreshChildren(DBCloneModification element)
 			throws Exception {
+		if (element.getRelatedOldSegment() != null) {
+			segmentDao.refresh(element.getRelatedOldSegment());
+		}
+
+		if (element.getRelatedNewSegment() != null) {
+			segmentDao.refresh(element.getRelatedNewSegment());
+		}
+
 		if (deepRefresh) {
 			codeFragmentMappingDao.refresh(element.getCodeFragmentMapping());
 		}
@@ -108,19 +133,33 @@ public class CloneModificationDao
 	@Override
 	protected Collection<DBCloneModification> refreshChildrenForAll(
 			Collection<DBCloneModification> elements) throws Exception {
-		if (deepRefresh) {
-			final Set<DBCodeFragmentMapping> mappingsToBeRefreshed = new HashSet<>();
+		final Set<DBCodeFragmentMapping> mappingsToBeRefreshed = new HashSet<>();
+		final Set<DBSegment> segmentsToBeRefreshed = new HashSet<>();
 
-			for (final DBCloneModification element : elements) {
-				mappingsToBeRefreshed.add(element.getCodeFragmentMapping());
+		for (final DBCloneModification element : elements) {
+			mappingsToBeRefreshed.add(element.getCodeFragmentMapping());
+			if (element.getRelatedOldSegment() != null) {
+				segmentsToBeRefreshed.add(element.getRelatedOldSegment());
 			}
+			if (element.getRelatedNewSegment() != null) {
+				segmentsToBeRefreshed.add(element.getRelatedNewSegment());
+			}
+		}
 
+		if (deepRefresh) {
 			codeFragmentMappingDao.refreshAll(mappingsToBeRefreshed);
+		}
+		segmentDao.refreshAll(segmentsToBeRefreshed);
 
-			for (final DBCloneModification element : elements) {
+		for (final DBCloneModification element : elements) {
+			if (deepRefresh) {
 				element.setCodeFragmentMapping(codeFragmentMappingDao
 						.get(element.getCodeFragmentMapping().getId()));
 			}
+			element.setRelatedOldSegment(segmentDao.get(element
+					.getRelatedOldSegment().getId()));
+			element.setRelatedNewSegment(segmentDao.get(element
+					.getRelatedNewSegment().getId()));
 		}
 
 		return elements;
@@ -131,6 +170,7 @@ public class CloneModificationDao
 			Map<String, Set<Long>> relativeElementIds) {
 		relativeElementIds.put(TableName.CODE_FRAGMENT_MAPPING,
 				new TreeSet<Long>());
+		relativeElementIds.put(TableName.SEGMENT, new TreeSet<Long>());
 	}
 
 	@Override
@@ -145,6 +185,14 @@ public class CloneModificationDao
 			InternalDBCloneModification rawResult) throws Exception {
 		relativeElementIds.get(TableName.CODE_FRAGMENT_MAPPING).add(
 				rawResult.getCodeFragmentMappingId());
+		if (rawResult.getRelatedOldSegmentId() != null) {
+			relativeElementIds.get(TableName.SEGMENT).add(
+					rawResult.getRelatedOldSegmentId());
+		}
+		if (rawResult.getRelatedNewSegmentId() != null) {
+			relativeElementIds.get(TableName.SEGMENT).add(
+					rawResult.getRelatedNewSegmentId());
+		}
 	}
 
 	@Override
@@ -157,6 +205,10 @@ public class CloneModificationDao
 					.get(TableName.CODE_FRAGMENT_MAPPING);
 			codeFragmentMappingDao.get(codeFragmentMappingsToBeRetrieved);
 		}
+
+		final Set<Long> segmentsToBeRetrieved = relativeElementIds
+				.get(TableName.SEGMENT);
+		segmentDao.get(segmentsToBeRetrieved);
 	}
 
 	@Override
@@ -175,7 +227,7 @@ public class CloneModificationDao
 		final DBCloneModification newInstance = new DBCloneModification(
 				rawResult.getId(), rawResult.getOldStartPosition(),
 				rawResult.getNewStartPosition(), rawResult.getLength(), type,
-				rawResult.getContentHash(), null);
+				rawResult.getContentHash(), null, null, null);
 
 		if (autoRefresh) {
 			if (deepRefresh) {
@@ -185,6 +237,16 @@ public class CloneModificationDao
 				newInstance.setCodeFragmentMapping(new DBCodeFragmentMapping(
 						rawResult.getCodeFragmentMappingId(), null, null, null,
 						null));
+			}
+
+			if (rawResult.getRelatedOldSegmentId() != null) {
+				newInstance.setRelatedOldSegment(segmentDao.get(rawResult
+						.getRelatedOldSegmentId()));
+			}
+
+			if (rawResult.getRelatedNewSegmentId() != null) {
+				newInstance.setRelatedNewSegment(segmentDao.get(rawResult
+						.getRelatedNewSegmentId()));
 			}
 		}
 
@@ -208,10 +270,15 @@ public class CloneModificationDao
 
 		private final Long codeFragmentMappingId;
 
+		private final Long relatedOldSegmentId;
+
+		private final Long relatedNewSegmentId;
+
 		public InternalDBCloneModification(final Long id,
 				final Integer oldStartPosition, final Integer newStartPosition,
 				final Integer length, final String type,
-				final Integer contentHash, final Long codeFragmentMappingId) {
+				final Integer contentHash, final Long codeFragmentMappingId,
+				final Long relatedOldSegmentId, final Long relatedNewSegmentId) {
 			this.id = id;
 			this.oldStartPosition = oldStartPosition;
 			this.newStartPosition = newStartPosition;
@@ -219,6 +286,8 @@ public class CloneModificationDao
 			this.type = type;
 			this.contentHash = contentHash;
 			this.codeFragmentMappingId = codeFragmentMappingId;
+			this.relatedOldSegmentId = relatedOldSegmentId;
+			this.relatedNewSegmentId = relatedNewSegmentId;
 		}
 
 		@Override
@@ -250,6 +319,14 @@ public class CloneModificationDao
 			return codeFragmentMappingId;
 		}
 
+		public final Long getRelatedOldSegmentId() {
+			return relatedOldSegmentId;
+		}
+
+		public final Long getRelatedNewSegmentId() {
+			return relatedNewSegmentId;
+		}
+
 	}
 
 	class RowMapper implements RawRowMapper<InternalDBCloneModification> {
@@ -264,6 +341,8 @@ public class CloneModificationDao
 			String type = null;
 			Integer contentHash = null;
 			Long codeFragmentMappingId = null;
+			Long relatedOldSegmentId = null;
+			Long relatedNewSegmentId = null;
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
@@ -291,12 +370,19 @@ public class CloneModificationDao
 				case DBCloneModification.CODE_FRAGMENT_MAPPING_COLUMN_NAME:
 					codeFragmentMappingId = Long.parseLong(resultColumn);
 					break;
+				case DBCloneModification.RELATED_OLD_SEGMENT_COLUMN_NAME:
+					relatedOldSegmentId = Long.parseLong(resultColumn);
+					break;
+				case DBCloneModification.RELATED_NEW_SEGMENT_COLUMN_NAME:
+					relatedNewSegmentId = Long.parseLong(resultColumn);
+					break;
 				}
 			}
 
 			return new InternalDBCloneModification(id, oldStartPosition,
 					newStartPosition, length, type, contentHash,
-					codeFragmentMappingId);
+					codeFragmentMappingId, relatedOldSegmentId,
+					relatedNewSegmentId);
 		}
 
 	}
