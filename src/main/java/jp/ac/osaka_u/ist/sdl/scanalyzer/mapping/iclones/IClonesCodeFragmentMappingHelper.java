@@ -57,7 +57,7 @@ public class IClonesCodeFragmentMappingHelper {
 		final Map<String, SortedSet<Segment<E>>> updatedSegments = new TreeMap<String, SortedSet<Segment<E>>>();
 
 		// update each segment in the code fragment
-		for (final Map.Entry<String, SortedSet<Segment<E>>> entry : codeFragment
+		for (final Map.Entry<SourceFile<E>, SortedSet<Segment<E>>> entry : codeFragment
 				.getSegmentsAsMap().entrySet()) {
 			for (final Segment<E> segment : entry.getValue()) {
 				// perform updating
@@ -261,20 +261,21 @@ public class IClonesCodeFragmentMappingHelper {
 	 */
 	public static int calculateBucketHash(final CodeFragment<?> codeFragment) {
 		int hash = 0;
-		for (final String filePath : codeFragment.getSegmentsAsMap().keySet()) {
+		for (final SourceFile<?> sourceFile : codeFragment.getSegmentsAsMap()
+				.keySet()) {
 			hash *= 31;
-			hash += calculateBucketHash(filePath, codeFragment
-					.getStartPositions().get(filePath), codeFragment
-					.getEndPositions().get(filePath));
+			hash += calculateBucketHash(sourceFile, codeFragment
+					.getStartPositions().get(sourceFile.getPath()),
+					codeFragment.getEndPositions().get(sourceFile.getPath()));
 		}
 		return hash;
 	}
 
 	/**
-	 * Calculate hash value for buckets with given file path, start position,
+	 * Calculate hash value for buckets with given sourceFile, start position,
 	 * and end position.
 	 * 
-	 * @param filePath
+	 * @param sourceFile
 	 *            the file path
 	 * @param startPosition
 	 *            the start position
@@ -282,9 +283,9 @@ public class IClonesCodeFragmentMappingHelper {
 	 *            the end position
 	 * @return a hash value calculated with given three values
 	 */
-	public static int calculateBucketHash(final String filePath,
+	public static int calculateBucketHash(final SourceFile<?> sourceFile,
 			final int startPosition, final int endPosition) {
-		return ((filePath.hashCode() + startPosition) * 23 + endPosition) * 23;
+		return ((sourceFile.getHashOfPath() + startPosition) * 23 + endPosition) * 23;
 	}
 
 	/**
@@ -351,8 +352,8 @@ public class IClonesCodeFragmentMappingHelper {
 			final CloneClassMapping<E> cloneClassMapping) {
 		final DBCodeFragmentMapping dbMapping = new DBCodeFragmentMapping(
 				IDGenerator.generate(DBCodeFragmentMapping.class),
-				oldFragment.getCore(), newFragment.getCore(),
-				null, cloneClassMapping.getCore());
+				oldFragment.getCore(), newFragment.getCore(), null,
+				cloneClassMapping.getCore());
 		final CodeFragmentMapping<E> mapping = new CodeFragmentMapping<>(
 				dbMapping);
 

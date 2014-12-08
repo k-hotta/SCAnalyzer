@@ -35,11 +35,11 @@ public class CodeFragment<E extends IProgramElement> implements
 	private final DBCodeFragment core;
 
 	/**
-	 * The segments in this fragment. The key is the file path, and the value is
-	 * the list of segments in the file. The list must be sorted based on the
+	 * The segments in this fragment. The key is the sourceFile, and the value
+	 * is the list of segments in the file. The list must be sorted based on the
 	 * positions of segments.
 	 */
-	private final SortedMap<String, SortedSet<Segment<E>>> segments;
+	private final SortedMap<SourceFile<E>, SortedSet<Segment<E>>> segments;
 
 	/**
 	 * The owner clone class of this fragment
@@ -70,7 +70,8 @@ public class CodeFragment<E extends IProgramElement> implements
 	public CodeFragment(final DBCodeFragment core) {
 		this.id = core.getId();
 		this.core = core;
-		this.segments = new TreeMap<String, SortedSet<Segment<E>>>();
+		this.segments = new TreeMap<SourceFile<E>, SortedSet<Segment<E>>>((k1,
+				k2) -> Long.compare(k1.getId(), k2.getId()));
 		this.cloneClass = null;
 		this.startPositions = new TreeMap<String, Integer>();
 		this.endPositions = new TreeMap<String, Integer>();
@@ -107,7 +108,7 @@ public class CodeFragment<E extends IProgramElement> implements
 		// return this.core.toString();
 		final StringBuilder builder = new StringBuilder();
 
-		for (final Map.Entry<String, SortedSet<Segment<E>>> entry : this.segments
+		for (final Map.Entry<SourceFile<E>, SortedSet<Segment<E>>> entry : this.segments
 				.entrySet()) {
 			builder.append(entry.getKey() + " "
 					+ entry.getValue().first().getFirstElement().getLine()
@@ -157,12 +158,12 @@ public class CodeFragment<E extends IProgramElement> implements
 	 * Get the segments in this fragments as an unmodifiable map.
 	 * 
 	 * @return the map having all the segments in this fragment, whose keys are
-	 *         paths of files, and whose values are segments in a file.
+	 *         source files, and whose values are segments in a file.
 	 * 
 	 * @throws IllegalStateException
 	 *             if segments are empty
 	 */
-	public SortedMap<String, SortedSet<Segment<E>>> getSegmentsAsMap() {
+	public SortedMap<SourceFile<E>, SortedSet<Segment<E>>> getSegmentsAsMap() {
 		if (segments.isEmpty()) {
 			// segments must not be empty
 			throw new IllegalStateException("there are no segments");
@@ -189,9 +190,9 @@ public class CodeFragment<E extends IProgramElement> implements
 					"the given segment is not included in the segments in the core");
 		}
 
-		if (this.segments.containsKey(segment.getSourceFile().getPath())) {
+		if (this.segments.containsKey(segment.getSourceFile())) {
 			final SortedSet<Segment<E>> segmentsInFile = this.segments
-					.get(segment.getSourceFile().getPath());
+					.get(segment.getSourceFile());
 			segmentsInFile.add(segment);
 			this.startPositions.put(segment.getSourceFile().getPath(),
 					segmentsInFile.first().getFirstElement().getPosition());
@@ -201,7 +202,7 @@ public class CodeFragment<E extends IProgramElement> implements
 			final SortedSet<Segment<E>> newSet = new TreeSet<Segment<E>>(
 					new SegmentComaparator());
 			newSet.add(segment);
-			this.segments.put(segment.getSourceFile().getPath(), newSet);
+			this.segments.put(segment.getSourceFile(), newSet);
 			this.startPositions.put(segment.getSourceFile().getPath(), segment
 					.getFirstElement().getPosition());
 			this.endPositions.put(segment.getSourceFile().getPath(), segment
