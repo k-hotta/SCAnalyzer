@@ -1,6 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data.db;
 
+import java.util.Collection;
+
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -30,6 +33,11 @@ public class DBCodeFragmentMapping implements IDBElement {
 	public static final String NEW_CODE_FRAGMENT_COLUMN_NAME = "NEW_CODE_FRAGMENT";
 
 	/**
+	 * The column name for modifications
+	 */
+	public static final String MODIFICATIONS_COLUMN_NAME = "MODIFICATIONS";
+
+	/**
 	 * The column name for cloneClassMapping
 	 */
 	public static final String CLONE_CLASS_MAPPING_COLUMN_NAME = "CLONE_CLASS_MAPPING";
@@ -53,6 +61,12 @@ public class DBCodeFragmentMapping implements IDBElement {
 	private DBCodeFragment newCodeFragment;
 
 	/**
+	 * The modifications on this code fragment mapping
+	 */
+	@ForeignCollectionField(eager = true, columnName = MODIFICATIONS_COLUMN_NAME)
+	private Collection<DBCloneModification> modifications;
+
+	/**
 	 * The owner clone class mapping of this mapping
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_MAPPING_COLUMN_NAME)
@@ -74,16 +88,20 @@ public class DBCodeFragmentMapping implements IDBElement {
 	 *            the old code fragment of this mapping
 	 * @param newCodeFragment
 	 *            the new code fragment of this mapping
+	 * @param modifications
+	 *            the modifications on this mapping
 	 * @param cloneClassMapping
 	 *            the owner clone class mapping of this mapping
 	 */
 	public DBCodeFragmentMapping(final long id,
 			final DBCodeFragment oldCodeFragment,
 			final DBCodeFragment newCodeFragment,
+			final Collection<DBCloneModification> modifications,
 			final DBCloneClassMapping cloneClassMapping) {
 		this.id = id;
 		this.oldCodeFragment = oldCodeFragment;
 		this.newCodeFragment = newCodeFragment;
+		this.modifications = modifications;
 		this.cloneClassMapping = cloneClassMapping;
 	}
 
@@ -144,6 +162,26 @@ public class DBCodeFragmentMapping implements IDBElement {
 	 */
 	public void setNewCodeFragment(DBCodeFragment newCodeFragment) {
 		this.newCodeFragment = newCodeFragment;
+	}
+
+	/**
+	 * Get the modifications on this mapping.
+	 * 
+	 * @return a collection of modifications
+	 */
+	public Collection<DBCloneModification> getModifications() {
+		return modifications;
+	}
+
+	/**
+	 * Set the modifications on this mapping with the specified one.
+	 * 
+	 * @param modifications
+	 *            a collection of modifications to be set
+	 */
+	public void setModifications(
+			final Collection<DBCloneModification> modifications) {
+		this.modifications = modifications;
 	}
 
 	/**
