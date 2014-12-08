@@ -58,6 +58,16 @@ public class DBCloneModification implements IDBElement {
 	public static final String CODE_FRAGMENT_MAPPING_COLUMN_NAME = "CODE_FRAGMENT_MAPPING";
 
 	/**
+	 * The column name for relatedOldSegment
+	 */
+	public static final String RELATED_OLD_SEGMENT_COLUMN_NAME = "RELATED_OLD_SEGMENT";
+
+	/**
+	 * The column name for relatedNewSegment
+	 */
+	public static final String RELATED_NEW_SEGMENT_COLUMN_NAME = "RELATED_NEW_SEGMENT";
+
+	/**
 	 * The id of this modification
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -101,6 +111,18 @@ public class DBCloneModification implements IDBElement {
 	@DatabaseField(canBeNull = false, foreign = true, columnName = CODE_FRAGMENT_MAPPING_COLUMN_NAME)
 	private DBCodeFragmentMapping codeFragmentMapping;
 
+	/**
+	 * The related segment in the old version
+	 */
+	@DatabaseField(canBeNull = true, foreign = true, columnName = RELATED_OLD_SEGMENT_COLUMN_NAME)
+	private DBSegment relatedOldSegment;
+
+	/**
+	 * The related segment in the new version
+	 */
+	@DatabaseField(canBeNull = true, foreign = true, columnName = RELATED_NEW_SEGMENT_COLUMN_NAME)
+	private DBSegment relatedNewSegment;
+
 	public DBCloneModification() {
 		// default constructor mandatory for ORMLite
 	}
@@ -108,7 +130,8 @@ public class DBCloneModification implements IDBElement {
 	public DBCloneModification(final long id, final int oldStartPosition,
 			final int newStartPosition, final int length, final Type type,
 			final int contentHash,
-			final DBCodeFragmentMapping codeFragmentMapping) {
+			final DBCodeFragmentMapping codeFragmentMapping,
+			final DBSegment relatedOldSegment, final DBSegment relatedNewSegment) {
 		this.id = id;
 		this.oldStartPosition = oldStartPosition;
 		this.newStartPosition = newStartPosition;
@@ -116,6 +139,8 @@ public class DBCloneModification implements IDBElement {
 		this.type = type;
 		this.contentHash = contentHash;
 		this.codeFragmentMapping = codeFragmentMapping;
+		this.relatedOldSegment = relatedOldSegment;
+		this.relatedNewSegment = relatedNewSegment;
 	}
 
 	/**
@@ -258,6 +283,44 @@ public class DBCloneModification implements IDBElement {
 	public void setCodeFragmentMapping(
 			final DBCodeFragmentMapping codeFragmentMapping) {
 		this.codeFragmentMapping = codeFragmentMapping;
+	}
+
+	/**
+	 * Get the related segment in the old version.
+	 * 
+	 * @return the related segment in the old version
+	 */
+	public DBSegment getRelatedOldSegment() {
+		return relatedOldSegment;
+	}
+
+	/**
+	 * Set the related segment in the old version with the specified one.
+	 * 
+	 * @param relatedOldSegment
+	 *            the segment to be set
+	 */
+	public void setRelatedOldSegment(final DBSegment relatedOldSegment) {
+		this.relatedOldSegment = relatedOldSegment;
+	}
+
+	/**
+	 * Get the related segment in the new version.
+	 * 
+	 * @return the related segment in the new version
+	 */
+	public DBSegment getRelatedNewSegment() {
+		return relatedNewSegment;
+	}
+
+	/**
+	 * Set the related segment in the new version with the specified one.
+	 * 
+	 * @param relatedNewSegment
+	 *            the segment to be set
+	 */
+	public void setRelatedNewSegment(final DBSegment relatedNewSegment) {
+		this.relatedNewSegment = relatedNewSegment;
 	}
 
 	/**
