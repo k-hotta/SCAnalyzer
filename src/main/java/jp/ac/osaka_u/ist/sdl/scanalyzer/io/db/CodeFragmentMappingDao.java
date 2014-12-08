@@ -1,13 +1,17 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.TableName;
@@ -38,12 +42,18 @@ public class CodeFragmentMappingDao
 	 */
 	private CloneClassMappingDao cloneClassMappingDao;
 
+	/**
+	 * The DAO for clone modifications
+	 */
+	private CloneModificationDao cloneModificationDao;
+
 	@SuppressWarnings("unchecked")
 	public CodeFragmentMappingDao() throws SQLException {
 		super((Dao<DBCodeFragmentMapping, Long>) DBManager.getInstance()
 				.getNativeDao(DBCodeFragmentMapping.class));
 		codeFragmentDao = null;
 		cloneClassMappingDao = null;
+		cloneModificationDao = null;
 	}
 
 	/**
@@ -64,6 +74,16 @@ public class CodeFragmentMappingDao
 	 */
 	void setCloneClassMappingDao(final CloneClassMappingDao cloneClassMappingDao) {
 		this.cloneClassMappingDao = cloneClassMappingDao;
+	}
+
+	/**
+	 * Set the DAO for CloneModification with the specified one.
+	 * 
+	 * @param cloneModificationDao
+	 *            the DAO to be set
+	 */
+	void setCloneModificationDao(final CloneModificationDao cloneModificationDao) {
+		this.cloneModificationDao = cloneModificationDao;
 	}
 
 	@Override
@@ -92,6 +112,8 @@ public class CodeFragmentMappingDao
 			codeFragmentDao.refresh(element.getNewCodeFragment());
 		}
 
+		cloneModificationDao.refreshAll(element.getModifications());
+
 		if (deepRefresh) {
 			cloneClassMappingDao.refresh(element.getCloneClassMapping());
 		}
@@ -103,6 +125,7 @@ public class CodeFragmentMappingDao
 	protected Collection<DBCodeFragmentMapping> refreshChildrenForAll(
 			Collection<DBCodeFragmentMapping> elements) throws Exception {
 		final Set<DBCodeFragment> codeFragmentsToBeRefreshed = new HashSet<>();
+		final Set<DBCloneModification> cloneModificationsToBeRefreshed = new HashSet<>();
 		for (final DBCodeFragmentMapping element : elements) {
 			if (element.getOldCodeFragment() != null) {
 				codeFragmentsToBeRefreshed.add(element.getOldCodeFragment());
@@ -110,8 +133,10 @@ public class CodeFragmentMappingDao
 			if (element.getNewCodeFragment() != null) {
 				codeFragmentsToBeRefreshed.add(element.getNewCodeFragment());
 			}
+			cloneModificationsToBeRefreshed.addAll(element.getModifications());
 		}
 		codeFragmentDao.refreshAll(codeFragmentsToBeRefreshed);
+		cloneModificationDao.refreshAll(cloneModificationsToBeRefreshed);
 		for (final DBCodeFragmentMapping element : elements) {
 			if (element.getOldCodeFragment() != null) {
 				element.setOldCodeFragment(codeFragmentDao.get(element
@@ -121,6 +146,14 @@ public class CodeFragmentMappingDao
 				element.setNewCodeFragment(codeFragmentDao.get(element
 						.getNewCodeFragment().getId()));
 			}
+
+			final List<DBCloneModification> toBeStored = new ArrayList<>();
+			for (final DBCloneModification cloneModification : element
+					.getModifications()) {
+				toBeStored.add(cloneModificationDao.get(cloneModification
+						.getId()));
+			}
+			element.setModifications(toBeStored);
 		}
 
 		if (deepRefresh) {
@@ -148,6 +181,8 @@ public class CodeFragmentMappingDao
 	@Override
 	protected void initializeRelativeElementIds(
 			Map<String, Set<Long>> relativeElementIds) {
+		relativeElementIds.put(TableName.CODE_FRAGMENT_MAPPING,
+				new TreeSet<Long>());
 		relativeElementIds.put(TableName.CODE_FRAGMENT, new TreeSet<Long>());
 		relativeElementIds.put(TableName.CLONE_CLASS_MAPPING,
 				new TreeSet<Long>());
@@ -156,13 +191,17 @@ public class CodeFragmentMappingDao
 	@Override
 	protected void initializeForeignChildElementIds(
 			Map<String, Map<Long, Set<Long>>> foreignChildElementIds) {
-		// do nothing
+		foreignChildElementIds.put(TableName.CLONE_MODIFICATION,
+				new TreeMap<>());
 	}
 
 	@Override
 	protected void updateRelativeElementIds(
 			Map<String, Set<Long>> relativeElementIds,
 			InternalDBCodeFragmentMapping rawResult) throws Exception {
+		relativeElementIds.get(TableName.CODE_FRAGMENT_MAPPING).add(
+				rawResult.getId());
+
 		if (rawResult.getOldCodeFragmentId() != null) {
 			relativeElementIds.get(TableName.CODE_FRAGMENT).add(
 					rawResult.getOldCodeFragmentId());
@@ -192,6 +231,29 @@ public class CodeFragmentMappingDao
 					.get(TableName.CLONE_CLASS_MAPPING);
 			cloneClassMappingDao.get(cloneClassMappingIdsToBeRetrieved);
 		}
+
+		// retrieve modifications
+		final Set<Long> codeFragmentMappingsToBeRetrieved = relativeElementIds
+				.get(TableName.CODE_FRAGMENT_MAPPING);
+		final Map<Long, DBCloneModification> modifications = cloneModificationDao
+				.getWithCodeFragmentMappingIds(codeFragmentMappingsToBeRetrieved);
+		final Map<Long, Set<Long>> modificationsByMappingIds = foreignChildElementIds
+				.get(TableName.CLONE_MODIFICATION);
+
+		for (final DBCloneModification modification : modifications.values()) {
+			final long mappingId = modification.getCodeFragmentMapping()
+					.getId();
+			Set<Long> modificationsInMapping = modificationsByMappingIds
+					.get(mappingId);
+
+			if (modificationsInMapping == null) {
+				modificationsInMapping = new TreeSet<>();
+				modificationsByMappingIds
+						.put(mappingId, modificationsInMapping);
+			}
+
+			modificationsInMapping.add(modification.getId());
+		}
 	}
 
 	@Override
@@ -200,7 +262,7 @@ public class CodeFragmentMappingDao
 			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception {
 		final DBCodeFragmentMapping newInstance = new DBCodeFragmentMapping(
-				rawResult.getId(), null, null, null);
+				rawResult.getId(), null, null, null, null);
 
 		if (autoRefresh) {
 			if (rawResult.getOldCodeFragmentId() != null) {
@@ -210,6 +272,20 @@ public class CodeFragmentMappingDao
 			if (rawResult.getNewCodeFragmentId() != null) {
 				newInstance.setNewCodeFragment(codeFragmentDao.get(rawResult
 						.getNewCodeFragmentId()));
+			}
+
+			final Map<Long, Set<Long>> modificationsByMappings = foreignChildElementIds
+					.get(TableName.CLONE_MODIFICATION);
+			final Set<Long> modificationsInMapping = modificationsByMappings
+					.get(rawResult.getId());
+
+			newInstance.setModifications(new ArrayList<>());
+
+			if (modificationsInMapping != null
+					&& !modificationsInMapping.isEmpty()) {
+				final Collection<DBCloneModification> modifications = cloneModificationDao
+						.get(modificationsInMapping).values();
+				newInstance.addModifications(modifications);
 			}
 
 			if (deepRefresh) {
