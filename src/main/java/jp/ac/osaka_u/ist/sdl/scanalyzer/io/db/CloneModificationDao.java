@@ -2,6 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.io.db;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -97,14 +98,31 @@ public class CloneModificationDao
 	@Override
 	protected DBCloneModification refreshChildren(DBCloneModification element)
 			throws Exception {
-		// do nothing because there is no foreign field
+		if (deepRefresh) {
+			codeFragmentMappingDao.refresh(element.getCodeFragmentMapping());
+		}
+
 		return element;
 	}
 
 	@Override
 	protected Collection<DBCloneModification> refreshChildrenForAll(
 			Collection<DBCloneModification> elements) throws Exception {
-		// do nothing because there is no foreign field
+		if (deepRefresh) {
+			final Set<DBCodeFragmentMapping> mappingsToBeRefreshed = new HashSet<>();
+
+			for (final DBCloneModification element : elements) {
+				mappingsToBeRefreshed.add(element.getCodeFragmentMapping());
+			}
+
+			codeFragmentMappingDao.refreshAll(mappingsToBeRefreshed);
+
+			for (final DBCloneModification element : elements) {
+				element.setCodeFragmentMapping(codeFragmentMappingDao
+						.get(element.getCodeFragmentMapping().getId()));
+			}
+		}
+
 		return elements;
 	}
 
