@@ -53,6 +53,11 @@ public class DBCloneModification implements IDBElement {
 	public static final String CONTENT_HASH_COLUMN_NAME = "CONTENT_HASH";
 
 	/**
+	 * The column name for codeFragmentMapping
+	 */
+	public static final String CODE_FRAGMENT_MAPPING_COLUMN_NAME = "CODE_FRAGMENT_MAPPING";
+
+	/**
 	 * The id of this modification
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -90,19 +95,27 @@ public class DBCloneModification implements IDBElement {
 	@DatabaseField(canBeNull = false)
 	private int contentHash;
 
+	/**
+	 * The owner code fragment mapping of this modification
+	 */
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CODE_FRAGMENT_MAPPING_COLUMN_NAME)
+	private DBCodeFragmentMapping codeFragmentMapping;
+
 	public DBCloneModification() {
 		// default constructor mandatory for ORMLite
 	}
 
 	public DBCloneModification(final long id, final int oldStartPosition,
 			final int newStartPosition, final int length, final Type type,
-			final int contentHash) {
+			final int contentHash,
+			final DBCodeFragmentMapping codeFragmentMapping) {
 		this.id = id;
 		this.oldStartPosition = oldStartPosition;
 		this.newStartPosition = newStartPosition;
 		this.length = length;
 		this.type = type;
 		this.contentHash = contentHash;
+		this.codeFragmentMapping = codeFragmentMapping;
 	}
 
 	/**
@@ -224,6 +237,27 @@ public class DBCloneModification implements IDBElement {
 	 */
 	public void setContentHash(int contentHash) {
 		this.contentHash = contentHash;
+	}
+
+	/**
+	 * Get the owner code fragment mapping of this modification.
+	 * 
+	 * @return the owner code fragment mapping
+	 */
+	public DBCodeFragmentMapping getCodeFragmentMapping() {
+		return codeFragmentMapping;
+	}
+
+	/**
+	 * Set the owner code fragment mapping of this modification with the
+	 * specified one.
+	 * 
+	 * @param codeFragmentMapping
+	 *            the code fragment mapping to be set
+	 */
+	public void setCodeFragmentMapping(
+			final DBCodeFragmentMapping codeFragmentMapping) {
+		this.codeFragmentMapping = codeFragmentMapping;
 	}
 
 	/**
