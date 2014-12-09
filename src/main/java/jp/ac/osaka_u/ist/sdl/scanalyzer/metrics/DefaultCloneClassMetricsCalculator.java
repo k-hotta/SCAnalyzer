@@ -74,6 +74,10 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 	}
 
 	private void setup(Version<E> previous) {
+		if (previous == null) {
+			return;
+		}
+
 		final Map<Long, Map<Long, List<E>>> allElementsCopy = new TreeMap<>();
 		allElementsCopy.putAll(allElements);
 
