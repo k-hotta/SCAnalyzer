@@ -2,9 +2,11 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.metrics;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import difflib.myers.Equalizer;
@@ -64,12 +66,48 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 
 	@Override
 	public void calculate(Version<E> previous, Version<E> next) {
-		this.lcsElementsInCloned.clear();
-		this.lcsElementsInAll.clear();
+		setup(previous);
 
 		analyzeSimilarity(next);
 
 		analyzeModifications(next);
+	}
+
+	private void setup(Version<E> previous) {
+		final Map<Long, Map<Long, List<E>>> allElementsCopy = new TreeMap<>();
+		allElementsCopy.putAll(allElements);
+
+		final Map<Long, Map<Long, List<E>>> lcsElementsInClonedCopy = new TreeMap<>();
+		lcsElementsInClonedCopy.putAll(lcsElementsInCloned);
+
+		final Map<Long, Map<Long, List<E>>> lcsElementsInAllCopy = new TreeMap<>();
+		lcsElementsInAllCopy.putAll(lcsElementsInAll);
+
+		this.allElements.clear();
+		this.lcsElementsInCloned.clear();
+		this.lcsElementsInAll.clear();
+
+		for (final CloneClass<E> oldCloneClass : previous.getCloneClasses()
+				.values()) {
+			final long id = oldCloneClass.getId();
+			final Map<Long, List<E>> allElementsInCloneClass = allElementsCopy
+					.get(id);
+			final Map<Long, List<E>> lcsElementsInClonedInCloneClass = lcsElementsInClonedCopy
+					.get(id);
+			final Map<Long, List<E>> lcsElementsInAllInCloneClass = lcsElementsInAllCopy
+					.get(id);
+
+			if (allElementsInCloneClass == null
+					|| lcsElementsInClonedInCloneClass == null
+					|| lcsElementsInAllInCloneClass == null) {
+				throw new IllegalStateException(
+						"the information in previous revision has been lost");
+			}
+
+			this.allElements.put(id, allElementsInCloneClass);
+			this.lcsElementsInCloned.put(id, lcsElementsInClonedInCloneClass);
+			this.lcsElementsInAll.put(id, lcsElementsInAllInCloneClass);
+		}
 	}
 
 	private void analyzeSimilarity(Version<E> next) {
