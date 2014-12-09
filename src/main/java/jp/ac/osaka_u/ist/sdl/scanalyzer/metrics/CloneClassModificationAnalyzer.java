@@ -26,7 +26,7 @@ import difflib.myers.Equalizer;
  * @author k-hotta
  *
  */
-public class CloneClassChangeAnalyzer<E extends IProgramElement> {
+public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 	private final ConcurrentMap<Long, Map<Long, List<E>>> allElements;
 
@@ -38,7 +38,7 @@ public class CloneClassChangeAnalyzer<E extends IProgramElement> {
 
 	private final Equalizer<E> equalizer;
 
-	public CloneClassChangeAnalyzer(
+	public CloneClassModificationAnalyzer(
 			final ConcurrentMap<Long, Map<Long, List<E>>> allElements,
 			final ConcurrentMap<Long, Map<Long, List<E>>> lcsInCloned,
 			final ConcurrentMap<Long, Map<Long, List<E>>> lcsInAll,
