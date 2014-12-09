@@ -108,7 +108,7 @@ public class DBCloneModification implements IDBElement {
 	/**
 	 * The owner code fragment mapping of this modification
 	 */
-	@DatabaseField(canBeNull = false, foreign = true, columnName = CODE_FRAGMENT_MAPPING_COLUMN_NAME)
+	@DatabaseField(canBeNull = true, foreign = true, columnName = CODE_FRAGMENT_MAPPING_COLUMN_NAME)
 	private DBCodeFragmentMapping codeFragmentMapping;
 
 	/**
