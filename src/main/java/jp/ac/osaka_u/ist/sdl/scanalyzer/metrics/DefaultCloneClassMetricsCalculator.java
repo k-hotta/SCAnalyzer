@@ -37,6 +37,11 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 	private final Equalizer<E> equalizer;
 
 	/**
+	 * This map contains all the elements in code fragments
+	 */
+	private final ConcurrentMap<Long, Map<Long, List<E>>> allElements;
+
+	/**
 	 * This map contains the information about which elements are included in
 	 * LCS between CLONED fragments for each clone class. The keys are the ids
 	 * of clone classes, and the values are maps between fragment ids and
@@ -54,6 +59,7 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 
 	public DefaultCloneClassMetricsCalculator(final Equalizer<E> equalizer) {
 		this.equalizer = equalizer;
+		this.allElements = new ConcurrentSkipListMap<>();
 		this.lcsElementsInCloned = new ConcurrentSkipListMap<>();
 		this.lcsElementsInAll = new ConcurrentSkipListMap<>();
 	}
@@ -115,6 +121,10 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 			final Map<Long, List<E>> ghostFragmentElements = LCSFinder
 					.getFragmentElements(ghostFragments);
 
+			final Map<Long, List<E>> allFragmentElements = new TreeMap<>();
+			allFragmentElements.putAll(clonedFragmentElements);
+			allFragmentElements.putAll(ghostFragmentElements);
+
 			/*
 			 * find LCS among all the CLONED fragments
 			 */
@@ -141,6 +151,7 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 			cloneClass.getCore().setNumCommonAllElements(numCommonAllElements);
 
 			// store the information of LCSs
+			allElements.put(cloneClass.getId(), allFragmentElements);
 			lcsElementsInCloned.put(cloneClass.getId(),
 					clonedFragmentElementsInCloneLcs);
 			lcsElementsInAll.put(cloneClass.getId(), fragmentElementsInAllLcs);
