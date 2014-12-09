@@ -89,7 +89,8 @@ public class ModificationAnalyzeHelper {
 		final DBCloneModification modification = new DBCloneModification(
 				IDGenerator.generate(DBCloneModification.class),
 				oldStartPosition, newStartPosition, elements.size(), type,
-				calculateContentHash(elements), fragmentMapping.getCore(),
+				calculateContentHash(elements),
+				(fragmentMapping == null) ? null : fragmentMapping.getCore(),
 				(oldSegment == null) ? null : oldSegment.getCore(),
 				(newSegment == null) ? null : newSegment.getCore());
 
