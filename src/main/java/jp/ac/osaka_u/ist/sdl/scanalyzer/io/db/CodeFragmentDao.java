@@ -212,7 +212,7 @@ public class CodeFragmentDao extends
 			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception {
 		final DBCodeFragment newInstance = new DBCodeFragment(
-				rawResult.getId(), null, null, rawResult.getGhost() == 1);
+				rawResult.getId(), null, null, rawResult.getGhost().equals(1));
 
 		if (autoRefresh) {
 			if (deepRefresh) {
