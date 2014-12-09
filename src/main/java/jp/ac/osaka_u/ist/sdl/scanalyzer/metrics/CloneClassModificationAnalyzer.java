@@ -57,7 +57,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 		try {
 			final List<Future<?>> futures = new ArrayList<>();
 			for (final CloneClassMapping<E> mapping : mappings) {
-				final CloneClassChangeAnalyzeTask task = new CloneClassChangeAnalyzeTask(
+				final CloneClassModificationAnalyzeTask task = new CloneClassModificationAnalyzeTask(
 						mapping);
 				futures.add(pool.submit(task));
 			}
@@ -74,11 +74,11 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 		}
 	}
 
-	private class CloneClassChangeAnalyzeTask implements Runnable {
+	private class CloneClassModificationAnalyzeTask implements Runnable {
 
 		private final CloneClassMapping<E> mapping;
 
-		private CloneClassChangeAnalyzeTask(final CloneClassMapping<E> mapping) {
+		private CloneClassModificationAnalyzeTask(final CloneClassMapping<E> mapping) {
 			this.mapping = mapping;
 		}
 
