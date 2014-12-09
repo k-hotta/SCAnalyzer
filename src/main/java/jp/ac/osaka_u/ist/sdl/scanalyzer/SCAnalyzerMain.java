@@ -288,7 +288,7 @@ public class SCAnalyzerMain {
 			logger.info("+ source file parser: "
 					+ result.getFileParser().getClass().getSimpleName());
 			logger.info("+ element equalizer: "
-					+ result.getEqualizer().getClass().getSimpleName());
+					+ result.getEqualizerForLcs().getClass().getSimpleName());
 			logger.info("+ element mapper: "
 					+ result.getElementMapper().getClass().getSimpleName());
 			logger.info("+ clone mapper: "

@@ -72,9 +72,14 @@ public class WorkerManager<E extends IProgramElement> {
 	private ISourceFileParser<E> fileParser;
 
 	/**
-	 * The equalizer for elements
+	 * The equalizer for elements to detect LCS
 	 */
-	private Equalizer<E> equalizer;
+	private Equalizer<E> equalizerForLcs;
+
+	/**
+	 * The equalizer for elements to detect diff
+	 */
+	private Equalizer<E> equalizerForDiff;
 
 	/**
 	 * The element mapper
@@ -120,8 +125,12 @@ public class WorkerManager<E extends IProgramElement> {
 		return fileParser;
 	}
 
-	public final Equalizer<E> getEqualizer() {
-		return equalizer;
+	public final Equalizer<E> getEqualizerForLcs() {
+		return equalizerForLcs;
+	}
+
+	public final Equalizer<E> getEqualizerForDiff() {
+		return equalizerForDiff;
 	}
 
 	public final IProgramElementMapper<E> getElementMapper() {
@@ -159,8 +168,9 @@ public class WorkerManager<E extends IProgramElement> {
 		fileContentProvider = setupFileContentProvider(config.getVcs());
 		fileParser = sensitiveInitializer.setupSourceFileParser(config
 				.getLanguage());
-		equalizer = sensitiveInitializer.setupEqualizer(config
+		equalizerForLcs = sensitiveInitializer.setupEqualizerForLcs(config
 				.getElementEqualizer());
+		equalizerForDiff = sensitiveInitializer.setupEqualizerForDiff();
 		elementMapper = sensitiveInitializer.setupElementMapper(config
 				.getElementMappingAlgorithm());
 		cloneMapper = setupCloneClassMapper(config.getCloneMappingAlgorithm());
@@ -319,7 +329,7 @@ public class WorkerManager<E extends IProgramElement> {
 		final MetricsCalculatorController<E> controller = new MetricsCalculatorController<>();
 
 		controller.addCalculator(new DefaultCloneClassMetricsCalculator<>(
-				equalizer));
+				equalizerForLcs, equalizerForDiff));
 
 		return controller;
 	}

@@ -25,12 +25,21 @@ public abstract class ElementTypeSensitiveWorkerInitializer<E extends IProgramEl
 	abstract ISourceFileParser<E> setupSourceFileParser(final Language language);
 
 	/**
-	 * Set up element equalizer
+	 * Set up element equalizer for LCS
 	 * 
 	 * @param elementEqualizer
 	 * @return
 	 */
-	abstract Equalizer<E> setupEqualizer(final ElementEqualizer elementEqualizer);
+	abstract Equalizer<E> setupEqualizerForLcs(
+			final ElementEqualizer elementEqualizer);
+
+	/**
+	 * Set up element equalizer for Diff. This method is expected to return the
+	 * most strict equalizer so that any differences are identified.
+	 * 
+	 * @return
+	 */
+	abstract Equalizer<E> setupEqualizerForDiff();
 
 	/**
 	 * Set up element mapper

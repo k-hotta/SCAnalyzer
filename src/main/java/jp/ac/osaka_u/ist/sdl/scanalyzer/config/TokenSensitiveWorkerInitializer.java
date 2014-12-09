@@ -24,7 +24,7 @@ public class TokenSensitiveWorkerInitializer extends
 	}
 
 	@Override
-	Equalizer<Token> setupEqualizer(ElementEqualizer elementEqualizer) {
+	Equalizer<Token> setupEqualizerForLcs(ElementEqualizer elementEqualizer) {
 		switch (elementEqualizer) {
 		case EXACT:
 			return new ExactTokenEqualizer();
@@ -33,6 +33,11 @@ public class TokenSensitiveWorkerInitializer extends
 		}
 
 		throw new IllegalStateException("cannot initialize token equalizer");
+	}
+
+	@Override
+	Equalizer<Token> setupEqualizerForDiff() {
+		return new ExactTokenEqualizer();
 	}
 
 	@Override
