@@ -94,7 +94,9 @@ public class ModificationAnalyzeHelper {
 				(oldSegment == null) ? null : oldSegment.getCore(),
 				(newSegment == null) ? null : newSegment.getCore());
 
-		fragmentMapping.getCore().addModification(modification);
+		if (fragmentMapping != null) {
+			fragmentMapping.getCore().addModification(modification);
+		}
 	}
 
 	/**
