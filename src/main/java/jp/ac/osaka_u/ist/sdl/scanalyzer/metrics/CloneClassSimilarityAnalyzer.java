@@ -197,7 +197,7 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 					newList.add(all.get(index));
 				}
 
-				if (entry.getKey() == firstKey) {
+				if (firstKey != null && firstKey.equals(entry.getKey())) {
 					// special treat for the LCS among cloned fragments
 					for (final Map.Entry<Long, List<E>> clonedEntry : clonedFragmentElementsInCloneLcs
 							.entrySet()) {
@@ -217,6 +217,8 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 
 				fragmentElementsInAllLcs.put(entry.getKey(), newList);
 			}
+
+
 			return fragmentElementsInAllLcs;
 		}
 
