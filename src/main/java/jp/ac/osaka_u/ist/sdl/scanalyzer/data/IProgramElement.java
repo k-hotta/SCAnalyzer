@@ -47,4 +47,12 @@ public interface IProgramElement {
 	 */
 	public int getOffset();
 
+	/**
+	 * Get the hash code of this element to be used for analyzing changes
+	 * between clone classes.
+	 * 
+	 * @return a hash code
+	 */
+	public int getHashForChangeAnalysis();
+
 }

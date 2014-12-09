@@ -46,6 +46,9 @@ public class LCSFinder {
 			final Collection<CodeFragment<E>> codeFragments) {
 		final Map<Long, List<E>> result = new TreeMap<>();
 
+		/*
+		 * XXX this procedure concatenates segments in the order as they are
+		 */
 		for (final CodeFragment<E> codeFragment : codeFragments) {
 			final List<Segment<E>> segments = codeFragment.getSegments();
 			final List<E> elements = new ArrayList<>();

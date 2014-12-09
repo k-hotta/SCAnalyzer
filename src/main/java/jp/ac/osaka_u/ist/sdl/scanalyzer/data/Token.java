@@ -156,4 +156,12 @@ public class Token implements IProgramElement {
 		return this.value;
 	}
 
+	@Override
+	public int getHashForChangeAnalysis() {
+		// XXX Should we use the value of the token, or the type of it?
+		// current implementation uses the type
+		// return this.value.hashCode();
+		return this.type.hashCode();
+	}
+
 }
