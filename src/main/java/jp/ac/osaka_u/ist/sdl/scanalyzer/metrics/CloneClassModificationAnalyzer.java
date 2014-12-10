@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
@@ -18,6 +19,10 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Type;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import difflib.myers.Equalizer;
 
 /**
@@ -28,6 +33,9 @@ import difflib.myers.Equalizer;
  */
 public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
+	private static final Logger logger = LogManager
+			.getLogger(CloneClassModificationAnalyzer.class);
+
 	private final ConcurrentMap<Long, Map<Long, List<E>>> allElements;
 
 	private final ConcurrentMap<Long, Map<Long, List<E>>> lcsInCloned;
@@ -37,6 +45,8 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 	private final Collection<CloneClassMapping<E>> mappings;
 
 	private final Equalizer<E> equalizer;
+
+	private final AtomicLong count = 0;
 
 	public CloneClassModificationAnalyzer(
 			final ConcurrentMap<Long, Map<Long, List<E>>> allElements,
@@ -49,6 +59,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 		this.lcsInAll = lcsInAll;
 		this.mappings = mappings;
 		this.equalizer = equalizer;
+		this.count = new AtomicLong(0);
 	}
 
 	public void run() {
@@ -78,15 +89,26 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 		private final CloneClassMapping<E> mapping;
 
-		private CloneClassModificationAnalyzeTask(final CloneClassMapping<E> mapping) {
+		private CloneClassModificationAnalyzeTask(
+				final CloneClassMapping<E> mapping) {
 			this.mapping = mapping;
 		}
 
 		@Override
 		public void run() {
+			logger.debug("analyzing modifications on all parts of code fragments including gaps");
 			analyzeNonLcs();
+			logger.debug("complete analyzing modifications on all parts");
+			count.set(0);
+
+			logger.debug("analyzing modifications on LCSs on cloned fragments");
 			analyzeLcsInCloned();
+			logger.debug("complete analyzing modifications on cloned fragments");
+			count.set(0);
+
+			logger.debug("analyzing modifications on LCSs on all fragments");
 			analyzeLcsInAll();
+			logger.debug("complete analyzing modifications on all fragments");
 		}
 
 		private void analyzeNonLcs() {

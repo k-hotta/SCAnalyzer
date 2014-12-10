@@ -11,11 +11,16 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.util.LCSFinder;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import difflib.myers.Equalizer;
 
 /**
@@ -25,6 +30,12 @@ import difflib.myers.Equalizer;
  *
  */
 public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(CloneClassSimilarityAnalyzer.class);
 
 	/**
 	 * The clone classes
@@ -57,6 +68,11 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 	 */
 	private final Equalizer<E> equalizer;
 
+	/**
+	 * The counter, this is just for logging
+	 */
+	private final AtomicLong count;
+
 	public CloneClassSimilarityAnalyzer(
 			final Collection<CloneClass<E>> cloneClasses,
 			final ConcurrentMap<Long, Map<Long, List<E>>> allElements,
@@ -68,6 +84,7 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 		this.lcsElementsInCloned = lcsElementsInCloned;
 		this.lcsElementsInAll = lcsElementsInAll;
 		this.equalizer = equalizer;
+		this.count = new AtomicLong(0);
 	}
 
 	public void analyze() {
@@ -150,6 +167,10 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 			lcsElementsInCloned.put(cloneClass.getId(),
 					clonedFragmentElementsInCloneLcs);
 			lcsElementsInAll.put(cloneClass.getId(), fragmentElementsInAllLcs);
+
+			logger.debug("[" + count.incrementAndGet() + "/"
+					+ cloneClasses.size() + "] complete analyzing clone class "
+					+ cloneClass.getId());
 		}
 
 		private SortedMap<Long, List<E>> findLcsInCloned(
@@ -217,7 +238,6 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 
 				fragmentElementsInAllLcs.put(entry.getKey(), newList);
 			}
-
 
 			return fragmentElementsInAllLcs;
 		}

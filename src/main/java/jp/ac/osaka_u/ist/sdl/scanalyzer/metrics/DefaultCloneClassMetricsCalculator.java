@@ -9,6 +9,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import difflib.myers.Equalizer;
 
 /**
@@ -22,6 +26,12 @@ import difflib.myers.Equalizer;
  */
 public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 		implements IMetricsCalculator<E> {
+
+	/**
+	 * The logger
+	 */
+	private static final Logger logger = LogManager
+			.getLogger(DefaultCloneClassMetricsCalculator.class);
 
 	/**
 	 * The equalizer of elements to detect LCS
@@ -68,9 +78,13 @@ public class DefaultCloneClassMetricsCalculator<E extends IProgramElement>
 	public void calculate(Version<E> previous, Version<E> next) {
 		setup(previous);
 
+		logger.debug("analyzing similarity of code fragments in each clone class");
 		analyzeSimilarity(next);
+		logger.debug("complete analyzing similarity");
 
+		logger.debug("analyzing modifications on each clone class");
 		analyzeModifications(next);
+		logger.debug("complete analyzing modifications");
 	}
 
 	private void setup(Version<E> previous) {
