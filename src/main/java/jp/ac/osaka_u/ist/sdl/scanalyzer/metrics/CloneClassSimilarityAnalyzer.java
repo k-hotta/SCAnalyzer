@@ -142,7 +142,8 @@ public class CloneClassSimilarityAnalyzer<E extends IProgramElement> {
 			 */
 			final SortedMap<Long, List<E>> clonedFragmentElementsInCloneLcs = findLcsInCloned(clonedFragmentElements);
 
-			final Long firstKey = clonedFragmentElementsInCloneLcs.firstKey();
+			final Long firstKey = (clonedFragmentElementsInCloneLcs.isEmpty()) ? null
+					: clonedFragmentElementsInCloneLcs.firstKey();
 			final int numCommonClonedElements = (firstKey == null) ? 0
 					: clonedFragmentElementsInCloneLcs.get(firstKey).size();
 
