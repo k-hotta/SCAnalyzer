@@ -1,5 +1,10 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Type;
 
@@ -25,6 +30,11 @@ public class CloneModification<E extends IProgramElement> implements
 	private final DBCloneModification core;
 
 	/**
+	 * The deleted or inserted contents
+	 */
+	private SortedSet<E> contents;
+
+	/**
 	 * The owner code fragment mapping
 	 */
 	private CodeFragmentMapping<E> codeFragmentMapping;
@@ -47,6 +57,7 @@ public class CloneModification<E extends IProgramElement> implements
 	public CloneModification(final DBCloneModification core) {
 		this.id = core.getId();
 		this.core = core;
+		this.contents = new TreeSet<E>(new PositionElementComparator<>());
 		this.codeFragmentMapping = null;
 		this.relatedOldSegment = null;
 		this.relatedNewSegment = null;
@@ -129,6 +140,33 @@ public class CloneModification<E extends IProgramElement> implements
 	 */
 	public int getContentHash() {
 		return this.core.getContentHash();
+	}
+
+	/**
+	 * Get the deleted or inserted contents.
+	 * 
+	 * @return the contents
+	 */
+	public SortedSet<E> getContents() {
+		return Collections.unmodifiableSortedSet(contents);
+	}
+
+	/**
+	 * Set the deleted or inserted contents.
+	 * 
+	 * @param contents
+	 *            the contents to be set
+	 */
+	public void setContents(final Collection<E> contents) {
+		if (contents == null) {
+			throw new IllegalArgumentException(
+					"the specified collection of contents is null");
+		}
+
+		this.contents.clear();
+		for (final E content : contents) {
+			this.contents.add(content);
+		}
 	}
 
 	/**
@@ -305,7 +343,7 @@ public class CloneModification<E extends IProgramElement> implements
 	 * 
 	 * @throws IllegalArgumentException
 	 *             if the given owner clone class mapping doesn't match to that
-	 *             in the core, or it is <code>nul</code>
+	 *             in the core, or it is <code>null</code>
 	 */
 	public void setCloneClassMapping(
 			final CloneClassMapping<E> cloneClassMapping) {
