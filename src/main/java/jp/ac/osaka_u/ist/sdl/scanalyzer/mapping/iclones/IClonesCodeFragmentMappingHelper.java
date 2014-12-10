@@ -1,5 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mapping.iclones;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -352,8 +353,8 @@ public class IClonesCodeFragmentMappingHelper {
 			final CloneClassMapping<E> cloneClassMapping) {
 		final DBCodeFragmentMapping dbMapping = new DBCodeFragmentMapping(
 				IDGenerator.generate(DBCodeFragmentMapping.class),
-				oldFragment.getCore(), newFragment.getCore(), null,
-				cloneClassMapping.getCore());
+				oldFragment.getCore(), newFragment.getCore(),
+				new ArrayList<>(), cloneClassMapping.getCore());
 		final CodeFragmentMapping<E> mapping = new CodeFragmentMapping<>(
 				dbMapping);
 
