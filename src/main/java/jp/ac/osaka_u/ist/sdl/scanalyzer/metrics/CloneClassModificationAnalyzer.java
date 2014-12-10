@@ -46,7 +46,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 	private final Equalizer<E> equalizer;
 
-	private final AtomicLong count = 0;
+	private final AtomicLong count;
 
 	public CloneClassModificationAnalyzer(
 			final ConcurrentMap<Long, Map<Long, List<E>>> allElements,
