@@ -38,7 +38,7 @@ public class DBPerformanceTest {
 				mappingDao.queryRaw("select * from CLONE_CLASS_MAPPING", (
 						columns, results) -> {
 					return new DBCloneClassMapping(Long.parseLong(results[0]),
-							null, null, null, null);
+							null, null, null, null, null);
 				});
 			}, "select *: ");
 			mappingDao.clearObjectCache();
@@ -52,7 +52,7 @@ public class DBPerformanceTest {
 							(columns, results) -> {
 								return new DBCloneClassMapping(Long
 										.parseLong(results[0]), null, null,
-										null, null);
+										null, null, null);
 							});
 					result.add(rawResult.getFirstResult());
 				}
@@ -69,7 +69,7 @@ public class DBPerformanceTest {
 									(columns, results) -> {
 										return new DBCloneClassMapping(Long
 												.parseLong(results[0]), null,
-												null, null, null);
+												null, null, null, null);
 									});
 					result.add(rawResult.getFirstResult());
 				}
@@ -89,7 +89,8 @@ public class DBPerformanceTest {
 											(columns, results) -> {
 												return new DBCloneClassMapping(
 														Long.parseLong(results[0]),
-														null, null, null, null);
+														null, null, null, null,
+														null);
 											});
 							result.add(rawResult.getFirstResult());
 						}
@@ -113,7 +114,7 @@ public class DBPerformanceTest {
 
 				mappingDao.queryRaw(builder.toString(), (columns, results) -> {
 					return new DBCloneClassMapping(Long.parseLong(results[0]),
-							null, null, null, null);
+							null, null, null, null, null);
 				});
 			}, "select (with IN): ");
 			mappingDao.clearObjectCache();

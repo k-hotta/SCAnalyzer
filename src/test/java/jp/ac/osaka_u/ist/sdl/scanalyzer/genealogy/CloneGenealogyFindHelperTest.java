@@ -76,43 +76,43 @@ public class CloneGenealogyFindHelperTest {
 
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(11), null, ver1));
+						.get(11), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(21), null, ver1));
+						.get(21), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(31), null, ver1));
+						.get(31), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(32), null, ver1));
+						.get(32), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(41), null, ver1));
+						.get(41), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(51), null, ver1));
+						.get(51), null, null, ver1));
 		// ver1.getCloneClassMappings().add(
 		// new DBCloneClassMapping(count++, null, imitationCloneClasses
 		// .get(61), null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(71), null, ver1));
+						.get(71), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(81), null, ver1));
+						.get(81), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(82), null, ver1));
+						.get(82), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(91), null, ver1));
+						.get(91), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(92), null, ver1));
+						.get(92), null, null, ver1));
 		ver1.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(101), null, ver1));
+						.get(101), null, null, ver1));
 
 		ver2.getCloneClasses().add(imitationCloneClasses.get(12));
 		ver2.getCloneClasses().add(imitationCloneClasses.get(22));
@@ -131,54 +131,54 @@ public class CloneGenealogyFindHelperTest {
 
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(11),
-						imitationCloneClasses.get(12), null, ver2));
+						imitationCloneClasses.get(12), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(21),
-						imitationCloneClasses.get(22), null, ver2));
+						imitationCloneClasses.get(22), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(31),
-						imitationCloneClasses.get(33), null, ver2));
+						imitationCloneClasses.get(33), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(32),
-						imitationCloneClasses.get(34), null, ver2));
+						imitationCloneClasses.get(34), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(41),
-						imitationCloneClasses.get(42), null, ver2));
+						imitationCloneClasses.get(42), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(41),
-						imitationCloneClasses.get(43), null, ver2));
+						imitationCloneClasses.get(43), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(51),
-						imitationCloneClasses.get(52), null, ver2));
+						imitationCloneClasses.get(52), null, null, ver2));
 		// ver2.getCloneClassMappings().add(
 		// new DBCloneClassMapping(count++, imitationCloneClasses.get(61),
 		// imitationCloneClasses.get(62), null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, null, imitationCloneClasses
-						.get(62), null, ver2));
+						.get(62), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(71),
-						imitationCloneClasses.get(72), null, ver2));
+						imitationCloneClasses.get(72), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(81),
-						imitationCloneClasses.get(83), null, ver2));
+						imitationCloneClasses.get(83), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(82),
-						imitationCloneClasses.get(84), null, ver2));
+						imitationCloneClasses.get(84), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(91),
-						imitationCloneClasses.get(93), null, ver2));
+						imitationCloneClasses.get(93), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(92),
-						imitationCloneClasses.get(93), null, ver2));
+						imitationCloneClasses.get(93), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++,
 						imitationCloneClasses.get(101), imitationCloneClasses
-								.get(102), null, ver2));
+								.get(102), null, null, ver2));
 		ver2.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++,
 						imitationCloneClasses.get(101), imitationCloneClasses
-								.get(103), null, ver2));
+								.get(103), null, null, ver2));
 
 		ver3.getCloneClasses().add(imitationCloneClasses.get(13));
 		ver3.getCloneClasses().add(imitationCloneClasses.get(23));
@@ -196,57 +196,57 @@ public class CloneGenealogyFindHelperTest {
 
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(12),
-						imitationCloneClasses.get(13), null, ver3));
+						imitationCloneClasses.get(13), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(22),
-						imitationCloneClasses.get(23), null, ver3));
+						imitationCloneClasses.get(23), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(22),
-						imitationCloneClasses.get(24), null, ver3));
+						imitationCloneClasses.get(24), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(33),
-						imitationCloneClasses.get(35), null, ver3));
+						imitationCloneClasses.get(35), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(34),
-						imitationCloneClasses.get(35), null, ver3));
+						imitationCloneClasses.get(35), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(42),
-						imitationCloneClasses.get(44), null, ver3));
+						imitationCloneClasses.get(44), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(43),
-						imitationCloneClasses.get(44), null, ver3));
+						imitationCloneClasses.get(44), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(52),
-						imitationCloneClasses.get(53), null, ver3));
+						imitationCloneClasses.get(53), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(52),
-						imitationCloneClasses.get(54), null, ver3));
+						imitationCloneClasses.get(54), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(62),
-						imitationCloneClasses.get(63), null, ver3));
+						imitationCloneClasses.get(63), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(72),
-						imitationCloneClasses.get(73), null, ver3));
+						imitationCloneClasses.get(73), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(72),
-						imitationCloneClasses.get(74), null, ver3));
+						imitationCloneClasses.get(74), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(83),
-						imitationCloneClasses.get(85), null, ver3));
+						imitationCloneClasses.get(85), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(84),
-						imitationCloneClasses.get(85), null, ver3));
+						imitationCloneClasses.get(85), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(93),
-						imitationCloneClasses.get(94), null, ver3));
+						imitationCloneClasses.get(94), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++,
 						imitationCloneClasses.get(102), imitationCloneClasses
-								.get(104), null, ver3));
+								.get(104), null, null, ver3));
 		ver3.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++,
 						imitationCloneClasses.get(103), imitationCloneClasses
-								.get(104), null, ver3));
+								.get(104), null, null, ver3));
 
 		ver4.getCloneClasses().add(imitationCloneClasses.get(14));
 		ver4.getCloneClasses().add(imitationCloneClasses.get(25));
@@ -257,43 +257,43 @@ public class CloneGenealogyFindHelperTest {
 
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(13),
-						imitationCloneClasses.get(14), null, ver4));
+						imitationCloneClasses.get(14), null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(23),
-						imitationCloneClasses.get(25), null, ver4));
+						imitationCloneClasses.get(25), null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(24),
-						imitationCloneClasses.get(26), null, ver4));
+						imitationCloneClasses.get(26), null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(35),
-						imitationCloneClasses.get(36), null, ver4));
+						imitationCloneClasses.get(36), null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(44),
-						imitationCloneClasses.get(45), null, ver4));
+						imitationCloneClasses.get(45), null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(53),
-						null, null, ver4));
+						null, null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(54),
-						imitationCloneClasses.get(55), null, ver4));
+						imitationCloneClasses.get(55), null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(63),
-						null, null, ver4));
+						null, null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(73),
-						null, null, ver4));
+						null, null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(74),
-						null, null, ver4));
+						null, null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(85),
-						null, null, ver4));
+						null, null, null, ver4));
 		ver4.getCloneClassMappings().add(
 				new DBCloneClassMapping(count++, imitationCloneClasses.get(94),
-						null, null, ver4));
-		ver4.getCloneClassMappings().add(
-				new DBCloneClassMapping(count++,
-						imitationCloneClasses.get(104), null, null, ver4));
+						null, null, null, ver4));
+		ver4.getCloneClassMappings()
+				.add(new DBCloneClassMapping(count++, imitationCloneClasses
+						.get(104), null, null, null, ver4));
 
 		mCategorizeWithOldClone = CloneGenealogyFindHelper.class
 				.getDeclaredMethod("categorizeWithOldClone", Collection.class);
