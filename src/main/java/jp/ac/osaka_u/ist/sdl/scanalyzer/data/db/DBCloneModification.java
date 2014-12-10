@@ -68,6 +68,11 @@ public class DBCloneModification implements IDBElement {
 	public static final String RELATED_NEW_SEGMENT_COLUMN_NAME = "RELATED_NEW_SEGMENT";
 
 	/**
+	 * The column name for cloneClassMapping
+	 */
+	public static final String CLONE_CLASS_MAPPING_COLUMN_NAME = "CLONE_CLASS_MAPPING";
+
+	/**
 	 * The id of this modification
 	 */
 	@DatabaseField(id = true, columnName = ID_COLUMN_NAME)
@@ -123,6 +128,12 @@ public class DBCloneModification implements IDBElement {
 	@DatabaseField(canBeNull = true, foreign = true, columnName = RELATED_NEW_SEGMENT_COLUMN_NAME)
 	private DBSegment relatedNewSegment;
 
+	/**
+	 * the owner clone class mapping of this modification
+	 */
+	@DatabaseField(canBeNull = false, foreign = true, columnName = CLONE_CLASS_MAPPING_COLUMN_NAME)
+	private DBCloneClassMapping cloneClassMapping;
+
 	public DBCloneModification() {
 		// default constructor mandatory for ORMLite
 	}
@@ -131,7 +142,9 @@ public class DBCloneModification implements IDBElement {
 			final int newStartPosition, final int length, final Type type,
 			final int contentHash,
 			final DBCodeFragmentMapping codeFragmentMapping,
-			final DBSegment relatedOldSegment, final DBSegment relatedNewSegment) {
+			final DBSegment relatedOldSegment,
+			final DBSegment relatedNewSegment,
+			final DBCloneClassMapping cloneClassMapping) {
 		this.id = id;
 		this.oldStartPosition = oldStartPosition;
 		this.newStartPosition = newStartPosition;
@@ -141,6 +154,7 @@ public class DBCloneModification implements IDBElement {
 		this.codeFragmentMapping = codeFragmentMapping;
 		this.relatedOldSegment = relatedOldSegment;
 		this.relatedNewSegment = relatedNewSegment;
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 	/**
@@ -321,6 +335,26 @@ public class DBCloneModification implements IDBElement {
 	 */
 	public void setRelatedNewSegment(final DBSegment relatedNewSegment) {
 		this.relatedNewSegment = relatedNewSegment;
+	}
+
+	/**
+	 * Get the owner clone class mapping of this modification.
+	 * 
+	 * @return the owner clone class mapping
+	 */
+	public DBCloneClassMapping getCloneClassMapping() {
+		return cloneClassMapping;
+	}
+
+	/**
+	 * Set the owner clone class mapping of this modification with the specified
+	 * one.
+	 * 
+	 * @param cloneClassMapping
+	 *            the clone class mapping to be set
+	 */
+	public void setCloneClassMapping(final DBCloneClassMapping cloneClassMapping) {
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 	/**

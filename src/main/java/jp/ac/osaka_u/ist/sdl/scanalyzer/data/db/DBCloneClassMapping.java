@@ -37,6 +37,11 @@ public class DBCloneClassMapping implements IDBElement {
 	public static final String CODE_FRAGMENT_MAPPINGS_COLUMN_NAME = "CODE_FRAGMENT_MAPPINGS";
 
 	/**
+	 * The column name for cloneModifications
+	 */
+	public static final String CLONE_MODIFICATIONS_COLUMN_NAME = "CLONE_MODIFICATIONS";
+
+	/**
 	 * The column name for version
 	 */
 	public static final String VERSION_COLUMN_NAME = "VERSION";
@@ -66,6 +71,12 @@ public class DBCloneClassMapping implements IDBElement {
 	private Collection<DBCodeFragmentMapping> codeFragmentMappings;
 
 	/**
+	 * The modifications on clone classes in this clone class mapping
+	 */
+	@ForeignCollectionField(eager = true, columnName = CLONE_MODIFICATIONS_COLUMN_NAME)
+	private Collection<DBCloneModification> cloneModifications;
+
+	/**
 	 * The owner version of this mapping
 	 */
 	@DatabaseField(canBeNull = false, foreign = true, columnName = VERSION_COLUMN_NAME)
@@ -89,17 +100,21 @@ public class DBCloneClassMapping implements IDBElement {
 	 *            the new clone class of this mapping
 	 * @param codeFragmentMappings
 	 *            the mapping of code fragments related to this mapping
+	 * @param cloneModification
+	 *            the modifications on clones related to this mapping
 	 * @param version
 	 *            the owner version of this mapping
 	 */
 	public DBCloneClassMapping(final long id, final DBCloneClass oldCloneClass,
 			final DBCloneClass newCloneClass,
 			final Collection<DBCodeFragmentMapping> codeFragmentMappings,
+			final Collection<DBCloneModification> cloneModifications,
 			final DBVersion version) {
 		this.id = id;
 		this.oldCloneClass = oldCloneClass;
 		this.newCloneClass = newCloneClass;
 		this.codeFragmentMappings = codeFragmentMappings;
+		this.cloneModifications = cloneModifications;
 		this.version = version;
 	}
 
@@ -181,6 +196,27 @@ public class DBCloneClassMapping implements IDBElement {
 	public void setCodeFragmentMappings(
 			final Collection<DBCodeFragmentMapping> codeFragmentMappings) {
 		this.codeFragmentMappings = codeFragmentMappings;
+	}
+
+	/**
+	 * Get the modifications on clones related to this mapping.
+	 * 
+	 * @return the modifications on clones
+	 */
+	public Collection<DBCloneModification> getCloneModifications() {
+		return cloneModifications;
+	}
+
+	/**
+	 * Set the modifications on clones related to this mapping with the
+	 * specified one.
+	 * 
+	 * @param cloneModifications
+	 *            the modificaions on clones to be set
+	 */
+	public void setCloneModifications(
+			final Collection<DBCloneModification> cloneModifications) {
+		this.cloneModifications = cloneModifications;
 	}
 
 	/**
