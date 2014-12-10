@@ -131,11 +131,22 @@ public class ModificationAnalyzeHelper {
 	 */
 	public static <E extends IProgramElement> int getPositionInFile(
 			final Chunk<E> chunk, final List<E> elements) {
+		if (elements == null || elements.isEmpty()) {
+			// cannot estimate the position
+			return -1;
+		}
+
 		// this value is the position in the SEGMENT, not in the FILE
 		// hence this value cannot be used as it is
 		final int revisedIndex = chunk.getPosition();
 
-		final E elementAt = elements.get(revisedIndex);
+		E elementAt = null;
+
+		if (revisedIndex >= elements.size()) {
+			elementAt = elements.get(elements.size() - 1);
+		} else {
+			elementAt = elements.get(revisedIndex);
+		}
 
 		return elementAt.getPosition();
 	}
