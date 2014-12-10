@@ -308,6 +308,10 @@ public class CloneClassDao extends
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
+				
+				if (resultColumn == null) {
+					continue;
+				}
 
 				switch (columnName) {
 				case DBCloneClass.ID_COLUMN_NAME:

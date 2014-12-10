@@ -454,26 +454,32 @@ public class CloneClassMappingDao
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String column = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				if (resultColumn == null) {
+					continue;
+				}
+
 				switch (column) {
 				case DBCloneClassMapping.ID_COLUMN_NAME:
-					id = Long.parseLong(resultColumns[i]);
+					id = Long.parseLong(resultColumn);
 					break;
 				case DBCloneClassMapping.OLD_CLONE_CLASS_COLUMN_NAME:
 					try {
-						oldCloneClassId = Long.parseLong(resultColumns[i]);
+						oldCloneClassId = Long.parseLong(resultColumn);
 					} catch (Exception e) {
 						// ignore
 					}
 					break;
 				case DBCloneClassMapping.NEW_CLONE_CLASS_COLUMN_NAME:
 					try {
-						newCloneClassId = Long.parseLong(resultColumns[i]);
+						newCloneClassId = Long.parseLong(resultColumn);
 					} catch (Exception e) {
 						// ignore
 					}
 					break;
 				case DBCloneClassMapping.VERSION_COLUMN_NAME:
-					versionId = Long.parseLong(resultColumns[i]);
+					versionId = Long.parseLong(resultColumn);
 					break;
 				}
 			}

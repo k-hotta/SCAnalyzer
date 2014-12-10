@@ -412,7 +412,7 @@ public class VersionDao extends
 							rawIntermediateResults);
 
 			rawIntermediateResults.close();
-			
+
 			sourceFileDao.get(sourceFileIds);
 		}
 	}
@@ -617,6 +617,10 @@ public class VersionDao extends
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
+
+				if (resultColumn == null) {
+					continue;
+				}
 
 				switch (columnName) {
 				case DBVersion.ID_COLUMN_NAME:

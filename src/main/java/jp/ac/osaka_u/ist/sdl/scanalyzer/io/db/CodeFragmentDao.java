@@ -282,16 +282,21 @@ public class CodeFragmentDao extends
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				if (resultColumn == null) {
+					continue;
+				}
 
 				switch (columnName) {
 				case DBCodeFragment.ID_COLUMN_NAME:
-					id = Long.parseLong(resultColumns[i]);
+					id = Long.parseLong(resultColumn);
 					break;
 				case DBCodeFragment.CLONE_CLASS_COLUMN_NAME:
-					cloneClassId = Long.parseLong(resultColumns[i]);
+					cloneClassId = Long.parseLong(resultColumn);
 					break;
 				case DBCodeFragment.GHOST_NAME:
-					ghost = Integer.parseInt(resultColumns[i]);
+					ghost = Integer.parseInt(resultColumn);
 					break;
 				}
 			}

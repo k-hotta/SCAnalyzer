@@ -441,6 +441,10 @@ public class CloneGenealogyDao
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
 
+				if (resultColumn == null) {
+					continue;
+				}
+				
 				switch (columnName) {
 				case DBCloneGenealogy.ID_COLUMN_NAME:
 					id = Long.parseLong(resultColumn);

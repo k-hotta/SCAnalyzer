@@ -293,6 +293,10 @@ public class RawCloneClassDao
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
+				
+				if (resultColumn == null) {
+					continue;
+				}
 
 				switch (columnName) {
 				case DBRawCloneClass.ID_COLUMN_NAME:

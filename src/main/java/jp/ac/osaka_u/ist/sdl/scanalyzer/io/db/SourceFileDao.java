@@ -111,7 +111,7 @@ public class SourceFileDao extends
 			Map<String, Set<Long>> relativeElementIds,
 			Map<String, Map<Long, Set<Long>>> foreignChildElementIds)
 			throws Exception {
-		// TODO do nothing
+		// do nothing
 	}
 
 	@Override
@@ -165,6 +165,10 @@ public class SourceFileDao extends
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
+				
+				if (resultColumn == null) {
+					continue;
+				}
 
 				switch (columnName) {
 				case DBSourceFile.ID_COLUMN_NAME:

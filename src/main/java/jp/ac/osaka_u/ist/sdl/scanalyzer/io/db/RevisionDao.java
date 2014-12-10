@@ -147,6 +147,10 @@ public class RevisionDao extends
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
 
+				if (resultColumn == null) {
+					continue;
+				}
+
 				switch (columnName) {
 				case DBRevision.ID_COLUMN_NAME:
 					id = Long.parseLong(resultColumn);

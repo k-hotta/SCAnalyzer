@@ -360,27 +360,32 @@ public class CodeFragmentMappingDao
 
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
+				final String resultColumn = resultColumns[i];
+
+				if (resultColumn == null) {
+					continue;
+				}
 
 				switch (columnName) {
 				case DBCodeFragmentMapping.ID_COLUMN_NAME:
-					id = Long.parseLong(resultColumns[i]);
+					id = Long.parseLong(resultColumn);
 					break;
 				case DBCodeFragmentMapping.OLD_CODE_FRAGMENT_COLUMN_NAME:
 					try {
-						oldCodeFragmentId = Long.parseLong(resultColumns[i]);
+						oldCodeFragmentId = Long.parseLong(resultColumn);
 					} catch (Exception e) {
 						// ignore
 					}
 					break;
 				case DBCodeFragmentMapping.NEW_CODE_FRAGMENT_COLUMN_NAME:
 					try {
-						newCodeFragmentId = Long.parseLong(resultColumns[i]);
+						newCodeFragmentId = Long.parseLong(resultColumn);
 					} catch (Exception e) {
 						// ignore
 					}
 					break;
 				case DBCodeFragmentMapping.CLONE_CLASS_MAPPING_COLUMN_NAME:
-					cloneClassMappingId = Long.parseLong(resultColumns[i]);
+					cloneClassMappingId = Long.parseLong(resultColumn);
 					break;
 				}
 			}
