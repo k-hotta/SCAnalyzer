@@ -1,5 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.data;
 
+import java.util.Collections;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
 /**
@@ -38,12 +42,18 @@ public class CodeFragmentMapping<E extends IProgramElement> implements
 	 */
 	private CloneClassMapping<E> cloneClassMapping;
 
+	/**
+	 * The modifications on clones.
+	 */
+	private final SortedMap<Long, CloneModification<E>> cloneModifications;
+
 	public CodeFragmentMapping(final DBCodeFragmentMapping core) {
 		this.id = core.getId();
 		this.core = core;
 		this.oldCodeFragment = null;
 		this.newCodeFragment = null;
 		this.cloneClassMapping = null;
+		this.cloneModifications = new TreeMap<>();
 	}
 
 	@Override
@@ -219,6 +229,42 @@ public class CodeFragmentMapping<E extends IProgramElement> implements
 		}
 
 		this.cloneClassMapping = cloneClassMapping;
+	}
+
+	/**
+	 * Get the modifications on clones as a sorted map.
+	 * 
+	 * @return the modifications on clones
+	 */
+	public SortedMap<Long, CloneModification<E>> getCloneModifications() {
+		return Collections.unmodifiableSortedMap(cloneModifications);
+	}
+
+	/**
+	 * Add the given clone modification to this instance.
+	 * 
+	 * @param cloneModification
+	 *            a clone modification to be added
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given modification does not match to that in the core
+	 *             of this instance, or the given modification is
+	 *             <code>null</code>
+	 */
+	public void addCloneModification(
+			final CloneModification<E> cloneModification) {
+		if (cloneModification == null) {
+			throw new IllegalArgumentException(
+					"the given clone modification is null");
+		}
+
+		if (!this.core.getModifications().contains(cloneModification.getCore())) {
+			throw new IllegalArgumentException(
+					"the given clone modification does not match to that in the core");
+		}
+
+		this.cloneModifications.put(cloneModification.getId(),
+				cloneModification);
 	}
 
 }
