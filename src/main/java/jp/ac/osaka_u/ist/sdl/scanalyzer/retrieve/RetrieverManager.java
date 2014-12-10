@@ -4,6 +4,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
@@ -14,6 +15,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
@@ -40,6 +42,8 @@ public class RetrieverManager<E extends IProgramElement> {
 	private final IRetriever<E, DBCodeFragment, CodeFragment<E>> codeFragmentRetriever;
 
 	private final IRetriever<E, DBCodeFragmentMapping, CodeFragmentMapping<E>> codeFragmentMappingRetriever;
+
+	private final IRetriever<E, DBCloneModification, CloneModification<E>> cloneModificationRetriever;
 
 	private final IRetriever<E, DBSegment, Segment<E>> segmentRetriever;
 
@@ -108,6 +112,11 @@ public class RetrieverManager<E extends IProgramElement> {
 			this.codeFragmentMappingRetriever = volatileCodeFragmentMappingRetriever;
 			this.segmentRetriever = volatileSegmentRetriever;
 
+			/*
+			 * TODO implement volatile retriever for clone modifications
+			 */
+			this.cloneModificationRetriever = null;
+
 			break;
 
 		case PERSIST:
@@ -125,6 +134,8 @@ public class RetrieverManager<E extends IProgramElement> {
 			this.codeFragmentMappingRetriever = new PersistCodeFragmentMappingRetriever<E>(
 					manager);
 			this.segmentRetriever = new PersistSegmentRetriever<E>(manager);
+			this.cloneModificationRetriever = new PersistCloneModificationRetriever<E>(
+					manager);
 			break;
 
 		default:
@@ -166,6 +177,10 @@ public class RetrieverManager<E extends IProgramElement> {
 
 	public final IRetriever<E, DBSegment, Segment<E>> getSegmentRetriever() {
 		return segmentRetriever;
+	}
+
+	public final IRetriever<E, DBCloneModification, CloneModification<E>> getCloneModificationRetriever() {
+		return cloneModificationRetriever;
 	}
 
 }

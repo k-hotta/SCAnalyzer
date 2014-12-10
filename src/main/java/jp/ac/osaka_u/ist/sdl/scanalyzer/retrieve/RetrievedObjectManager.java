@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
@@ -35,6 +36,8 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 	private final ConcurrentMap<Long, CloneClassMapping<E>> cloneClassMappings = new ConcurrentSkipListMap<>();
 
 	private final ConcurrentMap<Long, CodeFragmentMapping<E>> codeFragmentMappings = new ConcurrentSkipListMap<>();
+
+	private final ConcurrentMap<Long, CloneModification<E>> cloneModifications = new ConcurrentSkipListMap<>();
 
 	private final ConcurrentMap<Long, Revision> revisions = new ConcurrentSkipListMap<>();
 
@@ -115,6 +118,19 @@ public class RetrievedObjectManager<E extends IProgramElement> {
 			final CodeFragmentMapping<E> codeFragmentMapping) {
 		return this.codeFragmentMappings.put(codeFragmentMapping.getId(),
 				codeFragmentMapping);
+	}
+
+	public final Map<Long, CloneModification<E>> getCloneModifications() {
+		return Collections.unmodifiableMap(cloneModifications);
+	}
+
+	public final CloneModification<E> getCloneModification(final long id) {
+		return this.cloneModifications.get(id);
+	}
+
+	public CloneModification<E> add(final CloneModification<E> cloneModification) {
+		return this.cloneModifications.put(cloneModification.getId(),
+				cloneModification);
 	}
 
 	public final Map<Long, Revision> getRevisions() {
