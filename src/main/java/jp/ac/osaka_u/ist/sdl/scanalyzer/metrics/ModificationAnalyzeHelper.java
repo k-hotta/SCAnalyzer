@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
@@ -87,17 +88,40 @@ public class ModificationAnalyzeHelper {
 			final Type type, List<E> elements, final int oldStartPosition,
 			final int newStartPosition, final Segment<E> oldSegment,
 			final Segment<E> newSegment,
-			final CodeFragmentMapping<E> fragmentMapping, final CloneClassMapping<E> cloneClassMapping) {
-		final DBCloneModification modification = new DBCloneModification(
+			final CodeFragmentMapping<E> fragmentMapping,
+			final CloneClassMapping<E> cloneClassMapping) {
+		final DBCloneModification dbModification = new DBCloneModification(
 				IDGenerator.generate(DBCloneModification.class),
 				oldStartPosition, newStartPosition, elements.size(), type,
 				calculateContentHash(elements),
 				(fragmentMapping == null) ? null : fragmentMapping.getCore(),
 				(oldSegment == null) ? null : oldSegment.getCore(),
-				(newSegment == null) ? null : newSegment.getCore(), cloneClassMapping.getCore());
+				(newSegment == null) ? null : newSegment.getCore(),
+				cloneClassMapping.getCore());
 
 		if (fragmentMapping != null) {
-			fragmentMapping.getCore().addModification(modification);
+			fragmentMapping.getCore().addModification(dbModification);
+		}
+
+		cloneClassMapping.getCore().addCloneModification(dbModification);
+
+		final CloneModification<E> modification = new CloneModification<>(
+				dbModification);
+
+		if (fragmentMapping != null) {
+			modification.setCodeFragmentMapping(fragmentMapping);
+			fragmentMapping.addCloneModification(modification);
+		}
+
+		modification.setCloneClassMapping(cloneClassMapping);
+		cloneClassMapping.addCloneModification(modification);
+
+		if (oldSegment != null) {
+			modification.setRelatedOldSegment(oldSegment);
+		}
+
+		if (newSegment != null) {
+			modification.setRelatedNewSegment(newSegment);
 		}
 	}
 
