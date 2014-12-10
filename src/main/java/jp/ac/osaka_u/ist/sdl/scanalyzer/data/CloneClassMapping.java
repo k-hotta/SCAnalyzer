@@ -38,9 +38,14 @@ public class CloneClassMapping<E extends IProgramElement> implements
 	private CloneClass<E> newCloneClass;
 
 	/**
-	 * The mapping of code fragments relating to this clone class mapping
+	 * The mapping of code fragments related to this clone class mapping
 	 */
 	private final SortedMap<Long, CodeFragmentMapping<E>> codeFragmentMappings;
+
+	/**
+	 * The modifications on clones related to this clone class mapping
+	 */
+	private final SortedMap<Long, CloneModification<E>> cloneModifications;
 
 	/**
 	 * The owner version of this mapping
@@ -59,6 +64,7 @@ public class CloneClassMapping<E extends IProgramElement> implements
 		this.oldCloneClass = null;
 		this.newCloneClass = null;
 		this.codeFragmentMappings = new TreeMap<>();
+		this.cloneModifications = new TreeMap<>();
 		this.version = null;
 	}
 
@@ -228,6 +234,43 @@ public class CloneClassMapping<E extends IProgramElement> implements
 
 		this.codeFragmentMappings.put(codeFragmentMapping.getId(),
 				codeFragmentMapping);
+	}
+
+	/**
+	 * Get the modifications on clones as a sorted map.
+	 * 
+	 * @return the modifications on clones
+	 */
+	public SortedMap<Long, CloneModification<E>> getCloneModifications() {
+		return Collections.unmodifiableSortedMap(cloneModifications);
+	}
+
+	/**
+	 * Add the given clone modification to this instance.
+	 * 
+	 * @param cloneModification
+	 *            a clone modification to be added
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the given modification does not match to that in the core
+	 *             of this instance, or the given modification is
+	 *             <code>null</code>
+	 */
+	public void addCloneModification(
+			final CloneModification<E> cloneModification) {
+		if (cloneModification == null) {
+			throw new IllegalArgumentException(
+					"the given clone modification is null");
+		}
+
+		if (!this.core.getCloneModifications().contains(
+				cloneModification.getCore())) {
+			throw new IllegalArgumentException(
+					"the given clone modification does not match to that in the core");
+		}
+
+		this.cloneModifications.put(cloneModification.getId(),
+				cloneModification);
 	}
 
 	/**
