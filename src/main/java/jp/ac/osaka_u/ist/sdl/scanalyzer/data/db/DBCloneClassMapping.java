@@ -212,11 +212,32 @@ public class DBCloneClassMapping implements IDBElement {
 	 * specified one.
 	 * 
 	 * @param cloneModifications
-	 *            the modificaions on clones to be set
+	 *            the modifications on clones to be set
 	 */
 	public void setCloneModifications(
 			final Collection<DBCloneModification> cloneModifications) {
 		this.cloneModifications = cloneModifications;
+	}
+
+	/**
+	 * Add the given modification to this mapping.
+	 * 
+	 * @param cloneModification
+	 *            a modification to be added
+	 */
+	public void addCloneModification(final DBCloneModification cloneModification) {
+		this.cloneModifications.add(cloneModification);
+	}
+
+	/**
+	 * Add the given modifications to this mapping.
+	 * 
+	 * @param cloneModifications
+	 *            a collection of modifications to be added
+	 */
+	public void addCloneModifications(
+			final Collection<DBCloneModification> cloneModifications) {
+		this.cloneModifications.addAll(cloneModifications);
 	}
 
 	/**
