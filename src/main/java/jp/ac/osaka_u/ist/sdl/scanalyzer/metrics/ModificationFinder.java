@@ -355,6 +355,8 @@ public class ModificationFinder<E extends IProgramElement> {
 
 				break;
 			}
+			
+			sublistIndex++;
 		}
 
 		return inRange;
