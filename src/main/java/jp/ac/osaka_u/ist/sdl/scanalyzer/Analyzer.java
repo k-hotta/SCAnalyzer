@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.WorkerManager;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.FileChange;
@@ -23,6 +24,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
@@ -301,6 +303,7 @@ public class Analyzer<E extends IProgramElement> {
 
 		final List<DBCloneClassMapping> cloneClassMappingsToBeStored = new ArrayList<>();
 		final List<DBCodeFragmentMapping> codeFragmentMappingsToBeStored = new ArrayList<>();
+		final List<DBCloneModification> cloneModificationsToBeStored = new ArrayList<>();
 		for (final CloneClassMapping<E> cloneClassMapping : version
 				.getCloneClassMappings().values()) {
 			for (final CodeFragmentMapping<E> codeFragmentMapping : cloneClassMapping
@@ -308,6 +311,12 @@ public class Analyzer<E extends IProgramElement> {
 				codeFragmentMappingsToBeStored.add(codeFragmentMapping
 						.getCore());
 			}
+
+			for (final CloneModification<E> cloneModification : cloneClassMapping
+					.getCloneModifications().values()) {
+				cloneModificationsToBeStored.add(cloneModification.getCore());
+			}
+
 			cloneClassMappingsToBeStored.add(cloneClassMapping.getCore());
 		}
 
@@ -320,6 +329,11 @@ public class Analyzer<E extends IProgramElement> {
 				codeFragmentMappingsToBeStored);
 		logger.info(codeFragmentMappingsToBeStored.size()
 				+ " code fragment mappings have been stored");
+
+		dbManager.getCloneModificationDao().registerAll(
+				cloneModificationsToBeStored);
+		logger.info(cloneModificationsToBeStored.size()
+				+ " clone modifications have been stored");
 	}
 
 	/**
