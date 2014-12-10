@@ -22,18 +22,32 @@
 				</Pattern>
 			</PatternLayout>
 		</Console>
+		<RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log">
+			<PatternLayout>
+				<Pattern>
+					%d{yyyy-MM-dd HH:mm:ss.SSS} (%10r [ms]) [%t] %-5level %logger{36} - %msg%n
+				</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
 	</Appenders>
 
 	<Loggers>
 		<Logger name="error" level="warn" additivity="false">
 			<AppenderRef ref="errconsole" />
+			<AppenderRef ref="RollingFile" />
 		</Logger>
 		<Logger name="usage" level="warn" additivity="false">
 			<AppenderRef ref="usageconsole" />
+			<AppenderRef ref="RollingFile" />
 		</Logger>
 		<Logger name="com.j256.ormlite" level="info" additivity="false" />
-		<Root level="debug">
+		<Root level="info">
 			<AppenderRef ref="console" />
+			<AppenderRef ref="RollingFile" />
 		</Root>
 	</Loggers>
 </Configuration>
