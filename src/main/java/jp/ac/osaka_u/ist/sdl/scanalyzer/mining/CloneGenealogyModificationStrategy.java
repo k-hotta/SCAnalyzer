@@ -85,6 +85,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 	public void mine(Collection<CloneGenealogy<E>> genealogies)
 			throws Exception {
 		final ExecutorService pool = Executors.newCachedThreadPool();
+//		final ExecutorService pool = Executors.newSingleThreadExecutor();
 
 		try {
 			final List<Future<?>> futures = new ArrayList<>();
@@ -287,7 +288,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 				}
 			}
 
-			final long versionId = newCloneClass.getId();
+			final long versionId = newCloneClass.getVersion().getId();
 
 			if (addedFragmentsInGenealogy.containsKey(versionId)) {
 				added += addedFragmentsInGenealogy.get(versionId);

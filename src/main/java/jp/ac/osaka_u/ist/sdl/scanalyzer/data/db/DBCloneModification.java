@@ -101,13 +101,13 @@ public class DBCloneModification implements IDBElement {
 	/**
 	 * The type of this modification
 	 */
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = TYPE_COLUMN_NAME)
 	private Type type;
 
 	/**
 	 * The hash value created from added/deleted elements
 	 */
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(canBeNull = false, columnName = CONTENT_HASH_COLUMN_NAME)
 	private int contentHash;
 
 	/**
