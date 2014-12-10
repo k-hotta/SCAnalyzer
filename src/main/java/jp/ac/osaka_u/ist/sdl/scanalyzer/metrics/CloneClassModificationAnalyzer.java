@@ -63,8 +63,8 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 	}
 
 	public void run() {
-		//final ExecutorService pool = Executors.newCachedThreadPool();
-		final ExecutorService pool = Executors.newSingleThreadExecutor();
+		final ExecutorService pool = Executors.newCachedThreadPool();
+//		final ExecutorService pool = Executors.newSingleThreadExecutor();
 
 		try {
 			final List<Future<?>> futures = new ArrayList<>();
