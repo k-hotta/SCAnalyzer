@@ -64,7 +64,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 
 	private final ConcurrentMap<Long, Map<Long, Integer>> changedFragments;
 
-	private final ConcurrentMap<Long, Map<Long, Integer>> changePatterns;
+	private final ConcurrentMap<Long, Map<Long, Boolean>> inconsistencies;
 
 	public CloneGenealogyModificationStrategy(final String outputFilePath) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
@@ -73,7 +73,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 		this.addedFragments = new ConcurrentSkipListMap<>();
 		this.deletedFragments = new ConcurrentSkipListMap<>();
 		this.changedFragments = new ConcurrentSkipListMap<>();
-		this.changePatterns = new ConcurrentSkipListMap<>();
+		this.inconsistencies = new ConcurrentSkipListMap<>();
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 	public void mine(Collection<CloneGenealogy<E>> genealogies)
 			throws Exception {
 		final ExecutorService pool = Executors.newCachedThreadPool();
-//		final ExecutorService pool = Executors.newSingleThreadExecutor();
+		// final ExecutorService pool = Executors.newSingleThreadExecutor();
 
 		try {
 			final List<Future<?>> futures = new ArrayList<>();
@@ -125,7 +125,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 						.get(genealogyId);
 				final Map<Long, Integer> changedFragmentsInGenealogy = changedFragments
 						.get(genealogyId);
-				final Map<Long, Integer> changePatternsInGenealogy = changePatterns
+				final Map<Long, Boolean> inconsistenciesInGenealogy = inconsistencies
 						.get(genealogyId);
 
 				pw.println(buildRows(genealogyId, "TOTAL",
@@ -136,8 +136,8 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 						deletedFragmentsInGenealogy));
 				pw.println(buildRows(genealogyId, "C",
 						changedFragmentsInGenealogy));
-				pw.println(buildRows(genealogyId, "Pattern",
-						changePatternsInGenealogy));
+				pw.println(buildRows(genealogyId, "Inconsistent",
+						inconsistenciesInGenealogy));
 			}
 		}
 	}
@@ -155,12 +155,12 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 	}
 
 	private String buildRows(final long genealogyId, final String kind,
-			final Map<Long, Integer> values) {
+			final Map<Long, ?> values) {
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append(genealogyId + "," + kind + ",");
 		for (final long versionId : versionsUnderConsideration) {
-			final Integer value = values.get(versionId);
+			final Object value = values.get(versionId);
 			if (value == null) {
 				builder.append("-1");
 			} else {
@@ -199,7 +199,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 			final Map<Long, Integer> addedFragmentsInGenealogy = new TreeMap<>();
 			final Map<Long, Integer> deletedFragmentsInGenealogy = new TreeMap<>();
 			final Map<Long, Integer> changedFragmentsInGenealogy = new TreeMap<>();
-			final Map<Long, Integer> changePatternsInGenealogy = new TreeMap<>();
+			final Map<Long, Boolean> inconsistenciesInGenealogy = new TreeMap<>();
 
 			final Set<Long> consideredCloneClassIds = new TreeSet<>();
 
@@ -222,14 +222,14 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 				analyzeModifications(cloneClassMapping, oldCloneClass,
 						newCloneClass, addedFragmentsInGenealogy,
 						deletedFragmentsInGenealogy,
-						changedFragmentsInGenealogy, changePatternsInGenealogy);
+						changedFragmentsInGenealogy, inconsistenciesInGenealogy);
 			}
 
 			codeFragments.put(genealogyId, codeFragmentsInGenealogy);
 			addedFragments.put(genealogyId, addedFragmentsInGenealogy);
 			deletedFragments.put(genealogyId, deletedFragmentsInGenealogy);
 			changedFragments.put(genealogyId, changedFragmentsInGenealogy);
-			changePatterns.put(genealogyId, changePatternsInGenealogy);
+			inconsistencies.put(genealogyId, inconsistenciesInGenealogy);
 
 			logger.info("[" + count.incrementAndGet() + "/" + numGenealogies
 					+ "] complete mining genealogy " + genealogy.getId());
@@ -260,14 +260,15 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 				final Map<Long, Integer> addedFragmentsInGenealogy,
 				final Map<Long, Integer> deletedFragmentsInGenealogy,
 				final Map<Long, Integer> changedFragmentsInGenealogy,
-				final Map<Long, Integer> changePatternsInGenealogy) {
+				final Map<Long, Boolean> inconsistenciesInGenealogy) {
 			final int mapped = cloneClassMapping.getCodeFragmentMappings()
 					.size();
 			int added = newCloneClass.getCodeFragments().size() - mapped;
 			int deleted = (oldCloneClass == null) ? 0 : oldCloneClass
 					.getCodeFragments().size() - mapped;
 			int changed = 0;
-			int patterns = 0;
+
+			final Map<Long, Set<Integer>> contentHashes = new TreeMap<>();
 
 			for (final DBCodeFragmentMapping fragmentMapping : cloneClassMapping
 					.getCodeFragmentMappings()) {
@@ -280,10 +281,29 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 				}
 
 				else {
+					contentHashes.put(fragmentMapping.getId(),
+							new TreeSet<Integer>());
+
+					boolean first = true;
 					for (final DBCloneModification modification : fragmentMapping
 							.getModifications()) {
-						changed++;
-						// TODO implement
+						if (first) {
+							changed++;
+							first = false;
+						}
+
+						contentHashes.get(fragmentMapping.getId()).add(
+								modification.getContentHash());
+					}
+				}
+			}
+
+			boolean inconsistent = false;
+			OUT: for (final Set<Integer> set1 : contentHashes.values()) {
+				for (final Set<Integer> set2 : contentHashes.values()) {
+					if (!set1.equals(set2)) {
+						inconsistent = true;
+						break OUT;
 					}
 				}
 			}
@@ -305,7 +325,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 			addedFragmentsInGenealogy.put(versionId, added);
 			deletedFragmentsInGenealogy.put(versionId, deleted);
 			changedFragmentsInGenealogy.put(versionId, changed);
-			changePatternsInGenealogy.put(versionId, patterns);
+			inconsistenciesInGenealogy.put(versionId, inconsistent);
 		}
 
 	}
