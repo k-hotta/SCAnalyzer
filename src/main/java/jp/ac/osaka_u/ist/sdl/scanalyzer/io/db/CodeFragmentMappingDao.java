@@ -294,7 +294,7 @@ public class CodeFragmentMappingDao
 			} else {
 				newInstance.setCloneClassMapping(new DBCloneClassMapping(
 						rawResult.getCloneClassMappingId(), null, null, null,
-						null));
+						null, null));
 			}
 		}
 
