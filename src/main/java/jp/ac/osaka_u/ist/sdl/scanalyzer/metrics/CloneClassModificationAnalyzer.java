@@ -63,7 +63,8 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 	}
 
 	public void run() {
-		final ExecutorService pool = Executors.newCachedThreadPool();
+		//final ExecutorService pool = Executors.newCachedThreadPool();
+		final ExecutorService pool = Executors.newSingleThreadExecutor();
 
 		try {
 			final List<Future<?>> futures = new ArrayList<>();
@@ -96,19 +97,15 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 		@Override
 		public void run() {
-			logger.debug("analyzing modifications on all parts of code fragments including gaps");
 			analyzeNonLcs();
-			logger.debug("complete analyzing modifications on all parts");
-			count.set(0);
 
-			logger.debug("analyzing modifications on LCSs on cloned fragments");
 			analyzeLcsInCloned();
-			logger.debug("complete analyzing modifications on cloned fragments");
-			count.set(0);
 
-			logger.debug("analyzing modifications on LCSs on all fragments");
 			analyzeLcsInAll();
-			logger.debug("complete analyzing modifications on all fragments");
+
+			logger.debug("[" + count.incrementAndGet() + "/" + mappings.size()
+					+ "] complete analyzing clone class mapping "
+					+ mapping.getId());
 		}
 
 		private void analyzeNonLcs() {
