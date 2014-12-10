@@ -28,6 +28,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Version;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBElementComparator;
@@ -441,7 +442,9 @@ public class IClonesCloneClassMappingHelper {
 		final DBCloneClassMapping mappingCore = new DBCloneClassMapping(
 				IDGenerator.generate(DBCloneClassMapping.class), oldCore,
 				newCore, new TreeSet<DBCodeFragmentMapping>(
-						new DBElementComparator()), null);
+						new DBElementComparator()),
+				new TreeSet<DBCloneModification>(new DBElementComparator()),
+				null);
 		final CloneClassMapping<E> mapping = new CloneClassMapping<>(
 				mappingCore);
 

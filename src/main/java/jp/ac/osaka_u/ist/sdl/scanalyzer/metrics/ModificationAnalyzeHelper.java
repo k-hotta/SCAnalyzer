@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
@@ -80,19 +81,20 @@ public class ModificationAnalyzeHelper {
 	 * @param oldSegment
 	 * @param newSegment
 	 * @param fragmentMapping
+	 * @param cloneClassMapping
 	 */
 	public static <E extends IProgramElement> void registerModification(
 			final Type type, List<E> elements, final int oldStartPosition,
 			final int newStartPosition, final Segment<E> oldSegment,
 			final Segment<E> newSegment,
-			final CodeFragmentMapping<E> fragmentMapping) {
+			final CodeFragmentMapping<E> fragmentMapping, final CloneClassMapping<E> cloneClassMapping) {
 		final DBCloneModification modification = new DBCloneModification(
 				IDGenerator.generate(DBCloneModification.class),
 				oldStartPosition, newStartPosition, elements.size(), type,
 				calculateContentHash(elements),
 				(fragmentMapping == null) ? null : fragmentMapping.getCore(),
 				(oldSegment == null) ? null : oldSegment.getCore(),
-				(newSegment == null) ? null : newSegment.getCore());
+				(newSegment == null) ? null : newSegment.getCore(), cloneClassMapping.getCore());
 
 		if (fragmentMapping != null) {
 			fragmentMapping.getCore().addModification(modification);

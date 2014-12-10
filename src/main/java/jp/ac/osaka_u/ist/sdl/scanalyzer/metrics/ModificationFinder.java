@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
@@ -83,10 +84,16 @@ public class ModificationFinder<E extends IProgramElement> {
 	 */
 	private final List<E> newContents;
 
+	/**
+	 * The clone class mapping
+	 */
+	private final CloneClassMapping<E> cloneClassMapping;
+
 	public ModificationFinder(final Map<Integer, List<E>> subLists,
 			final Equalizer<E> equalizer, final Segment<E> oldSegment,
 			final Segment<E> newSegment,
-			final CodeFragmentMapping<E> fragmentMapping) {
+			final CodeFragmentMapping<E> fragmentMapping,
+			final CloneClassMapping<E> cloneClassMapping) {
 		this.subLists = subLists;
 		this.numSubLists = subLists.size();
 		this.sublistIndex = 0;
@@ -99,14 +106,16 @@ public class ModificationFinder<E extends IProgramElement> {
 		this.fragmentMapping = fragmentMapping;
 		this.oldContents = new ArrayList<E>();
 		this.newContents = new ArrayList<E>();
+		this.cloneClassMapping = cloneClassMapping;
 	}
 
 	public ModificationFinder(final List<List<E>> subLists,
 			final Equalizer<E> equalizer, final Segment<E> oldSegment,
 			final Segment<E> newSegment,
-			final CodeFragmentMapping<E> fragmentMapping) {
+			final CodeFragmentMapping<E> fragmentMapping,
+			final CloneClassMapping<E> cloneClassMapping) {
 		this(convertToMap(subLists), equalizer, oldSegment, newSegment,
-				fragmentMapping);
+				fragmentMapping, cloneClassMapping);
 	}
 
 	/**
@@ -320,7 +329,8 @@ public class ModificationFinder<E extends IProgramElement> {
 
 		ModificationAnalyzeHelper.registerModification(Type.REMOVE,
 				modifiedElements, modifiedElements.get(0).getPosition(),
-				newPos, oldSegment, newSegment, fragmentMapping);
+				newPos, oldSegment, newSegment, fragmentMapping,
+				cloneClassMapping);
 	}
 
 	private boolean processAddition(final Chunk<E> original,
@@ -355,7 +365,7 @@ public class ModificationFinder<E extends IProgramElement> {
 
 				break;
 			}
-			
+
 			sublistIndex++;
 		}
 
@@ -371,7 +381,7 @@ public class ModificationFinder<E extends IProgramElement> {
 	private void makeAddition(final List<E> addedElements, final int startPos) {
 		ModificationAnalyzeHelper.registerModification(Type.ADD, addedElements,
 				startPos, addedElements.get(0).getPosition(), oldSegment,
-				newSegment, fragmentMapping);
+				newSegment, fragmentMapping, cloneClassMapping);
 	}
 
 	private boolean processChange(final Chunk<E> original,

@@ -64,7 +64,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 	public void run() {
 		final ExecutorService pool = Executors.newCachedThreadPool();
-//		final ExecutorService pool = Executors.newSingleThreadExecutor();
+		// final ExecutorService pool = Executors.newSingleThreadExecutor();
 
 		try {
 			final List<Future<?>> futures = new ArrayList<>();
@@ -286,7 +286,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 			for (final List<E> sequential : divided) {
 				ModificationAnalyzeHelper.registerModification(Type.ADD,
 						sequential, -1, sequential.get(0).getPosition(), null,
-						newSegment, fragmentMapping);
+						newSegment, fragmentMapping, mapping);
 			}
 		}
 
@@ -307,7 +307,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 			for (final List<E> sequential : divided) {
 				ModificationAnalyzeHelper.registerModification(Type.REMOVE,
 						sequential, sequential.get(0).getPosition(), -1,
-						oldSegment, null, fragmentMapping);
+						oldSegment, null, fragmentMapping, mapping);
 			}
 		}
 
@@ -320,7 +320,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 							.getId()));
 			final ModificationFinder<E> finder = new ModificationFinder<>(
 					dividedOld, equalizer, oldSegment, newSegment,
-					fragmentMapping);
+					fragmentMapping, mapping);
 
 			finder.findAndRegisterModifications();
 		}
