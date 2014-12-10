@@ -123,6 +123,8 @@ public class ModificationAnalyzeHelper {
 		if (newSegment != null) {
 			modification.setRelatedNewSegment(newSegment);
 		}
+
+		modification.setContents(elements);
 	}
 
 	/**
