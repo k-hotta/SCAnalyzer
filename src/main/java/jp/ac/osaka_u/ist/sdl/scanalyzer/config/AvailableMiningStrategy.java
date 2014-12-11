@@ -2,13 +2,31 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
 public enum AvailableMiningStrategy {
 
-	GENEALOGY_PERSIST_PERIOD, 
-	
-	GENEALOGY_COMMON_ELEMENTS_PERIOD, 
-	
-	GENEALOGY_SIMILARITY_GHOST_PERIOD, 
-	
-	GENEALOGY_MODIFICATIONS;
+	GENEALOGY_PERSIST_PERIOD("persist"),
+
+	GENEALOGY_COMMON_ELEMENTS_PERIOD("common-elements"),
+
+	GENEALOGY_SIMILARITY_GHOST_PERIOD("similarity"),
+
+	GENEALOGY_MODIFICATIONS("modifications");
+
+	/**
+	 * The shortened name
+	 */
+	private final String shortName;
+
+	private AvailableMiningStrategy(final String shortName) {
+		this.shortName = shortName;
+	}
+
+	/**
+	 * Get the shortened name
+	 * 
+	 * @return
+	 */
+	public final String getShortName() {
+		return shortName;
+	}
 
 	/**
 	 * Provide a string that represents which values can be used as
@@ -52,6 +70,18 @@ public enum AvailableMiningStrategy {
 			result = AvailableMiningStrategy.valueOf(upperStr);
 		} catch (Exception e) {
 			// ignore
+		}
+
+		if (result != null) {
+			return result;
+		}
+
+		for (AvailableMiningStrategy strategy : AvailableMiningStrategy
+				.values()) {
+			if (strategy.getShortName().equalsIgnoreCase(str)) {
+				result = strategy;
+				break;
+			}
 		}
 
 		return result;

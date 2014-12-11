@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  *            the type of program element
  */
 public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
-		implements MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
 
 	/**
 	 * The logger
@@ -57,6 +57,18 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.similarities = new ConcurrentSkipListMap<>();
 		this.outputFilePath = outputFilePath;
+	}
+	
+	@Override
+	public String getStrategyName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProjectName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -96,7 +108,7 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 	public void writeResult() throws Exception {
 		try (final PrintWriter pw = new PrintWriter(new BufferedWriter(
 				new FileWriter(new File(outputFilePath))))) {
-			//pw.println(buildHeader());
+			// pw.println(buildHeader());
 			for (final Map.Entry<Long, SortedMap<Long, Double>> entry : similarities
 					.entrySet()) {
 				pw.println(buildRow(entry.getKey(), entry.getValue()));
