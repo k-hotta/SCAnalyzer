@@ -93,13 +93,16 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		usage.put("id",
 				"Please specify the id of the genealogy to be shown with \"-id\"");
 		usage.put("strategy", String.format(format + additional,
-				"strategy of mining", "strategy", "mining-strategy",
+				"strategy of mining", "strategy", "strategy",
 				AvailableMiningStrategy.canBe()));
-		usage.put("output", String.format(format, "output file path", "output",
-				"output-file"));
+		usage.put("output", String.format(format,
+				"pattern of the output file path", "output",
+				"output-file-pattern"));
 		usage.put("max", String.format(format,
 				"the maximum number of elements retrieved at a time", "max",
 				"max-retrieved"));
+		usage.put("unit", String.format(format + additional, "unit of mining",
+				"unit", "unit", MiningUnit.canBe()));
 	}
 
 	/**
@@ -210,6 +213,11 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		// NOTE: this is just for Mining
 		options.addOption(makeOption("max", "maximum", true,
 				"the maximum number of elements retrieved at a time", 1, false));
+
+		// the unit of mining
+		// NOTE: this is just for Mining
+		options.addOption(makeOption("unit", "mining-unit", true,
+				"the unit of mining", 1, false));
 
 		return options;
 	}
@@ -381,11 +389,14 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		}
 
 		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
-				"output", "output-file", null, true);
+				"output", "output-file-pattern", null, true);
 
 		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
 				"max", "max-retrieved", DEFAULT_MAXIMUM_RETRIEVED.toString(),
 				true);
+
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"unit", "unit", DEFAULT_MINING_UNIT, true);
 
 		return loadedConfigsAsText;
 	}
@@ -438,7 +449,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		final Map<String, List<String>> loadedConfigsAsText = new TreeMap<>();
 
 		loadMultipleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
-				"strategy", "mining-strategy", null, true);
+				"strategy", "strategy", null, true);
 
 		return loadedConfigsAsText;
 	}
@@ -558,6 +569,8 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		}
 		final String outputFilePath = singleConfigsAsText.get("output");
 		final String maximumRetrieved = singleConfigsAsText.get("max");
+		final MiningUnit miningUnit = MiningUnit
+				.getCorrespondingUnit(singleConfigsAsText.get("unit"));
 
 		final Config result = new Config();
 
@@ -673,6 +686,10 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 				errors.put("max", "cannot parse the given value "
 						+ maximumRetrieved + " to integer");
 			}
+		}
+
+		if (miningUnit != null) {
+			result.setMiningUnit(miningUnit);
 		}
 
 		return result;

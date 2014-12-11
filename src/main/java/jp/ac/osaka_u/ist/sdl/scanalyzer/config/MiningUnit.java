@@ -32,7 +32,7 @@ public enum MiningUnit {
 	 * @return the corresponding MiningUnit if found, <code>null</code> if not
 	 *         found
 	 */
-	public static MiningUnit getCorrespondingStrategy(final String str) {
+	public static MiningUnit getCorrespondingUnit(final String str) {
 		if (str == null) {
 			return null;
 		}

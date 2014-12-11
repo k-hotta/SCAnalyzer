@@ -29,7 +29,9 @@ public interface DefaultConfiguration {
 	public static final Boolean DEFAULT_OVERWRITING_DB = false;
 
 	public static final Integer DEFAULT_MAXIMUM_RETRIEVED = 100;
-	
+
 	public static final Integer DEFAULT_MAXIMUM_OF_IN = 500;
+
+	public static final String DEFAULT_MINING_UNIT = "GENEALOGY";
 
 }
