@@ -60,6 +60,8 @@ public interface ConfigConstant {
 
 	public static final String NODE_NAME_COMMON_CONFIGURATION = "common-configuration";
 
+	public static final String NODE_NAME_UNIT = "unit";
+
 	public static final String NODE_NAME_MAX_RETRIEVED = "max-retrieved";
 
 	public static final String NODE_NAME_OUTPUT_FILE_PATTERN = "output-file-pattern";

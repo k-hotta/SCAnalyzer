@@ -13,6 +13,8 @@ import org.w3c.dom.NodeList;
  */
 public class XMLCommonConfigurationNode extends AbstractConfigXMLNode {
 
+	private XMLSingleValueNode unitNode;
+
 	private XMLSingleValueNode maxRetrievedNode;
 
 	private XMLSingleValueNode outputFilePatternNode;
@@ -26,6 +28,11 @@ public class XMLCommonConfigurationNode extends AbstractConfigXMLNode {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
+
+			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_UNIT)) {
+				unitNode = new XMLSingleValueNode(child,
+						ConfigConstant.NODE_NAME_UNIT);
+			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_MAX_RETRIEVED)) {
@@ -44,6 +51,10 @@ public class XMLCommonConfigurationNode extends AbstractConfigXMLNode {
 	@Override
 	public void accept(IXMLNodeVisitor visitor) {
 		visitor.visit(this);
+
+		if (unitNode != null) {
+			unitNode.accept(visitor);
+		}
 
 		if (maxRetrievedNode != null) {
 			maxRetrievedNode.accept(visitor);
