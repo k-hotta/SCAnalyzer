@@ -113,6 +113,11 @@ public class Config {
 	 */
 	private int maximumRetrieveCount = 100;
 
+	/**
+	 * The mining unit
+	 */
+	private MiningUnit miningUnit = null;
+
 	/*
 	 * getters and setters follow
 	 */
@@ -499,6 +504,25 @@ public class Config {
 	 */
 	public void setMaximumRetrieveCount(final int maximumRetrieveCount) {
 		this.maximumRetrieveCount = maximumRetrieveCount;
+	}
+
+	/**
+	 * Get the mining unit.
+	 * 
+	 * @return the mining unit
+	 */
+	public MiningUnit getMiningUnit() {
+		return miningUnit;
+	}
+
+	/**
+	 * Set the mining unit.
+	 * 
+	 * @param miningUnit
+	 *            the mining unit to be set
+	 */
+	public void setMiningUnit(final MiningUnit miningUnit) {
+		this.miningUnit = miningUnit;
 	}
 
 }
