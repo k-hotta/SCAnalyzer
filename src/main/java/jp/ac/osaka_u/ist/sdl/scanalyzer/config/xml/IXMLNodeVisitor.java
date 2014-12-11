@@ -20,4 +20,8 @@ public interface IXMLNodeVisitor {
 
 	}
 
+	public default void visit(final XMLCloneDetectionNode node) {
+		
+	}
+	
 }
