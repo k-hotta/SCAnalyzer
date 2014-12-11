@@ -1,5 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,16 @@ public class ConfigXMLNode {
 	 */
 	private String value;
 
+	/**
+	 * Whether this node should be considered
+	 */
+	private boolean ofInterest;
+
 	public ConfigXMLNode(final Node node) {
 		this.node = node;
 		this.nodeName = node.getNodeName();
 		this.children = new TreeMap<>();
+		this.ofInterest = false;
 	}
 
 	/**
@@ -52,11 +59,23 @@ public class ConfigXMLNode {
 	public void accept(ConfigFileParser parser) {
 		parser.visit(this);
 
-		final NodeList children = node.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			final Node child = children.item(i);
+		final NodeList listChildren = node.getChildNodes();
+		for (int i = 0; i < listChildren.getLength(); i++) {
+			final Node child = listChildren.item(i);
 			final ConfigXMLNode childNode = new ConfigXMLNode(child);
 			childNode.accept(parser);
+
+			if (childNode.ofInterest) {
+				List<ConfigXMLNode> list = children
+						.get(childNode.getNodeName());
+
+				if (list == null) {
+					list = new ArrayList<>();
+					children.put(childNode.getNodeName(), list);
+				}
+
+				list.add(childNode);
+			}
 		}
 	}
 
@@ -117,6 +136,25 @@ public class ConfigXMLNode {
 	 */
 	public void setValue(final String value) {
 		this.value = value;
+	}
+
+	/**
+	 * Get whether this node is of interest or not.
+	 * 
+	 * @return whether this node is of interest
+	 */
+	public boolean ofInterest() {
+		return ofInterest;
+	}
+
+	/**
+	 * Set whether this node is of interest or not.
+	 * 
+	 * @param ofInterest
+	 *            whether this node is of interest
+	 */
+	public void setOfInterest(final boolean ofInterest) {
+		this.ofInterest = ofInterest;
 	}
 
 }

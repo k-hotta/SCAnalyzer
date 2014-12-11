@@ -85,9 +85,11 @@ public class ConfigFileParser {
 	 */
 	public void visit(ConfigXMLNode node) {
 		final String nodeName = node.getCoreNode().getNodeName();
+		boolean ofInterest = false;
 
 		if (nodeName != null && !nodeName.isEmpty()
 				&& !nodeName.equals("#text")) {
+			ofInterest = true;
 			final Node firstChild = node.getCoreNode().getFirstChild();
 			if (firstChild.getNodeValue() != null) {
 				final String firstChildValue = firstChild.getNodeValue().trim();
@@ -99,13 +101,17 @@ public class ConfigFileParser {
 			}
 		}
 
-		List<ConfigXMLNode> list = nodes.get(nodeName);
-		if (list == null) {
-			list = new ArrayList<>();
-			nodes.put(nodeName, list);
-		}
+		node.setOfInterest(ofInterest);
 
-		list.add(node);
+		if (ofInterest) {
+			List<ConfigXMLNode> list = nodes.get(nodeName);
+			if (list == null) {
+				list = new ArrayList<>();
+				nodes.put(nodeName, list);
+			}
+
+			list.add(node);
+		}
 	}
 
 }
