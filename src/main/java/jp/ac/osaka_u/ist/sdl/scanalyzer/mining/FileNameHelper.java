@@ -33,7 +33,7 @@ public class FileNameHelper {
 			// strategy name should be included
 			final String strategyName = strategy.getStrategyName();
 			builder.replace(index, index
-					+ ConfigConstant.FILE_PATTERN_STRATEGY_NAME.length() - 1,
+					+ ConfigConstant.FILE_PATTERN_STRATEGY_NAME.length(),
 					strategyName);
 		}
 
@@ -42,7 +42,7 @@ public class FileNameHelper {
 			// project name should be included
 			final String projectName = strategy.getProjectName();
 			builder.replace(index, index
-					+ ConfigConstant.FILE_PATTERN_PROJECT_NAME.length() - 1,
+					+ ConfigConstant.FILE_PATTERN_PROJECT_NAME.length(),
 					projectName);
 		}
 
