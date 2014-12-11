@@ -293,10 +293,18 @@ public class CloneModificationDao
 					+ rawResult.getType());
 		}
 
+		final DBCloneModification.Place place = DBCloneModification.Place
+				.valueOf(rawResult.getPlace());
+
+		if (place == null) {
+			throw new IllegalStateException("cannot find place "
+					+ rawResult.getPlace());
+		}
+
 		final DBCloneModification newInstance = new DBCloneModification(
 				rawResult.getId(), rawResult.getOldStartPosition(),
 				rawResult.getNewStartPosition(), rawResult.getLength(), type,
-				rawResult.getContentHash(), null, null, null, null);
+				place, rawResult.getContentHash(), null, null, null, null);
 
 		if (autoRefresh) {
 			if (rawResult.getCodeFragmentMappingId() != null) {
@@ -347,6 +355,8 @@ public class CloneModificationDao
 
 		private final String type;
 
+		private final String place;
+
 		private final Integer contentHash;
 
 		private final Long codeFragmentMappingId;
@@ -359,7 +369,7 @@ public class CloneModificationDao
 
 		public InternalDBCloneModification(final Long id,
 				final Integer oldStartPosition, final Integer newStartPosition,
-				final Integer length, final String type,
+				final Integer length, final String type, final String place,
 				final Integer contentHash, final Long codeFragmentMappingId,
 				final Long relatedOldSegmentId, final Long relatedNewSegmentId,
 				final Long cloneClassMappingId) {
@@ -368,6 +378,7 @@ public class CloneModificationDao
 			this.newStartPosition = newStartPosition;
 			this.length = length;
 			this.type = type;
+			this.place = place;
 			this.contentHash = contentHash;
 			this.codeFragmentMappingId = codeFragmentMappingId;
 			this.relatedOldSegmentId = relatedOldSegmentId;
@@ -394,6 +405,10 @@ public class CloneModificationDao
 
 		public final String getType() {
 			return type;
+		}
+
+		public final String getPlace() {
+			return place;
 		}
 
 		public final Integer getContentHash() {
@@ -428,6 +443,7 @@ public class CloneModificationDao
 			Integer newStartPosition = null;
 			Integer length = null;
 			String type = null;
+			String place = null;
 			Integer contentHash = null;
 			Long codeFragmentMappingId = null;
 			Long relatedOldSegmentId = null;
@@ -437,7 +453,7 @@ public class CloneModificationDao
 			for (int i = 0; i < columnNames.length; i++) {
 				final String columnName = columnNames[i];
 				final String resultColumn = resultColumns[i];
-				
+
 				if (resultColumn == null) {
 					continue;
 				}
@@ -458,6 +474,9 @@ public class CloneModificationDao
 				case DBCloneModification.TYPE_COLUMN_NAME:
 					type = resultColumn;
 					break;
+				case DBCloneModification.PLACE_COLUMN_NAME:
+					place = resultColumn;
+					break;
 				case DBCloneModification.CONTENT_HASH_COLUMN_NAME:
 					contentHash = Integer.parseInt(resultColumn);
 					break;
@@ -477,7 +496,7 @@ public class CloneModificationDao
 			}
 
 			return new InternalDBCloneModification(id, oldStartPosition,
-					newStartPosition, length, type, contentHash,
+					newStartPosition, length, type, place, contentHash,
 					codeFragmentMappingId, relatedOldSegmentId,
 					relatedNewSegmentId, cloneClassMappingId);
 		}
