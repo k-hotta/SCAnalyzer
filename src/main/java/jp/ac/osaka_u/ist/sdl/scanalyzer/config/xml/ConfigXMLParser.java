@@ -9,10 +9,7 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ConfigConstant;
-
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * This is a parser for the XML configuration file.
