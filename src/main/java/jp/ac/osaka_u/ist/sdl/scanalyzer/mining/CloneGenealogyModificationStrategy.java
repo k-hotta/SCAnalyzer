@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.AvailableMiningStrategy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
@@ -41,7 +42,9 @@ import org.apache.logging.log4j.Logger;
  *            the type of program element
  */
 public class CloneGenealogyModificationStrategy<E extends IProgramElement>
-		implements MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+
+	private static final AvailableMiningStrategy CORRESPONDING_STRATEGY = AvailableMiningStrategy.GENEALOGY_MODIFICATIONS;
 
 	/**
 	 * The logger
@@ -52,6 +55,8 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 	private final Set<Long> versionsUnderConsideration;
 
 	private final String outputFilePath;
+
+	private final String projectName;
 
 	/*
 	 * for the following fields ... // <GenealogyID => <VersionID => number>>
@@ -67,14 +72,26 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 
 	private final ConcurrentMap<Long, Map<Long, Boolean>> inconsistencies;
 
-	public CloneGenealogyModificationStrategy(final String outputFilePath) {
+	public CloneGenealogyModificationStrategy(final String outputFilePath,
+			final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.outputFilePath = outputFilePath;
+		this.projectName = projectName;
 		this.codeFragments = new ConcurrentSkipListMap<>();
 		this.addedFragments = new ConcurrentSkipListMap<>();
 		this.deletedFragments = new ConcurrentSkipListMap<>();
 		this.changedFragments = new ConcurrentSkipListMap<>();
 		this.inconsistencies = new ConcurrentSkipListMap<>();
+	}
+
+	@Override
+	public String getStrategyName() {
+		return CORRESPONDING_STRATEGY.getShortName();
+	}
+
+	@Override
+	public String getProjectName() {
+		return projectName;
 	}
 
 	@Override

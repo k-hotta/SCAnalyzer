@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.AvailableMiningStrategy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
@@ -38,7 +39,9 @@ import org.apache.logging.log4j.Logger;
  *            the type of program element
  */
 public class CloneGenealogyCommonElementsStrategy<E extends IProgramElement>
-		implements MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+
+	private static final AvailableMiningStrategy CORRESPONDING_STRATEGY = AvailableMiningStrategy.GENEALOGY_COMMON_ELEMENTS_PERIOD;
 
 	/**
 	 * The logger
@@ -54,11 +57,25 @@ public class CloneGenealogyCommonElementsStrategy<E extends IProgramElement>
 
 	private final String outputFilePath;
 
-	public CloneGenealogyCommonElementsStrategy(final String outputFilePath) {
+	private final String projectName;
+
+	public CloneGenealogyCommonElementsStrategy(final String outputFilePath,
+			final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.commonInCloned = new ConcurrentSkipListMap<>();
 		this.commonInAll = new ConcurrentSkipListMap<>();
 		this.outputFilePath = outputFilePath;
+		this.projectName = projectName;
+	}
+
+	@Override
+	public String getStrategyName() {
+		return CORRESPONDING_STRATEGY.getShortName();
+	}
+
+	@Override
+	public String getProjectName() {
+		return projectName;
 	}
 
 	@Override

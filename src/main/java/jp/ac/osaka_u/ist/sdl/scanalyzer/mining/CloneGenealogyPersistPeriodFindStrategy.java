@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.AvailableMiningStrategy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
@@ -20,7 +21,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
-		implements MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
+
+	private static final AvailableMiningStrategy CORRESPONDING_STRATEGY = AvailableMiningStrategy.GENEALOGY_PERSIST_PERIOD;
 
 	/**
 	 * The logger
@@ -32,9 +35,23 @@ public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 
 	private final Map<Long, Integer> persistPeriods;
 
-	public CloneGenealogyPersistPeriodFindStrategy(final String outputFilePath) {
+	private final String projectName;
+
+	public CloneGenealogyPersistPeriodFindStrategy(final String outputFilePath,
+			final String projectName) {
 		this.outputFilePath = outputFilePath;
 		this.persistPeriods = new TreeMap<>();
+		this.projectName = projectName;
+	}
+
+	@Override
+	public String getStrategyName() {
+		return CORRESPONDING_STRATEGY.getShortName();
+	}
+
+	@Override
+	public String getProjectName() {
+		return projectName;
 	}
 
 	@Override

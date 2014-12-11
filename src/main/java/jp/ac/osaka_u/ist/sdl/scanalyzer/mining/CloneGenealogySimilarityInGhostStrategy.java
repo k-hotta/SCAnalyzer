@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.AvailableMiningStrategy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
@@ -41,6 +42,8 @@ import org.apache.logging.log4j.Logger;
 public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
 
+	private static final AvailableMiningStrategy CORRESPONDING_STRATEGY = AvailableMiningStrategy.GENEALOGY_SIMILARITY_GHOST_PERIOD;
+
 	/**
 	 * The logger
 	 */
@@ -53,16 +56,19 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 
 	private final String outputFilePath;
 
-	public CloneGenealogySimilarityInGhostStrategy(final String outputFilePath) {
+	private final String projectName;
+
+	public CloneGenealogySimilarityInGhostStrategy(final String outputFilePath,
+			final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.similarities = new ConcurrentSkipListMap<>();
 		this.outputFilePath = outputFilePath;
+		this.projectName = projectName;
 	}
-	
+
 	@Override
 	public String getStrategyName() {
-		// TODO Auto-generated method stub
-		return null;
+		return CORRESPONDING_STRATEGY.getShortName();
 	}
 
 	@Override
