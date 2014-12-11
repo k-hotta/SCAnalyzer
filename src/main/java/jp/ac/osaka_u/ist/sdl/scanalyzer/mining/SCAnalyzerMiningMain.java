@@ -1,7 +1,11 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.mining;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.AvailableMiningStrategy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.Config;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ConfigLoader;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.DBMS;
@@ -199,16 +203,16 @@ public class SCAnalyzerMiningMain {
 		private StrategyHelper<E, ?, ?> strategyHelper;
 
 		/**
-		 * The strategy
+		 * The strategies
 		 */
-		private MiningStrategy<?, ?> strategy;
+		private Collection<MiningStrategy<?, ?>> strategies;
 
 		private MainHelper(final Config config) {
 			this.config = config;
 			this.workerManager = null;
 			this.retrieverManager = null;
 			this.strategyHelper = null;
-			this.strategy = null;
+			this.strategies = null;
 		}
 
 		/**
@@ -220,7 +224,7 @@ public class SCAnalyzerMiningMain {
 			setUpDatabase();
 			setUpRepository();
 			this.workerManager = setUpWorkers();
-			this.strategy = setUpStrategy();
+			this.strategies = setUpStrategies();
 			this.retrieverManager = setUpRetrievers();
 			this.strategyHelper = setUpStrategyHelper();
 		}
@@ -325,23 +329,30 @@ public class SCAnalyzerMiningMain {
 			return result;
 		}
 
-		private MiningStrategy<?, ?> setUpStrategy() {
-			switch (config.getMiningStrategy()) {
-			case GENEALOGY_PERSIST_PERIOD:
-				new CloneGenealogyPersistPeriodFindStrategy<>(
-						config.getOutputFilePattern());
-			case GENEALOGY_COMMON_ELEMENTS_PERIOD:
-				return new CloneGenealogyCommonElementsStrategy<>(
-						config.getOutputFilePattern());
-			case GENEALOGY_MODIFICATIONS:
-				return new CloneGenealogyModificationStrategy<>(
-						config.getOutputFilePattern());
-			case GENEALOGY_SIMILARITY_GHOST_PERIOD:
-				return new CloneGenealogySimilarityInGhostStrategy<>(
-						config.getOutputFilePattern());
+		private Set<MiningStrategy<?, ?>> setUpStrategies() {
+			final Set<MiningStrategy<?, ?>> result = new HashSet<>();
+
+			for (final AvailableMiningStrategy strategy : config
+					.getMiningStrategies()) {
+				switch (strategy) {
+				case GENEALOGY_PERSIST_PERIOD:
+					result.add(new CloneGenealogyPersistPeriodFindStrategy<>(
+							config.getOutputFilePattern()));
+				case GENEALOGY_COMMON_ELEMENTS_PERIOD:
+					result.add(new CloneGenealogyCommonElementsStrategy<>(
+							config.getOutputFilePattern()));
+				case GENEALOGY_MODIFICATIONS:
+					result.add(new CloneGenealogyModificationStrategy<>(config
+							.getOutputFilePattern()));
+				case GENEALOGY_SIMILARITY_GHOST_PERIOD:
+					result.add(new CloneGenealogySimilarityInGhostStrategy<>(
+							config.getOutputFilePattern()));
+				}
+
+				throw new IllegalStateException("cannot find strategy");
 			}
 
-			throw new IllegalStateException("cannot find strategy");
+			return result;
 		}
 
 		/**
@@ -351,7 +362,22 @@ public class SCAnalyzerMiningMain {
 		 * @throws Exception
 		 */
 		private RetrieverManager<E> setUpRetrievers() throws Exception {
-			if (strategy.requiresVolatileObjects()) {
+			boolean first = true;
+			boolean requireVolatileObject = false;
+
+			for (final MiningStrategy<?, ?> strategy : strategies) {
+				if (first) {
+					requireVolatileObject = strategy.requiresVolatileObjects();
+					first = false;
+				} else {
+					if (strategy.requiresVolatileObjects() != requireVolatileObject) {
+						throw new IllegalStateException(
+								"all the strategies must have the same retieve mode (persist or volatile)");
+					}
+				}
+			}
+
+			if (requireVolatileObject) {
 				return new RetrieverManager<E>(RetrieveMode.VOLATILE,
 						workerManager);
 			} else {
@@ -370,35 +396,19 @@ public class SCAnalyzerMiningMain {
 		private StrategyHelper<E, ?, ?> setUpStrategyHelper() throws Exception {
 			final RetrievedObjectManager<E> manager = new RetrievedObjectManager<E>();
 
-			switch (config.getMiningStrategy()) {
-			case GENEALOGY_PERSIST_PERIOD:
+			switch (config.getMiningUnit()) {
+			case GENEALOGY:
+				final Collection<MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>> strategies = new HashSet<>();
+
+				for (final MiningStrategy<?, ?> strategy : this.strategies) {
+					strategies
+							.add((MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy);
+				}
+				
 				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
-						manager,
-						retrieverManager.getGenealogyRetriever(),
+						manager, retrieverManager.getGenealogyRetriever(),
 						DBManager.getInstance().getCloneGenealogyDao(),
-						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
-						config.getMaximumRetrieveCount());
-			case GENEALOGY_COMMON_ELEMENTS_PERIOD:
-				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
-						manager,
-						retrieverManager.getGenealogyRetriever(),
-						DBManager.getInstance().getCloneGenealogyDao(),
-						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
-						config.getMaximumRetrieveCount());
-			case GENEALOGY_MODIFICATIONS:
-				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
-						manager,
-						retrieverManager.getGenealogyRetriever(),
-						DBManager.getInstance().getCloneGenealogyDao(),
-						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
-						config.getMaximumRetrieveCount());
-			case GENEALOGY_SIMILARITY_GHOST_PERIOD:
-				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
-						manager,
-						retrieverManager.getGenealogyRetriever(),
-						DBManager.getInstance().getCloneGenealogyDao(),
-						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
-						config.getMaximumRetrieveCount());
+						strategies, config.getMaximumRetrieveCount());
 			}
 
 			throw new IllegalStateException(
@@ -433,27 +443,27 @@ public class SCAnalyzerMiningMain {
 
 		private final AbstractDataDao<D, ?> dao;
 
-		private final MiningStrategy<D, T> strategy;
+		private final Collection<MiningStrategy<D, T>> strategies;
 
 		private final int maxRetrieved;
 
 		public StrategyHelper(final RetrievedObjectManager<E> manager,
 				final IRetriever<E, D, T> retriever,
 				final AbstractDataDao<D, ?> dao,
-				final MiningStrategy<D, T> strategy, final int maxRetrieved) {
+				final Collection<MiningStrategy<D, T>> strategies,
+				final int maxRetrieved) {
 			this.manager = manager;
 			this.retriever = retriever;
 			this.dao = dao;
-			this.strategy = strategy;
+			this.strategies = strategies;
 			this.maxRetrieved = maxRetrieved;
 		}
 
 		private void run() throws Exception {
-			logger.info("start mining with strategy: "
-					+ strategy.getClass().getSimpleName());
+			logger.info("start mining");
 
 			final MiningController<E, D, T> controller = new MiningController<>(
-					maxRetrieved, strategy, dao, retriever, manager);
+					maxRetrieved, strategies, dao, retriever, manager);
 			controller.performMining();
 		}
 

@@ -38,6 +38,12 @@
 			<strategy>
 				GENEALOGY_SIMILARITY_GHOST_PERIOD
 			</strategy>
+			<strategy>
+				GENEALOGY_COMMON_ELEMENTS_PERIOD
+			</strategy>
+			<strategy>
+				GENEALOGY_MODIFICATIONS
+			</strategy>
 		</strategies>
 	</mining>
 </config>
