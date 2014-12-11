@@ -489,7 +489,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 				final List<String> valuesInFile = xmlParser
 						.getMultipleValues(nodeName);
 
-				if (valuesInFile == null || valuesInFile.isEmpty()) {
+				if (valuesInFile != null && !valuesInFile.isEmpty()) {
 					values.addAll(valuesInFile);
 				} else if (defaultValue != null) {
 					values.add(defaultValue);

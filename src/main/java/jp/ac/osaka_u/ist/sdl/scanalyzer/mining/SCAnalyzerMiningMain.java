@@ -351,8 +351,6 @@ public class SCAnalyzerMiningMain {
 							config.getOutputFilePattern(), config
 									.getProjectName()));
 				}
-
-				throw new IllegalStateException("cannot find strategy");
 			}
 
 			return result;
