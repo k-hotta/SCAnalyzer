@@ -2,6 +2,7 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.mining;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	/**
 	 * The strategies of mining
 	 */
-	private final Collection<MiningStrategy<D, T>> strategies;
+	private final Set<MiningStrategy<D, T>> strategies;
 
 	/**
 	 * The DAO
@@ -59,7 +60,7 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	private final RetrievedObjectManager<E> manager;
 
 	public MiningController(final int maximumGenealogiesCount,
-			final Collection<MiningStrategy<D, T>> strategies,
+			final Set<MiningStrategy<D, T>> strategies,
 			final AbstractDataDao<D, ?> dao,
 			final IRetriever<E, D, T> retriever,
 			final RetrievedObjectManager<E> manager) {
@@ -75,7 +76,7 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 			final AbstractDataDao<D, ?> dao,
 			final IRetriever<E, D, T> retriever,
 			final RetrievedObjectManager<E> manager) {
-		this(maximumGenealogiesCount, new ArrayList<>(), dao, retriever,
+		this(maximumGenealogiesCount, new HashSet<>(), dao, retriever,
 				manager);
 		this.strategies.add(strategy);
 	}

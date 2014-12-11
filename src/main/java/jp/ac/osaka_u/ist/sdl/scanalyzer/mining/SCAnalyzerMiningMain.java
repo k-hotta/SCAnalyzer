@@ -339,17 +339,21 @@ public class SCAnalyzerMiningMain {
 					result.add(new CloneGenealogyPersistPeriodFindStrategy<>(
 							config.getOutputFilePattern(), config
 									.getProjectName()));
+					break;
 				case GENEALOGY_COMMON_ELEMENTS_PERIOD:
 					result.add(new CloneGenealogyCommonElementsStrategy<>(
 							config.getOutputFilePattern(), config
 									.getProjectName()));
+					break;
 				case GENEALOGY_MODIFICATIONS:
 					result.add(new CloneGenealogyModificationStrategy<>(config
 							.getOutputFilePattern(), config.getProjectName()));
+					break;
 				case GENEALOGY_SIMILARITY_GHOST_PERIOD:
 					result.add(new CloneGenealogySimilarityInGhostStrategy<>(
 							config.getOutputFilePattern(), config
 									.getProjectName()));
+					break;
 				}
 			}
 
@@ -399,7 +403,7 @@ public class SCAnalyzerMiningMain {
 
 			switch (config.getMiningUnit()) {
 			case GENEALOGY:
-				final Collection<MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>> strategies = new HashSet<>();
+				final Set<MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>> strategies = new HashSet<>();
 
 				for (final MiningStrategy<?, ?> strategy : this.strategies) {
 					strategies
@@ -444,14 +448,14 @@ public class SCAnalyzerMiningMain {
 
 		private final AbstractDataDao<D, ?> dao;
 
-		private final Collection<MiningStrategy<D, T>> strategies;
+		private final Set<MiningStrategy<D, T>> strategies;
 
 		private final int maxRetrieved;
 
 		public StrategyHelper(final RetrievedObjectManager<E> manager,
 				final IRetriever<E, D, T> retriever,
 				final AbstractDataDao<D, ?> dao,
-				final Collection<MiningStrategy<D, T>> strategies,
+				final Set<MiningStrategy<D, T>> strategies,
 				final int maxRetrieved) {
 			this.manager = manager;
 			this.retriever = retriever;
