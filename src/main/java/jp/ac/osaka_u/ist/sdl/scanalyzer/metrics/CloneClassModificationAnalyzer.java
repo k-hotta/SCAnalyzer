@@ -18,6 +18,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.SourceFile;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Place;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Type;
 
 import org.apache.logging.log4j.LogManager;
@@ -90,17 +91,23 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 		private final CloneClassMapping<E> mapping;
 
+		private Place currentPlace;
+
 		private CloneClassModificationAnalyzeTask(
 				final CloneClassMapping<E> mapping) {
 			this.mapping = mapping;
+			currentPlace = null;
 		}
 
 		@Override
 		public void run() {
+			currentPlace = Place.INCLUDE_GAP;
 			analyzeNonLcs();
 
+			currentPlace = Place.COMMON_CLONED;
 			analyzeLcsInCloned();
 
+			currentPlace = Place.COMMON_ALL;
 			analyzeLcsInAll();
 
 			logger.debug("[" + count.incrementAndGet() + "/" + mappings.size()
@@ -115,10 +122,9 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 		}
 
 		private void analyzeLcsInCloned() {
-			// XXX currently do nothing
-			// analyze((lcsElements, cloneClassId) -> {
-			// lcsElements.putAll(lcsInCloned.get(cloneClassId));
-			// });
+			analyze((lcsElements, cloneClassId) -> {
+				lcsElements.putAll(lcsInCloned.get(cloneClassId));
+			});
 		}
 
 		private void analyzeLcsInAll() {
@@ -285,8 +291,9 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 			for (final List<E> sequential : divided) {
 				ModificationAnalyzeHelper.registerModification(Type.ADD,
-						sequential, -1, sequential.get(0).getPosition(), null,
-						newSegment, fragmentMapping, mapping);
+						currentPlace, sequential, -1, sequential.get(0)
+								.getPosition(), null, newSegment,
+						fragmentMapping, mapping);
 			}
 		}
 
@@ -306,8 +313,9 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 
 			for (final List<E> sequential : divided) {
 				ModificationAnalyzeHelper.registerModification(Type.REMOVE,
-						sequential, sequential.get(0).getPosition(), -1,
-						oldSegment, null, fragmentMapping, mapping);
+						currentPlace, sequential, sequential.get(0)
+								.getPosition(), -1, oldSegment, null,
+						fragmentMapping, mapping);
 			}
 		}
 
@@ -320,7 +328,7 @@ public class CloneClassModificationAnalyzer<E extends IProgramElement> {
 							.getId()));
 			final ModificationFinder<E> finder = new ModificationFinder<>(
 					dividedOld, equalizer, oldSegment, newSegment,
-					fragmentMapping, mapping);
+					fragmentMapping, mapping, currentPlace);
 
 			finder.findAndRegisterModifications();
 		}

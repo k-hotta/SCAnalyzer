@@ -10,6 +10,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.CodeFragmentMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Place;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Type;
 import difflib.Chunk;
 import difflib.Delta;
@@ -89,11 +90,16 @@ public class ModificationFinder<E extends IProgramElement> {
 	 */
 	private final CloneClassMapping<E> cloneClassMapping;
 
+	/**
+	 * The place under consideration
+	 */
+	private final Place place;
+
 	public ModificationFinder(final Map<Integer, List<E>> subLists,
 			final Equalizer<E> equalizer, final Segment<E> oldSegment,
 			final Segment<E> newSegment,
 			final CodeFragmentMapping<E> fragmentMapping,
-			final CloneClassMapping<E> cloneClassMapping) {
+			final CloneClassMapping<E> cloneClassMapping, final Place place) {
 		this.subLists = subLists;
 		this.numSubLists = subLists.size();
 		this.sublistIndex = 0;
@@ -107,15 +113,16 @@ public class ModificationFinder<E extends IProgramElement> {
 		this.oldContents = new ArrayList<E>();
 		this.newContents = new ArrayList<E>();
 		this.cloneClassMapping = cloneClassMapping;
+		this.place = place;
 	}
 
 	public ModificationFinder(final List<List<E>> subLists,
 			final Equalizer<E> equalizer, final Segment<E> oldSegment,
 			final Segment<E> newSegment,
 			final CodeFragmentMapping<E> fragmentMapping,
-			final CloneClassMapping<E> cloneClassMapping) {
+			final CloneClassMapping<E> cloneClassMapping, final Place place) {
 		this(convertToMap(subLists), equalizer, oldSegment, newSegment,
-				fragmentMapping, cloneClassMapping);
+				fragmentMapping, cloneClassMapping, place);
 	}
 
 	/**
@@ -327,7 +334,7 @@ public class ModificationFinder<E extends IProgramElement> {
 			modifiedElements.add(subList.get(i));
 		}
 
-		ModificationAnalyzeHelper.registerModification(Type.REMOVE,
+		ModificationAnalyzeHelper.registerModification(Type.REMOVE, place,
 				modifiedElements, modifiedElements.get(0).getPosition(),
 				newPos, oldSegment, newSegment, fragmentMapping,
 				cloneClassMapping);
@@ -379,9 +386,9 @@ public class ModificationFinder<E extends IProgramElement> {
 	 * @param startPos
 	 */
 	private void makeAddition(final List<E> addedElements, final int startPos) {
-		ModificationAnalyzeHelper.registerModification(Type.ADD, addedElements,
-				startPos, addedElements.get(0).getPosition(), oldSegment,
-				newSegment, fragmentMapping, cloneClassMapping);
+		ModificationAnalyzeHelper.registerModification(Type.ADD, place,
+				addedElements, startPos, addedElements.get(0).getPosition(),
+				oldSegment, newSegment, fragmentMapping, cloneClassMapping);
 	}
 
 	private boolean processChange(final Chunk<E> original,

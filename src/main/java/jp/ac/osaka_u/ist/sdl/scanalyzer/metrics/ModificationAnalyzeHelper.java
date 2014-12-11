@@ -10,6 +10,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IDGenerator;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.IProgramElement;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.Segment;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Place;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Type;
 import difflib.Chunk;
 
@@ -76,6 +77,7 @@ public class ModificationAnalyzeHelper {
 	 * Make an instance of modification and register it.
 	 * 
 	 * @param type
+	 * @param place
 	 * @param elements
 	 * @param oldStartPosition
 	 * @param newStartPosition
@@ -85,15 +87,15 @@ public class ModificationAnalyzeHelper {
 	 * @param cloneClassMapping
 	 */
 	public static <E extends IProgramElement> void registerModification(
-			final Type type, List<E> elements, final int oldStartPosition,
-			final int newStartPosition, final Segment<E> oldSegment,
-			final Segment<E> newSegment,
+			final Type type, final Place place, List<E> elements,
+			final int oldStartPosition, final int newStartPosition,
+			final Segment<E> oldSegment, final Segment<E> newSegment,
 			final CodeFragmentMapping<E> fragmentMapping,
 			final CloneClassMapping<E> cloneClassMapping) {
 		final DBCloneModification dbModification = new DBCloneModification(
 				IDGenerator.generate(DBCloneModification.class),
 				oldStartPosition, newStartPosition, elements.size(), type,
-				calculateContentHash(elements),
+				place, calculateContentHash(elements),
 				(fragmentMapping == null) ? null : fragmentMapping.getCore(),
 				(oldSegment == null) ? null : oldSegment.getCore(),
 				(newSegment == null) ? null : newSegment.getCore(),
