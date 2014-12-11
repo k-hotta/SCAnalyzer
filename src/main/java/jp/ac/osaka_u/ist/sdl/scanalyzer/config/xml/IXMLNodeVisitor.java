@@ -21,7 +21,11 @@ public interface IXMLNodeVisitor {
 	}
 
 	public default void visit(final XMLCloneDetectionNode node) {
-		
+
 	}
-	
+
+	public default void visit(final XMLMappingNode node) {
+
+	}
+
 }
