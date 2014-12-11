@@ -25,6 +25,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClass;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneClassMapping;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneGenealogy;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification;
+import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCloneModification.Place;
 import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBCodeFragmentMapping;
 
 import org.apache.logging.log4j.LogManager;
@@ -287,6 +288,10 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 					boolean first = true;
 					for (final DBCloneModification modification : fragmentMapping
 							.getModifications()) {
+						if (modification.getPlace() != Place.COMMON_ALL) {
+							continue;
+						}
+
 						if (first) {
 							changed++;
 							first = false;
