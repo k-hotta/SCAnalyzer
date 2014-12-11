@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
  */
 public class XMLStrategiesNode extends AbstractConfigXMLNode {
 
-	private final List<XMLSingleValueNode> strategyNodes;
+	private final List<XMLStrategyNode> strategyNodes;
 
 	public XMLStrategiesNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_STRATEGIES);
@@ -33,8 +33,7 @@ public class XMLStrategiesNode extends AbstractConfigXMLNode {
 			final Node child = listChildren.item(i);
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_STRATEGY)) {
-				final XMLSingleValueNode strategyNode = new XMLSingleValueNode(
-						child, ConfigConstant.NODE_NAME_STRATEGY);
+				final XMLStrategyNode strategyNode = new XMLStrategyNode(child);
 				strategyNode.accept(visitor);
 				strategyNodes.add(strategyNode);
 			}
@@ -42,7 +41,7 @@ public class XMLStrategiesNode extends AbstractConfigXMLNode {
 		}
 	}
 
-	public final List<XMLSingleValueNode> getStrategyNodes() {
+	public final List<XMLStrategyNode> getStrategyNodes() {
 		return Collections.unmodifiableList(strategyNodes);
 	}
 
