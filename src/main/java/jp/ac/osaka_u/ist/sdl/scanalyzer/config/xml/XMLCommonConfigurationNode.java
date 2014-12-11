@@ -6,7 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class represents the node "general".
+ * This class represents the node "common-configuration".
  * 
  * @author k-hotta
  *
