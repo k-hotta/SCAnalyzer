@@ -88,6 +88,10 @@ public class ConfigXMLParser implements IXMLNodeVisitor {
 		if (root.getNodeType() != Node.DOCUMENT_NODE) {
 			throw new IllegalStateException("the root is not document");
 		}
+
+		final XMLRootNode rootNode = new XMLRootNode(root);
+
+		rootNode.accept(this);
 	}
 
 	private String retrieveSingleNodeValue(final Node core) {

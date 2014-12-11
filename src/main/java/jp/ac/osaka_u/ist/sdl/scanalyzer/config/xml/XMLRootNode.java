@@ -43,9 +43,9 @@ public class XMLRootNode extends AbstractConfigXMLNode {
 
 	@Override
 	public void accept(IXMLNodeVisitor visitor) {
-		/*
-		 * do nothing, because this node does not need to be visited
-		 */
+		assert configNode != null;
+		
+		configNode.accept(visitor);
 	}
 
 }
