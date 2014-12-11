@@ -11,6 +11,10 @@ public interface IXMLNodeVisitor {
 	public default void visit(final XMLSingleValueNode node) {
 
 	}
+	
+	public default void visit(final XMLRootNode node) {
+		
+	}
 
 	public default void visit(final XMLGeneralNode node) {
 
