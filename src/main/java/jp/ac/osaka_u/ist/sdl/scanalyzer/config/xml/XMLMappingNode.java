@@ -5,6 +5,12 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ConfigConstant;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * This class represents the node "mapping".
+ * 
+ * @author k-hotta
+ *
+ */
 public class XMLMappingNode extends AbstractConfigXMLNode {
 
 	private XMLSingleValueNode relocationNode;

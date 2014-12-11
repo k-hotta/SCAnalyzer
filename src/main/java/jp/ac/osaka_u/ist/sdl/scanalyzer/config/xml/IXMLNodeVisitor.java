@@ -28,16 +28,20 @@ public interface IXMLNodeVisitor {
 
 	}
 
+	public default void visit(final XMLMiningNode node) {
+
+	}
+
 	public default void visit(final XMLCommonConfigurationNode node) {
 
 	}
-	
+
 	public default void visit(final XMLStrategiesNode node) {
-		
+
 	}
-	
+
 	public default void visit(final XMLStrategyNode node) {
-		
+
 	}
 
 }
