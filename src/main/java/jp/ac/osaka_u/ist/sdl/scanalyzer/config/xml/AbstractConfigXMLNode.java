@@ -13,7 +13,7 @@ public abstract class AbstractConfigXMLNode {
 	/**
 	 * The core node
 	 */
-	protected final Node node;
+	protected final Node core;
 
 	/**
 	 * The node name
@@ -30,16 +30,16 @@ public abstract class AbstractConfigXMLNode {
 	 */
 	protected String value;
 
-	public AbstractConfigXMLNode(final Node node, final String nodeName,
+	public AbstractConfigXMLNode(final Node core, final String nodeName,
 			final boolean required) {
-		this.node = node;
+		this.core = core;
 		this.nodeName = nodeName;
 		this.required = required;
 		this.value = null;
 	}
 
-	public final Node getNode() {
-		return node;
+	public final Node getCore() {
+		return core;
 	}
 
 	public final String getNodeName() {
