@@ -37,14 +37,14 @@ import org.apache.logging.log4j.Logger;
  * @param <E>
  *            the type of program element
  */
-public class CloneGenealogySimilarityStrategy<E extends IProgramElement>
+public class CloneGenealogyCommonElementsStrategy<E extends IProgramElement>
 		implements MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
 
 	/**
 	 * The logger
 	 */
 	private static Logger logger = LogManager
-			.getLogger(CloneGenealogySimilarityStrategy.class);
+			.getLogger(CloneGenealogyCommonElementsStrategy.class);
 
 	private final Set<Long> versionsUnderConsideration;
 
@@ -54,7 +54,7 @@ public class CloneGenealogySimilarityStrategy<E extends IProgramElement>
 
 	private final String outputFilePath;
 
-	public CloneGenealogySimilarityStrategy(final String outputFilePath) {
+	public CloneGenealogyCommonElementsStrategy(final String outputFilePath) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.commonInCloned = new ConcurrentSkipListMap<>();
 		this.commonInAll = new ConcurrentSkipListMap<>();

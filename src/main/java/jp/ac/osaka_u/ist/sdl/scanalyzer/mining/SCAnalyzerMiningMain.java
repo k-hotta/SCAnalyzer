@@ -330,8 +330,8 @@ public class SCAnalyzerMiningMain {
 			case GENEALOGY_PERSIST_PERIOD:
 				new CloneGenealogyPersistPeriodFindStrategy<>(
 						config.getOutputFilePath());
-			case GENEALOGY_SIMILARITY_PERIOD:
-				return new CloneGenealogySimilarityStrategy<>(
+			case GENEALOGY_COMMON_ELEMENTS_PERIOD:
+				return new CloneGenealogyCommonElementsStrategy<>(
 						config.getOutputFilePath());
 			case GENEALOGY_MODIFICATIONS:
 				return new CloneGenealogyModificationStrategy<>(
@@ -375,7 +375,7 @@ public class SCAnalyzerMiningMain {
 						DBManager.getInstance().getCloneGenealogyDao(),
 						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
 						config.getMaximumRetrieveCount());
-			case GENEALOGY_SIMILARITY_PERIOD:
+			case GENEALOGY_COMMON_ELEMENTS_PERIOD:
 				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
 						manager,
 						retrieverManager.getGenealogyRetriever(),
