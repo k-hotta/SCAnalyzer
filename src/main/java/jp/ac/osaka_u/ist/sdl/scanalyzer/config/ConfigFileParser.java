@@ -8,7 +8,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * This is a parser for xml files that contain configurations.
@@ -85,7 +84,7 @@ public class ConfigFileParser {
 	 * @param node
 	 *            the node to be analyzed
 	 */
-	private void visit(ConfigXMLNode node) {
+	public void visit(ConfigXMLNode node) {
 		final String nodeName = node.getCoreNode().getNodeName();
 
 		if (nodeName != null && !nodeName.isEmpty()
@@ -100,53 +99,6 @@ public class ConfigFileParser {
 				}
 			}
 		}
-	}
-
-	/**
-	 * This inner class makes it possible to traverse the node tree with Visitor
-	 * pattern
-	 * 
-	 * @author k-hotta
-	 *
-	 */
-	private class ConfigXMLNode {
-
-		/**
-		 * The core xml node
-		 */
-		private final Node node;
-
-		private ConfigXMLNode(final Node node) {
-			this.node = node;
-		}
-
-		/**
-		 * Process this node. First this method analyzes this node itself, and
-		 * then continue to process its child nodes if exist.
-		 * 
-		 * @param parser
-		 *            the parser
-		 */
-		private void accept(ConfigFileParser parser) {
-			parser.visit(this);
-
-			final NodeList children = node.getChildNodes();
-			for (int i = 0; i < children.getLength(); i++) {
-				final Node child = children.item(i);
-				final ConfigXMLNode childNode = new ConfigXMLNode(child);
-				childNode.accept(parser);
-			}
-		}
-
-		/**
-		 * Get the core node.
-		 * 
-		 * @return the core node
-		 */
-		private Node getCoreNode() {
-			return node;
-		}
-
 	}
 
 }
