@@ -22,22 +22,27 @@ public class XMLStrategiesNode extends AbstractConfigXMLNode {
 	public XMLStrategiesNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_STRATEGIES);
 		strategyNodes = new ArrayList<>();
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_STRATEGY)) {
 				final XMLStrategyNode strategyNode = new XMLStrategyNode(child);
-				strategyNode.accept(visitor);
 				strategyNodes.add(strategyNode);
 			}
+		}
+	}
 
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		for (final XMLStrategyNode strategyNode : strategyNodes) {
+			strategyNode.accept(visitor);
 		}
 	}
 

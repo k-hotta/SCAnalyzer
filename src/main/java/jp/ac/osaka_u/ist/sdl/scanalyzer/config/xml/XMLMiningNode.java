@@ -19,14 +19,10 @@ public class XMLMiningNode extends AbstractConfigXMLNode {
 
 	public XMLMiningNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_MINING);
-		commonConfigurationNode = null;
-		strategiesNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
@@ -34,13 +30,24 @@ public class XMLMiningNode extends AbstractConfigXMLNode {
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_COMMON_CONFIGURATION)) {
 				commonConfigurationNode = new XMLCommonConfigurationNode(child);
-				commonConfigurationNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_STRATEGIES)) {
 				strategiesNode = new XMLStrategiesNode(child);
-				strategiesNode.accept(visitor);
 			}
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (commonConfigurationNode != null) {
+			commonConfigurationNode.accept(visitor);
+		}
+
+		if (strategiesNode != null) {
+			strategiesNode.accept(visitor);
 		}
 	}
 

@@ -19,12 +19,10 @@ public class XMLCommonConfigurationNode extends AbstractConfigXMLNode {
 
 	public XMLCommonConfigurationNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_COMMON_CONFIGURATION);
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
@@ -33,15 +31,26 @@ public class XMLCommonConfigurationNode extends AbstractConfigXMLNode {
 					ConfigConstant.NODE_NAME_MAX_RETRIEVED)) {
 				maxRetrievedNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_MAX_RETRIEVED);
-				maxRetrievedNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_OUTPUT_FILE_PATTERN)) {
 				outputFilePatternNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_OUTPUT_FILE_PATTERN);
-				outputFilePatternNode.accept(visitor);
 			}
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (maxRetrievedNode != null) {
+			maxRetrievedNode.accept(visitor);
+		}
+
+		if (outputFilePatternNode != null) {
+			outputFilePatternNode.accept(visitor);
 		}
 	}
 

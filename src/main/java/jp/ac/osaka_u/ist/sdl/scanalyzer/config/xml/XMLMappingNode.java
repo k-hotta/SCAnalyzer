@@ -23,16 +23,10 @@ public class XMLMappingNode extends AbstractConfigXMLNode {
 
 	public XMLMappingNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_MAPPING);
-		relocationNode = null;
-		equalizerNode = null;
-		cloneMappingNode = null;
-		elementMappingNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
@@ -40,28 +34,45 @@ public class XMLMappingNode extends AbstractConfigXMLNode {
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_RELOCATION)) {
 				relocationNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_RELOCATION);
-				relocationNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_EQUALIZER)) {
 				equalizerNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_EQUALIZER);
-				equalizerNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_CLONE_MAPPING)) {
 				cloneMappingNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_CLONE_MAPPING);
-				cloneMappingNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_ELEMENT_MAPPING)) {
 				elementMappingNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_ELEMENT_MAPPING);
-				elementMappingNode.accept(visitor);
 			}
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (relocationNode != null) {
+			relocationNode.accept(visitor);
+		}
+
+		if (equalizerNode != null) {
+			equalizerNode.accept(visitor);
+		}
+
+		if (cloneMappingNode != null) {
+			cloneMappingNode.accept(visitor);
+		}
+
+		if (elementMappingNode != null) {
+			elementMappingNode.accept(visitor);
 		}
 	}
 

@@ -19,14 +19,10 @@ public class XMLGeneralNode extends AbstractConfigXMLNode {
 
 	public XMLGeneralNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_GENERAL);
-		dbmsNode = null;
-		overwriteNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
@@ -34,14 +30,25 @@ public class XMLGeneralNode extends AbstractConfigXMLNode {
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_DBMS)) {
 				dbmsNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_DBMS);
-				dbmsNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_OVERWRITE)) {
 				overwriteNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_OVERWRITE);
-				overwriteNode.accept(visitor);
 			}
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (dbmsNode != null) {
+			dbmsNode.accept(visitor);
+		}
+
+		if (overwriteNode != null) {
+			overwriteNode.accept(visitor);
 		}
 	}
 

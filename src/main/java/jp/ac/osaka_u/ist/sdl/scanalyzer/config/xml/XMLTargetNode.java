@@ -19,6 +19,8 @@ public class XMLTargetNode extends AbstractConfigXMLNode {
 
 	private XMLSingleValueNode repositoryNode;
 
+	private XMLSingleValueNode relativeNode;
+
 	private XMLSingleValueNode versionControlNode;
 
 	private XMLSingleValueNode databaseNode;
@@ -29,19 +31,10 @@ public class XMLTargetNode extends AbstractConfigXMLNode {
 
 	public XMLTargetNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_TARGET);
-		languageNode = null;
-		elementNode = null;
-		repositoryNode = null;
-		versionControlNode = null;
-		databaseNode = null;
-		startNode = null;
-		endNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
@@ -49,46 +42,82 @@ public class XMLTargetNode extends AbstractConfigXMLNode {
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_LANGUAGE)) {
 				languageNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_LANGUAGE);
-				languageNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_ELEMENT)) {
 				elementNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_ELEMENT);
-				elementNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_REPOSITORY)) {
 				repositoryNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_REPOSITORY);
-				repositoryNode.accept(visitor);
+			}
+
+			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_RELATIVE)) {
+				relativeNode = new XMLSingleValueNode(child,
+						ConfigConstant.NODE_NAME_RELATIVE);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_VERSION_CONTROL)) {
 				versionControlNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_VERSION_CONTROL);
-				versionControlNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_DATABASE)) {
 				databaseNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_DATABASE);
-				databaseNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_START)) {
 				startNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_START);
-				startNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_END)) {
 				endNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_END);
-				endNode.accept(visitor);
 			}
 		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (languageNode != null) {
+			languageNode.accept(visitor);
+		}
+
+		if (elementNode != null) {
+			elementNode.accept(visitor);
+		}
+
+		if (repositoryNode != null) {
+			repositoryNode.accept(visitor);
+		}
+
+		if (relativeNode != null) {
+			relativeNode.accept(visitor);
+		}
+
+		if (versionControlNode != null) {
+			versionControlNode.accept(visitor);
+		}
+
+		if (databaseNode != null) {
+			databaseNode.accept(visitor);
+		}
+
+		if (startNode != null) {
+			startNode.accept(visitor);
+		}
+
+		if (endNode != null) {
+			endNode.accept(visitor);
+		}
+
 	}
 
 	public final XMLSingleValueNode getLanguageNode() {

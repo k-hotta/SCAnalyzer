@@ -6,8 +6,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class represents the node "config", which is the actual root node of the XML
- * file.
+ * This class represents the node "config", which is the actual root node of the
+ * XML file.
  * 
  * @author k-hotta
  *
@@ -26,46 +26,59 @@ public class XMLConfigNode extends AbstractConfigXMLNode {
 
 	public XMLConfigNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_ROOT);
-		generalNode = null;
-		targetNode = null;
-		cloneDetectionNode = null;
-		mappingNode = null;
-		miningNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_GENERAL)) {
 				generalNode = new XMLGeneralNode(child);
-				generalNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_TARGET)) {
 				targetNode = new XMLTargetNode(child);
-				targetNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_CLONE_DETECTION)) {
 				cloneDetectionNode = new XMLCloneDetectionNode(child);
-				cloneDetectionNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_MAPPING)) {
 				mappingNode = new XMLMappingNode(child);
-				mappingNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_MINING)) {
 				miningNode = new XMLMiningNode(child);
-				miningNode.accept(visitor);
 			}
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (generalNode != null) {
+			generalNode.accept(visitor);
+		}
+
+		if (targetNode != null) {
+			targetNode.accept(visitor);
+		}
+
+		if (cloneDetectionNode != null) {
+			cloneDetectionNode.accept(visitor);
+		}
+
+		if (mappingNode != null) {
+			mappingNode.accept(visitor);
+		}
+
+		if (miningNode != null) {
+			miningNode.accept(visitor);
 		}
 	}
 

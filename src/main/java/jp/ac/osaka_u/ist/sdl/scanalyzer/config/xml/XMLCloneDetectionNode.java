@@ -21,15 +21,10 @@ public class XMLCloneDetectionNode extends AbstractConfigXMLNode {
 
 	public XMLCloneDetectionNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_CLONE_DETECTION);
-		detectorNode = null;
-		resultDirectoryNode = null;
-		filenameFormatNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		visitor.visit(this);
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
@@ -37,22 +32,36 @@ public class XMLCloneDetectionNode extends AbstractConfigXMLNode {
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_DETECTOR)) {
 				detectorNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_DETECTOR);
-				detectorNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_RESULT_DIRECTORY)) {
 				resultDirectoryNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_RESULT_DIRECTORY);
-				resultDirectoryNode.accept(visitor);
 			}
 
 			if (child.getNodeName().equals(
 					ConfigConstant.NODE_NAME_FILENAME_FORMAT)) {
 				filenameFormatNode = new XMLSingleValueNode(child,
 						ConfigConstant.NODE_NAME_FILENAME_FORMAT);
-				filenameFormatNode.accept(visitor);
 			}
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		visitor.visit(this);
+
+		if (detectorNode != null) {
+			detectorNode.accept(visitor);
+		}
+
+		if (resultDirectoryNode != null) {
+			resultDirectoryNode.accept(visitor);
+		}
+
+		if (filenameFormatNode != null) {
+			filenameFormatNode.accept(visitor);
 		}
 	}
 

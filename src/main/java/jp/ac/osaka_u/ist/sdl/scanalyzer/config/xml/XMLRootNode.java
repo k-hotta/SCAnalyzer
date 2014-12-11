@@ -20,24 +20,32 @@ public class XMLRootNode extends AbstractConfigXMLNode {
 
 	public XMLRootNode(Node core) {
 		super(core, "root");
-		configNode = null;
+		construct();
 	}
 
-	@Override
-	public void accept(IXMLNodeVisitor visitor) {
-		/*
-		 * this node does not need to be visited by the visitor
-		 */
-
+	private void construct() {
 		final NodeList listChildren = core.getChildNodes();
+
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_ROOT)) {
 				configNode = new XMLConfigNode(child);
-				configNode.accept(visitor);
 			}
 		}
+
+		if (configNode == null) {
+			throw new IllegalStateException(
+					"the XML file has a wrong format: the root node of the XML file must be "
+							+ ConfigConstant.NODE_NAME_ROOT);
+		}
+	}
+
+	@Override
+	public void accept(IXMLNodeVisitor visitor) {
+		/*
+		 * do nothing, because this node does not need to be visited
+		 */
 	}
 
 }
