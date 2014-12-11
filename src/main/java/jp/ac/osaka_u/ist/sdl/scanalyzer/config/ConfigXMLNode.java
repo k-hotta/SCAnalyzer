@@ -109,4 +109,14 @@ public class ConfigXMLNode {
 		return value;
 	}
 
+	/**
+	 * Set the value of this node.
+	 * 
+	 * @param value
+	 *            the string to be set
+	 */
+	public void setValue(final String value) {
+		this.value = value;
+	}
+
 }

@@ -1,6 +1,8 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -18,34 +20,31 @@ import org.w3c.dom.Node;
 public class ConfigFileParser {
 
 	/**
-	 * This map connects each node in the configuration file to its value.
+	 * This map contains all the detected XML nodes.
 	 */
-	private final Map<String, String> configValues;
+	private final Map<String, List<ConfigXMLNode>> nodes;
 
 	/**
 	 * Construct
 	 */
 	public ConfigFileParser() {
-		this.configValues = new TreeMap<>();
+		this.nodes = new TreeMap<>();
 	}
 
 	/**
-	 * Get the value of configuration of the specified key.
+	 * Get nodes whose names are the specified one.
 	 * 
-	 * @param key
-	 *            the key, which represents a node in the xml file
+	 * @param nodeName
+	 *            the name as a query
 	 * 
-	 * @return the value of the key
-	 * 
-	 * @throws UnsupportedOperationException
-	 *             if the xml file does not have the specified key
+	 * @return a list of nodes whose names are the given one
 	 */
-	public String getValue(final String key) {
-		if (configValues.containsKey(key)) {
-			return configValues.get(key);
+	public List<ConfigXMLNode> getNodes(final String nodeName) {
+		if (nodes.containsKey(nodeName)) {
+			return nodes.get(nodeName);
 		} else {
-			throw new UnsupportedOperationException(key
-					+ ": no such node in the config file");
+			throw new UnsupportedOperationException(nodeName
+					+ ": no such node in the file");
 		}
 	}
 
@@ -95,10 +94,18 @@ public class ConfigFileParser {
 
 				if (firstChild.getNodeName().equals("#text")
 						&& !firstChildValue.isEmpty()) {
-					this.configValues.put(nodeName, firstChild.getNodeValue());
+					node.setValue(firstChild.getNodeValue());
 				}
 			}
 		}
+
+		List<ConfigXMLNode> list = nodes.get(nodeName);
+		if (list == null) {
+			list = new ArrayList<>();
+			nodes.put(nodeName, list);
+		}
+
+		list.add(node);
 	}
 
 }
