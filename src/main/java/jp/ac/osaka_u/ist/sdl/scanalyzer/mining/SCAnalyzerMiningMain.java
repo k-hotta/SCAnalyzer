@@ -336,6 +336,9 @@ public class SCAnalyzerMiningMain {
 			case GENEALOGY_MODIFICATIONS:
 				return new CloneGenealogyModificationStrategy<>(
 						config.getOutputFilePath());
+			case GENEALOGY_SIMILARITY_GHOST_PERIOD:
+				return new CloneGenealogySimilarityInGhostStrategy<>(
+						config.getOutputFilePath());
 			}
 
 			throw new IllegalStateException("cannot find strategy");
@@ -383,6 +386,13 @@ public class SCAnalyzerMiningMain {
 						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
 						config.getMaximumRetrieveCount());
 			case GENEALOGY_MODIFICATIONS:
+				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
+						manager,
+						retrieverManager.getGenealogyRetriever(),
+						DBManager.getInstance().getCloneGenealogyDao(),
+						(MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy,
+						config.getMaximumRetrieveCount());
+			case GENEALOGY_SIMILARITY_GHOST_PERIOD:
 				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
 						manager,
 						retrieverManager.getGenealogyRetriever(),
