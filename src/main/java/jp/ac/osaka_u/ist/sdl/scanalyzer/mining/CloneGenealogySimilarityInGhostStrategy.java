@@ -208,6 +208,8 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 				}
 			}
 
+			similarities.put(genealogy.getId(), similaritiesInGenealogy);
+
 			logger.info("[" + count.incrementAndGet() + "/" + numGenealogies
 					+ "] complete mining genealogy " + genealogy.getId());
 		}
