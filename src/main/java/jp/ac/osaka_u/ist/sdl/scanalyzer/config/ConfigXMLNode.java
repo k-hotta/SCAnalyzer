@@ -31,6 +31,11 @@ public class ConfigXMLNode {
 	 */
 	private final Map<String, List<ConfigXMLNode>> children;
 
+	/**
+	 * The value of this node, which can be <code>null</code>
+	 */
+	private String value;
+
 	public ConfigXMLNode(final Node node) {
 		this.node = node;
 		this.nodeName = node.getNodeName();
@@ -93,6 +98,15 @@ public class ConfigXMLNode {
 	 */
 	public List<ConfigXMLNode> getChildren(final String childNodeName) {
 		return children.get(childNodeName);
+	}
+
+	/**
+	 * Get the value of this node.
+	 * 
+	 * @return the value of this node
+	 */
+	public String getValue() {
+		return value;
 	}
 
 }
