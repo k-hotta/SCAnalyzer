@@ -13,6 +13,8 @@ import org.w3c.dom.NodeList;
  */
 public class XMLTargetNode extends AbstractConfigXMLNode {
 
+	private XMLSingleValueNode nameNode;
+
 	private XMLSingleValueNode languageNode;
 
 	private XMLSingleValueNode elementNode;
@@ -38,6 +40,11 @@ public class XMLTargetNode extends AbstractConfigXMLNode {
 		final NodeList listChildren = core.getChildNodes();
 		for (int i = 0; i < listChildren.getLength(); i++) {
 			final Node child = listChildren.item(i);
+
+			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_NAME)) {
+				nameNode = new XMLSingleValueNode(child,
+						ConfigConstant.NODE_NAME_NAME);
+			}
 
 			if (child.getNodeName().equals(ConfigConstant.NODE_NAME_LANGUAGE)) {
 				languageNode = new XMLSingleValueNode(child,
@@ -85,6 +92,10 @@ public class XMLTargetNode extends AbstractConfigXMLNode {
 	@Override
 	public void accept(IXMLNodeVisitor visitor) {
 		visitor.visit(this);
+
+		if (nameNode != null) {
+			nameNode.accept(visitor);
+		}
 
 		if (languageNode != null) {
 			languageNode.accept(visitor);

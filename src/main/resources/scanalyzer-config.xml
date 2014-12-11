@@ -6,6 +6,7 @@
 		<overwrite>true</overwrite>
 	</general>
 	<target>
+		<name>clone-tracker</name>
 		<language>JAVA</language>
 		<element>TOKEN</element>
 		<repository>src/test/resources/repository-clonetracker</repository>

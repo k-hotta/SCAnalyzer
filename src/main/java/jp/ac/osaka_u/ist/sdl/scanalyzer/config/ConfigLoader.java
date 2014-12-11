@@ -54,6 +54,8 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 				String.format(format + additional, "DBMS", "dbms", "dbms",
 						DBMS.canBe()));
 		usage.put("d", String.format(format, "database", "d", "database"));
+		usage.put("n", String.format(format, "name of the target project", "n",
+				"name"));
 		usage.put("l", String.format(format + additional, "language", "l",
 				"language", Language.canBe()));
 		usage.put("r", String.format(format, "repository", "r", "repository"));
@@ -133,6 +135,10 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		// database path
 		options.addOption(makeOption("d", "db", true, "path of database file",
 				1, false));
+
+		// project name
+		options.addOption(makeOption("n", "name", true, "name of project", 1,
+				false));
 
 		// language
 		options.addOption(makeOption("l", "language", true, "language", 1,
@@ -336,6 +342,9 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 				"d", "database", null, false);
 
 		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"n", "name", null, false);
+
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
 				"l", "language", null, false);
 
 		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
@@ -407,7 +416,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 	 * @param cmd
 	 * @param errors
 	 * @param xmlParser
-	 * @param loadedConfigAsText
+	 * @param loadedConfigsAsText
 	 * @param optionName
 	 * @param nodeName
 	 * @param defaultValue
@@ -415,7 +424,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 	 */
 	private void loadSingleConfigAsText(final CommandLine cmd,
 			final Map<String, String> errors, final ConfigXMLParser xmlParser,
-			final Map<String, String> loadedConfigAsText,
+			final Map<String, String> loadedConfigsAsText,
 			final String optionName, final String nodeName,
 			final String defaultValue, final boolean nullable) {
 		String valueStr = defaultValue;
@@ -429,7 +438,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 			}
 		}
 		if (valueStr != null) {
-			loadedConfigAsText.put(optionName, valueStr);
+			loadedConfigsAsText.put(optionName, valueStr);
 		} else if (!nullable && !errors.containsKey(optionName)) {
 			errors.put(optionName, "the specified value is null");
 		}
@@ -534,6 +543,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		final DBMS dbms = DBMS.getCorrespondingDBMS(singleConfigsAsText
 				.get("dbms"));
 		final String dbPath = singleConfigsAsText.get("d");
+		final String projectName = singleConfigsAsText.get("n");
 		final Language language = Language
 				.getCorrespondingLanguage(singleConfigsAsText.get("l"));
 		final String repository = singleConfigsAsText.get("r");
@@ -586,6 +596,12 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 			result.setDbPath(dbPath);
 		} else {
 			errors.put("d", String.format(format, "database path"));
+		}
+
+		if (projectName != null) {
+			result.setProjectName(projectName);
+		} else {
+			errors.put("n", String.format(format, "project name"));
 		}
 
 		if (language != null) {

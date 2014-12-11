@@ -22,6 +22,8 @@ public interface ConfigConstant {
 
 	public static final String NODE_NAME_TARGET = "target";
 
+	public static final String NODE_NAME_NAME = "name";
+
 	public static final String NODE_NAME_LANGUAGE = "language";
 
 	public static final String NODE_NAME_ELEMENT = "element";

@@ -21,6 +21,11 @@ public class Config {
 	private String dbPath = null;
 
 	/**
+	 * The name of the target project
+	 */
+	private String projectName = null;
+
+	/**
 	 * The programming language in which the target is written
 	 */
 	private Language language = null;
@@ -158,6 +163,25 @@ public class Config {
 	 */
 	public final void setDbPath(String dbPath) {
 		this.dbPath = dbPath;
+	}
+
+	/**
+	 * Get the name of the project
+	 * 
+	 * @return the project name
+	 */
+	public final String getProjectName() {
+		return projectName;
+	}
+
+	/**
+	 * Set the project name.
+	 * 
+	 * @param projectName
+	 *            the name to be set
+	 */
+	public final void setProjectName(final String projectName) {
+		this.projectName = projectName;
 	}
 
 	/**
