@@ -581,7 +581,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		}
 
 		if (outputFilePath != null) {
-			result.setOutputFilePath(outputFilePath);
+			result.setOutputFilePattern(outputFilePath);
 		}
 
 		if (maximumRetrieved != null) {

@@ -329,16 +329,16 @@ public class SCAnalyzerMiningMain {
 			switch (config.getMiningStrategy()) {
 			case GENEALOGY_PERSIST_PERIOD:
 				new CloneGenealogyPersistPeriodFindStrategy<>(
-						config.getOutputFilePath());
+						config.getOutputFilePattern());
 			case GENEALOGY_COMMON_ELEMENTS_PERIOD:
 				return new CloneGenealogyCommonElementsStrategy<>(
-						config.getOutputFilePath());
+						config.getOutputFilePattern());
 			case GENEALOGY_MODIFICATIONS:
 				return new CloneGenealogyModificationStrategy<>(
-						config.getOutputFilePath());
+						config.getOutputFilePattern());
 			case GENEALOGY_SIMILARITY_GHOST_PERIOD:
 				return new CloneGenealogySimilarityInGhostStrategy<>(
-						config.getOutputFilePath());
+						config.getOutputFilePattern());
 			}
 
 			throw new IllegalStateException("cannot find strategy");

@@ -101,9 +101,10 @@ public class Config {
 	private AvailableMiningStrategy miningStrategy = null;
 
 	/**
-	 * The path of a file where the result of mining should be stored
+	 * The pattern of the output file where the result of mining should be
+	 * stored
 	 */
-	private String outputFilePath = null;
+	private String outputFilePattern = null;
 
 	/**
 	 * The maximum number of elements retrieved at a time
@@ -460,22 +461,22 @@ public class Config {
 	}
 
 	/**
-	 * Get the output file path
+	 * Get the output file pattern
 	 * 
-	 * @return the output file path
+	 * @return the output file pattern
 	 */
-	public String getOutputFilePath() {
-		return outputFilePath;
+	public String getOutputFilePattern() {
+		return outputFilePattern;
 	}
 
 	/**
-	 * Set the output file path
+	 * Set the output file pattern
 	 * 
-	 * @param outputFilePath
-	 *            the output file path to be stored
+	 * @param outputFilePattern
+	 *            the pattern of the output file path to be stored
 	 */
-	public void setOutputFilePath(final String outputFilePath) {
-		this.outputFilePath = outputFilePath;
+	public void setOutputFilePattern(final String outputFilePattern) {
+		this.outputFilePattern = outputFilePattern;
 	}
 
 	/**
