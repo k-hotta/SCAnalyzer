@@ -21,20 +21,13 @@ public abstract class AbstractConfigXMLNode {
 	protected final String nodeName;
 
 	/**
-	 * Whether this node is required, which means that it is mandatory or not
-	 */
-	protected final boolean required;
-
-	/**
 	 * The value of this node. NOTE: this can be <code>null</code>
 	 */
 	protected String value;
 
-	public AbstractConfigXMLNode(final Node core, final String nodeName,
-			final boolean required) {
+	public AbstractConfigXMLNode(final Node core, final String nodeName) {
 		this.core = core;
 		this.nodeName = nodeName;
-		this.required = required;
 		this.value = null;
 	}
 
@@ -44,10 +37,6 @@ public abstract class AbstractConfigXMLNode {
 
 	public final String getNodeName() {
 		return nodeName;
-	}
-
-	public final boolean isRequired() {
-		return required;
 	}
 
 	public final String getValue() {
