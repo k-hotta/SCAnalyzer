@@ -19,6 +19,7 @@ import jp.ac.osaka_u.ist.sdl.scanalyzer.data.db.DBRevision;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.conqat.lib.commons.filesystem.FilenameComparator;
 
 public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
@@ -31,15 +32,15 @@ public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 	private static final Logger logger = LogManager
 			.getLogger(CloneGenealogyPersistPeriodFindStrategy.class);
 
-	private final String outputFilePath;
+	private final String outputFilePattern;
 
 	private final Map<Long, Integer> persistPeriods;
 
 	private final String projectName;
 
-	public CloneGenealogyPersistPeriodFindStrategy(final String outputFilePath,
-			final String projectName) {
-		this.outputFilePath = outputFilePath;
+	public CloneGenealogyPersistPeriodFindStrategy(
+			final String outputFilePattern, final String projectName) {
+		this.outputFilePattern = outputFilePattern;
 		this.persistPeriods = new TreeMap<>();
 		this.projectName = projectName;
 	}
@@ -84,7 +85,8 @@ public class CloneGenealogyPersistPeriodFindStrategy<E extends IProgramElement>
 	@Override
 	public void writeResult() throws Exception {
 		try (final PrintWriter pw = new PrintWriter(new BufferedWriter(
-				new FileWriter(new File(outputFilePath))))) {
+				new FileWriter(new File(FileNameHelper.getFileName(this,
+						outputFilePattern)))))) {
 			pw.println("ID,#_REVS");
 			for (final Map.Entry<Long, Integer> entry : persistPeriods
 					.entrySet()) {

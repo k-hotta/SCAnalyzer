@@ -55,16 +55,16 @@ public class CloneGenealogyCommonElementsStrategy<E extends IProgramElement>
 
 	private final ConcurrentMap<Long, Map<Long, Double>> commonInAll;
 
-	private final String outputFilePath;
+	private final String outputFilePattern;
 
 	private final String projectName;
 
-	public CloneGenealogyCommonElementsStrategy(final String outputFilePath,
+	public CloneGenealogyCommonElementsStrategy(final String outputFilePattern,
 			final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.commonInCloned = new ConcurrentSkipListMap<>();
 		this.commonInAll = new ConcurrentSkipListMap<>();
-		this.outputFilePath = outputFilePath;
+		this.outputFilePattern = outputFilePattern;
 		this.projectName = projectName;
 	}
 
@@ -114,7 +114,8 @@ public class CloneGenealogyCommonElementsStrategy<E extends IProgramElement>
 	@Override
 	public void writeResult() throws Exception {
 		try (final PrintWriter pw = new PrintWriter(new BufferedWriter(
-				new FileWriter(new File(outputFilePath))))) {
+				new FileWriter(new File(FileNameHelper.getFileName(this,
+						outputFilePattern)))))) {
 			pw.println(buildHeader());
 			for (final Map.Entry<Long, Map<Long, Double>> entry : commonInCloned
 					.entrySet()) {

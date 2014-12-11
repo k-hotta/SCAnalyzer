@@ -54,15 +54,15 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 
 	private final ConcurrentMap<Long, SortedMap<Long, Double>> similarities;
 
-	private final String outputFilePath;
+	private final String outputFilePattern;
 
 	private final String projectName;
 
-	public CloneGenealogySimilarityInGhostStrategy(final String outputFilePath,
-			final String projectName) {
+	public CloneGenealogySimilarityInGhostStrategy(
+			final String outputFilePattern, final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.similarities = new ConcurrentSkipListMap<>();
-		this.outputFilePath = outputFilePath;
+		this.outputFilePattern = outputFilePattern;
 		this.projectName = projectName;
 	}
 
@@ -73,8 +73,7 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 
 	@Override
 	public String getProjectName() {
-		// TODO Auto-generated method stub
-		return null;
+		return projectName;
 	}
 
 	@Override
@@ -113,7 +112,8 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 	@Override
 	public void writeResult() throws Exception {
 		try (final PrintWriter pw = new PrintWriter(new BufferedWriter(
-				new FileWriter(new File(outputFilePath))))) {
+				new FileWriter(new File(FileNameHelper.getFileName(this,
+						outputFilePattern)))))) {
 			// pw.println(buildHeader());
 			for (final Map.Entry<Long, SortedMap<Long, Double>> entry : similarities
 					.entrySet()) {

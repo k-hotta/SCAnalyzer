@@ -54,7 +54,7 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 
 	private final Set<Long> versionsUnderConsideration;
 
-	private final String outputFilePath;
+	private final String outputFilePattern;
 
 	private final String projectName;
 
@@ -72,10 +72,10 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 
 	private final ConcurrentMap<Long, Map<Long, Boolean>> inconsistencies;
 
-	public CloneGenealogyModificationStrategy(final String outputFilePath,
+	public CloneGenealogyModificationStrategy(final String outputFilePattern,
 			final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
-		this.outputFilePath = outputFilePath;
+		this.outputFilePattern = outputFilePattern;
 		this.projectName = projectName;
 		this.codeFragments = new ConcurrentSkipListMap<>();
 		this.addedFragments = new ConcurrentSkipListMap<>();
@@ -131,7 +131,8 @@ public class CloneGenealogyModificationStrategy<E extends IProgramElement>
 	@Override
 	public void writeResult() throws Exception {
 		try (final PrintWriter pw = new PrintWriter(new BufferedWriter(
-				new FileWriter(new File(outputFilePath))))) {
+				new FileWriter(new File(FileNameHelper.getFileName(this,
+						outputFilePattern)))))) {
 			pw.println(buildHeader());
 
 			for (final long genealogyId : codeFragments.keySet()) {
