@@ -8,6 +8,6 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.config.xml;
  */
 public interface IXMLNodeVisitor {
 
-	
+	public void visit(final XMLDBMSNode node);
 	
 }
