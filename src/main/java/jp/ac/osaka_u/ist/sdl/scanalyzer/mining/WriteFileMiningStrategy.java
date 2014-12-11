@@ -29,11 +29,4 @@ public interface WriteFileMiningStrategy<D extends IDBElement, T extends IDataEl
 	 */
 	public String getDatabaseName();
 
-	/**
-	 * Get date as a string.
-	 * 
-	 * @return
-	 */
-	public String getDateStr();
-
 }
