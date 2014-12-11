@@ -6,13 +6,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class represents the node "config", which is the root node of the XML
+ * This class represents the node "config", which is the actual root node of the XML
  * file.
  * 
  * @author k-hotta
  *
  */
-public class XMLRootNode extends AbstractConfigXMLNode {
+public class XMLConfigNode extends AbstractConfigXMLNode {
 
 	private XMLGeneralNode generalNode;
 
@@ -24,7 +24,7 @@ public class XMLRootNode extends AbstractConfigXMLNode {
 
 	private XMLMiningNode miningNode;
 
-	public XMLRootNode(Node core) {
+	public XMLConfigNode(Node core) {
 		super(core, ConfigConstant.NODE_NAME_ROOT);
 		generalNode = null;
 		targetNode = null;

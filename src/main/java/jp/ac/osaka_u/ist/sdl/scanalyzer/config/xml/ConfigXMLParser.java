@@ -1,11 +1,18 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config.xml;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.ConfigConstant;
+
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * This is a parser for the XML configuration file.
@@ -64,6 +71,22 @@ public class ConfigXMLParser implements IXMLNodeVisitor {
 		} else {
 			throw new UnsupportedOperationException(key
 					+ ": no such node in the xml file");
+		}
+	}
+
+	public void parse(final String xmlPath) throws Exception {
+		final DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder();
+
+		final File file = new File(xmlPath);
+		if (!file.exists()) {
+			throw new IllegalArgumentException(xmlPath + " does not exist");
+		}
+
+		final Node root = builder.parse(new File(xmlPath));
+
+		if (root.getNodeType() != Node.DOCUMENT_NODE) {
+			throw new IllegalStateException("the root is not document");
 		}
 	}
 

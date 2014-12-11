@@ -12,7 +12,7 @@ public interface IXMLNodeVisitor {
 
 	}
 	
-	public default void visit(final XMLRootNode node) {
+	public default void visit(final XMLConfigNode node) {
 		
 	}
 
