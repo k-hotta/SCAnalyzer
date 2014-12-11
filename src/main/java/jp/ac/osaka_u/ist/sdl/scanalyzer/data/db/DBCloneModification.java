@@ -23,6 +23,34 @@ public class DBCloneModification implements IDBElement {
 	};
 
 	/**
+	 * Where is the modification on?
+	 * 
+	 * @author k-hotta
+	 *
+	 */
+	public enum Place {
+		/**
+		 * On somewhere of segment. The gaps are not considered at all. Hence
+		 * the modification can be on cloned parts, on gaps, and on the boundary
+		 * of them.
+		 */
+		INCLUDE_GAP,
+
+		/**
+		 * On common parts among CLONED fragments. The gaps are considered, and
+		 * so the modification cannot be on the gaps.
+		 */
+		COMMON_CLONED,
+
+		/**
+		 * On common parts among ALL fragments. The gaps are considered as well
+		 * as COMMON_CLONED, so the modification cannot be on the gaps. The
+		 * difference from COMMON_CLONED is that this considers ghost fragments.
+		 */
+		COMMON_ALL
+	}
+
+	/**
 	 * The column name for id
 	 */
 	public static final String ID_COLUMN_NAME = "ID";
@@ -46,6 +74,11 @@ public class DBCloneModification implements IDBElement {
 	 * The column name for type
 	 */
 	public static final String TYPE_COLUMN_NAME = "TYPE";
+
+	/**
+	 * The column name for place
+	 */
+	public static final String PLACE_COLUMN_NAME = "PLACE";
 
 	/**
 	 * The column name for contentHash
@@ -105,6 +138,12 @@ public class DBCloneModification implements IDBElement {
 	private Type type;
 
 	/**
+	 * The place where the modification is
+	 */
+	@DatabaseField(canBeNull = false, columnName = PLACE_COLUMN_NAME)
+	private Place place;
+
+	/**
 	 * The hash value created from added/deleted elements
 	 */
 	@DatabaseField(canBeNull = false, columnName = CONTENT_HASH_COLUMN_NAME)
@@ -140,7 +179,7 @@ public class DBCloneModification implements IDBElement {
 
 	public DBCloneModification(final long id, final int oldStartPosition,
 			final int newStartPosition, final int length, final Type type,
-			final int contentHash,
+			final Place place, final int contentHash,
 			final DBCodeFragmentMapping codeFragmentMapping,
 			final DBSegment relatedOldSegment,
 			final DBSegment relatedNewSegment,
@@ -150,6 +189,7 @@ public class DBCloneModification implements IDBElement {
 		this.newStartPosition = newStartPosition;
 		this.length = length;
 		this.type = type;
+		this.place = place;
 		this.contentHash = contentHash;
 		this.codeFragmentMapping = codeFragmentMapping;
 		this.relatedOldSegment = relatedOldSegment;
@@ -256,6 +296,25 @@ public class DBCloneModification implements IDBElement {
 	 */
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	/**
+	 * Get the place of this modification.
+	 * 
+	 * @return the place of this modification
+	 */
+	public Place getPlace() {
+		return place;
+	}
+
+	/**
+	 * Set the place of this modification with the specified one.
+	 * 
+	 * @param place
+	 *            the place to be set
+	 */
+	public void setPlace(final Place place) {
+		this.place = place;
 	}
 
 	/**
