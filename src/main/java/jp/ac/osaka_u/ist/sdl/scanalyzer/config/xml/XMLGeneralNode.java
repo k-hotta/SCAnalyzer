@@ -43,13 +43,6 @@ public class XMLGeneralNode extends AbstractConfigXMLNode {
 				overwriteNode.accept(visitor);
 			}
 		}
-
-		if (dbmsNode == null) {
-			throw new IllegalStateException(
-					"wrong format of the XML file: the node " + nodeName
-							+ " must have " + ConfigConstant.NODE_NAME_DBMS
-							+ " as its child");
-		}
 	}
 
 	public final XMLSingleValueNode getDbmsNode() {
