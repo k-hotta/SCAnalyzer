@@ -1,5 +1,6 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -92,6 +93,21 @@ public class ConfigXMLParser implements IXMLNodeVisitor {
 		final String value = retrieveSingleNodeValue(node.getCore());
 		node.setValue(value);
 		singleValues.put(node.getNodeName(), value);
+	}
+
+	@Override
+	public void visit(XMLStrategyNode node) {
+		final String value = retrieveSingleNodeValue(node.getCore());
+		node.setValue(value);
+
+		List<String> values = multipleValues.get(node.getNodeName());
+
+		if (values == null) {
+			values = new ArrayList<>();
+			multipleValues.put(node.getNodeName(), values);
+		}
+
+		values.add(value);
 	}
 
 }
