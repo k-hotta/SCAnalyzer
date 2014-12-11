@@ -58,4 +58,6 @@ public abstract class AbstractConfigXMLNode {
 		this.value = value;
 	}
 
+	public abstract void accept(final IXMLNodeVisitor visitor);
+
 }
