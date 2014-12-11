@@ -3,6 +3,8 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 import java.util.Map;
 import java.util.TreeMap;
 
+import jp.ac.osaka_u.ist.sdl.scanalyzer.config.xml.ConfigXMLParser;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Option;
@@ -18,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  * @author k-hotta
  *
  */
-public class ConfigLoader implements DefaultConfiguration {
+public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 
 	/**
 	 * The logger for errors
@@ -255,7 +257,7 @@ public class ConfigLoader implements DefaultConfiguration {
 		final Map<String, String> errors = new TreeMap<>();
 
 		// parse the configuration file
-		final ConfigFileParser xmlParser = new ConfigFileParser();
+		final ConfigXMLParser xmlParser = new ConfigXMLParser();
 		try {
 			xmlParser.parse(configFile);
 		} catch (Exception e) {
@@ -309,59 +311,59 @@ public class ConfigLoader implements DefaultConfiguration {
 	 * @return
 	 */
 	private Map<String, String> loadConfigsAsText(final CommandLine cmd,
-			final Map<String, String> errors, final ConfigFileParser xmlParser) {
+			final Map<String, String> errors, final ConfigXMLParser xmlParser) {
 		final Map<String, String> loadedConfigsAsText = new TreeMap<>();
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "dbms",
-				"dbms", DEFAULT_DBMS, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"dbms", "dbms", DEFAULT_DBMS, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "d",
-				"database", null, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"d", "database", null, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "l",
-				"language", null, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"l", "language", null, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "r",
-				"repository", null, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"r", "repository", null, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "rp",
-				"relative", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"rp", "relative", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "vcs",
-				"version-control", null, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"vcs", "version-control", null, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "e",
-				"element", DEFAULT_ELEMENT, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"e", "element", DEFAULT_ELEMENT, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "c",
-				"detector", DEFAULT_DETECTOR, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"c", "detector", DEFAULT_DETECTOR, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "cr",
-				"result-directory", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"cr", "result-directory", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "ff",
-				"filename-format", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"ff", "filename-format", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "rl",
-				"relocation", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"rl", "relocation", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "eq",
-				"equalizer", DEFAULT_EQUALIZER, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"eq", "equalizer", DEFAULT_EQUALIZER, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "cm",
-				"clone-mapping", DEFAULT_CLONE_MAPPING, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"cm", "clone-mapping", DEFAULT_CLONE_MAPPING, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "em",
-				"element-mapping", DEFAULT_ELEMENT_MAPPING, false);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"em", "element-mapping", DEFAULT_ELEMENT_MAPPING, false);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "start",
-				"start", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"start", "start", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "end",
-				"end", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"end", "end", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "ow",
-				"overwrite", DEFAULT_OVERWRITING_DB.toString(), true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"ow", "overwrite", DEFAULT_OVERWRITING_DB.toString(), true);
 
 		/*
 		 * the following options are specific ones for modes
@@ -371,14 +373,15 @@ public class ConfigLoader implements DefaultConfiguration {
 			loadedConfigsAsText.put("id", cmd.getOptionValue("id"));
 		}
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
 				"strategy", "mining-strategy", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "output",
-				"output-file", null, true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"output", "output-file", null, true);
 
-		loadConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText, "max",
-				"max-retrieved", DEFAULT_MAXIMUM_RETRIEVED.toString(), true);
+		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"max", "max-retrieved", DEFAULT_MAXIMUM_RETRIEVED.toString(),
+				true);
 
 		return loadedConfigsAsText;
 	}
@@ -395,16 +398,16 @@ public class ConfigLoader implements DefaultConfiguration {
 	 * @param defaultValue
 	 * @param nullable
 	 */
-	private void loadConfigAsText(final CommandLine cmd,
-			final Map<String, String> errors, final ConfigFileParser xmlParser,
+	private void loadSingleConfigAsText(final CommandLine cmd,
+			final Map<String, String> errors, final ConfigXMLParser xmlParser,
 			final Map<String, String> loadedConfigAsText,
 			final String optionName, final String nodeName,
 			final String defaultValue, final boolean nullable) {
 		String dbmsStr = defaultValue;
 		try {
 			dbmsStr = (cmd.hasOption(optionName)) ? cmd
-					.getOptionValue(optionName) : xmlParser.getNodes(nodeName)
-					.get(0).getValue();
+					.getOptionValue(optionName) : xmlParser
+					.getSingleValue(nodeName);
 		} catch (Exception e) {
 			if (!nullable) {
 				errors.put(optionName, e.toString());
