@@ -39,9 +39,9 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	private final int maximumGenealogiesCount;
 
 	/**
-	 * The strategy of mining
+	 * The strategies of mining
 	 */
-	private final MiningStrategy<D, T> strategy;
+	private final Collection<MiningStrategy<D, T>> strategies;
 
 	/**
 	 * The DAO
@@ -59,15 +59,25 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 	private final RetrievedObjectManager<E> manager;
 
 	public MiningController(final int maximumGenealogiesCount,
-			final MiningStrategy<D, T> strategy,
+			final Collection<MiningStrategy<D, T>> strategies,
 			final AbstractDataDao<D, ?> dao,
 			final IRetriever<E, D, T> retriever,
 			final RetrievedObjectManager<E> manager) {
 		this.maximumGenealogiesCount = maximumGenealogiesCount;
-		this.strategy = strategy;
+		this.strategies = strategies;
 		this.dao = dao;
 		this.retriever = retriever;
 		this.manager = manager;
+	}
+
+	public MiningController(final int maximumGenealogiesCount,
+			final MiningStrategy<D, T> strategy,
+			final AbstractDataDao<D, ?> dao,
+			final IRetriever<E, D, T> retriever,
+			final RetrievedObjectManager<E> manager) {
+		this(maximumGenealogiesCount, new ArrayList<>(), dao, retriever,
+				manager);
+		this.strategies.add(strategy);
 	}
 
 	public void performMining() throws Exception {
@@ -104,7 +114,10 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 		}
 
 		logger.info("writing results ... ");
-		strategy.writeResult();
+		for (final MiningStrategy<D, T> strategy : strategies) {
+			strategy.writeResult();
+			logger.info("done for " + strategy.getClass().getSimpleName());
+		}
 		logger.info("complete writing");
 	}
 
@@ -127,9 +140,19 @@ public class MiningController<E extends IProgramElement, D extends IDBElement, T
 				.values());
 		logger.info("complete retrieving volatile information");
 
-		logger.info("start mining ...");
-		strategy.mine(toBeMined);
-		logger.info("complete mining for " + ids.size() + " elements");
+		logger.info("start mining with " + strategies.size()
+				+ " strategies ...");
+
+		for (final MiningStrategy<D, T> strategy : strategies) {
+			logger.info("start mining with "
+					+ strategy.getClass().getSimpleName());
+			strategy.mine(toBeMined);
+			logger.info("complete mining with "
+					+ strategy.getClass().getSimpleName());
+		}
+
+		logger.info("complete mining for " + ids.size() + " elements with "
+				+ strategies.size() + " strategies");
 	}
 
 	private Map<Long, D> retrieveFromDatabase(final Collection<Long> ids)
