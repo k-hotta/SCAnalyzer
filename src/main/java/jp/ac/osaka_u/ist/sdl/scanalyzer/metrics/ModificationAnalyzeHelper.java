@@ -36,6 +36,11 @@ public class ModificationAnalyzeHelper {
 	public static <E extends IProgramElement> List<List<E>> divide(
 			final List<E> lcs) {
 		final List<List<E>> result = new ArrayList<>();
+
+		if (lcs == null) {
+			return result;
+		}
+
 		List<E> currentList = new ArrayList<>();
 		E lastElement = null;
 
