@@ -260,7 +260,7 @@ public class ConfigLoader implements DefaultConfiguration {
 			xmlParser.parse(configFile);
 		} catch (Exception e) {
 			eLogger.fatal("cannot read the configuration file");
-			eLogger.fatal("if you want to use not default file, you have to specify the alternative");
+			eLogger.fatal("if you don't want to use the default file, you have to specify the alternative");
 			throw e;
 		}
 

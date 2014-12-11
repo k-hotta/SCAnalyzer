@@ -90,7 +90,8 @@ public class ConfigXMLParser implements IXMLNodeVisitor {
 	@Override
 	public void visit(XMLSingleValueNode node) {
 		final String value = retrieveSingleNodeValue(node.getCore());
-		
+		node.setValue(value);
+		singleValues.put(node.getNodeName(), value);
 	}
 
 }

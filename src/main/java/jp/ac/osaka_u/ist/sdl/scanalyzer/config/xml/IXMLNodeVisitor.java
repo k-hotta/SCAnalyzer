@@ -8,6 +8,12 @@ package jp.ac.osaka_u.ist.sdl.scanalyzer.config.xml;
  */
 public interface IXMLNodeVisitor {
 
-	public void visit(final XMLSingleValueNode node);
-	
+	public default void visit(final XMLSingleValueNode node) {
+
+	}
+
+	public default void visit(final XMLGeneralNode node) {
+
+	}
+
 }
