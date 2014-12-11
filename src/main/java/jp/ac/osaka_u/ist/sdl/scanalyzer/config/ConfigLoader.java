@@ -1,6 +1,10 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import jp.ac.osaka_u.ist.sdl.scanalyzer.config.xml.ConfigXMLParser;
@@ -270,8 +274,10 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		// the command line arguments superior to xml files
 		// that is, for each of configuration, if the value of it is specified
 		// as the command line argument, that in the xml file will be ignored
-		final Map<String, String> configsAsText = loadConfigsAsText(cmd,
-				errors, xmlParser);
+		final Map<String, String> singleConfigsAsText = loadSingleConfigsAsText(
+				cmd, errors, xmlParser);
+		final Map<String, List<String>> multipleConfigsAsText = loadMultipleConfigsAsText(
+				cmd, errors, xmlParser);
 
 		// if any error occurred
 		// log the cause of the errors
@@ -286,7 +292,8 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		errors.clear();
 
 		// setup an instance of Config
-		final Config result = setupConfig(errors, configsAsText);
+		final Config result = setupConfig(errors, singleConfigsAsText,
+				multipleConfigsAsText);
 
 		// if any error occurred
 		// log the cause of the errors
@@ -310,7 +317,7 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 	 * @param xmlParser
 	 * @return
 	 */
-	private Map<String, String> loadConfigsAsText(final CommandLine cmd,
+	private Map<String, String> loadSingleConfigsAsText(final CommandLine cmd,
 			final Map<String, String> errors, final ConfigXMLParser xmlParser) {
 		final Map<String, String> loadedConfigsAsText = new TreeMap<>();
 
@@ -374,9 +381,6 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 		}
 
 		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
-				"strategy", "mining-strategy", null, true);
-
-		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
 				"output", "output-file", null, true);
 
 		loadSingleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
@@ -403,9 +407,9 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 			final Map<String, String> loadedConfigAsText,
 			final String optionName, final String nodeName,
 			final String defaultValue, final boolean nullable) {
-		String dbmsStr = defaultValue;
+		String valueStr = defaultValue;
 		try {
-			dbmsStr = (cmd.hasOption(optionName)) ? cmd
+			valueStr = (cmd.hasOption(optionName)) ? cmd
 					.getOptionValue(optionName) : xmlParser
 					.getSingleValue(nodeName);
 		} catch (Exception e) {
@@ -413,8 +417,76 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 				errors.put(optionName, e.toString());
 			}
 		}
-		if (dbmsStr != null) {
-			loadedConfigAsText.put(optionName, dbmsStr);
+		if (valueStr != null) {
+			loadedConfigAsText.put(optionName, valueStr);
+		} else if (!nullable && !errors.containsKey(optionName)) {
+			errors.put(optionName, "the specified value is null");
+		}
+	}
+
+	/**
+	 * Load every configuration value which can be multiply specified.
+	 * 
+	 * @param cmd
+	 * @param errors
+	 * @param xmlParser
+	 * @return
+	 */
+	private Map<String, List<String>> loadMultipleConfigsAsText(
+			final CommandLine cmd, final Map<String, String> errors,
+			final ConfigXMLParser xmlParser) {
+		final Map<String, List<String>> loadedConfigsAsText = new TreeMap<>();
+
+		loadMultipleConfigAsText(cmd, errors, xmlParser, loadedConfigsAsText,
+				"strategy", "mining-strategy", null, true);
+
+		return loadedConfigsAsText;
+	}
+
+	/**
+	 * Load a configuration value which can be multiply specified.
+	 * 
+	 * @param cmd
+	 * @param errors
+	 * @param xmlParser
+	 * @param loadedConfigsAsText
+	 * @param optionName
+	 * @param nodeName
+	 * @param defaultValue
+	 * @param nullable
+	 */
+	private void loadMultipleConfigAsText(final CommandLine cmd,
+			final Map<String, String> errors, final ConfigXMLParser xmlParser,
+			final Map<String, List<String>> loadedConfigsAsText,
+			final String optionName, final String nodeName,
+			final String defaultValue, final boolean nullable) {
+		List<String> values = new ArrayList<>();
+
+		try {
+			if (cmd.hasOption(optionName)) {
+				values.add(cmd.getOptionValue(optionName));
+			} else {
+				final List<String> valuesInFile = xmlParser
+						.getMultipleValues(nodeName);
+
+				if (valuesInFile == null || valuesInFile.isEmpty()) {
+					values.addAll(valuesInFile);
+				} else if (defaultValue != null) {
+					values.add(defaultValue);
+				}
+			}
+		} catch (Exception e) {
+			if (!nullable) {
+				errors.put(optionName, e.toString());
+			}
+		}
+
+		if (values.isEmpty()) {
+			values = null;
+		}
+
+		if (values != null) {
+			loadedConfigsAsText.put(optionName, values);
 		} else if (!nullable && !errors.containsKey(optionName)) {
 			errors.put(optionName, "the specified value is null");
 		}
@@ -442,41 +514,50 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 	 * Set up an instance of {@link Config}
 	 * 
 	 * @param errors
-	 * @param configsAsText
+	 * @param singleConfigsAsText
 	 * @return
 	 */
 	private Config setupConfig(final Map<String, String> errors,
-			final Map<String, String> configsAsText) {
-		final DBMS dbms = DBMS.getCorrespondingDBMS(configsAsText.get("dbms"));
-		final String dbPath = configsAsText.get("d");
+			final Map<String, String> singleConfigsAsText,
+			final Map<String, List<String>> multipleConfigsAsText) {
+		final DBMS dbms = DBMS.getCorrespondingDBMS(singleConfigsAsText
+				.get("dbms"));
+		final String dbPath = singleConfigsAsText.get("d");
 		final Language language = Language
-				.getCorrespondingLanguage(configsAsText.get("l"));
-		final String repository = configsAsText.get("r");
-		final String relativePath = configsAsText.get("rp");
+				.getCorrespondingLanguage(singleConfigsAsText.get("l"));
+		final String repository = singleConfigsAsText.get("r");
+		final String relativePath = singleConfigsAsText.get("rp");
 		final VersionControlSystem vcs = VersionControlSystem
-				.getCorrespondingVersionControlSystem(configsAsText.get("vcs"));
+				.getCorrespondingVersionControlSystem(singleConfigsAsText
+						.get("vcs"));
 		final ElementType elementType = ElementType
-				.getCorrespondingElementType(configsAsText.get("e"));
+				.getCorrespondingElementType(singleConfigsAsText.get("e"));
 		final CloneDetector detector = CloneDetector
-				.getCorrespondingCloneDetector(configsAsText.get("c"));
-		final String cloneResultDirectory = configsAsText.get("cr");
-		final String cloneResultFileFormat = configsAsText.get("ff");
+				.getCorrespondingCloneDetector(singleConfigsAsText.get("c"));
+		final String cloneResultDirectory = singleConfigsAsText.get("cr");
+		final String cloneResultFileFormat = singleConfigsAsText.get("ff");
 		// final String relocationFinder = configsAsText.get("rl");
 		final ElementEqualizer elementEqualizer = ElementEqualizer
-				.getCorrespondingElementEqualizer(configsAsText.get("eq"));
+				.getCorrespondingElementEqualizer(singleConfigsAsText.get("eq"));
 		final CloneClassMappingAlgorithm cloneMappingAlgorithm = CloneClassMappingAlgorithm
-				.getCorrespondingCloneClassMappingAlgorithm(configsAsText
+				.getCorrespondingCloneClassMappingAlgorithm(singleConfigsAsText
 						.get("cm"));
 		final ElementMappingAlgorithm elementMappingAlgorithm = ElementMappingAlgorithm
-				.getCorrespondingDBMS(configsAsText.get("em"));
-		final String startRevisionIdentifier = configsAsText.get("start");
-		final String endRevisionIdentifier = configsAsText.get("end");
-		final String overwritingDb = configsAsText.get("ow");
-		final String genealogyIdStr = configsAsText.get("id");
-		final AvailableMiningStrategy miningStrategy = AvailableMiningStrategy
-				.getCorrespondingStrategy(configsAsText.get("strategy"));
-		final String outputFilePath = configsAsText.get("output");
-		final String maximumRetrieved = configsAsText.get("max");
+				.getCorrespondingDBMS(singleConfigsAsText.get("em"));
+		final String startRevisionIdentifier = singleConfigsAsText.get("start");
+		final String endRevisionIdentifier = singleConfigsAsText.get("end");
+		final String overwritingDb = singleConfigsAsText.get("ow");
+		final String genealogyIdStr = singleConfigsAsText.get("id");
+		final Set<AvailableMiningStrategy> miningStrategies = new HashSet<>();
+		if (multipleConfigsAsText.containsKey("strategy")) {
+			for (final String miningStrategyStr : multipleConfigsAsText
+					.get("strategy")) {
+				miningStrategies.add(AvailableMiningStrategy
+						.getCorrespondingStrategy(miningStrategyStr));
+			}
+		}
+		final String outputFilePath = singleConfigsAsText.get("output");
+		final String maximumRetrieved = singleConfigsAsText.get("max");
 
 		final Config result = new Config();
 
@@ -576,8 +657,8 @@ public class ConfigLoader implements DefaultConfiguration, ConfigConstant {
 			}
 		}
 
-		if (miningStrategy != null) {
-			result.setMiningStrategy(miningStrategy);
+		if (!miningStrategies.isEmpty()) {
+			result.setMiningStrategies(miningStrategies);
 		}
 
 		if (outputFilePath != null) {

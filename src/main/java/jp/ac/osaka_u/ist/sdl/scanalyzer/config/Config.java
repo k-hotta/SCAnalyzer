@@ -1,5 +1,7 @@
 package jp.ac.osaka_u.ist.sdl.scanalyzer.config;
 
+import java.util.Set;
+
 /**
  * A class that contains configuration values of SCAnalyzer. <br>
  * 
@@ -96,9 +98,9 @@ public class Config {
 	private long genealogyId = -1;
 
 	/**
-	 * The mining strategy
+	 * The mining strategies
 	 */
-	private AvailableMiningStrategy miningStrategy = null;
+	private Set<AvailableMiningStrategy> miningStrategies = null;
 
 	/**
 	 * The pattern of the output file where the result of mining should be
@@ -442,22 +444,23 @@ public class Config {
 	}
 
 	/**
-	 * Get the mining strategy.
+	 * Get the mining strategies.
 	 * 
-	 * @return the mining strategy
+	 * @return the set of the mining strategies
 	 */
-	public AvailableMiningStrategy getMiningStrategy() {
-		return miningStrategy;
+	public Set<AvailableMiningStrategy> getMiningStrategies() {
+		return miningStrategies;
 	}
 
 	/**
-	 * Set the mining strategy with the specified one.
+	 * Set the mining strategies.
 	 * 
 	 * @param miningStrategy
-	 *            the strategy to be set
+	 *            the strategies to be added
 	 */
-	public void setMiningStrategy(final AvailableMiningStrategy miningStrategy) {
-		this.miningStrategy = miningStrategy;
+	public void setMiningStrategies(
+			final Set<AvailableMiningStrategy> miningStrategies) {
+		this.miningStrategies = miningStrategies;
 	}
 
 	/**
