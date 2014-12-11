@@ -403,7 +403,8 @@ public class ConfigLoader implements DefaultConfiguration {
 		String dbmsStr = defaultValue;
 		try {
 			dbmsStr = (cmd.hasOption(optionName)) ? cmd
-					.getOptionValue(optionName) : xmlParser.getValue(nodeName);
+					.getOptionValue(optionName) : xmlParser.getNodes(nodeName)
+					.get(0).getValue();
 		} catch (Exception e) {
 			if (!nullable) {
 				errors.put(optionName, e.toString());
