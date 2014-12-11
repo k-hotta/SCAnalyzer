@@ -23,10 +23,10 @@ public interface WriteFileMiningStrategy<D extends IDBElement, T extends IDataEl
 	public String getStrategyName();
 
 	/**
-	 * Get the name of database.
+	 * Get the name of project.
 	 * 
 	 * @return
 	 */
-	public String getDatabaseName();
+	public String getProjectName();
 
 }

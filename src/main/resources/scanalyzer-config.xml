@@ -32,7 +32,7 @@
 			<unit>GENEALOGY</unit>
 			<max-retrieved>1000</max-retrieved>
 			<output-file-pattern>
-				src/test/resources/$$strategy_name$$-$$database_name$$.csv
+				src/test/resources/$$strategy_name$$-$$project_name$$.csv
 			</output-file-pattern>
 		</common-configuration>
 		<strategies>

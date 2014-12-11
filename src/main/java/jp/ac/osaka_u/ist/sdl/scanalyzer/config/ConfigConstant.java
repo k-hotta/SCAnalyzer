@@ -10,7 +10,7 @@ public interface ConfigConstant {
 
 	public static final String FILE_PATTERN_STRATEGY_NAME = "$$strategy_name$$";
 
-	public static final String FILE_PATTERN_DATABASE_NAME = "$$database_name$$";
+	public static final String FILE_PATTERN_PROJECT_NAME = "$$dproject_name$$";
 
 	public static final String NODE_NAME_ROOT = "config";
 

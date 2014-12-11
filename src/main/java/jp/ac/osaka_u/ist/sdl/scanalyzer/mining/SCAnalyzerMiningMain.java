@@ -346,7 +346,7 @@ public class SCAnalyzerMiningMain {
 							.getOutputFilePattern()));
 				case GENEALOGY_SIMILARITY_GHOST_PERIOD:
 					result.add(new CloneGenealogySimilarityInGhostStrategy<>(
-							config.getOutputFilePattern(), config.getDbPath()));
+							config.getOutputFilePattern()));
 				}
 
 				throw new IllegalStateException("cannot find strategy");
@@ -404,7 +404,7 @@ public class SCAnalyzerMiningMain {
 					strategies
 							.add((MiningStrategy<DBCloneGenealogy, CloneGenealogy<E>>) strategy);
 				}
-				
+
 				return new StrategyHelper<E, DBCloneGenealogy, CloneGenealogy<E>>(
 						manager, retrieverManager.getGenealogyRetriever(),
 						DBManager.getInstance().getCloneGenealogyDao(),

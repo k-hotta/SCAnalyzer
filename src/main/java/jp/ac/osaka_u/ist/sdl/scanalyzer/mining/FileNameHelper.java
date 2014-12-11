@@ -37,13 +37,13 @@ public class FileNameHelper {
 					strategyName);
 		}
 
-		index = builder.indexOf(ConfigConstant.FILE_PATTERN_DATABASE_NAME);
+		index = builder.indexOf(ConfigConstant.FILE_PATTERN_PROJECT_NAME);
 		if (index >= 0) {
-			// database name should be included
-			final String databaseName = strategy.getDatabaseName();
+			// project name should be included
+			final String projectName = strategy.getProjectName();
 			builder.replace(index, index
-					+ ConfigConstant.FILE_PATTERN_DATABASE_NAME.length() - 1,
-					databaseName);
+					+ ConfigConstant.FILE_PATTERN_PROJECT_NAME.length() - 1,
+					projectName);
 		}
 
 		return builder.toString();
