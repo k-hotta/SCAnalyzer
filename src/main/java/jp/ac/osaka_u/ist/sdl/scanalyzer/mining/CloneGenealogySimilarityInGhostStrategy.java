@@ -114,7 +114,7 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 		try (final PrintWriter pw = new PrintWriter(new BufferedWriter(
 				new FileWriter(new File(FileNameHelper.getFileName(this,
 						outputFilePattern)))))) {
-			// pw.println(buildHeader());
+			pw.println(buildHeader());
 			for (final Map.Entry<Long, SortedMap<Long, Double>> entry : similarities
 					.entrySet()) {
 				pw.println(buildRow(entry.getKey(), entry.getValue()));
@@ -127,6 +127,11 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 
 		builder.append("GENEALOGY_ID,");
 
+		for (final long versionId : versionsUnderConsideration) {
+			builder.append("v." + versionId + ",");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+
 		return builder.toString();
 	}
 
@@ -135,8 +140,14 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append(genealogyId + ",");
-		for (final Map.Entry<Long, Double> entry : values.entrySet()) {
-			builder.append(entry.getValue() + ",");
+		for (final long versionId : versionsUnderConsideration) {
+			final Double value = values.get(versionId);
+			if (value == null) {
+				builder.append("-1");
+			} else {
+				builder.append(value);
+			}
+			builder.append(",");
 		}
 		builder.deleteCharAt(builder.length() - 1);
 
