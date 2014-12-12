@@ -354,6 +354,11 @@ public class SCAnalyzerMiningMain {
 							config.getOutputFilePattern(), config
 									.getProjectName()));
 					break;
+				case GENEALOGY_SIMILARITY_GHOST_AVERAGE:
+					result.add(new CloneGenealogyAverageSimilarityInGhostStrategy<>(
+							config.getOutputFilePattern(), config
+									.getProjectName()));
+					break;
 				}
 			}
 

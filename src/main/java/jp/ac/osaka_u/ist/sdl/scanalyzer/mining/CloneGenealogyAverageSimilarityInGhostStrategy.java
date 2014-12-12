@@ -39,29 +39,29 @@ import org.apache.logging.log4j.Logger;
  * @param <E>
  *            the type of program element
  */
-public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
+public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramElement>
 		implements WriteFileMiningStrategy<DBCloneGenealogy, CloneGenealogy<E>> {
 
-	private static final AvailableMiningStrategy CORRESPONDING_STRATEGY = AvailableMiningStrategy.GENEALOGY_SIMILARITY_GHOST_PERIOD;
+	private static final AvailableMiningStrategy CORRESPONDING_STRATEGY = AvailableMiningStrategy.GENEALOGY_SIMILARITY_GHOST_AVERAGE;
 
 	/**
 	 * The logger
 	 */
 	private static Logger logger = LogManager
-			.getLogger(CloneGenealogySimilarityInGhostStrategy.class);
+			.getLogger(CloneGenealogyAverageSimilarityInGhostStrategy.class);
 
 	private final Set<Long> versionsUnderConsideration;
 
-	private final ConcurrentMap<Long, SortedMap<Long, Double>> similarities;
+	private final ConcurrentMap<Long, Double> averageSimilarities;
 
 	private final String outputFilePattern;
 
 	private final String projectName;
 
-	public CloneGenealogySimilarityInGhostStrategy(
+	public CloneGenealogyAverageSimilarityInGhostStrategy(
 			final String outputFilePattern, final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
-		this.similarities = new ConcurrentSkipListMap<>();
+		this.averageSimilarities = new ConcurrentSkipListMap<>();
 		this.outputFilePattern = outputFilePattern;
 		this.projectName = projectName;
 	}
@@ -115,7 +115,7 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 				new FileWriter(new File(FileNameHelper.getFileName(this,
 						outputFilePattern)))))) {
 			pw.println(buildHeader());
-			for (final Map.Entry<Long, SortedMap<Long, Double>> entry : similarities
+			for (final Map.Entry<Long, Double> entry : averageSimilarities
 					.entrySet()) {
 				pw.println(buildRow(entry.getKey(), entry.getValue()));
 			}
@@ -125,31 +125,15 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 	private String buildHeader() {
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append("GENEALOGY_ID,");
-
-		for (final long versionId : versionsUnderConsideration) {
-			builder.append("v." + versionId + ",");
-		}
-		builder.deleteCharAt(builder.length() - 1);
+		builder.append("GENEALOGY_ID,AVR_SIM");
 
 		return builder.toString();
 	}
 
-	private String buildRow(final long genealogyId,
-			final SortedMap<Long, Double> values) {
+	private String buildRow(final long genealogyId, final Double value) {
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append(genealogyId + ",");
-		for (final long versionId : versionsUnderConsideration) {
-			final Double value = values.get(versionId);
-			if (value == null) {
-				builder.append("");
-			} else {
-				builder.append(value);
-			}
-			builder.append(",");
-		}
-		builder.deleteCharAt(builder.length() - 1);
+		builder.append(genealogyId + "," + value);
 
 		return builder.toString();
 	}
@@ -237,7 +221,25 @@ public class CloneGenealogySimilarityInGhostStrategy<E extends IProgramElement>
 				}
 			}
 
-			similarities.put(genealogy.getId(), similaritiesInGenealogy);
+			double total = 0.0;
+			int ghostCount = 0;
+
+			for (final Map.Entry<Long, Double> entry : similaritiesInGenealogy
+					.entrySet()) {
+				long versionId = entry.getKey();
+				double sim = entry.getValue();
+				boolean ghost = hasGhost.get(versionId);
+
+				if (ghost) {
+					total += sim;
+					ghostCount++;
+				}
+			}
+
+			if (ghostCount > 0) {
+				final double average = total / (double) ghostCount;
+				averageSimilarities.put(genealogy.getId(), average);
+			}
 
 			logger.info("[" + count.incrementAndGet() + "/" + numGenealogies
 					+ "] complete mining genealogy " + genealogy.getId());

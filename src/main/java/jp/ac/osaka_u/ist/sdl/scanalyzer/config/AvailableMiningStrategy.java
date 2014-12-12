@@ -7,6 +7,8 @@ public enum AvailableMiningStrategy {
 	GENEALOGY_COMMON_ELEMENTS_PERIOD("common-elements"),
 
 	GENEALOGY_SIMILARITY_GHOST_PERIOD("similarity"),
+	
+	GENEALOGY_SIMILARITY_GHOST_AVERAGE("average-similarity"),
 
 	GENEALOGY_MODIFICATIONS("modifications");
 
