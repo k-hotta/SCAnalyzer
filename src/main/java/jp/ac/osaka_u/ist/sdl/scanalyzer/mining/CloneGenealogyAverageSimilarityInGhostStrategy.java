@@ -54,6 +54,10 @@ public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramEl
 
 	private final ConcurrentMap<Long, Double> averageSimilarities;
 
+	private final ConcurrentMap<Long, Integer> totalVersions;
+
+	private final ConcurrentMap<Long, Integer> ghostVersions;
+
 	private final String outputFilePattern;
 
 	private final String projectName;
@@ -62,6 +66,8 @@ public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramEl
 			final String outputFilePattern, final String projectName) {
 		this.versionsUnderConsideration = new ConcurrentSkipListSet<>();
 		this.averageSimilarities = new ConcurrentSkipListMap<>();
+		this.ghostVersions = new ConcurrentSkipListMap<>();
+		this.totalVersions = new ConcurrentSkipListMap<>();
 		this.outputFilePattern = outputFilePattern;
 		this.projectName = projectName;
 	}
@@ -117,7 +123,9 @@ public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramEl
 			pw.println(buildHeader());
 			for (final Map.Entry<Long, Double> entry : averageSimilarities
 					.entrySet()) {
-				pw.println(buildRow(entry.getKey(), entry.getValue()));
+				pw.println(buildRow(entry.getKey(), entry.getValue(),
+						totalVersions.get(entry.getKey()),
+						ghostVersions.get(entry.getKey())));
 			}
 		}
 	}
@@ -125,15 +133,16 @@ public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramEl
 	private String buildHeader() {
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append("GENEALOGY_ID,AVR_SIM");
+		builder.append("GENEALOGY_ID,AVR_SIM,#_TOTAL_VERSIONS,#_GHOST_VERSIONS");
 
 		return builder.toString();
 	}
 
-	private String buildRow(final long genealogyId, final Double value) {
+	private String buildRow(final long genealogyId, final Double avr,
+			final Integer total, final Integer ghosts) {
 		final StringBuilder builder = new StringBuilder();
 
-		builder.append(genealogyId + "," + value);
+		builder.append(genealogyId + "," + avr + "," + total + "," + ghosts);
 
 		return builder.toString();
 	}
@@ -223,6 +232,7 @@ public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramEl
 
 			double total = 0.0;
 			int ghostCount = 0;
+			int totalCount = 0;
 
 			for (final Map.Entry<Long, Double> entry : similaritiesInGenealogy
 					.entrySet()) {
@@ -234,11 +244,14 @@ public class CloneGenealogyAverageSimilarityInGhostStrategy<E extends IProgramEl
 					total += sim;
 					ghostCount++;
 				}
+				totalCount++;
 			}
 
 			if (ghostCount > 0) {
 				final double average = total / (double) ghostCount;
 				averageSimilarities.put(genealogy.getId(), average);
+				ghostVersions.put(genealogy.getId(), ghostCount);
+				totalVersions.put(genealogy.getId(), totalCount);
 			}
 
 			logger.info("[" + count.incrementAndGet() + "/" + numGenealogies

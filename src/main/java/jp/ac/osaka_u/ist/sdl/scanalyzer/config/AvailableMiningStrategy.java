@@ -10,7 +10,9 @@ public enum AvailableMiningStrategy {
 	
 	GENEALOGY_SIMILARITY_GHOST_AVERAGE("average-similarity"),
 
-	GENEALOGY_MODIFICATIONS("modifications");
+	GENEALOGY_MODIFICATIONS("modifications"),
+	
+	GENEALOGY_GHOST_MODIFICATIONS("ghost-modifications");
 
 	/**
 	 * The shortened name

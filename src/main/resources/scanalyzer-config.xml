@@ -48,6 +48,9 @@
 			<strategy>
 				GENEALOGY_SIMILARITY_GHOST_AVERAGE
 			</strategy>
+			<strategy>
+				GENEALOGY_GHOST_MODIFICATIONS
+			</strategy>
 		</strategies>
 	</mining>
 </config>

@@ -359,6 +359,11 @@ public class SCAnalyzerMiningMain {
 							config.getOutputFilePattern(), config
 									.getProjectName()));
 					break;
+				case GENEALOGY_GHOST_MODIFICATIONS:
+					result.add(new CloneGenealogyGhostModificationStrategy<>(
+							config.getOutputFilePattern(), config
+									.getProjectName()));
+					break;
 				}
 			}
 
